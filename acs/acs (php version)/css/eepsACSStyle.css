@@ -1,0 +1,52 @@
+body 				{ margin: 0; padding: 0; font-family: HelveticaNeue-Light, Verdana, Arial, Helvetica, sans-serif; 
+							font-size: 100%; font-weight: normal; color: #444; background: #fff; 
+							border-style: solid; border-width: 0 0 1px 0; border-color: #666;
+                            
+                        }
+
+/*  
+                            Darker colored color: #063
+                            Header, Medium: #096
+                            Lighter color: #3C9
+                            */
+
+th      {
+    text-align: left;
+}
+
+a:link 		{text-decoration: none; color:Green; 	font-weight: bold;}
+a:visited	{text-decoration: none; color:Green;  	font-weight: bold;}
+a:hover		{text-decoration: none; color:DarkGreen;	 font-weight: bold;}
+a:active	{text-decoration: none; color:LightGreen;	 font-weight: bold;}
+
+table 				{width: 100%; margin: 0; font-size: 1.0em; }
+
+table td 			{margin: 0; padding: 1; border: 0; vertical-align: top;}
+
+p       {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    
+    }
+h2		{
+        font-weight: light; 
+        font-size: 150%;		
+        color: DarkSlateGray;	
+        padding:	0px 0px 0px 0px;	
+        
+        }
+h3						{font-weight: light; font-size: 200%;		color: #444;	padding:	5px 0px 0px 0px;	}
+h4						{font-weight: bold;		color: DarkSlateGray;	padding:	10px 0px 0px 0px;	}
+p#indent				{padding-left: 15px;}
+
+code					{color: 000;	font-family: Courier, "Courier New", Monaco, monospace;	font-size: 150%;		}	
+
+
+
+.bg1				{background-color: #096;}
+.bg2				{background-color: #3C9;}
+
+td.data				{padding: 2px 5px 2px 5px; border-width: 1px; border-style: solid; border-color: #000;}
+
+dt			{font-weight: bold; 	color: #096;	padding: 6px 6px 0 0px; }
+dd			{font-weight: normal; 	padding: 0px 6px 6px 0px; }

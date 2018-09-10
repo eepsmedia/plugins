@@ -1,0 +1,137 @@
+/*
+	eeps media layout css
+	Tim Erickson
+	
+	this one does layout.
+	See styling.css for colors and fonts and all.
+
+    
+*/
+
+/*
+ACS
+    for ACS, the plan is 
+    <header>
+    <section>
+        <nav> <article> <aside>
+    </section>
+    <footer>
+*/
+
+/*		THE RESET CODE!	*/
+		
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style-position: inside;
+}
+ol {
+    list-style-position: inside;
+}
+
+body    {
+    font-family: HelveticaNeue-Light, Verdana, Arial, Helvetica, sans-serif;
+    color: DarkSlateGray;
+}
+
+header {
+    background-color: Green;
+    color: Gainsboro;
+    padding: 8px;
+}
+
+section {
+    display: flex;
+    -webkit-display: flex;
+    display: flex;
+}
+
+nav {
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+    -webkit-display: flex;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    list-style: none;  
+    
+    background-color: White;
+    max-width:  220px;  
+    min-width:  180px;  
+}
+
+
+nav a {
+    -webkit-padding: 8px;
+    padding: 8px;
+    display:block;          //  needed for Safari
+  font-weight: normal;
+  text-decoration: none;
+  color: DarkSlateGray;
+}
+
+nav a:hover {
+    background-color: Green;
+    font-weight: bold;
+    color: Gainsboro;
+}
+
+article {
+    -webkit-flex-grow: 3;
+    flex-grow: 3;
+    
+    padding: 8px;
+}
+
+aside {
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+    padding: 8px;
+}
+
+footer {
+    padding: 8px;
+}
+
+.varCheck   {
+    padding-left: 20px;
+    font-size: 10px;
+    padding-bottom: 8px;
+}
+
+.textbox    {
+    padding: 3px 8px 3px 8px;
+    margin: 6px;
+    background-color:Yellow;
+}
+
+.button {
+    padding: 5px 20px 5px 20px;
+    font-family: HelveticaNeue, Verdana, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    background-color: Green;
+    border-radius: 10px;
+    color: Gainsboro;
+}
+
+.button:hover {
+    background-color: DarkGreen;
+}
+
+.xc-button {
+    padding: 3px 8px 3px 8px;
+    font-family: HelveticaNeue, Verdana, Arial, Helvetica, sans-serif;
+    font-size:10px;
+    font-weight: normal;
+    background-color: Gray;
+    border-radius: 5px;
+    color: Gainsboro;
+}
+
+.xc-button:hover {
+    background-color: DarkGreen;
+}
+
