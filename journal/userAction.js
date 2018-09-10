@@ -33,7 +33,8 @@ journal.userAction = {
         const tJournalName = document.getElementById("journalNameBox").value;
         const tEpoch = document.getElementById("epochBox").value;
         journal.state.worldCode = tWorldCode;
-        journal.state.worldID = await journal.DB_Connect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName);
+        const tNewWorldArray =  await journal.DB_Connect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName);
+        journal.state.worldID = tNewWorldArray[0].id;
 
         journal.adminPhase = journal.constants.kAdminPhasePlaying;
         await journal.ui.update();

@@ -58,12 +58,15 @@ journal.DB_Connect = {
     },
 
     makeNewWorld: async function (iGodID, iWorldCode, iEpoch, iJournalName) {
+
+        const tEpoch = (iEpoch ? Number(iEpoch) : 0 );
+
         try {
             const theCommands = {
                 "c": "newWorld",
                 "g": iGodID,
                 "code": iWorldCode,
-                "epoch": iEpoch,
+                "epoch": tEpoch,
                 'jName': iJournalName
             };
             const iData = await journal.DB_Connect.sendCommand(theCommands);
