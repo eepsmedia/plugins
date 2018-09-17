@@ -50,8 +50,7 @@ function CODAP_MySQL_connect($host, $user, $pass, $dbname)
         $DBH->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
-        reportToFile("---  MYSQL connection error " . $e->getMessage());
-        print "Error connecting to the $dbname database!: " . $e->getMessage() . "<br/>";
+        error_log("---  MYSQL error connecting to database $dbname : " . $e->getMessage());
         die();
     }
 
@@ -73,7 +72,7 @@ function CODAP_MySQL_doQueryWithoutResult($db, $query, $params)
         $sth = $db->prepare($query);    //  $sth = statement handle
         $sth->execute($params);
     } catch (PDOException $e) {
-        reportToFile("---  MySQL preparation or execution error " . $e->getMessage());
+        error_log("---  MySQL preparation or execution error " . $e->getMessage());
         die();
     }
 }
@@ -85,13 +84,11 @@ function CODAP_MySQL_getQueryResult($db, $query, $params)
         $sth = $db->prepare($query);    //  $sth = statement handle
         $sth->execute($params);
     } catch (PDOException $e) {
-        reportToFile("---  MySQL preparation or execution error " . $e->getMessage());
-        //  print "Error preparing or executing a mySQL PDO statement: " . $e->getMessage() . "<br/>";
+        error_log("---  MySQL preparation or execution error " . $e->getMessage());
         die();
     }
 
     $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-    //  reportToFile("--- CODAP_MySQL_getQueryResult: " . print_r($result, true) . " query: " . $query);     //  debug
     return $result;
 }
 
