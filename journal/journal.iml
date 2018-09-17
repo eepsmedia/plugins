@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/parsedown-1.7.1/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/parsedown-1.7.1" isTestSource="false" />
     </content>
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
