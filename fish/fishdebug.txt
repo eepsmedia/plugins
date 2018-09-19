@@ -1,0 +1,97 @@
+[newGame].......2018-08-18 15:06:29 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 325
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 1667 859 777
+	new game code just made: pig.hurry.drag
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":325,"gameCode":"pig.hurry.drag","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:06:29 (PDT)
+	Tim does not already exist in pig.hurry.drag
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 22 fish during 2020
+... [newTurn] updating from 2020
+[newGame].......2018-08-18 15:07:32 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 326
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 150 938 862
+	new game code just made: home.burst.grave
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":326,"gameCode":"home.burst.grave","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:07:32 (PDT)
+	Tim does not already exist in home.burst.grave
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 22 fish during 2020
+[newGame].......2018-08-18 15:09:26 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 327
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 565 1017 947
+	new game code just made: smirk.disgust.clock
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":327,"gameCode":"smirk.disgust.clock","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:09:26 (PDT)
+	Tim does not already exist in smirk.disgust.clock
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 120 fish during 2020
+... [newTurn] updating from 2020
+[newGame].......2018-08-18 15:12:50 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 328
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 980 1096 1032
+	new game code just made: fade.flower.emotion
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":328,"gameCode":"fade.flower.emotion","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:12:50 (PDT)
+	Tim does not already exist in fade.flower.emotion
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 22 fish during 2020
+... [newTurn] updating from 2020
+[newGame].......2018-08-18 15:14:57 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 329
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 1395 1175 1117
+	new game code just made: whose.towel.friday
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":329,"gameCode":"whose.towel.friday","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:14:57 (PDT)
+	Tim does not already exist in whose.towel.friday
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 22 fish during 2020
+... [newTurn] updating from 2020
+[newGame].......2018-08-18 15:18:17 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 330
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 1810 1254 1202
+	new game code just made: tray.gold.tap
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":330,"gameCode":"tray.gold.tap","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:18:17 (PDT)
+	Tim does not already exist in tray.gold.tap
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 22 fish during 2020
+... [newTurn] updating from 2020
+[newGame].......2018-08-18 15:23:48 (PDT)
+	New game. PHP version 7.2.1
+	Ready to make the code. ..... the number is 331
+	making new game code: extra10, extra100: 0 0
+	making new game code: nwords: 1932 indices: 293 1333 1287
+	new game code just made: half.beg.amuse
+	made it through insert new game query.
+	case 'newGame': exit with: {"id":331,"gameCode":"half.beg.amuse","turn":2020,"population":400,"gameState":"in progress","chair":"Tim","config":"albacore","reason":null}
+[joinGame].......2018-08-18 15:23:48 (PDT)
+	Tim does not already exist in half.beg.amuse
+	joinGame query: INSERT INTO players (playerName, gameCode, onTurn, balance) VALUES (:playerName, :gameCode, :onTurn, :balance)
+	joinGame exit with: {"newPlayer":true}
+	Tim caught 22 fish during 2020
+... [newTurn] updating from 2020
