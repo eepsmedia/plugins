@@ -77,7 +77,7 @@ nhanes.CODAPconnect = {
         const attributeExistenceResult = await codapInterface.sendRequest(tMessage);
 
         if (attributeExistenceResult.success) {
-            console.log("Attribute " + a.name + " exists as " + a.title);
+            //  console.log("Attribute " + a.name + " exists as " + a.title);
         } else {
             console.log("Need to create attribute " + a.name + " as " + a.title);
 

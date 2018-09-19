@@ -17,15 +17,24 @@
  *
  */
 
-/**
- * Created by IntelliJ IDEA.
- * User: tim
- * Date: 8/21/18
- * Time: 09:43
- */
+//  echo print_r($_SERVER, true);       //  un-comment to find the actual pathname of the server
 
+$whence  = $_REQUEST['whence'];
 
-$theCredentialsFilename = dirname( __FILE__, 4 ) . '/cred/nhanesCred.php';
+$credentialFileNames = [
+    "local" => "/Applications/MAMP/cred/nhanesCred.php",
+    "eeps" => "/home1/denofinq/cred/nhanesCred.php"
+];
+
+$thisFileName = $credentialFileNames[$whence];
+
+//  echo "Credential file: $thisFileName <br>";
+
+include_once($thisFileName);
+
+$user = $credentials[$whence]["user"];
+$pass = $credentials[$whence]["pass"];
+$dbname = $credentials[$whence]["dbname"];
 
 
 ?>

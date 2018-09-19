@@ -24,7 +24,7 @@
  * Time: 09:27
  */
 
-include 'nhanes.phpFileLocations.php';     //  tells us where the credentials are
+include 'nhanes.establishCredentials.php';     //  tells us where the credentials are
 
 try {
     include $theCredentialsFilename;
@@ -59,11 +59,6 @@ include '../common/TE_DBCommon.php';
 
 //  ------------    Connected ------------
 
-$whence  = $_REQUEST['whence'];
-
-$user = $credentials[$whence]["user"];
-$pass = $credentials[$whence]["pass"];
-$dbname = $credentials[$whence]["dbname"];
 
 //  reportToFile('Creds : ' . print_r($credentials, true) . " REQ: " . print_r($_REQUEST, true));
 error_log('CRED TEST: whence '. $whence ." user ". $user . " pass ".$pass." dbname ".$dbname);
