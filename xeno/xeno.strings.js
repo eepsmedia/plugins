@@ -50,28 +50,28 @@ XS = {
         trainingRadioButtonLabel: "training",
         oneByOneRadioButtonLabel: "one by one",
         autoRadioButtonLabel: "auto",
-        howManyCasesLabel: "how many cases?",
-        maladyMenuLabel: "malady",
-        yourDiagnosisText: "your diagnosis:",
-        howManyCasesAutoLabel: "how many cases?",
-        autoResultDisplay: "Auto-diagnosis results",
+        howManyCasesLabel : "how many cases?",
+        maladyMenuLabel : "malady",
+        yourDiagnosisText : "your diagnosis:",
+        howManyCasesAutoLabel : "how many cases?",
+        autoResultDisplay : "Auto-diagnosis results",
 
-        makeNewCasesButtonText: "make new cases",
-        runTreeButtonText: "run tree",
+        makeNewCasesButtonText : "make new cases",
+        runTreeButtonText : "run tree",
 
-        blue: "blue",
-        pink: "pink",
-        purple: "purple",
-        orange: "orange",
-        well: "well",
-        sick: "sick",
-        true: "T",
-        false: "F",
-        positive: "P",
-        negative: "N",
-        clinic: "clinic",
+        blue : "blue",
+        pink : "pink",
+        purple : "purple",
+        orange : "orange",
+        well : "well",
+        sick : "sick",
+        true : "T",
+        false : "F",
+        positive : "P",
+        negative : "N",
+        clinic : "clinic",
 
-        getSingleDiagnosisReport: function (iDiag, iTF, iPN) {
+        getSingleDiagnosisReport : function(iDiag, iTF, iPN) {
             let out = "";
             if (iTF === xeno.strings.true) {
                 out = "Correct! The previous case was "
@@ -83,7 +83,7 @@ XS = {
             return out + "<b>Next case:</b>  ";
         },
 
-        creatureString: function (iValues) {
+creatureString : function (iValues) {
             return iValues.hair + "&nbsp;hair, " +
                 iValues.eyes + "&nbsp;eyes, " +
                 iValues.antennae + "&nbsp;antennae, " +
@@ -92,7 +92,7 @@ XS = {
                 "weight:&nbsp;" + iValues.weight;
         },
 
-        dataContextSetupObject: {
+        dataContextSetupObject : {
             name: xeno.constants.xenoDataSetName,
             title: xeno.constants.xenoDataSetTitle,
             description: 'our creatures',
@@ -168,28 +168,28 @@ XS = {
         trainingRadioButtonLabel: "Ausbildung",
         oneByOneRadioButtonLabel: "Stück für Stück",
         autoRadioButtonLabel: "automatisch",
-        howManyCasesLabel: "Wieviele Fälle?",
-        maladyMenuLabel: "Krankheit",
-        yourDiagnosisText: "Ihre Diagnose:",
-        howManyCasesAutoLabel: "Wieviele Fälle?",
-        autoResultDisplay: "Ergebnisanzeige",
+        howManyCasesLabel : "Wieviele Fälle?",
+        maladyMenuLabel : "Krankheit",
+        yourDiagnosisText : "Ihre Diagnose:",
+        howManyCasesAutoLabel : "Wieviele Fälle?",
+        autoResultDisplay : "Ergebnisanzeige",
 
-        makeNewCasesButtonText: "machen neue Fälle",
-        runTreeButtonText: "benutze Baum",
+        makeNewCasesButtonText : "machen neue Fälle",
+        runTreeButtonText : "benutze Baum",
 
-        blue: "blaue",
-        pink: "rosa",
-        purple: "lila",
-        orange: "orange",
-        well: "gesund",
-        sick: "krank",
-        true: "T",
-        false: "F",
-        positive: "P",
-        negative: "N",
-        clinic: "Klinik",
+        blue : "blaue",
+        pink : "rosa",
+        purple : "lila",
+        orange : "orange",
+        well : "gesund",
+        sick : "krank",
+        true : "T",
+        false : "F",
+        positive : "P",
+        negative : "N",
+        clinic : "Klinik",
 
-        getSingleDiagnosisReport: function (iDiag, iTF, iPN) {
+        getSingleDiagnosisReport : function(iDiag, iTF, iPN) {
             let out = "";
             if (iTF === xeno.strings.true) {
                 out = "Richtig! Der vorherige Fall war "
@@ -201,7 +201,7 @@ XS = {
             return out + "<b>Nächste Fall:</b>  ";
         },
 
-        creatureString: function (iValues) {
+        creatureString : function (iValues) {
             return iValues.hair + "&nbsp;Haar, " +
                 iValues.eyes + "&nbsp;Augen, " +
                 iValues.antennae + "&nbsp;Antennen, " +
@@ -210,7 +210,7 @@ XS = {
                 "Gewicht:&nbsp;" + iValues.weight;
         },
 
-        dataContextSetupObject: {
+        dataContextSetupObject : {
             name: xeno.constants.xenoDataSetName,
             title: "Kreaturen",
             description: 'unsere Kreaturen',
@@ -226,7 +226,7 @@ XS = {
                     attrs: [ // note how this is an array of objects.
                         {
                             name: "health", type: 'categorical', description: "tatsächliche Gesundheit",
-                            title: "Gesundheit",
+                            title : "Gesundheit",
                             colormap: {
                                 "sick": xeno.constants.sickColor,      //  maps to positive
                                 "well": xeno.constants.wellColor       //  maps to negative
@@ -237,7 +237,7 @@ XS = {
                         /*  Actual creature attributes. The predictors. */
                         {
                             name: "hair", type: 'categorical', description: "Haarfarbe",
-                            title: "Haare",
+                            title : "Haare",
                             colormap: {
                                 "blue": "cornflowerblue",
                                 "pink": "hotpink"
@@ -245,36 +245,25 @@ XS = {
                         },
                         {
                             name: "eyes", type: 'categorical', description: "Augenfarbe",
-                            title: "Augen",
+                            title : "Augen",
                             colormap: {
                                 "purple": "#60a",
                                 "orange": "orange"
                             }
                         },
-                        {
-                            name: "antennae", title: "Antennen",
-                            type: 'categorical', precision: 0, description: "Antennenanzahl"
-                        },
-                        {
-                            name: "tentacles", title: "Tentakeln", type: 'categorical',
-                            precision: 0, description: "Tentakelnanzahl"
-                        },
+                        {name: "antennae", title : "Antennen",
+                            type: 'categorical', precision: 0, description: "Antennenanzahl"},
+                        {name: "tentacles", title : "Tentakeln", type: 'categorical',
+                            precision: 0, description: "Tentakelnanzahl"},
                         {
                             name: "height",
-                            title: "Größe",
+                            title : "Größe",
                             type: 'numeric',
                             precision: 2,
                             units: "fribbets",
                             description: "Größe in Fribbeln"
                         },
-                        {
-                            name: "weight",
-                            title: "Gewicht",
-                            type: 'numeric',
-                            precision: 2,
-                            units: "lunk",
-                            description: "Gewicht in Lunken"
-                        },
+                        {name: "weight", title : "Gewicht", type: 'numeric', precision: 2, units: "lunk", description: "Gewicht in Lunken"},
 
                         /*
                             Various attributes that are NOT predictors
@@ -288,7 +277,7 @@ XS = {
                             name: "analysis", title: "Analyse", type: 'categorical',
                             description: "Wie genau war die Diagnose? TP = Wahr Positiv, FN = Falsch Negativ, usw."
                         },
-                        {name: "source", title: "Quelle", type: 'categorical', description: "Woher kam dieser Fall?"}
+                        {name: "source", title : "Quelle", type: 'categorical', description: "Woher kam dieser Fall?"}
 
 
                     ]
