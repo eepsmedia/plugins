@@ -16,7 +16,7 @@
  *
  */
 
-body, #summary, #atts  {
+body, #summary, #atts, #cases  {
     margin : 0px;
     /*height : 320px;*/
     font-family: 'IBM Plex Sans Condensed', sans-serif;font-size: 16px;
@@ -50,7 +50,7 @@ h1 {
     width : 100%;
 }
 
-#sampleSizeInput {
+#sampleSizeInput, #maxAgeBox, #minAgeBox {
     font-family: 'Rokkitt',sans-serif;font-size: 16px;
     font-weight: 700;
     width: 3.5em;

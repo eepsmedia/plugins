@@ -48,7 +48,7 @@ nhanes.DBconnect = {
         }
     },
 
-    getCasesFromDB : async function(iAtts) {
+    getCasesFromDB : async function(iAtts, iAgeClauses) {
         const tSampleSize = document.getElementById("sampleSizeInput").value;
 
         let tAttNames = [];
@@ -66,6 +66,8 @@ nhanes.DBconnect = {
                 }
             }
         });   //  iAtts is an array, we need a comma-separated string
+
+        tJoinSet = tJoinSet.concat(iAgeClauses);
 
         try {
             const theCommands = {

@@ -28,11 +28,16 @@ class Attribute {
         this.queryName = "t"+ this.groupNumber + "." + this.name;
         this.decoderTable = null;
         this.description = iRecord.DESCRIPTION;
+        this.units = iRecord.UNITS;
         this.useOriginalValue = true;
         this.chosen = Boolean(Number(iRecord.DEFCHECK));
         this.displayMe = Boolean(Number(iRecord.DEFSHOW));
         this.hasCheckbox = this.displayMe;
         this.checkboxID = this.name + "Checkbox";
+
+        if (this.units) {
+            this.description += ", " + this.units;
+        }
 
         this.title = iRecord.NAMEOUT;
         if (!this.title) {

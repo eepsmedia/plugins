@@ -35,7 +35,9 @@ let nhanes = {
     map: null,
 
     freshState: {
-        sampleNumber: 1
+        sampleNumber: 1,
+        minAge : null,
+        maxAge : null
     },
 
     initialize: async function () {
@@ -49,6 +51,10 @@ let nhanes = {
         $('#linkToAttributePanel').click(
             () => {
                 $('#tabs').tabs("option", "active", 1);     //  1 is the index of the attribute panel
+            });
+        $('#linkToCasesPanel').click(
+            () => {
+                $('#tabs').tabs("option", "active", 2);     //  2 is the index of the filter panel
             });
 
     },

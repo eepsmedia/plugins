@@ -98,9 +98,41 @@ nhanes.ui = {
         return out;
     },
 
+    getCaseFilterInformation : function() {
+        const tMinAge = document.getElementById("minAgeBox").value;
+        const tMaxAge = document.getElementById("maxAgeBox").value;
+
+        let agePhrase = "";
+        let whereClauseArray = [];
+
+        if (tMinAge) {
+            if (tMaxAge) {
+                agePhrase = "with ages between " + tMinAge + " and " + tMaxAge;
+                whereClauseArray.push("RIDAGEYR >= " + tMinAge);
+                    whereClauseArray.push( "RIDAGEYR <= " + tMaxAge);
+            } else {
+                agePhrase = "age " + tMinAge + " and older";
+                whereClauseArray.push("RIDAGEYR >= " + tMinAge);
+
+            }
+
+        } else {
+            if (tMaxAge) {
+                agePhrase = "up to age " + tMaxAge;
+                whereClauseArray.push("RIDAGEYR <= " + tMaxAge);
+
+            } else {
+                agePhrase = "of all ages";
+            }
+        }
+
+        return { agePhrase : agePhrase, whereClauseArray : whereClauseArray };
+    },
 
     refreshSampleSummary: function () {
         const tSampleSize = document.getElementById("sampleSizeInput").value;
+
+        let tAgeFilter = this.getCaseFilterInformation();
 
         let out = "";
         let aList = [];
@@ -116,7 +148,8 @@ nhanes.ui = {
 
         out = "<p>When you press the button, you will get "
             + (tSampleSize == 1 ? "one random American" : "a random sample of " + tSampleSize + " Americans")
-            + " from the 2013 "
+            + " " + tAgeFilter.agePhrase
+            + " from the 2003 "
             + "<a href='https://www.cdc.gov/nchs/nhanes/index.htm' target='_blank'>NHANES</a>.</p> "
             + "<p>The variables you will get are: "
             + "<b>" + aList.join("</b>, <b>") + "</b>.</p>";

@@ -79,6 +79,7 @@
     <ul>
         <li><a href="#summary">summary</a></li>
         <li><a href="#atts">attributes</a></li>
+        <li><a href="#cases">cases</a></li>
     </ul>
 
 
@@ -86,6 +87,8 @@
         <div id="sampleSummaryDiv"></div>
         <p>To change which attributes you are collecting, click the <b>attributes</b> tab above
             or <a id="linkToAttributePanel" href="#atts;return false;">click this link</a>.</p>
+        <p>To restrict which cases you are collecting, click the <b>cases</b> tab above
+            or <a id="linkToCasesPanel" href="#atts;return false;">click this link</a>.</p>
     </div>
 
 
@@ -98,6 +101,15 @@
             <div class="attributeGroupDiv" onclick="nhanes.ui.toggleAttributeGroupOpen(3)"></div>
             <div class="attributeGroupDiv" onclick="nhanes.ui.toggleAttributeGroupOpen(4)"></div>
             <div class="attributeGroupDiv" onclick="nhanes.ui.toggleAttributeGroupOpen(5)"></div>
+        </div>
+    </div>
+
+
+    <div id="cases">
+        <p>You can restrict which cases you get:</p>
+        <div id="chooseCasesDiv">
+            <input type="number" min="0" id="minAgeBox" onchange="nhanes.ui.updateWholeUI()">
+            ≤ AGE ≤ <input type="number" min="0" id="maxAgeBox" onchange="nhanes.ui.updateWholeUI()">
         </div>
     </div>
 

@@ -19,9 +19,10 @@
 nhanes.userActions = {
 
     pressGetCasesButton : async function() {
+        const ageClauseArray = nhanes.ui.getCaseFilterInformation().whereClauseArray;
         console.log("get cases!");
         let oData = [];
-        let tData = await nhanes.DBconnect.getCasesFromDB(nhanes.ui.getArrayOfChosenAttributes());
+        let tData = await nhanes.DBconnect.getCasesFromDB(nhanes.ui.getArrayOfChosenAttributes(), ageClauseArray );
 
         //  okay, tData is an Array of objects whose keys are the variable names.
         //  now we have to translate names and values...

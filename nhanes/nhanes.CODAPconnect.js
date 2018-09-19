@@ -89,7 +89,8 @@ nhanes.CODAPconnect = {
                     {
                         "name": a.title,
                         "title": a.title,
-                        "description": a.description
+                        "description": a.description,
+                        "unit" : a.units
                     }
                 ]
             };
