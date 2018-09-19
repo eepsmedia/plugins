@@ -35,7 +35,7 @@ var xenoConnect = {
     initialize: function (iCallback) {
         codapInterface.init(this.iFrameDescriptor, null).then(
             function () {
-                pluginHelper.initDataSet(this.arborDataContextSetupString);
+                pluginHelper.initDataSet(this.xenoDataContextSetupObject);
 
                 //  restore the state if possible
 
@@ -51,7 +51,7 @@ var xenoConnect = {
 
                 codapInterface.on(
                     'notify',
-                    'dataContextChangeNotice[' + xeno.constants.arborDataSetName + ']',
+                    'dataContextChangeNotice[' + xeno.constants.xenoDataSetName + ']',
                     'updateCases',
                     xenoConnect.processUpdateCaseNotification.bind(this)
                 );
@@ -109,16 +109,16 @@ var xenoConnect = {
         }
     },
 
-    createArborItems: function (iValues) {
+    createXenoItems: function (iValues) {
 
         this.casesToProcess = iValues.length;
         this.casesProcessed = [];
 
         iValues = pluginHelper.arrayify(iValues);
-        console.log("Arbor ... createArborItems with " + iValues.length + " case(s)");
+        console.log("Xeno ... createXenoItems with " + iValues.length + " case(s)");
         pluginHelper.createItems(
             iValues,
-            xeno.constants.arborDataSetName
+            xeno.constants.xenoDataSetName
         ); // no callback.
     },
 
@@ -127,77 +127,9 @@ var xenoConnect = {
         name: 'xeno',
         title: 'Arbor Xenobiological Services',
         dimensions: {width: 512, height: 180},
-        preventDataContextReorg: false              //  todo: figure out why this seems not to work!
+        preventDataContextReorg: false
     },
 
-
-    arborDataContextSetupString: {
-        name: xeno.constants.arborDataSetName,
-        title: xeno.constants.arborDataSetTitle,
-        description: 'our creatures',
-        collections: [
-            {
-                name: xeno.constants.arborCollectionName,
-                labels: {
-                    singleCase: "creature",
-                    pluralCase: "creatures",
-                    setOfCasesWithArticle: "list of creatures"
-                },
-
-                attrs: [ // note how this is an array of objects.
-                    {
-                        name: "health", type: 'categorical', description: "actual health",
-                        colormap: {
-                            "sick": xeno.constants.sickColor,      //  maps to positive
-                            "well": xeno.constants.wellColor       //  maps to negative
-                        },
-                        isDependent: true
-                    },
-
-                    /*  Actual creature attributes. The predictors. */
-                    {
-                        name: "hair", type: 'categorical', description: "hair color",
-                        colormap: {
-                            "blue": "cornflowerblue",
-                            "pink": "hotpink"
-                        }
-                    },
-                    {
-                        name: "eyes", type: 'categorical', description: "eye color",
-                        colormap: {
-                            "purple": "#60a",
-                            "orange": "orange"
-                        }
-                    },
-                    {name: "antennae", type: 'categorical', precision: 0, description: "number of antennae"},
-                    {name: "tentacles", type: 'categorical', precision: 0, description: "number of tentacles"},
-                    {
-                        name: "height",
-                        type: 'numeric',
-                        precision: 2,
-                        units: "fribbets",
-                        description: "height in fribbets"
-                    },
-                    {name: "weight", type: 'numeric', precision: 2, units: "lunk", description: "weight in lunk"},
-
-                    /*
-                        Various attributes that are NOT predictors
-                     */
-
-                    {
-                        name: "diagnosis", title: "diagnosis", type: 'categorical',
-                        description: "what you thought the health would be, based on the other data"
-                    },
-                    {
-                        name: "analysis", title: "analysis", type: 'categorical',
-                        description: "How accurate was the diagnosis? TP = True Positive, FN = False Negative, etc."
-                    },
-                    {name: "source", type: 'categorical', description: "where did this case come from?"}
-
-
-                ]
-            }
-        ]
-    }
+    xenoDataContextSetupObject : {},
 
 };
