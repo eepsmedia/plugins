@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 11/21/17.
+ 
+ 
+ ==========================================================================
+xeno in xeno
+
+    Author:   Tim Erickson
+
+Copyright (c) 2018 by The Concord Consortium, Inc. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<!--
+    ARBOR IMPORTS:
+    GLOBAL: http://www.eeps.com/dsg/xeno/xeno.html               (Tree:      http://www.eeps.com/dsg/plugins/baum/baum.html                 )
+                                                            (Workshop:  http://www.eeps.com/dsg/arbor/arborWorkshop.html       )
+    LOCAL:  http://localhost:8888/plugins/xeno/xeno.html      (Tree:      http://localhost/~tim/plugins/baum/baum.html    )
+
+    -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Arbor</title>
+
+    <!--Stylesheets-->
+    <link rel='stylesheet' type='text/css' href='xeno.css'/>
+    <link rel="stylesheet" type="text/css" href="common/jquery-ui.css">
+
+
+    <!--From library-->
+    <script src="common/jquery-2.1.4.min.js" language="javascript"></script>
+    <script src="common/jquery-ui-1.11.4.min.js" language="javascript"></script>
+    <script src="common/iframe-phone.js" language="javascript"></script>
+    <script src="common/codapInterface.js" language="javascript"></script>
+    <script src="common/pluginHelper.js" language="javascript"></script>
+    <script src="common/TEEUtils.js" language="javascript"></script>
+
+    <!--Javascript code-->
+    <script src="xeno.js" language="javascript"></script>
+    <script src="xenoConnect.js" language="javascript"></script>
+    <script src="xeno.model.js" language="javascript"></script>
+
+</head>
+<body>
+
+<div id="arborMain">
+    <div class="modePanel gameControl">
+        <input class="modeControl" type="radio" name="arborMode" value="training" id="trainingRadioButton"
+               onchange="xeno.controlChange()" checked>
+        <label for="trainingRadioButton">training</label>
+        <br>
+        <input class="modeControl" type="radio" name="arborMode" value="one-by-one" id="one-by-oneRadioButton" onchange="xeno.controlChange()">
+        <label for="one-by-oneRadioButton">one by one</label>
+        <br>
+        <input class="modeControl" type="radio" name="arborMode" value="auto" id="autoRadioButton" onchange="xeno.controlChange()">
+        <label for="trainingRadioButton">auto</label>
+<hr>
+        <label for="maladyMenu">scenario</label>
+        <br>
+        <select id="maladyMenu" onchange="xeno.maladyChange()"></select>
+    </div>
+
+    <div id="arborScore" class="gameControl">
+
+    </div>
+
+    <div id="trainingControlPanel" class="controlCluster">
+        <div class="gameControl trainingControl">
+            <label for="howManyCases">How many cases?</label>
+            <input type="number" id="howManyCases" value=10 onchange="xeno.controlChange()">
+        </div>
+        <div class="gameControl trainingControl">
+            <input type="button" onclick="xeno.makeNewCases()" value="make new cases">
+        </div>
+    </div>
+
+    <!--DIAGNOSE ONE BY ONE-->
+
+    <div id="oneByOneControlPanel" class="controlCluster">
+        <div class="gameControl oneByOneControl" id="caseDisplay">
+            Case display
+        </div>
+        <div class="gameControl oneByOneControl">
+            Your diagnosis:
+            <input type="button" onclick="xeno.manualDiagnose('sick')" value="sick">
+            <input type="button" onclick="xeno.manualDiagnose('well')" value="well">
+        </div>
+    </div>
+
+    <!--AUTO-DIAGNOSE (with tree)-->
+
+    <div id="autoControlPanel" class="controlCluster">
+        <div class="gameControl autoControl">
+            <label for="howManyAutoCases">How many cases?</label>
+            <input type="number" id="howManyAutoCases" value=10 onchange="xeno.controlChange()">
+            <input type="button" onclick="xeno.autoDiagnose()" value="run tree">
+        </div>
+        <div class="gameControl autoControl" id="autoResultDisplay">
+            Auto-diagnosis results display
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        xeno.initialize();
+    }
+</script>
+
+</html>
