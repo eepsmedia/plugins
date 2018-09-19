@@ -31,7 +31,7 @@ body {
     margin : 0;
 }
 
-#arborMain {
+#xenoMain {
     background-color : white;
     display : grid;
     grid-template-columns : 120px 80px 1fr;
@@ -39,7 +39,7 @@ body {
     align-items: stretch;
 }
 
-#arborScore {
+#xenoScore {
     background-color: cornflowerblue;
     align-items: center;
     font-size: 24pt;

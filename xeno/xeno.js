@@ -29,6 +29,10 @@ limitations under the License.
 var xeno = {
     initialize: function () {
 
+        xeno.setLanguageFromURL(  );
+
+        //  called after connect, so xeno.state is set
+
         var finishInit = function () {
             //  set UI values based on restored xeno.state
 
@@ -44,21 +48,46 @@ var xeno = {
 
         }.bind(this);
 
-        xenoConnect.initialize(finishInit);
+        xenoConnect.initialize(finishInit); //  also sets xeno.state
         /*
                 xeno.state.score = xeno.constants.initialScore;
                 xeno.state.mode = "training";
         */
 
+
     },
+
+    setLanguageFromURL : function() {
+        let theLang = xeno.constants.kInitialLanguage;
+
+        const params = new URLSearchParams(document.location.search.substring(1));
+        const lang = params.get("lang");
+
+        if (lang) {
+            theLang = lang;
+        }
+        xeno.setLanguage(theLang);
+    },
+
+    /**
+     * Set the UI language
+     * @param iCode     two-letter language code, e.g., en, de, es.
+     */
+    setLanguage : function( iCode ) {
+        xeno.language = iCode;       //  put the thing in here to choose
+        xeno.strings = XS[iCode];       //  XS = "xeno strings"
+        XS.setBasicStrings();           //  replace strings in the UI
+
+        xenoConnect.xenoDataContextSetupObject = xeno.strings.dataContextSetupObject;
+    },
+
 
     setControlsForScenarioStart: function () {
         document.getElementById(xeno.state.mode + "RadioButton").checked = true;
-        document.getElementById("arborScore").innerHTML = xeno.state.score;
+        document.getElementById("xenoScore").innerHTML = xeno.state.score;
 
         var tAutoResultDisplay = document.getElementById("autoResultDisplay");
         tAutoResultDisplay.innerHTML = xeno.constants.autoResultInitialText;
-
     },
 
     maladyChange: function () {
@@ -80,7 +109,7 @@ var xeno = {
     controlChange: function () {
         var tAutoDiagnoseCaseNumberBox = document.getElementById("howManyAutoCases");
         var tTrainingCaseNumberBox = document.getElementById("howManyCases");
-        xeno.state.mode = $('input[name=arborMode]:checked').val();  //  "training" or "one by one"
+        xeno.state.mode = $('input[name=xenoMode]:checked').val();  //  "training" or "one by one"
         xeno.state.howManyCases = tTrainingCaseNumberBox.value;
         xeno.state.howManyAutoCases = tAutoDiagnoseCaseNumberBox.value;
         xeno.updateScore(0);
@@ -133,7 +162,7 @@ var xeno = {
 
     updateScore: function (iDeltaScore) {
         xeno.state.score += iDeltaScore;
-        document.getElementById("arborScore").innerHTML = xeno.state.score;
+        document.getElementById("xenoScore").innerHTML = xeno.state.score;
     },
 
     getAnArrayOfCaseValues: function (n, iSource) {
@@ -155,29 +184,27 @@ var xeno = {
 
         var theCaseValues = this.getAnArrayOfCaseValues(n, "training");
         xeno.updateScore(-n);
-        xenoConnect.createArborItems(theCaseValues);
+        xenoConnect.createXenoItems(theCaseValues);
     },
 
+    /**
+     *  Called when the user presses a [single] diagnosis button
+     * @param iDiag  "sick" or "well" in the current language
+     */
     manualDiagnose: function (iDiag) {
         xeno.state.currentCase.source = "clinic";
         xeno.state.currentCase.diagnosis = iDiag;
 
+        const tTrueOrFalse = (iDiag === xeno.state.currentCase.health) ? xeno.strings.true : xeno.strings.false;
+        var tPositiveOrNegative = (xeno.state.currentCase.health) === xeno.strings.sick ? xeno.strings.positive : xeno.strings.negative;
 
-        var tActualState = (xeno.state.currentCase.health) === "sick" ? "P" : "N";
+        this.state.previousSingleDiagnosisReport = xeno.strings.getSingleDiagnosisReport(iDiag, tTrueOrFalse, tPositiveOrNegative);
 
-        if (iDiag === xeno.state.currentCase.health) {
-            xeno.state.currentCase.analysis = "T" + tActualState;
-            this.state.previousSingleDiagnosisReport = "Correct! The previous case was "
-                + xeno.state.currentCase.health + ".<hr><b>Next case:</b>  ";
-        } else {
-            xeno.state.currentCase.analysis = "F" + tActualState;
-            this.state.previousSingleDiagnosisReport = "Wrong! The previous case was "
-                + xeno.state.currentCase.health + ".<hr><b>Next case:</b>  ";
-        }
+        xeno.state.currentCase.analysis = tTrueOrFalse + tPositiveOrNegative;
 
         xeno.scoreFromPerformance(xeno.state.currentCase.analysis);
 
-        xenoConnect.createArborItems(xeno.state.currentCase);   //  send CODAP the clinic data
+        xenoConnect.createXenoItems(xeno.state.currentCase);   //  send CODAP the clinic data
 
         //  next case
 
@@ -194,7 +221,7 @@ var xeno = {
         var theCaseValues = this.getAnArrayOfCaseValues(xeno.state.howManyAutoCases, "auto");
 
         console.log("AUTODIAGNOSE: We have " + theCaseValues.length + " objects that need diagnosis!");
-        xenoConnect.createArborItems(theCaseValues);
+        xenoConnect.createXenoItems(theCaseValues);
     },
 
     displayCurrentCase: function (iPrefix) {
@@ -232,6 +259,7 @@ var xeno = {
         }
     },
 
+    language : 'en',        //  by default
 
     freshState: {
         previousSingleDiagnosisReport: "",
@@ -244,12 +272,13 @@ var xeno = {
     },
 
     constants: {
-        version: '001d',
+        version: '001e',
+        kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',
-        arborDataSetName: "creatures",
-        arborDataSetTitle: "creatures",
-        arborCollectionName: "creatures",
+        xenoDataSetName: "creatures",
+        xenoDataSetTitle: "creatures",
+        xenoCollectionName: "creatures",
         autoResultInitialText: "Auto-diagnosis results display",
         initialScore: 200,
 

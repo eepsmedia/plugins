@@ -45,12 +45,7 @@ xeno.model = {
     },
 
     creatureString: function (iValues) {
-        return iValues.hair + "&nbsp;hair, " +
-            iValues.eyes + "&nbsp;eyes, " +
-            iValues.antennae + "&nbsp;antennae, " +
-            iValues.tentacles + "&nbsp;tentacles, " +
-            "height:&nbsp;" + iValues.height + ", " +
-            "weight:&nbsp;" + iValues.weight;
+        return xeno.strings.creatureString(iValues);
     },
 
     makeMaladyMenuGuts : function() {
@@ -64,10 +59,10 @@ xeno.model = {
 
     wellCreature : {
         hair: function () {
-            return TEEUtils.pickRandomItemFrom(["pink", "blue"]);
+            return TEEUtils.pickRandomItemFrom([xeno.strings.pink, xeno.strings.blue]);
         },
         eyes: function () {
-            return TEEUtils.pickRandomItemFrom(["purple", "orange"]);
+            return TEEUtils.pickRandomItemFrom([xeno.strings.purple, xeno.strings.orange]);
         },
         antennae: function () {
             return TEEUtils.pickRandomItemFrom([6, 6, 6, 7, 8]);
@@ -91,7 +86,7 @@ xeno.model = {
 
         ague: {
             health: function () {
-                return (this.hair === "blue" ? "well" : "sick");
+                return (this.hair === xeno.strings.blue ? xeno.strings.well : xeno.strings.sick);
             }
         },
 
@@ -99,9 +94,9 @@ xeno.model = {
 
         botulosis: {
             health: function () {
-                out = "well";
-                if (this.eyes === "purple" && this.hair === "pink") {
-                    out = "sick";
+                out = xeno.strings.well;
+                if (this.eyes === xeno.strings.purple && this.hair === xeno.strings.pink) {
+                    out = xeno.strings.sick;
                 }
                 return out;
             }
@@ -111,7 +106,7 @@ xeno.model = {
 
         cartis: {
             health: function () {
-                return (this.tentacles === 6 ? "well" : "sick");
+                return (this.tentacles === 6 ? xeno.strings.well : xeno.strings.sick);
             }
         },
 
@@ -119,7 +114,7 @@ xeno.model = {
 
         dengueso: {
             health: function () {
-                return (this.weight < 202.5 ? "sick" : "well");
+                return (this.weight < 202.5 ? xeno.strings.sick : xeno.strings.well);
             }
         },
 
@@ -127,10 +122,10 @@ xeno.model = {
 
         eponitis: {
             health: function () {
-                var out = "well";
+                var out = xeno.strings.well;
 
                 if (this.antennae === 8) {
-                    out = (this.weight > 211.0) ? "well" : "sick";
+                    out = (this.weight > 211.0) ? xeno.strings.well : xeno.strings.sick;
                 }
                 return out;
             }
@@ -140,12 +135,12 @@ xeno.model = {
 
         gorrux: {
             health: function () {
-                var out = "well";
+                var out = xeno.strings.well;
 
-                if (this.eyes === "orange") {
-                    out = (this.height > 125.0) ? "well" : "sick";
+                if (this.eyes === xeno.strings.orange) {
+                    out = (this.height > 125.0) ? xeno.strings.well : xeno.strings.sick;
                 } else {
-                    out = (this.height > 110.0) ? "well" : "sick";
+                    out = (this.height > 110.0) ? xeno.strings.well : xeno.strings.sick;
                 }
                 return out;
             }
@@ -155,12 +150,12 @@ xeno.model = {
 
         sumonoma: {
             health: function () {
-                var tHealth = "well";
+                var tHealth = xeno.strings.well;
 
                 var tObese = this.weight - 212;
 
                 if (Math.random() * 40 < tObese) {
-                    tHealth = "sick";
+                    tHealth = xeno.strings.sick;
                 }
                 return tHealth;
             }
@@ -174,14 +169,14 @@ xeno.model = {
 
                 //  basically, 7 OR orange indicates sick.
 
-                var tHealth = (this.antennae === 7 || this.eyes === "orange") ? "sick" : "well";
+                var tHealth = (this.antennae === 7 || this.eyes === xeno.strings.orange) ? xeno.strings.sick : xeno.strings.well;
 
                 if (this.antennae === 7 && Math.random() < 0.1) {  //  some of the sevens are actually well.
-                        tHealth = "well";
+                        tHealth = xeno.strings.well;
                 }
 
-                if (this.eyes !== "orange" && Math.random() < 0.1) {    //  some of the not-oranges are sick.
-                    tHealth = "sick";
+                if (this.eyes !== xeno.strings.orange && Math.random() < 0.1) {    //  some of the not-oranges are sick.
+                    tHealth = xeno.strings.sick;
                 }
 
                 return tHealth;
