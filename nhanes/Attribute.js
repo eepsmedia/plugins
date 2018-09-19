@@ -29,8 +29,8 @@ class Attribute {
         this.decoderTable = null;
         this.description = iRecord.DESCRIPTION;
         this.useOriginalValue = true;
-        this.chosen = Boolean(iRecord.DEFCHECK);
-        this.displayMe = Boolean(iRecord.DEFSHOW);
+        this.chosen = Boolean(Number(iRecord.DEFCHECK));
+        this.displayMe = Boolean(Number(iRecord.DEFSHOW));
         this.hasCheckbox = this.displayMe;
         this.checkboxID = this.name + "Checkbox";
 
