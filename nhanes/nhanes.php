@@ -24,9 +24,11 @@
  * Time: 09:27
  */
 
-include 'nhanes.establishCredentials.php';     //  tells us where the credentials are
+include 'nhanes.establishCredentials.php';     //  defines the credentials we need for mySQL
 
-try {
+/*
+ *
+ try {
     include $theCredentialsFilename;
 } catch (Exception $e) {
     reportToFile('Problem getting the credentials: '. $e->getMessage());
@@ -38,7 +40,7 @@ if (file_exists($theCredentialsFilename)) {
     reportToFile("the credentials file, " . $theCredentialsFilename . ", does not exist!");
 
 }
-
+*/
 
 //  reportToFile(print_r("CRED LOCAL = " . $credentials['local'], true));
 
