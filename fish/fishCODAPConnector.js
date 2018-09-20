@@ -76,10 +76,10 @@ fish.CODAPConnector = {
             game: fish.state.gameCode
         };
 
-        const localizedTurn = fish.localize.localizeValuesObject(aTurn);
+        //  const localizedTurn = fish.localize.localizeValuesObject(aTurn);
 
-        await pluginHelper.createItems(localizedTurn, fish.constants.kFishDataSetName);
-        return localizedTurn;
+        await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
+        return aTurn;   //  localizedTurn
     },
 
     /**
@@ -96,10 +96,11 @@ fish.CODAPConnector = {
         try {
             const tTurnArray = await fish.phpConnector.getOneTurn(iYear);
             const tTurn = tTurnArray[0];
+
             const tValues = {
-                "unitPrice": tTurn.unitPrice,
-                "income": tTurn.income,
-                "after": tTurn.balanceAfter    //  note different name
+                'unitPrice' : tTurn.unitPrice,
+                'income' : tTurn.income,
+                'after' : tTurn.balanceAfter    //  note different name
             };
             console.log("Fish ... updateFishItemInCODAP() for " + iYear + " because: " + iWhy);
 
@@ -107,7 +108,8 @@ fish.CODAPConnector = {
 
             //  get the item id of the relevant case:
 
-            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemSearch[year==" + iYear + "]";
+            let tFilterString = 'year==' + iYear;
+            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemSearch[" + tFilterString + "]";
             let tMessage = {action: "get", resource: tResource};
             const tItemSearchResult = await codapInterface.sendRequest(tMessage);
 
@@ -125,7 +127,7 @@ fish.CODAPConnector = {
             //      now do the update
 
             tResource = "dataContext[" + fish.constants.kFishDataSetName + "].item[" + theItemID + "]";
-            tMessage = {action: "update", resource: tResource, values: fish.localize.localizeValuesObject(tValues)};
+            tMessage = {action: "update", resource: tResource, values: tValues};    //  fish.localize.localizeValuesObject(tValues)};
             const tUpdateResult = await codapInterface.sendRequest(tMessage);
 
             if (!tUpdateResult.success) {
@@ -193,7 +195,7 @@ fish.CODAPConnector = {
         preventDataContextReorg: false              //  todo: figure out why this seems not to work!
     },
 
-    historicalDataContextSetupStrings : {},
-    fishDataContextSetupStrings : {}
+    historicalDataContextSetupStrings: {},
+    fishDataContextSetupStrings: {}
 };
 

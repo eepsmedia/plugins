@@ -15,7 +15,9 @@
  */
 
 include 'words.php';
+
 include 'fishEstablishCredentials.php';
+include '../common/TE_DBCommon.php';
 
 header('Access-Control-Allow-Origin: *');
 
@@ -44,77 +46,6 @@ function reportToFile($message)
 
 }
 
-function CODAP_MySQL_connect($host, $user, $pass, $dbname)
-{
-    //    reportToFile( "In CODAP_MySQL_connect");
-    try {
-        $connectionArgument = "mysql:host=$host;dbname=$dbname;charset=utf8";
-        //  reportToFile( "CONNECTING using:" . $connectionArgument);
-        $DBH = new PDO($connectionArgument, $user, $pass);    // the database handle
-        $DBH->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        reportToFile("---  MYSQL connection error " . $e->getMessage());
-        print "Error connecting to the $dbname database!: " . $e->getMessage() . "<br/>";
-        die();
-    }
-
-    return $DBH;
-}
-
-/**
- * actually execute a MySQL query
- * Parameters:
- * db      the database handle
- * query   the parameterized MySQL query, e.g., "SELECT * FROM theTable"
- * params  parameters for the query
- * returns an array of <associated array>s, each of which is one row.
- */
-
-function CODAP_MySQL_doQueryWithoutResult($db, $query, $params)
-{
-    //reportToFile("--- GQR NO RESULT query: " . $query);
-
-    try {
-        $sth = $db->prepare($query);    //  $sth = statement handle
-        $sth->execute($params);
-    } catch (PDOException $e) {
-        reportToFile("---  MySQL preparation or execution error " . $e->getMessage());
-        //  print "Error preparing or executing a mySQL PDO statement: " . $e->getMessage() . "<br/>";
-        die();
-    }
-
-    //reportToFile("--- GQR NO RESULT is done ");
-}
-
-
-function CODAP_MySQL_getQueryResult($db, $query, $params)
-{
-    //  reportToFile("--- GQR query: " . $query);
-
-    try {
-        $sth = $db->prepare($query);    //  $sth = statement handle
-        $sth->execute($params);
-    } catch (PDOException $e) {
-        reportToFile("---  MySQL preparation or execution error " . $e->getMessage());
-        //  print "Error preparing or executing a mySQL PDO statement: " . $e->getMessage() . "<br/>";
-        die();
-    }
-
-    $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-    //  reportToFile("--- GQR fetchAll result: " . print_r($result, true));
-    return $result;
-}
-
-/**
- * Gets one row of data.
- */
-
-function CODAP_MySQL_getOneRow($db, $query, $params)
-{
-    $result = CODAP_MySQL_getQueryResult($db, $query . " LIMIT 1", $params);
-    return $result;
-}
 
 /**
  * Get the MySQL output array for all players in this game
@@ -215,25 +146,59 @@ function getHistoricalTurnsData($db, $iGameCode)
     return $out;     //  all turns in an array
 }
 
+function generateNewGameCode($DBH, $words)
+{
+    $params = array();
+    $query = "SELECT MAX(id) AS max FROM games";
+    $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+    $theResultArray = $out[0];
+    try {
+        $theNumber = (int)$theResultArray["max"];
+    } catch (Exception $e) {
+        $theNumber = 0;
+        reportToFile("\tNOTE: the number of records threw an exception and was set to zero: ");
+    }
+    $theNumber++;
+
+    //  now use the built-in "words" array
+    $iNumber = $theNumber;
+    $largePrimes = [2347, 2011, 2017];
+    reportToFile("\tReady to make the code. ..... the number is $iNumber");
+
+    $N = count($words);
+
+    $extraTens = floor($iNumber / $N);
+    $extraHundreds = floor($iNumber / $N / $N);
+    $unitsIndex = (100 + $iNumber * $largePrimes[0]) % $N;
+    $tensIndex = (300 + $extraTens + $iNumber * $largePrimes[1]) % $N;
+    $hundredsIndex = (200 + $extraHundreds + $iNumber * $largePrimes[2]) % $N;
+
+    //  reportToFile("\tmaking new game code: extra10, extra100: $extraTens $extraHundreds");
+    //  reportToFile("\tmaking new game code: nwords: $N indices: $unitsIndex $tensIndex $hundredsIndex");
+
+    $c = $words[$unitsIndex];
+    $c .= "." . $words[$tensIndex];
+    $c .= "." . $words[$hundredsIndex];
+
+
+    $theCode = $c;      //          newGameCode($theNumber);
+    reportToFile("\tnew game code just made: " . print_r($theCode, true));
+    return $theCode;
+}
 
 //  ------------    Connected ------------
 
-/*$whence  = $_REQUEST['whence'];
 
-$user = $credentials[$whence]["user"];
-$pass = $credentials[$whence]["pass"];
-$dbname = $credentials[$whence]["dbname"];
-*/
-//  reportToFile('Creds : ' . print_r($credentials, true) . " REQ: " . print_r($_REQUEST, true));
-error_log('CRED TEST: whence '. $whence ." user ". $user . " pass ".$pass." dbname ".$dbname);
+//  error_log('CRED TEST: whence ' . $whence . " user " . $user . " pass " . $pass . " dbname " . $dbname);
 
 $DBH = CODAP_MySQL_connect("localhost", $user, $pass, $dbname);     //  works under MAMP....
 
-
 $params = array();  //  accumulate parameters for query
 $query = "SELECT * FROM games";
-
 $command = $_REQUEST["c"];     //  this is the overall command, the only required part of the POST
+
+//  error_log("\nRequest is " . print_r($_REQUEST, true));
+//  error_log("[$command]......." . date("Y-m-d H:i:s (T)"));
 
 $out = "{ Unhandled command : " + $command + "}";
 
@@ -248,53 +213,13 @@ switch ($command) {
         reportToFile('Output during foo: ' . $out);
         break;
 
-    case 'bar':
-        reportToFile("[$command]......." . date("Y-m-d H:i:s (T)"));
-        $params = array();
-        $params['playerName'] = "Tim";
-        $query = "SELECT * FROM players WHERE playerName = :playerName";
-        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
-        break;
-
     case 'newGame' :
         reportToFile("\tNew game. PHP version " . phpversion());
 
         //  assemble a 3-word code based on the max ID currently in the database
         //  first, find out our current maximum index
-        $query = "SELECT MAX(id) AS max FROM games";
-        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
-        $theResultArray = $out[0];
-        try {
-            $theNumber = (int)$theResultArray["max"];
-        } catch (Exception $e) {
-            $theNumber = 0;
-            reportToFile("\tNOTE: the number of records threw an exception and was set to zero: ");
-        }
-        $theNumber++;
 
-        //  now use the built-in "words" array
-        $iNumber = $theNumber;
-        $largePrimes = [2347, 2011, 2017];
-        reportToFile("\tReady to make the code. ..... the number is $iNumber");
-
-        $N = count($words);
-
-        $extraTens = floor($iNumber / $N);
-        $extraHundreds = floor($iNumber / $N / $N);
-        $unitsIndex = (100 + $iNumber * $largePrimes[0]) % $N;
-        $tensIndex = (300 + $extraTens + $iNumber * $largePrimes[1]) % $N;
-        $hundredsIndex = (200 + $extraHundreds + $iNumber * $largePrimes[2]) % $N;
-
-        reportToFile("\tmaking new game code: extra10, extra100: $extraTens $extraHundreds");
-        reportToFile("\tmaking new game code: nwords: $N indices: $unitsIndex $tensIndex $hundredsIndex");
-
-        $c = $words[$unitsIndex];
-        $c .= "." . $words[$tensIndex];
-        $c .= "." . $words[$hundredsIndex];
-
-
-        $theCode = $c;      //          newGameCode($theNumber);
-        reportToFile("\tnew game code just made: " . print_r($theCode, true));
+        $theCode = generateNewGameCode($DBH, $words);
 
         //  assemble the query
         $params['gameCode'] = $theCode;
@@ -304,18 +229,16 @@ switch ($command) {
         $params['chair'] = $_REQUEST["chair"];
         $params['config'] = $_REQUEST["config"];
         $query = "INSERT into games (gameCode, gameState, population, turn, chair, config) "
-            ."VALUES (:gameCode, :gameState, :pop, :onTurn, :chair, :config)";
+            . "VALUES (:gameCode, :gameState, :pop, :onTurn, :chair, :config)";
 
         //  make a new games record
         $out = CODAP_MySQL_doQueryWithoutResult($DBH, $query, $params);
-        reportToFile("\tmade it through insert new game query.");
 
         //  now get that newly-created record.
 
         $out = getGameData($DBH, $theCode);        //  return the new game
 
         $out = json_encode($out);
-        reportToFile("\tcase 'newGame': exit with: " . print_r($out, true));
 
         break;
 
@@ -481,8 +404,8 @@ switch ($command) {
                 'OK' => (count($players) == count($turns)),
                 'missing' => $missingPlayers,
                 'allPlayers' => $allPlayers
-                )
-            );
+            )
+        );
 
         break;
 
@@ -499,17 +422,17 @@ switch ($command) {
         $out = json_encode(array('message' => "It is a new year."));
         break;
 
-/*    case 'getOneTurn':
-        $params = array();
-        $params['gameCode'] = $_REQUEST["gameCode"];
-        $params['playerName'] = $_REQUEST["playerName"];
-        $params['onTurn'] = $_REQUEST["onTurn"];
+    /*    case 'getOneTurn':
+            $params = array();
+            $params['gameCode'] = $_REQUEST["gameCode"];
+            $params['playerName'] = $_REQUEST["playerName"];
+            $params['onTurn'] = $_REQUEST["onTurn"];
 
-        $query = "SELECT turns WHERE (gameCode = :gameCode AND playerName = :playerName AND onTurn = :onTurn)";
-        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
-        $out = json_encode($out);
-        break;
-*/
+            $query = "SELECT turns WHERE (gameCode = :gameCode AND playerName = :playerName AND onTurn = :onTurn)";
+            $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+            $out = json_encode($out);
+            break;
+    */
     case 'updateOneTurnRecord':
         $params = array();
         $params['gameCode'] = $_REQUEST["gameCode"];
@@ -535,11 +458,11 @@ switch ($command) {
         break;
 
     default:
-        reportToFile("Unhandled command: ". print_r($_REQUEST, true));
+        reportToFile("Unhandled command: " . print_r($_REQUEST, true));
         break;
 }
 
-//  reportToFile('Actual output at end of php: ' . $out);
+//  error_log("\tActual output at end of php: " . $out);
 echo $out;
 
 

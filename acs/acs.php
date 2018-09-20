@@ -103,13 +103,13 @@ switch ($command) {
 
         foreach ($theVars as $arrayOfValues) {
             //  reportToFile('get Decoder -- looking at array: ' . print_r($arrayOfValues, true));
-            $var = $arrayOfValues[varname];
+            $var = $arrayOfValues['varname'];
             //  reportToFile('get Decoder -- looking at var: ' . print_r($var, true));
             $query = "SELECT * FROM decoder WHERE varname = '".$var . "'";
             $theCodes = CODAP_MySQL_getQueryResult($DBH, $query, $params);
             $oCodes = array();
             foreach ($theCodes as $aCode) {
-                $oCodes[$aCode[code]] = $aCode[result];
+                $oCodes[$aCode[code]] = $aCode['result'];
             }
             $out[$var] = $oCodes;
         }

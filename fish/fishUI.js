@@ -173,7 +173,7 @@ fish.ui = {
         //  debugging
 
         fish.debugThing.html(
-            fish.state.config + " | " + fish.whence + " | " + fish.state.language + " -- "
+            fish.state.config + " | " + fish.whence + " | " + fish.language + " -- "
             + fish.state.gameTurn + '/' + fish.state.turn
             + ", t = " + fish.state.timerCount
         );

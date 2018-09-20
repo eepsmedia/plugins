@@ -42,9 +42,10 @@ limitations under the License.
  */
 
 fish.localize = {
+/*
     localizeValuesObject: function (iValues) {
         let out = {};
-        const lang = fish.state.language;
+        const lang = fish.language;
 
         for (var vName in iValues) {
             if (iValues.hasOwnProperty(vName)) {
@@ -67,6 +68,7 @@ fish.localize = {
         }
         return out;
     },
+*/
 
     attributeNameTranslations: {
         year: {es: "año", de: "Jahr"},
@@ -478,29 +480,31 @@ let FS = {
                     },
 
                     attrs: [ // note how this is an array of objects.
-                        {name: "año", type: 'numeric', precision: 0, description: "game year (i.e., turn)"},
-                        {name: "visto", type: 'numeric', precision: 1, description: "how many fish you saw"},
-                        {name: "querría", type: 'numeric', precision: 1, description: "how many fish you wanted to catch"},
-                        {name: "atrapó", type: 'numeric', precision: 1, description: "how many fish you caught"},
+                        {name: "year", title : "año", type: 'numeric', precision: 0, description: "año del juego (i.e., turno)"},
+                        {name: "seen", title : "visto", type: 'numeric', precision: 1, description: "cuantos peces vió"},
+                        {name: "want", title : "querría", type: 'numeric', precision: 1, description: "cuantos peces querría atrapar"},
+                        {name: "caught", title : "atrapó", type: 'numeric', precision: 1, description: "cuantos peces atrapados"},
                         {
-                            name: "antes",
+                            name: "before",
+                            title : "antes",
                             type: 'numeric',
                             precision: 0,
-                            description: "balance at beginning of the year"
+                            description: "fondos al inicio del año"
                         },
-                        {name: "gastos", type: 'numeric', precision: 0, description: "your costs"},
+                        {name: "expenses", title : "gastos", type: 'numeric', precision: 0, description: "sus gastos"},
                         {
-                            name: "precio",
+                            name: "unitPrice",
+                            title : "precio",
                             type: 'numeric',
                             precision: 2,
-                            description: "price you got per unit of fish"
+                            description: "precio recibido por cada unidad de peces"
                         },
-                        {name: "ingresos", type: 'numeric', precision: 0, description: "your income from selling fish"},
-                        {name: "después", type: 'numeric', precision: 0, description: "balance at the end of the year"},
-                        {name: "jugador", type: 'categorical', description: "player name"},
-                        {name: "juego", type: 'categorical', description: "game code"},
-                        {name: "resultado", type: 'categorical', description: "state of the game"},
-                        {name: "nivel", type: 'categorical', description: "game rule set"}
+                        {name: "income", title : "ingresos", type: 'numeric', precision: 0, description: "sus ingresos por vender peces"},
+                        {name: "after", title : "después", type: 'numeric', precision: 0, description: "fondos al termino del año"},
+                        {name: "player", title: "jugador", type: 'categorical', description: "nombre del jugador(a)"},
+                        {name: "game", title : "juego", type: 'categorical', description: "codigo del juego"},
+                        {name: "result" , title : "resultado", type: 'categorical', description: "resultado del juego"},
+                        {name: "level", title : "nivel", type: 'categorical', description: "tipo de pez"}
                     ]
                 }
             ]
@@ -521,27 +525,29 @@ let FS = {
                     },
 
                     attrs: [ // note how this is an array of objects.
-                        {name: "año", type: 'numeric', precision: 0, description: "game year (i.e., turn)"},
-                        {name: "visto", type: 'numeric', precision: 1, description: "how many fish you saw"},
-                        {name: "querría", type: 'numeric', precision: 1, description: "how many fish you wanted to catch"},
-                        {name: "atrapó", type: 'numeric', precision: 1, description: "how many fish you caught"},
+                        {name: "year", title : "año", type: 'numeric', precision: 0, description: "año del juego (i.e., turno)"},
+                        {name: "seen", title : "visto", type: 'numeric', precision: 1, description: "cuantos peces vió"},
+                        {name: "want", title : "querría", type: 'numeric', precision: 1, description: "cuantos peces querría atrapar"},
+                        {name: "caught", title : "atrapó", type: 'numeric', precision: 1, description: "cuantos peces atrapados"},
                         {
-                            name: "antes",
+                            name: "before",
+                            title : "antes",
                             type: 'numeric',
                             precision: 0,
-                            description: "balance at beginning of the year"
+                            description: "fondos al inicio del año"
                         },
-                        {name: "gastos", type: 'numeric', precision: 0, description: "your costs"},
+                        {name: "expenses", title : "gastos", type: 'numeric', precision: 0, description: "sus gastos"},
                         {
-                            name: "precio",
+                            name: "unitPrice",
+                            title : "precio",
                             type: 'numeric',
                             precision: 2,
-                            description: "price you got per unit of fish"
+                            description: "precio recibido por cada unidad de peces"
                         },
-                        {name: "ingresos", type: 'numeric', precision: 0, description: "your income from selling fish"},
-                        {name: "después", type: 'numeric', precision: 0, description: "balance at the end of the year"},
-                        {name: "jugador", type: 'categorical', description: "player name"},
-                        {name: "juego", type: 'categorical', description: "game code"}
+                        {name: "income", title : "ingresos", type: 'numeric', precision: 0, description: "sus ingresos por vender peces"},
+                        {name: "after", title : "después", type: 'numeric', precision: 0, description: "fondos al termino del año"},
+                        {name: "player", title: "jugador", type: 'categorical', description: "nombre del jugador(a)"},
+                        {name: "game", title : "juego", type: 'categorical', description: "codigo del juego"},
                     ]
                 }
             ]

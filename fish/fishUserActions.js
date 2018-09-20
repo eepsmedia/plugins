@@ -96,36 +96,32 @@ fish.userActions = {
      *
      * @returns {Promise<any>}
      */
-    startNewGame: function () {
-        return new Promise(function (resolve, reject) {
-            let tGameData = {
+    startNewGame: async function () {
+
+        try {
+            const tGameData = {
                 "onTurn": fish.game.openingTurn,
                 "population": fish.game.openingPopulation,
                 "gameState": fish.constants.kInProgressString,
                 "config": fish.state.config
             };
+            const tNewGame = await fish.phpConnector.startNewGame(tGameData);
 
-            fish.phpConnector.startNewGame(tGameData)
-                .then(
-                    (tNewGame) => {
-                        if (tNewGame.gameCode) {
-                            fish.state.gameCode = tNewGame.gameCode;    //  not joined, but the game exists.
-                            $('#gameCodeTextField').val(fish.state.gameCode);      //  put the code into the box as a default
-                            console.log("The new game is named " + fish.state.gameCode);
-                            //  we are still waiting (because we have not joined), but we know the date:
-                            fish.state.turn = Number(tNewGame.turn);
-                            fish.state.gameTurn = Number(tNewGame.turn);
-                            resolve(fish.state.gameCode);
-                        } else {
-                            reject("No game code");
-                        }
-                    }
-                )
-                .catch(function (msg) {
-                    console.log('user action startNewGame() error: ' + msg);
-                    reject('user action startNewGame() error: ' + msg);
-                })
-        })
+            if (tNewGame.gameCode) {
+                fish.state.gameCode = tNewGame.gameCode;    //  not joined, but the game exists.
+                $('#gameCodeTextField').val(fish.state.gameCode);      //  put the code into the box as a default
+                console.log("The new game is named " + fish.state.gameCode);
+                //  we are still waiting (because we have not joined), but we know the date:
+                fish.state.turn = Number(tNewGame.turn);
+                fish.state.gameTurn = Number(tNewGame.turn);
+                return (fish.state.gameCode);
+            } else {
+                console.log('NO GAME CODE!');
+                return null;
+            }
+        } catch (msg) {
+            console.log('user action startNewGame() error: ' + msg);
+        }
     },
 
     /**
@@ -199,7 +195,7 @@ fish.userActions = {
         }
 
         if (tSought < 0) {
-            alert("You can't catch negative fish! " );
+            alert("You can't catch negative fish! ");
             $("#howManyFish").val(0);
             return;
         }

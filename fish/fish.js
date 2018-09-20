@@ -308,7 +308,7 @@ let fish = {
     },
 
     constants: {
-        version: "001d",
+        version: "001e",
 
         kTimerInterval: 700,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
