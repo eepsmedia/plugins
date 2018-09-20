@@ -65,7 +65,7 @@ fish.phpConnector = {
                 theBody.append(key, iCommands[key])
             }
         }
-        theBody.append("whence", fish.whence);
+        theBody.append("whence", fish.whence);      //  here is where the JS tells the PHP which server we're on.
 
         let theRequest = new Request(
             fish.constants.kBaseURL[fish.whence],

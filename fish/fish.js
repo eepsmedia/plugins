@@ -34,7 +34,6 @@ limitations under the License.
 let fish = {
 
     whence: "local",        //  local, xyz, or eeps.
-    defaultLanguage : 'en',
     debugThing: null,      //  UI element
 
     state: null,            //  object to hold the current state of the game. Very important.
@@ -46,6 +45,8 @@ let fish = {
      */
     game: null,
 
+    language : null,
+
     FS : null,          //  fish strings. One of its elements will become fish.strings, depending on language
 
     /**
@@ -53,7 +54,6 @@ let fish = {
      * Some items get set in initialize()
      */
     freshState: {
-        language : null,
         gameCode: null,     //  three-word nearly-unique code for each game
         gameState: null,    //  is the game in progress?
         gameTurn: 0,        //  what year is it in, according to the DB
@@ -84,6 +84,7 @@ let fish = {
      * Set up initial values, initialize other objects with initializers.
      */
     initialize: function () {
+        fish.setLanguageFromURL();
         fish.state = fish.freshState;       //  todo: implement saving and restoring
 
         fish.setLevel(fish.state.config);
@@ -98,19 +99,30 @@ let fish = {
                 }
             );
 
-        this.setLanguage(fish.defaultLanguage);     //  todo: get this information from the environment
-
         this.debugThing = $('#debugSpan');
         fish.ui.initialize();
         fish.ui.update();
     },
+
+    setLanguageFromURL : function() {
+        let theLang = fish.constants.kInitialLanguage;
+
+        const params = new URLSearchParams(document.location.search.substring(1));
+        const lang = params.get("lang");
+
+        if (lang) {
+            theLang = lang;
+        }
+        fish.setLanguage(theLang);
+    },
+
 
     /**
      * Set the UI language
      * @param iCode     two-letter language code, e.g., en, de, es.
      */
     setLanguage : function( iCode ) {
-        fish.state.language = iCode;       //  put the thing in here to choose
+        fish.language = iCode;       //  put the thing in here to choose
         fish.strings = FS[iCode];
         FS.setBasicStrings();           //  replace strings in the UI
 
@@ -296,13 +308,14 @@ let fish = {
     },
 
     constants: {
-        version: "001b",
+        version: "001d",
 
         kTimerInterval: 700,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
+        kInitialLanguage : 'en',    //  can override with URL parameter *lang*, e.g., "...fish.html?lang=es"
 
         kBaseURL: {
-            local: "http://localhost:8888/fish/fish.php",
+            local: "http://localhost:8888/plugins/fish/fish.php",
             xyz: "https://codap.xyz/projects/fish/fish.php",
             eeps: "https://www.eeps.com/codap/fish/fish.php"
         },

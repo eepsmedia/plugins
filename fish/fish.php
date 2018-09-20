@@ -15,31 +15,12 @@
  */
 
 include 'words.php';
-include 'fishFileLocations.php';
-
-//  reportToFile('cred filename: ' . $theCredentialsFilename);
-
-try {
-    include $theCredentialsFilename;
-} catch (Exception $e) {
-    reportToFile('Include problem: '. $e->getMessage());
-}
-
-if (file_exists($theCredentialsFilename)) {
-    //  reportToFile("the file " . $theCredentialsFilename . " exists!");
-} else {
-    reportToFile("the file " . $theCredentialsFilename . " does not exist!");
-
-}
-
-//  reportToFile(print_r("CRED LOCAL = " . $credentials['local'], true));
+include 'fishEstablishCredentials.php';
 
 header('Access-Control-Allow-Origin: *');
 
 
 //  ------------    Connect to database ------------
-
-
 
 
 /**
@@ -237,14 +218,14 @@ function getHistoricalTurnsData($db, $iGameCode)
 
 //  ------------    Connected ------------
 
-$whence  = $_REQUEST['whence'];
+/*$whence  = $_REQUEST['whence'];
 
 $user = $credentials[$whence]["user"];
 $pass = $credentials[$whence]["pass"];
 $dbname = $credentials[$whence]["dbname"];
-
+*/
 //  reportToFile('Creds : ' . print_r($credentials, true) . " REQ: " . print_r($_REQUEST, true));
-//  reportToFile('CRED TEST: whence '. $whence ." user ". $user . " pass ".$pass." dbname ".$dbname);
+error_log('CRED TEST: whence '. $whence ." user ". $user . " pass ".$pass." dbname ".$dbname);
 
 $DBH = CODAP_MySQL_connect("localhost", $user, $pass, $dbname);     //  works under MAMP....
 
@@ -485,7 +466,6 @@ switch ($command) {
         //  reportToFile("    End of turn check for " . $theCurrentTurn . " in " . $_REQUEST["gameCode"]);
 
         foreach ($players as $p) {
-            //  reportToFile("... looking at " . $p["playerName"]);
             $innit = false;
             foreach ($turns as $t) {
                 if ($t["playerName"] == $p["playerName"]) {
@@ -503,6 +483,7 @@ switch ($command) {
                 'allPlayers' => $allPlayers
                 )
             );
+
         break;
 
     case 'newTurn':
