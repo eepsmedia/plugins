@@ -25,7 +25,25 @@
  */
 
 
-$theCredentialsFilename = dirname( __FILE__, 4 ) . '/cred/acsCred.php';
+$whence  = $_REQUEST['whence'];
+
+$credentialFileNames = [
+    "local" => "/Applications/MAMP/cred/acsCred.php",
+    "eeps" => "/home1/denofinq/cred/acsCred.php"
+];
+
+$thisFileName = $credentialFileNames[$whence];
+
+
+try {
+    include_once($thisFileName);
+} catch (Exception $e) {
+    error_log("Error including the credentials file.  $e->getMessage()");
+}
+
+$user = $credentials[$whence]["user"];
+$pass = $credentials[$whence]["pass"];
+$dbname = $credentials[$whence]["dbname"];
 
 
 ?>

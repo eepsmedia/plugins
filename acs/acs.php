@@ -24,30 +24,14 @@
  * Time: 09:27
  */
 
-include 'acs.phpFileLocations.php';     //  tells us where the credentials are
+include 'acs.establishCredentials.php';     //  tells us where the credentials are
 
-try {
-    include $theCredentialsFilename;
-} catch (Exception $e) {
-    reportToFile('Problem getting the credentials: '. $e->getMessage());
-}
-
-if (file_exists($theCredentialsFilename)) {
-    //  reportToFile("the file " . $theCredentialsFilename . " exists!");
-} else {
-    reportToFile("the credentials file, " . $theCredentialsFilename . ", does not exist!");
-
-}
-
-
-//  reportToFile(print_r("CRED LOCAL = " . $credentials['local'], true));
 
 header('Access-Control-Allow-Origin: *');
 
 function reportToFile($message)
 {
     file_put_contents("acsdebug.txt", $message . "\n", FILE_APPEND);
-
 }
 
 
@@ -59,13 +43,6 @@ include '../common/TE_DBCommon.php';
 
 //  ------------    Connected ------------
 
-$whence  = $_REQUEST['whence'];
-
-$user = $credentials[$whence]["user"];
-$pass = $credentials[$whence]["pass"];
-$dbname = $credentials[$whence]["dbname"];
-
-//  reportToFile('Creds : ' . print_r($credentials, true) . " REQ: " . print_r($_REQUEST, true));
 //  reportToFile('CRED TEST: whence '. $whence ." user ". $user . " pass ".$pass." dbname ".$dbname);
 
 $DBH = CODAP_MySQL_connect("localhost", $user, $pass, $dbname);     //  works under MAMP....

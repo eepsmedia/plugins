@@ -30,7 +30,11 @@ $thisFileName = $credentialFileNames[$whence];
 
 //  echo "Credential file: $thisFileName <br>";
 
-include_once($thisFileName);
+try {
+    include_once($thisFileName);
+} catch (Exception $e) {
+    error_log("Error including the credentials file.  $e->getMessage()");
+}
 
 $user = $credentials[$whence]["user"];
 $pass = $credentials[$whence]["pass"];
