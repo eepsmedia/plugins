@@ -43,7 +43,6 @@ header('Access-Control-Allow-Origin: *');
 function reportToFile($message)
 {
     file_put_contents("fishdebug.txt", $message . "\n", FILE_APPEND);
-
 }
 
 
@@ -198,9 +197,8 @@ $query = "SELECT * FROM games";
 $command = $_REQUEST["c"];     //  this is the overall command, the only required part of the POST
 
 //  error_log("\nRequest is " . print_r($_REQUEST, true));
-//  error_log("[$command]......." . date("Y-m-d H:i:s (T)"));
 
-$out = "{ Unhandled command : " + $command + "}";
+$out = "{ Unhandled command : $command  }";
 
 if ($command == 'joinGame' || $command == 'newGame') {
     reportToFile("[$command]......." . date("Y-m-d H:i:s (T)"));
@@ -240,6 +238,8 @@ switch ($command) {
 
         $out = json_encode($out);
 
+        error_log("Fish: New game called $theCode");
+
         break;
 
     case 'joinGame':
@@ -249,11 +249,15 @@ switch ($command) {
         //  $game = getGameData($DBH, $_REQUEST["gameCode"]);   //  we know the game exists, so get its information
         $me = getMyData($DBH, $_REQUEST["gameCode"], $_REQUEST["playerName"]);
 
+        $playerName = $_REQUEST["playerName"];
+        $gameCode = $_REQUEST["gameCode"];
+
         if (count($me) == 0) {
+
             reportToFile("\t" . $_REQUEST["playerName"] . " does not already exist in " . $_REQUEST["gameCode"]);
 
-            $params['gameCode'] = $_REQUEST["gameCode"];
-            $params['playerName'] = $_REQUEST["playerName"];
+            $params['gameCode'] = $gameCode;
+            $params['playerName'] = $playerName;
             $params['balance'] = $_REQUEST["balance"];
             $params['onTurn'] = $_REQUEST["onTurn"];      //  enter the game on its turn.
 
@@ -269,6 +273,7 @@ switch ($command) {
 
         $out = json_encode($out);
         reportToFile("\tjoinGame exit with: " . print_r($out, true));
+        error_log("Fish: Add player called $playerName to game $gameCode");
         break;
 
     /**
@@ -410,16 +415,19 @@ switch ($command) {
         break;
 
     case 'newTurn':
+        $oldYear = $_REQUEST['oldYear'];
+
         $params['gameCode'] = $_REQUEST["gameCode"];
         $params['gameState'] = $_REQUEST["gameState"];
         $params['newPopulation'] = $_REQUEST["newPopulation"];
         $params['reason'] = $_REQUEST["reason"];
 
-        reportToFile("... [" . $_REQUEST['c'] . "] updating from " . $_REQUEST['oldYear']);
+        reportToFile("... [" . $_REQUEST['c'] . "] updating from $oldYear");
 
         $query = "UPDATE games SET turn = turn + 1, population = :newPopulation, gameState = :gameState, reason = :reason WHERE gameCode = :gameCode";
         $out = CODAP_MySQL_doQueryWithoutResult($DBH, $query, $params);
         $out = json_encode(array('message' => "It is a new year."));
+        error_log("Fish: New turn, done with $oldYear");
         break;
 
     /*    case 'getOneTurn':

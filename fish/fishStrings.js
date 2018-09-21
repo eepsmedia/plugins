@@ -174,6 +174,8 @@ let FS = {
         chairEndsTurnButton: "do fish market",
         startNewGameButton: "OK, start a new game",
 
+        completedAllUpdates : "completed all updates for year ",
+
         makeAboutPlayersText: function () {
             let out = "";
 
@@ -402,6 +404,8 @@ let FS = {
         catchButton: "pescar",
         chairEndsTurnButton: "hacer mercado de pescados",
         startNewGameButton: "listo para iniciar juego nuevo",
+
+        completedAllUpdates : "completado todas las actualizaciones por año ",
 
         makeAboutPlayersText: function () {
             let out = "";

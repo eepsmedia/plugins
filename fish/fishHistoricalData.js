@@ -68,7 +68,7 @@ fish.historicalData = {
                     )
                 }
             );
-            console.log("Assembled data for all historical turns. First item: " + JSON.stringify(tAllGamesTurns[0]));
+            //  console.log("Assembled data for all historical turns. First item: " + JSON.stringify(tAllGamesTurns[0]));
         } else {
             console.warn("No turn records to add to historical records!");
             throw("No turn records to add to historical records!");

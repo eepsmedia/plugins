@@ -146,6 +146,8 @@ fish.model = {
 
     checkForEndGame: function (iYear, iTurns, iPop) {
 
+        tReasonText = "";
+
         let tEnd = "";      //  "" | "won" | "lost"
         let tReasonObject = {
             end : false,
@@ -192,9 +194,12 @@ fish.model = {
 
         if (tReasonObject.end) {
             fish.state.gameState = tEnd;
+            tReasonText = fish.strings.constructGameEndMessageFrom(tReasonObject);
+        } else {
+            tReasonText = "End of year " + iYear;
         }
 
-        return  fish.strings.constructGameEndMessageFrom(tReasonObject);
+        return  tReasonText;
     }
 
 };

@@ -59,6 +59,8 @@ fish.phpConnector = {
      * @returns {Promise<any>}
      */
     sendCommand: async function (iCommands) {
+        const theCommand = iCommands.c;
+
         let theBody = new FormData();
         for (let key in iCommands) {
             if (iCommands.hasOwnProperty(key)) {
@@ -70,12 +72,15 @@ fish.phpConnector = {
         let theRequest = new Request(
             fish.constants.kBaseURL[fish.whence],
             {method: 'POST', body: theBody, headers: new Headers()}
+            //{method: 'POST', body: theBody, headers: {"Content-Type": "application/json; charset=utf-8"}}
         );
 
         try {
+            //console.log("    working on " + theCommand);
             const theResult = await fetch(theRequest);
             if (theResult.ok) {
-                const theJSON = theResult.json();
+                const theJSON = await theResult.json();
+                //console.log("    " + theCommand + " returns " + JSON.stringify(theJSON));
                 return theJSON;
             } else {
                 console.error("sendCommand error: " + theResult.statusText);
@@ -262,7 +267,7 @@ fish.phpConnector = {
                 "reason": iUpdateResult.reason
             };
 
-            const updateGameRecordPromise = fish.phpConnector.sendCommand(gameRecordCommands);
+            await fish.phpConnector.sendCommand(gameRecordCommands);
 
             console.log("Updating from year " + fish.state.gameTurn + " because " + iUpdateResult.reason);
 
@@ -286,10 +291,9 @@ fish.phpConnector = {
                 endTurnPromises.push(fish.phpConnector.sendCommand(oneTurnCommand));
             });
 
-            await updateGameRecordPromise;
-            await endTurnPromises;
+            await Promise.all(endTurnPromises);
 
-            return ("Completed all updates for " + fish.state.turn);
+            return (fish.strings.completedAllUpdates + fish.state.turn);
         }
         catch (msg) {
             console.log('fishphpConnector.endTurnForAll() error: ' + msg);

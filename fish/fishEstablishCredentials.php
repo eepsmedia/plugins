@@ -19,7 +19,7 @@ $credentialFileNames = [
 
 $thisFileName = $credentialFileNames[$whence];
 
-error_log("Credential file: $thisFileName");
+//  error_log("Credential file: $thisFileName");
 
 try {
     include_once($thisFileName);

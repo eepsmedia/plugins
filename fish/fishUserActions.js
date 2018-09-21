@@ -224,6 +224,7 @@ fish.userActions = {
     },
 
     chairEndsTurn: async function () {
+        console.log("---- chairEndsTurn ---------");
         let tGame, tTurns, tPlayers;
 
         let gamePromise = fish.phpConnector.getGameData();
