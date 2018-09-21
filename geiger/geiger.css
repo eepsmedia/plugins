@@ -12,6 +12,9 @@ input {
     background-color: #fae7e9;
 }
 
+#detectorX, #detectorY {
+    width : 4.0em;
+}
 /*		BOX CLASSES		*/
 
 .hBox	{

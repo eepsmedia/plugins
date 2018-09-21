@@ -24,13 +24,8 @@
 
     Here is the URL...
 
-    http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://www.eeps.com/dsg/geiger/geiger.html
+    LOCAL: http://localhost:8888/plugins/geiger/geiger.html
 
-    or locally,
-    http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://localhost/~tim/gamePrototypes/geiger/geiger.html
-
-    local with docs;
-    http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://localhost/~tim/gamePrototypes/geiger/geiger.html&documentServer=http://document-store.herokuapp.com/&recordid=7002
     -->
 <!DOCTYPE html>
 
@@ -61,7 +56,7 @@
 </head>
 
 <body>
-<p>Click to place your detector. Press <strong>measure</strong> to get a reading. Try to find the source!</p>
+<p>Click to place your detector. Press <strong>measure/collect</strong> to get a reading. Try to find the source!</p>
 <svg id = "lab" width="400" height="400" onclick="geigerManager.clickInLab()">
     <rect width="100%" height="100%" fill="slategray"></rect>
     <rect id = "dangerZone" width="200" height="200" x="100" y="100" fill="darkslategray"></rect>
@@ -88,10 +83,12 @@
                 onclick="geigerManager.doMeasurement();">measure/collect
         </button>
         <br> Detector/collector coordinates: <br>
-        (&nbsp;<input type="text" id="detectorX" value="1" size="6"
-                      onblur="geigerManager.moveDetectorByTyping();"> ,
-        <input type="text" id="detectorY" value="1" size="6"
-               onblur="geigerManager.moveDetectorByTyping();">&nbsp;)
+        (&nbsp;
+        <input type="text" id="detectorX" value="1"
+               onblur="geigerManager.moveDetectorByTyping();"> ,
+        <input type="text" id="detectorY" value="1"
+               onblur="geigerManager.moveDetectorByTyping();">
+        &nbsp;)
     </div>
     <div class="vBox">
 
