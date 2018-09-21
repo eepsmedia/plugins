@@ -5,7 +5,7 @@ http://codap.concord.org/releases/dsg?di=http://www.eeps.com/dsg/stella/stella.h
 
 
 local:
-http://codap.concord.org/releases/dsg?di=http://localhost/~tim/gamePrototypes/stella/stella.html
+http://localhost:8888/plugins/stella/stella.html
 
 -->
 
@@ -46,8 +46,7 @@ limitations under the License.
 
     <!--        stylesheets         -->
     <link rel='stylesheet' type='text/css' href='stella.css'/>
-    <link rel='stylesheet' type='text/css'
-          href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css'/>
+    <link rel='stylesheet' type='text/css' href='../common/jqueryFolder/jquery-ui.min.css'/>
 
     <!-- These two scripts take care of the communication with CODAP and commons -->
     <script src="../common/iframe-phone.js" language="javascript"></script>
@@ -56,13 +55,13 @@ limitations under the License.
     <script src="../common/pluginHelper.js" language="javascript"></script>
 
     <script src="../common/TEEUtils.js" language="javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
 
     <title>Stella</title>
 
     <!-- Snap -->
-    <script src="../common/snap.svg.js"></script>
+    <script src="../common/snap.svg-min.js"></script>
 
     <!--            our game source         -->
     <script src="stella.js" language="JavaScript"></script>
