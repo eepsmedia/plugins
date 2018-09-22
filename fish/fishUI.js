@@ -26,6 +26,8 @@ limitations under the License.
 
 */
 
+/* global fish, $, console */
+
 
 fish.ui = {
 
@@ -150,14 +152,14 @@ fish.ui = {
                 break;
 
             case fish.constants.kWonString:
-                $("#winLoseText").html("You won game <span class='info'>"
-                    + fish.state.gameCode + "</span>. Why?<br> "
+                $("#winLoseText").html(fish.strings.youWonGame + " <span class='info'>"
+                    + fish.state.gameCode + "</span> " + fish.strings.because + "<br> "
                     + fish.state.gameEndMessage);
                 break;
 
             case fish.constants.kLostString:
-                $("#winLoseText").html("You lost game <span class='info'>"
-                    + fish.state.gameCode + "</span> because<br> "
+                $("#winLoseText").html(fish.strings.youLostGame + " <span class='info'>"  //
+                    + fish.state.gameCode + "</span> " + fish.strings.because + "<br> "
                     + fish.state.gameEndMessage);
                 break;
 

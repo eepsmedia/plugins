@@ -198,7 +198,8 @@ $command = $_REQUEST["c"];     //  this is the overall command, the only require
 
 //  error_log("\nRequest is " . print_r($_REQUEST, true));
 
-$out = "{ Unhandled command : $command  }";
+$out = ['Unhandled command' => $command];
+$out = json_encode($out);
 
 if ($command == 'joinGame' || $command == 'newGame') {
     reportToFile("[$command]......." . date("Y-m-d H:i:s (T)"));
@@ -462,6 +463,9 @@ switch ($command) {
         $params['balanceAfter'] = $_REQUEST["balanceAfter"];
         $query = "UPDATE players SET balance = :balanceAfter WHERE (gameCode = :gameCode AND playerName = :playerName)";
         $updateResult = CODAP_MySQL_doQueryWithoutResult($DBH, $query, $params);
+
+        $out = $params;
+        $out = json_encode($out);
 
         break;
 

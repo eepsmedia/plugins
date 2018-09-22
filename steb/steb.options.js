@@ -104,9 +104,11 @@ steb.options = {
 
         //  now for the sliders, definded in steb.ui...
 
+
         $("#redCoefficient").slider({'values' : [ steb.color.predatorVisionBWCoefficientVector[0] ]});
         $("#greenCoefficient").slider({'values' : [ steb.color.predatorVisionBWCoefficientVector[1] ]});
         $("#blueCoefficient").slider({'values' : [ steb.color.predatorVisionBWCoefficientVector[2] ]});
+
 
 
     },

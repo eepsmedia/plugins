@@ -175,6 +175,9 @@ let FS = {
         startNewGameButton: "OK, start a new game",
 
         completedAllUpdates : "completed all updates for year ",
+        youWonGame : "You won game",
+        youLostGame : "You lost game",
+        because : "because",
 
         makeAboutPlayersText: function () {
             let out = "";
@@ -353,7 +356,7 @@ let FS = {
                 let tMessageParts = [];
 
                 if (iReason.time) {
-                    tMessageParts.push("The game ends at year " + fish.game.endingTurn);
+                    tMessageParts.push("the game ends at year " + fish.game.endingTurn);
                 }
 
                 switch (iReason.pop) {
@@ -370,7 +373,7 @@ let FS = {
                 });
 
                 if (tMessageParts.length === 0) {
-                    out = "Dang. We don't really know why!";
+                    out = "...dang! We don't really know why!";
                 } else {
                     out = tMessageParts.join(", and ") + ".";
                 }
@@ -406,6 +409,9 @@ let FS = {
         startNewGameButton: "listo para iniciar juego nuevo",
 
         completedAllUpdates : "completado todas las actualizaciones por año ",
+        youWonGame : "Ganó juego",
+        youLostGame : "Perdió juego",
+        because : "porque",
 
         makeAboutPlayersText: function () {
             let out = "";
@@ -589,12 +595,12 @@ let FS = {
                 let tMessageParts = [];
 
                 if (iReason.time) {
-                    tMessageParts.push("Este juego se termine en el año " + fish.game.endingTurn);
+                    tMessageParts.push("este juego se termine en el año " + fish.game.endingTurn);
                 }
 
                 switch (iReason.pop) {
                     case "high":
-                        tMessageParts.push("la población de peces ahora es lo suficentemente grande para ser sostenible.");
+                        tMessageParts.push("la población de peces ahora es lo suficentemente grande para ser sostenible");
                         break;
                     case "low":
                         tMessageParts.push("la población de peces ahora no es lo suficentemente grande para ser sostenible");

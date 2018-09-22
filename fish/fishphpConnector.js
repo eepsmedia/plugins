@@ -291,7 +291,7 @@ fish.phpConnector = {
                 endTurnPromises.push(fish.phpConnector.sendCommand(oneTurnCommand));
             });
 
-            await Promise.all(endTurnPromises);
+            await Promise.all(endTurnPromises);     //  no relevant results get returned
 
             return (fish.strings.completedAllUpdates + fish.state.turn);
         }
