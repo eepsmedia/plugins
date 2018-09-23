@@ -60,7 +60,7 @@ steb.options = {
      * and make the world reflect them!
      */
     predatorVisionChange : function() {
-        var tPredVisionVal = $('input[name=isPredatorVisionNormalControl]:checked').val();
+        const tPredVisionVal = $('input[name=isPredatorVisionNormalControl]:checked').val();
         this.useVisionParameters = (tPredVisionVal === "mono");
 
         this.setPredatorVisionParameters();
@@ -69,7 +69,7 @@ steb.options = {
     },
 
     predatorAutomationChange : function() {
-        var tAutoPredVal = $('input[name=isPredatorAutomatedControl]:checked').val();
+        const tAutoPredVal = $('input[name=isPredatorAutomatedControl]:checked').val();
         this.automatedPredator = (tAutoPredVal === "auto");
     },
 
@@ -81,9 +81,9 @@ steb.options = {
 
         this.predatorVisionMethod = $('input[name=predatorVisionMethodControl]:checked').val();
 
-        var tRed = Number($("#visionRed").val());
-        var tGreen = Number($("#visionGreen").val());
-        var tBlue = Number($("#visionBlue").val());
+        const tRed = Number($("#visionRed").val());
+        const tGreen = Number($("#visionGreen").val());
+        const tBlue = Number($("#visionBlue").val());
 
         steb.color.predatorVisionDotProductColorVector = [ tRed, tGreen, tBlue ];
         //  steb.model.predatorVisionBWCoefficientVector is set directly by sliders. See steb.ui.js.initialize().
@@ -381,7 +381,7 @@ steb.options = {
         document.getElementById("crudScurry").checked = this.crudScurry;
         document.getElementById("eldest").checked = this.eldest;
 
-        var tVisionType = this.useVisionParameters ? "mono" : "normal";
+        let tVisionType = this.useVisionParameters ? "mono" : "normal";
         $('input[name="isPredatorVisionNormalControl"][value="' + tVisionType + '"]').prop('checked', true);
         $('input[name="predatorVisionMethodControl"][value="' + this.predatorVisionMethod + '"]').prop('checked', true);
 
@@ -404,9 +404,9 @@ steb.options = {
 
         //  set color text to match the internal variables
 
-        var tBGColorText = steb.model.trueBackgroundColor.join(", ");
+        const tBGColorText = steb.model.trueBackgroundColor.join(", ");
         $("#bgColorText").val(tBGColorText);
-        var tCrudColorText = steb.model.meanCrudColor.join(", ");
+        const tCrudColorText = steb.model.meanCrudColor.join(", ");
         $("#meanCrudColorText").val(tCrudColorText);
     },
 

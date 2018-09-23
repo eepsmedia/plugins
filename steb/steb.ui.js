@@ -25,7 +25,7 @@
 
  */
 
-/* global steb, Snap, TEEUtils, console, $ */
+/* global steb, Snap, TEEUtils, console, $, css */
 
 /**
  * Singleton controller class to manage UI machinery for Stebbers
@@ -35,8 +35,8 @@
 steb.ui = {
 
     fixUI : function() {
-        var tGameType = steb.options.automatedPredator ? "autoplay" : "game" ;
-        var tStatus = steb.manager.playing ? tGameType + " in progress" : "no game";
+        const tGameType = steb.options.automatedPredator ? "autoplay" : "game" ;
+        const tStatus = steb.manager.playing ? tGameType + " in progress" : "no game";
         tStatus +=  (steb.manager.running) ? "" : ", paused";
         $("#shortStatus").html( tStatus );
         this.startStopButton.style.backgroundImage  = //  machinery for the play/pause button
@@ -48,7 +48,7 @@ steb.ui = {
         this.newGameButton.html( steb.manager.playing ? "abort game" : "new game");
 
         //  set visibility for keep playing button
-        var keepPlayingVisible = !steb.manager.playing; // && !steb.manager.running;
+        const keepPlayingVisible = !steb.manager.playing; // && !steb.manager.running;
         if (keepPlayingVisible) {
             $("#keepPlayingButton").show();
         } else {

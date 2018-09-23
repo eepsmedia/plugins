@@ -50,16 +50,16 @@ steb.initialize = function() {
  * @param iColor
  */
 steb.makeColorString = function(iColor ) {
-    var r = iColor[0] * 17;
-    var g = iColor[1] * 17;
-    var b = iColor[2] * 17;
+    const r = iColor[0] * 17;
+    const g = iColor[1] * 17;
+    const b = iColor[2] * 17;
 
     return Snap.rgb( r, g, b );
 };
 
 steb.getSnapColor = function( iColor ) {
-    var tHexstring = steb.makeColorString( iColor );
-    var tSnapColor = Snap.color( tHexstring );
+    const tHexstring = steb.makeColorString( iColor );
+    const tSnapColor = Snap.color( tHexstring );
 
     return tSnapColor;
 };
