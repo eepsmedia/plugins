@@ -11,21 +11,12 @@ function reportToFile($message)
     file_put_contents("Jdebug.txt", $message . "\n", FILE_APPEND);
 }
 
+$user = null;
+$pass = null;
+$dbname = null;
 
 include 'parsedown-1.7.1/Parsedown.php';
-include 'phpFileLocations.php';     //  tells us where the credentials are
-
-try {
-    include $theCredentialsFilename;
-} catch (Exception $e) {
-    reportToFile('Problem getting the credentials: ' . $e->getMessage());
-}
-
-if (file_exists($theCredentialsFilename)) {
-    //  reportToFile("the file " . $theCredentialsFilename . " exists!");
-} else {
-    reportToFile("the credentials file, " . $theCredentialsFilename . ", does not exist!");
-}
+include 'nos2.establishCredentials.php';     //  tells us where the credentials are
 
 //  reportToFile(print_r("CRED LOCAL = " . $credentials['local'], true));
 
@@ -41,12 +32,6 @@ include '../common/TE_DBCommon.php';    //  in the common folder
 
 //  ------------    Connected ------------
 
-$whence = $_REQUEST['whence'];
-
-$user = $credentials[$whence]["user"];
-$pass = $credentials[$whence]["pass"];
-$dbname = $credentials[$whence]["dbname"];
-
 $DBH = CODAP_MySQL_connect("localhost", $user, $pass, $dbname);     //  works under MAMP....
 
 $params = array();  //  accumulate parameters for query
@@ -54,20 +39,23 @@ $query = "SELECT * FROM worlds LIMIT 10";
 
 $command = $_REQUEST["c"];     //  this is the overall command, the only required part of the POST
 
-$out = "{ Unhandled command : " . $command . "}";
-
+$out = json_encode(['Unhandled command' => $command]);
 
 switch ($command) {
 
     case 'newWorld':
-        reportToFile("/n[$command]......" . date("Y-m-d H:i:s (T)") . " code: " . $_REQUEST['code']);
+        reportToFile("\n[$command]......" . date("Y-m-d H:i:s (T)") . " code: " . $_REQUEST['code']);
+        error_log("[$command] .... creds .... user $user pass $pass db $dbname");
         $params = array();
         $params["g"] = $_REQUEST["g"];
         $params["code"] = $_REQUEST["code"];
         $params["epoch"] = $_REQUEST["epoch"];
         $params["jName"] = $_REQUEST["jName"];
+        $params["scen"] = $_REQUEST["scen"];
+        $params["state"] = $_REQUEST["state"];
 
-        $query = "INSERT INTO worlds (godID, code, epoch, journalTitle) VALUES (:g, :code, :epoch, :jName)";
+        $query = "INSERT INTO worlds (godID, code, epoch, journalTitle, scenario, state)".
+            "VALUES (:g, :code, :epoch, :jName, :scen, :state)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
 
         $params = array();

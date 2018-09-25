@@ -69,11 +69,6 @@ let journal = {
             teamName : null,    //  full name of the team
         },
 
-        kBasePhpURL: {
-            local: "http://localhost:8888/plugins/journal/journal.php",
-            xyz: "https://codap.xyz/plugins/journal/journal.php",
-            eeps: "https://www.eeps.com/codap/journal/journal.php"
-        }
     },
 
     logout : function() {

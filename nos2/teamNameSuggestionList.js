@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-teamList in journal
+teamNameSuggestionList in journal
 
 Author:   Tim Erickson
 
@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-const teamList = {
+const teamNameSuggestionList = {
     researchCenters:
         [
             {code: "cit", name: "Caltech"},
@@ -61,37 +61,37 @@ const teamList = {
             {code: "wu", name: "Washington University"},
             {code: "ohsu", name: "Oregon Health Sciences University"}         //  31 = prime :)
         ],
-    animals :
-    [
-        {code : "capy", name: "Capybaras"},
-        {code : "vamp", name: "Vampire Bats"},
-        {code : "tigr", name: "Tigers"},
-        {code : "butt", name: "Butterflies"},
-        {code : "amoe", name: "Amoebas"},
-        {code : "plan", name: "Planaria"},
-        {code : "roly", name: "Isopods"},
-        {code : "lion", name: "Lions"},
-        {code : "sage", name: "Sagehens"},
-        {code : "mice", name: "Mice"},
-        {code : "krak", name: "Kraken"},
-        {code : "croc", name: "Crocodiles"},
-        {code : "rabb", name: "Rabbits"},
-        {code : "gras", name: "Grasshoppers"},
-        {code : "crik", name: "Crickets"},
-        {code : "dolp", name: "Dolphins"},
-        {code : "orca", name: "Orcas"},
-        {code : "garb", name: "Garibaldi"},
-        {code : "eart", name: "Earthworms"},
-        {code : "ucsc", name: "Banana Slugs"},
-        {code : "tort", name: "Tortoises"},
-        {code : "fnch", name: "Finches"},
-        {code : "slin", name: "Sea Lions"},
-        {code : "walr", name: "Walruses"},
-        {code : "mant", name: "Manatees"},
-        {code : "bear", name: "Bears"},
-        {code : "wolf", name: "Wolves"},
-        {code : "oclt", name: "Ocelots"},
-        {code : "sprb", name: "Springbok"},
-    ]
+    animals:
+        [
+            {code: "capy", name: "Capybaras"},
+            {code: "vamp", name: "Vampire Bats"},
+            {code: "tigr", name: "Tigers"},
+            {code: "butt", name: "Butterflies"},
+            {code: "amoe", name: "Amoebas"},
+            {code: "plan", name: "Planaria"},
+            {code: "roly", name: "Isopods"},
+            {code: "lion", name: "Lions"},
+            {code: "sage", name: "Sagehens"},
+            {code: "mice", name: "Mice"},
+            {code: "krak", name: "Kraken"},
+            {code: "croc", name: "Crocodiles"},
+            {code: "rabb", name: "Rabbits"},
+            {code: "gras", name: "Grasshoppers"},
+            {code: "crik", name: "Crickets"},
+            {code: "dolp", name: "Dolphins"},
+            {code: "orca", name: "Orcas"},
+            {code: "garb", name: "Garibaldi"},
+            {code: "eart", name: "Earthworms"},
+            {code: "ucsc", name: "Banana Slugs"},
+            {code: "tort", name: "Tortoises"},
+            {code: "fnch", name: "Finches"},
+            {code: "slin", name: "Sea Lions"},
+            {code: "walr", name: "Walruses"},
+            {code: "mant", name: "Manatees"},
+            {code: "bear", name: "Bears"},
+            {code: "wolf", name: "Wolves"},
+            {code: "oclt", name: "Ocelots"},
+            {code: "sprb", name: "Springbok"},
+        ]
 };
 

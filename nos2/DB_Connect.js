@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-journal.DB_Connect = {
+nos2.DB_Connect = {
 
     sendCommand: async function (iCommands) {
         let theBody = new FormData();
@@ -38,7 +38,7 @@ journal.DB_Connect = {
         theBody.append("whence", journal.constants.whence);
 
         let theRequest = new Request(
-            journal.constants.kBasePhpURL[journal.constants.whence],
+            nos2.kBasePhpURL[journal.constants.whence],
             {method: 'POST', body: theBody, headers: new Headers()}
         );
 
@@ -57,16 +57,18 @@ journal.DB_Connect = {
         }
     },
 
-    makeNewWorld: async function (iGodID, iWorldCode, iEpoch, iJournalName) {
+    makeNewWorld: async function (iGodID, iWorldCode, iEpoch, iJournalName, iScenario, iGameState) {
         try {
             const theCommands = {
                 "c": "newWorld",
                 "g": iGodID,
                 "code": iWorldCode,
                 "epoch": iEpoch,
-                'jName': iJournalName
+                'jName': iJournalName,
+                'scen': iScenario,
+                'state': JSON.stringify(iGameState)
             };
-            const iData = await journal.DB_Connect.sendCommand(theCommands);
+            const iData = await nos2.DB_Connect.sendCommand(theCommands);
             return iData;
         }
 
@@ -79,7 +81,7 @@ journal.DB_Connect = {
     addTeam: async function (iWorld, iCode, iName) {
         try {
             const theCommands = {"c" : "addTeam", "w": iWorld, "code": iCode, "name": iName};
-            const iData = await journal.DB_Connect.sendCommand(theCommands);
+            const iData = await nos2.DB_Connect.sendCommand(theCommands);
         }
 
         catch (msg) {
@@ -96,7 +98,7 @@ journal.DB_Connect = {
     getWorldData: async function (iWorldCode) {
         try {
             const theCommands = {"c": "getWorldData", "code": iWorldCode};
-            const out = await journal.DB_Connect.sendCommand(theCommands);
+            const out = await nos2.DB_Connect.sendCommand(theCommands);
             return out.length == 0 ? null : out[0];
         }
 
@@ -106,33 +108,45 @@ journal.DB_Connect = {
     },
 
     getMyWorlds: async function (iGod) {
-        try {
-            const theCommands = {"c": "getMyWorlds", "g": iGod};
-            const out = await journal.DB_Connect.sendCommand(theCommands);
-            return out.length == 0 ? null : out;
-        } catch (msg) {
-            console.log('getMyWorlds() error: ' + msg);
+        if (iGod) {
+            try {
+                const theCommands = {"c": "getMyWorlds", "g": iGod};
+                const out = await nos2.DB_Connect.sendCommand(theCommands);
+                return out.length == 0 ? null : out;
+            } catch (msg) {
+                console.log('getMyWorlds() error: ' + msg);
+            }
+        } else {
+            return null;
         }
     },
 
     getMyTeams: async function (iWorldID) {
-        try {
-            const theCommands = {"c": "getMyTeams", "w": iWorldID};
-            const out = await journal.DB_Connect.sendCommand(theCommands);
-            return out.length == 0 ? null : out;
-        } catch (msg) {
-            console.log('getMyTeams() error: ' + msg);
+        if (iWorldID) {
+            try {
+                const theCommands = {"c": "getMyTeams", "w": iWorldID};
+                const out = await nos2.DB_Connect.sendCommand(theCommands);
+                return out.length == 0 ? null : out;
+            } catch (msg) {
+                console.log('getMyTeams() error: ' + msg);
+            }
+        } else {
+            return null;
         }
     },
 
     getPapers: async function (iWorldID, iTeamID) {
-        let out = null;
-        try {
-            out = await journal.DB_Connect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
-            return out.length == 0 ? null : out;
+        if (iWorldID && iTeamID) {
+            let out = null;
+            try {
+                out = await nos2.DB_Connect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+                return out.length == 0 ? null : out;
 
-        } catch (msg) {
-            console.log('getPapers() error: ' + msg);
+            } catch (msg) {
+                console.log('getPapers() error: ' + msg);
+            }
+        } else {
+            return null;
         }
 
     },
@@ -157,7 +171,7 @@ journal.DB_Connect = {
                     "worldID": journal.state.worldID
                 };
             }
-            const out = await journal.DB_Connect.sendCommand(theCommands);
+            const out = await nos2.DB_Connect.sendCommand(theCommands);
 
             return out;
         }
@@ -171,7 +185,7 @@ journal.DB_Connect = {
         try {
             if (iPaperID) {
                 theCommands = {"c": "submitPaper", "id": iPaperID, "s": iNewStatus};
-                const iData = await journal.DB_Connect.sendCommand(theCommands);
+                const iData = await nos2.DB_Connect.sendCommand(theCommands);
                 return iData;
             } else {
                 alert("There is no 'current' paper to submit.");
@@ -205,7 +219,7 @@ journal.DB_Connect = {
 
             if (iPaperID) {
                 theCommands = {"c": "judgePaper", "p": iPaperID, "s": tStatus, 'ec': iEdComments};
-                const iData = await journal.DB_Connect.sendCommand(theCommands);
+                const iData = await nos2.DB_Connect.sendCommand(theCommands);
                 return iData;
             } else {
                 alert("There is no paper to submit.");
@@ -220,7 +234,7 @@ journal.DB_Connect = {
 
     getGodData: async function (iUsername) {
         try {
-            const out = await journal.DB_Connect.sendCommand({"c": "getGodData", "u": iUsername});
+            const out = await nos2.DB_Connect.sendCommand({"c": "getGodData", "u": iUsername});
             if (out.length == 0) {
                 return null;
             } else if (out.length == 1) {
@@ -235,7 +249,7 @@ journal.DB_Connect = {
 
     newGod: async function (iUsername) {
         try {
-            const out = await journal.DB_Connect.sendCommand({"c": "newGod", "u": iUsername});
+            const out = await nos2.DB_Connect.sendCommand({"c": "newGod", "u": iUsername});
             return out;
         } catch (e) {
             console.log('newGod() error: ' + e);
@@ -244,7 +258,7 @@ journal.DB_Connect = {
 
     getPublishedJournal: async function () {
         try {
-            const out = await journal.DB_Connect.sendCommand({"c": "getJournal", "w": journal.state.worldID});
+            const out = await nos2.DB_Connect.sendCommand({"c": "getJournal", "w": journal.state.worldID});
             return out;
         } catch (e) {
             console.log('getPublishedJournal() error: ' + e);

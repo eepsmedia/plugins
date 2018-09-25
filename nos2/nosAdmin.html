@@ -28,8 +28,8 @@ limitations under the License.
 ==========================================================================
 
 
-  LOCAL, TESTING:         http://localhost:8888/plugins/journal/journalAdmin.html
-  EEPS:         https://www.eeps.com/codap/journal/journalAdmin.html
+  LOCAL, TESTING:         http://localhost:8888/plugins/nos2/nosAdmin.html
+  EEPS:         https://www.eeps.com/codap/nos2/nosAdmin.html
 
 -->
 
@@ -46,15 +46,21 @@ limitations under the License.
     <link rel='stylesheet' type='text/css' href='journal.css'/>
 
     <script src="../common/TEEUtils.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/external/jquery/jquery.js" language="javascript"></script>
+    <script src="../common/jqueryFolder/jquery.min.js" language="javascript"></script>
     <script src="../common/jqueryFolder/jquery-ui.js" language="javascript"></script>
 
+    <script src="nos2.js" language="javascript"></script>
     <script src="journal.js" language="javascript"></script>
     <script src="DB_Connect.js" language="javascript"></script>
     <script src="userAction.js" language="javascript"></script>
     <script src="adminUI.js" language="javascript"></script>
     <script src="strings.js" language="javascript"></script>
-    <script src="teamList.js" language="javascript"></script>
+    <script src="teamNameSuggestionList.js" language="javascript"></script>
+
+    <!--    relevant scenario files -->
+
+    <script src="scen/univ/univ.js" language="javascript"></script>
+    <script src="scen/univ/univ.model.js" language="javascript"></script>
 
     <script>
         $(function () {
@@ -92,10 +98,13 @@ limitations under the License.
 
         <label for="worldCodeBox">World code: </label>
         <input type="text" id="worldCodeBox">
+        <select id="worldScenarioMenu">
+            <option value="univ" selected>4-color universe</option>
+        </select>
         <button id="newWorld" onclick="journal.userAction.newWorld()">new world</button>
         <br>
         <label for = "epochBox">starting year</label>
-        <input id="epochBox" type="number" min="1" max="9999" size="5" placeholder="year">
+        <input id="epochBox" type="number" min="1" max="9999" value="2222" size="5" placeholder="year">
         <div id="journalNameDiv">
             <label for="journalNameBox">Journal name: </label>
             <input type="text" id="journalNameBox">
