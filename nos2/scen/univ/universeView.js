@@ -30,13 +30,6 @@ univ.universeView = {
 
     thePaper : null,
 
-    colors : {
-        "R" : "tomato",
-        "B" : "dodgerblue",
-        "O" : "orange",
-        "G" : "green"
-    },
-
     initialize : function(iDOMobject) {
         this.thePaper = new Snap(iDOMobject);
 
@@ -73,7 +66,7 @@ univ.universeView = {
                 const tx = col * box + 1;
                 const ty = row * box + 1;
                 const theLetter = iArray[col][row];
-                const tColor =  theLetter ? this.colors[theLetter] : "black";
+                const tColor =  theLetter ? univ.colors[theLetter] : "black";
 
                 this.thePaper.rect(tx, ty, box-2, box-2).attr({"fill" : tColor});
             }

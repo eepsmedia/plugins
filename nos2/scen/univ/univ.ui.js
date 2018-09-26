@@ -82,6 +82,13 @@ univ.ui = {
         univ.telescopeView.displayLatestResult();
         univ.telescopeView.displayTelescopeLocation();
 
+        //  in data view
+
+        const allData = await univ.CODAPconnect.getAllCases();
+
+
+        univ.dataView.displaySomeResults( univ.convertValuesToResults(allData));
+
         //  display entire grid. Just for now.
 
         if (univ.playPhase === univ.constants.kPhasePlaying) {

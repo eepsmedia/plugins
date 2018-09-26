@@ -32,6 +32,16 @@ let univ = {
     playPhase : null,
     state : {},
 
+
+    freshState : {
+        size : 12,
+        when : 1954,
+        worldID : null,
+        worldCode : null,
+        teamID : null,
+        teamName : null
+    },
+
     constants : {
         version : "000a",
 
@@ -39,15 +49,32 @@ let univ = {
         kPhaseNoTeam : 30,
         kPhasePlaying : 40,
 
+        kUnivDataSetName : "univ",
+        kUnivDataSetTitle : "four-color universe",
+        kUnivCollectionName : "univ",
+        kLocalSourceString : "local",
     },
 
     initialize : function() {
+        univ.CODAPconnect.initialize(null);
+
         univ.playPhase = univ.constants.kPhaseNoWorld;
         univ.state.size = 12;
 
         //  univ.model.initialize();
         univ.universeView.initialize( document.getElementById("universe") );
         univ.telescopeView.initialize( document.getElementById("telescope") );
+        univ.dataView.initialize( document.getElementById("dataView") );
+
+        //  register for selection events
+
+        //  register to receive notifications about selection
+        codapInterface.on(
+            'notify',
+            'dataContextChangeNotice[' + univ.constants.kUnivDataSetName + ']',
+            'selectCases',
+            univ.selectionManager.codapSelectsCases
+        );
 
         univ.ui.update();
     },
@@ -64,6 +91,7 @@ let univ = {
         if (tWorldData) {
             univ.state.worldID = tWorldData.id;
             univ.state.worldCode = tWorldData.code;
+            univ.state.epoch = tWorldData.epoch;
             const tState = JSON.parse( tWorldData.state);
 
             this.state.truth = tState.truth;
@@ -82,6 +110,36 @@ let univ = {
                 result[letter]++;
             }
         }
-        univ.telescopeView.latestResult = result;
-    }
+        univ.telescopeView.latestResult = result;       //  make sure the telescope knows for its display
+        const tNewResult = new Result(result, iPoint);      //  encapsulate all this information
+        const theNewID = await univ.DBconnect.saveNewResult(tNewResult.values);     //  save to DB, get the db ID
+        tNewResult.values.dbid = theNewID;      //  make sure that's in the values
+
+        console.log("New result " + tNewResult.toString() + " added and got dbid = " + theNewID);
+
+        univ.CODAPconnect.saveItemsToCODAP(tNewResult.values);  //  store it in CODAP
+    },
+
+
+    convertValuesToResults : function( iValues ) {
+        out = [];
+        iValues.values.forEach( v => {
+            let r = new Result({}, [1,2]);
+            r.values = v.values;        //  that's right: values has two fields, id (the item id) and values. Sheesh.
+            out.push(r);
+        })
+        return out;
+    },
+
+    colors: {
+        "R": "tomato",
+        "B": "dodgerblue",
+        "O": "orange",
+        "G": "green",
+        "K": "black",
+        "Y": "yellow",
+        "obs" : "#89F",
+    },
+
+
 };

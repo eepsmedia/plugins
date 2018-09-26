@@ -57,6 +57,16 @@ univ.DBconnect = {
         }
     },
 
+    saveNewResult : async function(iValues) {
+        try {
+            const theCommands = {"c" : "saveNewResult", "v" : JSON.stringify(iValues)};
+            const out = await univ.DBconnect.sendCommand(theCommands);
+            return (out === 0 ? null : out);
+        } catch (m) {
+            console.log('saveNewResult() error: ' + m);
+        }
+    },
+
 
     /**
      * Get information on the world code,

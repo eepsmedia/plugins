@@ -49,6 +49,10 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
     <!-- Snap -->
     <script src="../../../common/snap.svg-min.js"></script>
 
+    <script src="../../../common/iframe-phone.js" language="javascript"></script>
+    <script src="../../../common/codapInterface.js" language="javascript"></script>
+    <script src="../../../common/pluginHelper.js" language="javascript"></script>
+
     <script src="../../../common/TEEUtils.js"></script>
 
     <script src="../../nos2.js"></script>
@@ -58,8 +62,13 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
     <script src="univ.ui.js"></script>
     <script src="univ.DBconnect.js"></script>
     <script src="univ.userAction.js"></script>
+    <script src="univ.CODAPconnect.js"></script>
+    <script src="univ.selectionManager.js"></script>
     <script src="telescopeView.js"></script>
     <script src="universeView.js"></script>
+    <script src="dataView.js"></script>
+
+    <script src="Result.js"></script>
 
 
     <script>
@@ -96,6 +105,7 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
     <!--    list the tabs for this jquery_ui widget -->
     <ul>
         <li><a href="#observationsTab">Observations</a></li>
+        <li><a href="#dataTab">Data</a></li>
         <li><a href="#truthTab">Truth</a></li>
         <li><a href="#optionsTab">Options</a></li>
     </ul>
@@ -107,6 +117,10 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
             <span id="telescopeLocationText"></span>
             <button id="observeButton" onclick="univ.userAction.observe()">collect data</button>
         </div>
+    </div>
+
+    <div id="dataTab">
+        <svg id="dataView" width="500" height="300"></svg>
     </div>
 
     <div id="truthTab">

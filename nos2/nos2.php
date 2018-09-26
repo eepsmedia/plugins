@@ -43,6 +43,18 @@ $out = json_encode(['Unhandled command' => $command]);
 
 switch ($command) {
 
+    case 'saveNewResult':
+        $valuesJSONString = $_REQUEST["v"];
+
+        $params = json_decode($valuesJSONString, true);
+
+        $query = "INSERT INTO results (O, R, G, B, col, row, epoch, dim, team, source) ".
+            "VALUES (:O, :R, :G, :B, :col, :row, :epoch, :dim, :team, :source)";
+
+        $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        $out = $DBH->lastInsertId();
+        break;
+
     case 'newWorld':
         reportToFile("\n[$command]......" . date("Y-m-d H:i:s (T)") . " code: " . $_REQUEST['code']);
         error_log("[$command] .... creds .... user $user pass $pass db $dbname");
