@@ -41,46 +41,6 @@ var barty = {
     state: {},
     routeStrings: {},
 
-    constants: {
-        version: "002h",
-        dimensions: {height: 700, width: 360},
-        name: "barty",
-
-        daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        daysOfWeekLong: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        queryTypes: ["byArrival", "byDeparture", "byRoute", "betweenAny"],
-        kBaseDateString: "2015-04-15",     //  default search date
-        kBaseH0: 8,        //      default starting hour
-        kBaseH1: 14,       //      default ending hour for search
-
-        kGetData: "data",
-        kGetCounts: "counts",
-        kRegionColorMap: {
-            "Peninsula": "purple",
-            "City": "red",
-            "Downtown": "orange",
-            "Oakland": "green",
-            "East Bay": "dodgerblue"
-        },
-        kWeekdayColorMap: {
-            "Sun": "green",
-            "Mon": "orange",
-            "Tue": "coral",
-            "Wed": "gold",
-            "Thu": "goldenrod",
-            "Fri": "lightsalmon",
-            "Sat": "limegreen"
-        },
-        kBaseURL: "https://codap.concord.org/data-science-games/php/getBARTYdata.php",	//	CODAP URL
-        //  kBaseURL :  "../php/getBARTYdata.php"   //  RELEASE URL
-        //	kBaseURL :  "http://localhost:8888/barty/getBARTYdata.php"   //  TESTING URL
-
-        //  kDataLocation : "eeps"
-        kDataLocation: "the CODAP servers"
-
-    },
-
-
     /**
      * Construct a new "state"
      */
@@ -98,33 +58,21 @@ var barty = {
     /**
      * set up barty game/sim
      */
-    initialize: function () {
-        var tPluginConfiguration = {
-            name: barty.constants.name,
-            title: barty.constants.name,
-            version: barty.constants.version,
-            dimensions: barty.constants.dimensions,
+    initialize: async function () {
 
-            preventDataContextReorg: false
-        };
+        await barty.connector.initialize();     //  initialize the iFrame, data sets.
 
-        codapInterface.init(tPluginConfiguration, null).then(
-            function () {
-                barty.state = codapInterface.getInteractiveState();
-                if (jQuery.isEmptyObject(barty.state)) {
-                    codapInterface.updateInteractiveState(barty.freshState);
-                }
+        barty.state = codapInterface.getInteractiveState();
+        if (jQuery.isEmptyObject(barty.state)) {
+            codapInterface.updateInteractiveState(barty.freshState);
+        }
 
-                meeting.restoreMeetingParameters({
-                    day: barty.state.day,
-                    hour: barty.state.hour,
-                    where: barty.state.where,
-                    number: barty.state.number
-                });
-
-                barty.connector.initializeDataSets();
-            }
-        );
+        meeting.restoreMeetingParameters({
+            day: barty.state.day,
+            hour: barty.state.hour,
+            where: barty.state.where,
+            number: barty.state.number
+        });
 
         this.statusSelector = $("#status");
 

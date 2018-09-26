@@ -25,6 +25,8 @@ date_default_timezone_set('America/Los_Angeles');
 */
 header('Access-Control-Allow-Origin: *');
 
+include 'barty.establishCredentials.php';
+
 /**
     Call this to make a connection to the MySQL database.
     Must call before submitting a query
@@ -88,22 +90,9 @@ function console_log( $data ){
   echo '</script>';
 }
 
-/*
-//      eeps at bluehost version
-$dbname = "denofinq_barty";
-$user = "denofinq_dsg";
-$pass = "dsg%37X";
-*/
-
-//  tim's macbook version
-//$dbname = "barty";
-//$user = "root";
-//$pass = "gr6ose6ro";
-$dbname = "bartydb";
-$user = "barty";
-$pass = "barty";
 
 			//  universal code here
+
 /*
 
 */
@@ -192,38 +181,6 @@ $orderClause = "";      //      "\nORDER BY Bdate, hour";
 
 $query = "SELECT " . $varList . " FROM hours  \nWHERE " . $dateRange . 
 	$hourRange . $dowClause . $stationClause;
-
-/*
-switch ($command) {
-
-    case "betweenAny":
-        $timeRange = $dateRange . $hourRange;
-        $query = "SELECT " . $varList . " FROM hours  \nWHERE " . $timeRange . $dowClause .
-			 "\n" . $stationClause . $orderClause;
-        break;
-
-    case "byRoute":
-        $timeRange = $dateRange . $hourRange;
-        $query = "SELECT " . $varList . " FROM hours  \nWHERE " . $timeRange . $dowClause .
-			 "\n" . $stationClause . $orderClause;
-        break;
-
-    case "byArrival":
-        $timeRange = $dateRange . $hourRange;
-        $query = "SELECT " . $varList . " FROM hours \nWHERE " . $timeRange . $dowClause .
-			 "\n" . $stationClause . $orderClause;
-        break;
-
-    case "byDeparture":
-        $timeRange = $dateRange . $hourRange;
-        $query = "SELECT " . $varList . " FROM hours \nWHERE " . $timeRange . $dowClause .
-			 "\n" . $stationClause . $orderClause;
-        break;
-
-    default:
-        break;
-}
-*/
 
 $query = stripcslashes( $query );
 file_put_contents("bartdebug.txt", "\n\n----  " . date("Y-m-d H:i:s (T)") . " submitting query: \n" . $query, FILE_APPEND);

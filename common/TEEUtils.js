@@ -144,6 +144,12 @@ var TEEUtils = {
         return tDay;
     },
 
+    dateNumberToDayOfWeek : function(iMilliseconds) {
+        var tTempDate = new Date(iMilliseconds);
+        var tDay = tTempDate.getDay();      //  day of week, Sunday = 0, etc.
+        return tDay;
+    },
+
     newtonsMethod: function (iExpression, iStartValue, iTolerance) {
         var maxIterations = 50;
         var nIterations = 0;

@@ -22,20 +22,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 limitations under the License.
 ==========================================================================
 
-Temp URL:   http://localhost:8888/barty/barty.html
+URLs:   http://localhost:8888/barty/barty.html
 
-    Here is the URL...
+            local:  http://localhost:8888/plugins/barty/barty.html
 
-    http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://www.eeps.com/dsg/barty/barty.html
+            xyz:    https://codap.xyz/plugins/barty/barty.html
 
-    or locally (with global CODAP),
-    http://codap.concord.org/releases/dsg?di=http://localhost/~tim/gamePrototypes/barty/barty.html
+            eeps:   https://www.eeps.com/codap/barty/barty.html
 
-    or locally (with local CODAP):
-    http://localhost/~tim/codap/static/dg/en/cert/index.html?di=http://localhost/~tim/gamePrototypes/barty/barty.html
-
-    just the plugin:
-    http://localhost/~tim/gamePrototypes/barty/barty.html
 
 -->
 
@@ -63,22 +57,21 @@ HOW TO DEPLOY THIS THING
     <title>barty</title>
 
     <link rel='stylesheet' type='text/css' href='barty.css'/>
-    <!--<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css'/>-->
-    <link rel='stylesheet' type='text/css' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'/>
+    <link rel='stylesheet' type='text/css' href='../common/jqueryFolder/jquery-ui.css'/>
 
-    <!-- These two scripts take care of the communication with CODAP and commons -->
+    <!-- These scripts take care of the communication with CODAP and commons -->
     <script src="../common/iframe-phone.js" language="javascript"></script>
     <script src="../common/codapInterface.js" language="javascript"></script>
     <script src="../common/pluginHelper.js" language="javascript"></script>
 
     <script src="../common/TEEUtils.js" language="javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>-->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.js"></script>
 
 
     <!-- Our game source -->
     <script src="barty.js" language="JavaScript"></script>
+    <script src="barty.constants.js" language="JavaScript"></script>
     <script src="bartyManager.js" language="JavaScript"></script>
     <script src="barty.ui.js" language="JavaScript"></script>
     <script src="bartOptions.js" language="JavaScript"></script>

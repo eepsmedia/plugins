@@ -103,7 +103,7 @@ barty.manager = {
      */
     assembleQueryDataString: function (iCommand, iWhat) {
 
-        var dataString = "c=" + iCommand;
+        var dataString = "c=" + iCommand + "&whence=" + barty.constants.whence;
         var tStationClauseString = "";
 
         switch (iWhat) {
@@ -283,7 +283,7 @@ barty.manager = {
             barty.statusSelector.text("getting data from " + barty.constants.kDataLocation + "...");
             $.ajax({
                 type: "post",
-                url: barty.constants.kBaseURL,
+                url: barty.constants.kBasePhpURL[barty.constants.whence],
                 data: tDataString,
                 success: weGotData
             });
