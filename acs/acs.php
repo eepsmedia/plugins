@@ -26,7 +26,6 @@
 
 include 'acs.establishCredentials.php';     //  tells us where the credentials are
 
-
 header('Access-Control-Allow-Origin: *');
 
 function reportToFile($message)
@@ -114,14 +113,10 @@ switch ($command) {
             $out[$var] = $oCodes;
         }
 
-        //  reportToFile("Codes! " . print_r($out, true));
         break;
 }
 
 $jout = json_encode($out);
 
-//  reportToFile('end of php: the json is '. print_r($jout, true));
-
-//  echo $out;
 echo $jout;
 

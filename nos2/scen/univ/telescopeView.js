@@ -28,41 +28,27 @@ limitations under the License.
 
 univ.telescopeView = {
 
-    thePaper : null,
+    thePaper: null,
 
-    experimentSize : 3,
+    experimentSize: 3,
 
-    selectedPoint : null,
+    selectedPoint: null,
 
-    possiblePoint : null,
+    possiblePoint: null,
 
-    latestResult : null,
+    latestResult: null,
 
-    theArray : [],
+    theArray: [],
 
-    colors : {
-        "R" : "tomato",
-        "B" : "dodgerblue",
-        "O" : "orange",
-        "G" : "green",
-        "K" : "black",
-        "Y" : "yellow"
-    },
-
-    initialize : function(iDOMobject) {
+    initialize: function (iDOMobject) {
         this.thePaper = new Snap(iDOMobject);
         this.theArray = this.makeUniformArray("K");
 
         const tArray = this.paintArrayAt(this.theArray, [6, 2], this.experimentSize, "Y");
         this.drawArray(tArray);
-
-        const outerSVGText = this.thePaper.toString();
-        const innerSVGText = this.thePaper.innerSVG();
-
-
     },
 
-    makeUniformArray : function( iFill ) {
+    makeUniformArray: function (iFill) {
         let out = [];
 
         for (let r = 0; r < univ.state.size; r++) {
@@ -75,15 +61,15 @@ univ.telescopeView = {
         return out;
     },
 
-    pinColRow : function( iPoint, iSize ) {
+    pinColRow: function (iPoint, iSize) {
         if (iPoint[1] >= univ.state.size - iSize) iPoint[1] = univ.state.size - iSize;
         if (iPoint[0] >= univ.state.size - iSize) iPoint[0] = univ.state.size - iSize;
 
         return iPoint;
     },
 
-    paintArrayAt : function( iArray, iPoint, iSize, iFill )  {
-        iPoint = this.pinColRow( iPoint, this.experimentSize)
+    paintArrayAt: function (iArray, iPoint, iSize, iFill) {
+        iPoint = this.pinColRow(iPoint, this.experimentSize)
         for (let r = 0; r < iSize; r++) {
             for (let c = 0; c < iSize; c++) {
                 iArray[c + iPoint[0]][r + iPoint[1]] = iFill;              //  note column is the first index, because it's x.
@@ -93,36 +79,36 @@ univ.telescopeView = {
     },
 
 
-    prepareArray : function() {
+    prepareArray: function () {
         let tArray = this.makeUniformArray("K");
         if (this.possiblePoint) {
-            tArray = this.paintArrayAt( tArray, this.possiblePoint, this.experimentSize, "Y");
+            tArray = this.paintArrayAt(tArray, this.possiblePoint, this.experimentSize, "Y");
         }
         if (this.selectedPoint) {
-            tArray = this.paintArrayAt( tArray, this.selectedPoint, this.experimentSize, "R");
+            tArray = this.paintArrayAt(tArray, this.selectedPoint, this.experimentSize, "R");
         }
         return tArray;
     },
 
-    drawArray : function(iArray) {
+    drawArray: function (iArray) {
         const w = this.thePaper.attr("width");
         const h = this.thePaper.attr("height");
         const wh = w < h ? w : h;   //  smaller of the two, so everything fits
-        const box = wh/univ.state.size;
+        const box = wh / univ.state.size;
 
-        for (let row=0; row < univ.state.size; row++) {
-            for (let col=0; col < univ.state.size; col++) {
+        for (let row = 0; row < univ.state.size; row++) {
+            for (let col = 0; col < univ.state.size; col++) {
                 const tx = col * box + 1;
                 const ty = row * box + 1;
                 const theLetter = iArray[col][row];
-                const tColor =  theLetter ? this.colors[theLetter] : "black";
+                const tColor = theLetter ? univ.colors[theLetter] : "black";
 
-                let tr = this.thePaper.rect(tx, ty, box-2, box-2).attr({"fill" : tColor});
-                tr.mouseover( e => {
+                let tr = this.thePaper.rect(tx, ty, box - 2, box - 2).attr({"fill": tColor});
+                tr.mouseover(e => {
                     this.possiblePoint = [col, row];
                     const tA = this.prepareArray();
                     this.drawArray(tA);
-                }).mouseup( e => {
+                }).mouseup(e => {
                     this.selectedPoint = [col, row];
                     const tA = this.prepareArray();
                     this.drawArray(tA);
@@ -138,7 +124,7 @@ univ.telescopeView = {
 
     displayTelescopeLocation() {
         const tTelescopeLocationText = document.getElementById("telescopeLocationText");
-        if  (this.selectedPoint) {
+        if (this.selectedPoint) {
             tTelescopeLocationText.innerHTML = "Upper left at col = " +
                 this.selectedPoint[0] + ", row = " + this.selectedPoint[1];
         } else {
@@ -146,7 +132,7 @@ univ.telescopeView = {
         }
     },
 
-    displayLatestResult : function() {
+    displayLatestResult: function () {
         const tLatestResultText = document.getElementById("latestResultText");
         if (this.latestResult) {
             tLatestResultText.innerHTML = JSON.stringify(this.latestResult);
