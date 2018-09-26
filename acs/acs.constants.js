@@ -26,9 +26,10 @@ acs.constants = {
     kACSCollectionName: "people",
     kACSCaseTableName: "People from ACS",
 
+
     kBasePhpURL: {
         local: "http://localhost:8888/plugins/acs/acs.php",
         xyz: "https://codap.xyz/plugins/acs/acs.php",
         eeps: "https://www.eeps.com/codap/acs/acs.php"
     }
-};
+;
