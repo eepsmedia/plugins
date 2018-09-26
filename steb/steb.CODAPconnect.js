@@ -3,7 +3,7 @@
 
 
  ==========================================================================
- connector.js in data-science-games.
+ CODAPconnect.js in data-science-games.
 
  Author:   Tim Erickson
 
@@ -34,12 +34,12 @@
  * BUCKET (for a set of Stebbers, has current score, etc). Every 10 "meals"
  * STEBBERS one case per Stebber, subordinate to the bucket
  *
- * @type {{gameCaseID: number, bucketCaseID: number, gameNumber: number, bucketNumber: number, gameCollectionName: string, bucketCollectionName: string, stebberCollectionName: string, newGameCase: steb.connector.newGameCase, finishGameCase: steb.connector.finishGameCase, newBucketCase: steb.connector.newBucketCase, doStebberRecord: steb.connector.doStebberRecord, getInitSimObject: steb.connector.getInitSimObject}}
+ * @type {{gameCaseID: number, bucketCaseID: number, gameNumber: number, bucketNumber: number, gameCollectionName: string, bucketCollectionName: string, stebberCollectionName: string, newGameCase: steb.CODAPconnect.newGameCase, finishGameCase: steb.CODAPconnect.finishGameCase, newBucketCase: steb.CODAPconnect.newBucketCase, doStebberRecord: steb.CODAPconnect.doStebberRecord, getInitSimObject: steb.CODAPconnect.getInitSimObject}}
  */
 
 /* global steb, codapHelper, alert, console */
 
-steb.connector = {
+steb.CODAPconnect = {
     gameCaseIDInLiving: 0,
     gameCaseIDInEaten: 0,
     bucketCaseID: 0,
@@ -362,7 +362,7 @@ steb.connector = {
  * (We'll use it for save and restore)
  */
 codapHelper.initDataInteractive(
-    steb.connector.getInitFrameObject(),
+    steb.CODAPconnect.getInitFrameObject(),
     steb.manager.stebDoCommand,         //  the callback needed for saving state
     steb.manager.stebRestoreState       // the callback for restoring state
 );

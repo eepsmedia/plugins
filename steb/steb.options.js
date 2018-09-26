@@ -65,7 +65,7 @@ steb.options = {
 
         this.setPredatorVisionParameters();
         steb.worldView.updateDisplayWithCurrentVisionParameters( );
-        steb.connector.logMessage("Predator vision changed", null);
+        steb.CODAPconnect.logMessage("Predator vision changed", null);
     },
 
     predatorAutomationChange : function() {

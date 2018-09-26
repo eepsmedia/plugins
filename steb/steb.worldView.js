@@ -222,7 +222,7 @@ steb.worldView = {
 
         this.setBackgroundColor();
         steb.colorBoxView.setColors(steb.model.trueBackgroundColor, steb.model.meanCrudColor);
-        steb.connector.logMessage("New BG color &@ &@ &@",steb.model.trueBackgroundColor);
+        steb.CODAPconnect.logMessage("New BG color &@ &@ &@",steb.model.trueBackgroundColor);
     },
 
     forceNewMeanCrudColor: function () {
@@ -241,7 +241,7 @@ steb.worldView = {
 
         this.setCrudColors();
         steb.colorBoxView.setColors(steb.model.trueBackgroundColor, steb.model.meanCrudColor);
-        steb.connector.logMessage("New Crud color &@ &@ &@",steb.model.meanCrudColor);
+        steb.CODAPconnect.logMessage("New Crud color &@ &@ &@",steb.model.meanCrudColor);
     }
 
 };

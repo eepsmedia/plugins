@@ -106,7 +106,7 @@ steb.manager = {
     },
 
     processSelectionFromCODAP: function () {
-        steb.connector.getSelectedStebberIDs(gotSelectionResult);
+        steb.CODAPconnect.getSelectedStebberIDs(gotSelectionResult);
 
         function gotSelectionResult(iResult) {
 
@@ -232,15 +232,15 @@ steb.manager = {
         var tEat = steb.manager.running && !steb.options.automatedPredator;
         if (tEat) {
             this.eatStebber(iStebberView);
-            steb.connector.logMessage('Stebber eaten (manual)', null);
+            steb.CODAPconnect.logMessage('Stebber eaten (manual)', null);
         } else {
-            steb.connector.selectStebberInCODAP(iStebberView.stebber);
+            steb.CODAPconnect.selectStebberInCODAP(iStebberView.stebber);
         }
     },
 
     autoPredatorCatchesStebberView: function (iStebberView) {
         this.eatStebber(iStebberView);
-        steb.connector.logMessage('Stebber eaten (auto)', null);
+        steb.CODAPconnect.logMessage('Stebber eaten (auto)', null);
     },
 
     /**
@@ -278,7 +278,7 @@ steb.manager = {
         var tHigh = this.highLevelDataValues();
         steb.model.stebbers.forEach(function (iSteb) {
             var tValues = $.extend({}, tHigh, iSteb.stebberDataValues());
-            steb.connector.emitStebberRecord(tValues, stebberRecordCreated, steb.constants.dataSetName_Living);
+            steb.CODAPconnect.emitStebberRecord(tValues, stebberRecordCreated, steb.constants.dataSetName_Living);
 
             function stebberRecordCreated(jResult) {
                 if (jResult.success) {
@@ -310,14 +310,14 @@ steb.manager = {
 
     emitMealData: function (iStebber) {
         var tValues = $.extend({}, this.highLevelDataValues(), iStebber.stebberDataValues());
-        steb.connector.emitStebberRecord(tValues, null, steb.constants.dataSetName_Eaten);
+        steb.CODAPconnect.emitStebberRecord(tValues, null, steb.constants.dataSetName_Eaten);
 
-        // steb.connector.doMealRecord( tValues );
+        // steb.CODAPconnect.doMealRecord( tValues );
     },
 
     emitBirthData: function (iStebber) {
         var tValues = $.extend({}, this.highLevelDataValues(), iStebber.stebberDataValues());
-        steb.connector.emitStebberRecord(tValues, null, steb.constants.dataSetName_Born);
+        steb.CODAPconnect.emitStebberRecord(tValues, null, steb.constants.dataSetName_Born);
     },
 
     /**
@@ -444,10 +444,10 @@ steb.manager = {
                                     predatorPoints: steb.score.predatorPoints
                                 },
                                 connect: {
-                                    gameCaseIDInLiving: steb.connector.gameCaseIDInLiving,
-                                    gameCaseIDInEaten: steb.connector.gameCaseIDInEaten,
-                                    bucketCaseID: steb.connector.bucketCaseID,
-                                    bucketNumber: steb.connector.bucketNumber
+                                    gameCaseIDInLiving: steb.CODAPconnect.gameCaseIDInLiving,
+                                    gameCaseIDInEaten: steb.CODAPconnect.gameCaseIDInEaten,
+                                    bucketCaseID: steb.CODAPconnect.bucketCaseID,
+                                    bucketNumber: steb.CODAPconnect.bucketNumber
                                 }
                             }
                         };
@@ -529,18 +529,18 @@ steb.manager = {
 
             steb.score.predatorPoints = tScore.predatorPoints;
 
-            steb.connector.gameCaseIDInLiving = tConnect.gameCaseIDInLiving;
-            steb.connector.gameCaseIDInEaten = tConnect.gameCaseIDInEaten;
-            steb.connector.bucketCaseID = tConnect.bucketCaseID;
-            steb.connector.bucketNumber = tConnect.bucketNumber;
+            steb.CODAPconnect.gameCaseIDInLiving = tConnect.gameCaseIDInLiving;
+            steb.CODAPconnect.gameCaseIDInEaten = tConnect.gameCaseIDInEaten;
+            steb.CODAPconnect.bucketCaseID = tConnect.bucketCaseID;
+            steb.CODAPconnect.bucketNumber = tConnect.bucketNumber;
 
             // Get things started where they left off
             steb.manager.reinstateGame();
         }
 
-        codapHelper.initDataSet(steb.connector.getInitLivingStebberDataSetObject());
-        codapHelper.initDataSet(steb.connector.getInitStebberMealsDataSetObject());
-        codapHelper.initDataSet(steb.connector.getBornStebberDataSetObject());
+        codapHelper.initDataSet(steb.CODAPconnect.getInitLivingStebberDataSetObject());
+        codapHelper.initDataSet(steb.CODAPconnect.getInitStebberMealsDataSetObject());
+        codapHelper.initDataSet(steb.CODAPconnect.getBornStebberDataSetObject());
     }
 
 };

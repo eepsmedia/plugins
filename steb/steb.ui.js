@@ -121,7 +121,7 @@ steb.ui = {
             }.bind(this),
                 steb.constants.timeOutTime);    //  two seconds by default
 
-            steb.connector.logMessage('Crud click', null);
+            steb.CODAPconnect.logMessage('Crud click', null);
         }
     },
 
