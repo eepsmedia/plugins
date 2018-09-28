@@ -137,7 +137,7 @@ System.prototype.determineCompositeLogTemperature = function() {
 
     if (iBest >= 0) {
         var tStar = this.stars[iBest];
-        var tResult = tStar.logTemperature;     //  correct result is it's not a binary
+        var tResult = tStar.logTemperature;     //  correct result if it's not a binary
     }
 
     return tResult;
