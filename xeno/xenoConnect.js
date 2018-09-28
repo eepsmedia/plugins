@@ -32,6 +32,11 @@ var xenoConnect = {
     casesToProcess: 0,
     casesProcessed: [],
 
+    /**
+     * Set up connections with CODAP including subscribing to updateCases notifications
+     *
+     * @param iCallback
+     */
     initialize: function (iCallback) {
         codapInterface.init(this.iFrameDescriptor, null).then(
             function () {
@@ -60,6 +65,13 @@ var xenoConnect = {
         );
     },
 
+    /**
+     * When the tree updates cases by setting the value for diagnosis,
+     * we take those, evaluate the diagnoses, and set the value for analysis accordingly.
+     *
+     * @param iCommand
+     * @param iCallback
+     */
     processUpdateCaseNotification: function (iCommand, iCallback) {
         var tAutoResultDisplay = document.getElementById("autoResultDisplay");
 
@@ -109,6 +121,12 @@ var xenoConnect = {
         }
     },
 
+
+    /**
+     * Tell CODAP to make items.
+     * @param iValues   An array of objects containing the keys and values
+     * corresponding to attributes and values of the new cases.
+     */
     createXenoItems: function (iValues) {
 
         this.casesToProcess = iValues.length;

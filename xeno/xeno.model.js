@@ -48,6 +48,10 @@ xeno.model = {
         return xeno.strings.creatureString(iValues);
     },
 
+    /**
+     * construct the <option> statements for a menu of all the maladies
+     * @returns {string}
+     */
     makeMaladyMenuGuts : function() {
         out = "";
         for (var k in this.maladies) {
@@ -57,6 +61,10 @@ xeno.model = {
         return out;
     },
 
+    /**
+     * Make an object that's a randomly-generated creature.
+     * These values are mostly independent, although weight depends on height and tentacles.
+     */
     wellCreature : {
         hair: function () {
             return TEEUtils.pickRandomItemFrom([xeno.strings.pink, xeno.strings.blue]);
@@ -80,6 +88,9 @@ xeno.model = {
         }
     },
 
+    /**
+     * Object containing malady info needed to determine `health`. Keyed by malady name.
+     */
     maladies: {
 
         //  simple, single binary

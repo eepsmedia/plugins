@@ -57,6 +57,9 @@ var xeno = {
 
     },
 
+    /**
+     * Parse the URL to get the two-character language code from the plugin's URL.
+     */
     setLanguageFromURL : function() {
         let theLang = xeno.constants.kInitialLanguage;
 
@@ -90,6 +93,10 @@ var xeno = {
         tAutoResultDisplay.innerHTML = xeno.constants.autoResultInitialText;
     },
 
+    /**
+     * User changes which malady we're using
+     * Deletes all the data in the table (so they won't be mixed up!)
+     */
     maladyChange: function () {
         this.state.malady = $("#maladyMenu").val();
 
@@ -106,10 +113,15 @@ var xeno = {
         xeno.controlChange();
     },
 
+    /**
+     * User has changed some control or other, for example, the radio buttons for mode.
+     * Change values, text, etc. to correspond.
+     * Also changes the visibility of the corresponding divs.
+     */
     controlChange: function () {
         var tAutoDiagnoseCaseNumberBox = document.getElementById("howManyAutoCases");
         var tTrainingCaseNumberBox = document.getElementById("howManyCases");
-        xeno.state.mode = $('input[name=xenoMode]:checked').val();  //  "training" or "one by one"
+        xeno.state.mode = $('input[name=xenoMode]:checked').val();  //  "training" or "one by one" or "auto"
         xeno.state.howManyCases = tTrainingCaseNumberBox.value;
         xeno.state.howManyAutoCases = tAutoDiagnoseCaseNumberBox.value;
         xeno.updateScore(0);
@@ -165,6 +177,13 @@ var xeno = {
         document.getElementById("xenoScore").innerHTML = xeno.state.score;
     },
 
+    /**
+     * Make n new cases. Called by makeNewCases().
+     *
+     * @param n     how many cases
+     * @param iSource what mode are we in?
+     * @returns {Array} an array of objects suitable for export into CODAP
+     */
     getAnArrayOfCaseValues: function (n, iSource) {
         var theCaseValues = [];
 
@@ -178,6 +197,9 @@ var xeno = {
         return theCaseValues;
     },
 
+    /**
+     * User has asked for new cases while in training.
+     */
     makeNewCases: function () {
         var n = xeno.state.howManyCases;
         console.log('making ' + n + ' new cases');
@@ -212,6 +234,9 @@ var xeno = {
         xeno.displayCurrentCase(this.state.previousSingleDiagnosisReport);
     },
 
+    /**
+     * User pressed the auto-diagnose button
+     */
     autoDiagnose: function () {
         var tAutoResultDisplay = document.getElementById("autoResultDisplay");
         var tAutoResultText = "Waiting for analysis from the tree.";
