@@ -36,7 +36,7 @@ steb.ui = {
 
     fixUI : function() {
         const tGameType = steb.options.automatedPredator ? "autoplay" : "game" ;
-        const tStatus = steb.manager.playing ? tGameType + " in progress" : "no game";
+        let tStatus = steb.manager.playing ? tGameType + " in progress" : "no game";
         tStatus +=  (steb.manager.running) ? "" : ", paused";
         $("#shortStatus").html( tStatus );
         this.startStopButton.style.backgroundImage  = //  machinery for the play/pause button

@@ -282,7 +282,12 @@ steb.manager = {
 
             function stebberRecordCreated(jResult) {
                 if (jResult.success) {
-                    iSteb.caseIDs.push(jResult.values[0]);
+                    //  iSteb.caseIDs.push(jResult.values[0]);
+                    const tCaseIDs = (jResult.values && jResult.values.caseIDs) || jResult.caseIDs;
+                    const tItemIDs = (jResult.values && jResult.values.itemIDs) || jResult.itemIDs;
+
+                    iSteb.caseIDs = iSteb.caseIDs.concat(tCaseIDs);
+                    iSteb.itemIDs = iSteb.itemIDs.concat(tItemIDs);
                     //  console.log('Stebber ' + iSteb.id + ' has case IDs ' + iSteb.caseIDs.toString());
                 } else {
                     console.log("Failed to create stebber case.");

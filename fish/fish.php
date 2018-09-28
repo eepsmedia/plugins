@@ -358,7 +358,7 @@ switch ($command) {
     case 'newCatchRecord':
         $params = array();
         $namesA = array();
-        $valuesA = array();
+        //  $valuesA = array();
 
         foreach ($_REQUEST as $key => $value) {
             if ($key != "c" && $key != "whence") {

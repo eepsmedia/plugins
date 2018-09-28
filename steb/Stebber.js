@@ -39,6 +39,7 @@ var Stebber = function (iColor, iWhere, iID, iParentID) {
     this.id = iID;
     this.parentID = iParentID;
     this.caseIDs = [];  //  array of case IDs for this Stebber
+    this.itemIDs = [];  //likewise, for item IDs.
     this.selected = false;
     this.colorDistanceToBackground = null;
     this.colorDistanceToCrud = null;
