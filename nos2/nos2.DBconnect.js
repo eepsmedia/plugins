@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-DB_Connect in journal
+DBconnect in journal
 
 Author:   Tim Erickson
 
@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-nos2.DB_Connect = {
+nos2.DBconnect = {
 
     sendCommand: async function (iCommands) {
         let theBody = new FormData();
@@ -53,7 +53,7 @@ nos2.DB_Connect = {
             }
         }
         catch (msg) {
-            console.log('fetch error in DB_Connect.sendCommand(): ' + msg);
+            console.log('fetch error in DBconnect.sendCommand(): ' + msg);
         }
     },
 
@@ -68,7 +68,7 @@ nos2.DB_Connect = {
                 'scen': iScenario,
                 'state': JSON.stringify(iGameState)
             };
-            const iData = await nos2.DB_Connect.sendCommand(theCommands);
+            const iData = await nos2.DBconnect.sendCommand(theCommands);
             return iData;
         }
 
@@ -81,7 +81,7 @@ nos2.DB_Connect = {
     addTeam: async function (iWorld, iCode, iName) {
         try {
             const theCommands = {"c" : "addTeam", "w": iWorld, "code": iCode, "name": iName};
-            const iData = await nos2.DB_Connect.sendCommand(theCommands);
+            const iData = await nos2.DBconnect.sendCommand(theCommands);
         }
 
         catch (msg) {
@@ -98,7 +98,7 @@ nos2.DB_Connect = {
     getWorldData: async function (iWorldCode) {
         try {
             const theCommands = {"c": "getWorldData", "code": iWorldCode};
-            const out = await nos2.DB_Connect.sendCommand(theCommands);
+            const out = await nos2.DBconnect.sendCommand(theCommands);
             return out.length == 0 ? null : out[0];
         }
 
@@ -111,7 +111,7 @@ nos2.DB_Connect = {
         if (iGod) {
             try {
                 const theCommands = {"c": "getMyWorlds", "g": iGod};
-                const out = await nos2.DB_Connect.sendCommand(theCommands);
+                const out = await nos2.DBconnect.sendCommand(theCommands);
                 return out.length == 0 ? null : out;
             } catch (msg) {
                 console.log('getMyWorlds() error: ' + msg);
@@ -125,7 +125,7 @@ nos2.DB_Connect = {
         if (iWorldID) {
             try {
                 const theCommands = {"c": "getMyTeams", "w": iWorldID};
-                const out = await nos2.DB_Connect.sendCommand(theCommands);
+                const out = await nos2.DBconnect.sendCommand(theCommands);
                 return out.length == 0 ? null : out;
             } catch (msg) {
                 console.log('getMyTeams() error: ' + msg);
@@ -139,7 +139,7 @@ nos2.DB_Connect = {
         if (iWorldID && iTeamID) {
             let out = null;
             try {
-                out = await nos2.DB_Connect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+                out = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
                 return out.length == 0 ? null : out;
 
             } catch (msg) {
@@ -151,13 +151,15 @@ nos2.DB_Connect = {
 
     },
 
-    savePaper: async function (iAuthors, iTitle, iText, iAComments, iTeam, iPaperID) {
+    savePaper: async function (iAuthors, iTitle, iText, iAComments, iTeamID, iTeamName, iPaperID) {
         let theCommands = {};
         try {
             if (iPaperID) {
                 theCommands = {
                     "c": "updatePaper", "authors": iAuthors,
-                    "title": iTitle, "text": iText, "team": iTeam, "ac": iAComments,
+                    "title": iTitle, "text": iText,
+                    "teamID": iTeamID, "teamName" : iTeamName,
+                    "ac": iAComments,
                     "id": iPaperID
                 };
             } else {
@@ -166,12 +168,13 @@ nos2.DB_Connect = {
                     "authors": iAuthors,
                     "title": iTitle,
                     "text": iText,
-                    "team": iTeam,
+                    "teamID": iTeamID,
+                    "teamName" : iTeamName,
                     "ac": iAComments,
                     "worldID": journal.state.worldID
                 };
             }
-            const out = await nos2.DB_Connect.sendCommand(theCommands);
+            const out = await nos2.DBconnect.sendCommand(theCommands);
 
             return out;
         }
@@ -185,7 +188,7 @@ nos2.DB_Connect = {
         try {
             if (iPaperID) {
                 theCommands = {"c": "submitPaper", "id": iPaperID, "s": iNewStatus};
-                const iData = await nos2.DB_Connect.sendCommand(theCommands);
+                const iData = await nos2.DBconnect.sendCommand(theCommands);
                 return iData;
             } else {
                 alert("There is no 'current' paper to submit.");
@@ -219,7 +222,7 @@ nos2.DB_Connect = {
 
             if (iPaperID) {
                 theCommands = {"c": "judgePaper", "p": iPaperID, "s": tStatus, 'ec': iEdComments};
-                const iData = await nos2.DB_Connect.sendCommand(theCommands);
+                const iData = await nos2.DBconnect.sendCommand(theCommands);
                 return iData;
             } else {
                 alert("There is no paper to submit.");
@@ -234,7 +237,7 @@ nos2.DB_Connect = {
 
     getGodData: async function (iUsername) {
         try {
-            const out = await nos2.DB_Connect.sendCommand({"c": "getGodData", "u": iUsername});
+            const out = await nos2.DBconnect.sendCommand({"c": "getGodData", "u": iUsername});
             if (out.length == 0) {
                 return null;
             } else if (out.length == 1) {
@@ -249,7 +252,7 @@ nos2.DB_Connect = {
 
     newGod: async function (iUsername) {
         try {
-            const out = await nos2.DB_Connect.sendCommand({"c": "newGod", "u": iUsername});
+            const out = await nos2.DBconnect.sendCommand({"c": "newGod", "u": iUsername});
             return out;
         } catch (e) {
             console.log('newGod() error: ' + e);
@@ -258,7 +261,7 @@ nos2.DB_Connect = {
 
     getPublishedJournal: async function () {
         try {
-            const out = await nos2.DB_Connect.sendCommand({"c": "getJournal", "w": journal.state.worldID});
+            const out = await nos2.DBconnect.sendCommand({"c": "getJournal", "w": journal.state.worldID});
             return out;
         } catch (e) {
             console.log('getPublishedJournal() error: ' + e);

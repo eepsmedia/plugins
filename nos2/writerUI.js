@@ -70,7 +70,7 @@ journal.ui = {
     update : async function() {
         //  all the data we need to await...
 
-        const pMyPapers = journal.DB_Connect.getPapers(journal.state.worldID, journal.state.teamID);
+        const pMyPapers = nos2.DBconnect.getPapers(journal.state.worldID, journal.state.teamID);
         tPapers = await pMyPapers;
 
         journal.thePapers = {};
@@ -110,7 +110,7 @@ journal.ui = {
 
         if (journal.writerPhase === journal.constants.kWriterPhaseNoTeam) {
             //  get the team list only if we're in this phase.
-            const tTeams = await journal.DB_Connect.getMyTeams(journal.state.worldID);
+            const tTeams = await nos2.DBconnect.getMyTeams(journal.state.worldID);
             const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
 
             if (tTeams) {
@@ -170,7 +170,7 @@ journal.ui = {
 
         //  update the full journal
 
-        document.getElementById("journalDiv").innerHTML = await journal.DB_Connect.getPublishedJournal();
+        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal();
 
 
     }

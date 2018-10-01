@@ -135,7 +135,7 @@ univ.telescopeView = {
     displayLatestResult: function () {
         const tLatestResultText = document.getElementById("latestResultText");
         if (this.latestResult) {
-            tLatestResultText.innerHTML = JSON.stringify(this.latestResult);
+            tLatestResultText.innerHTML = JSON.stringify(this.latestResult.data);
         } else {
             tLatestResultText.innerHTML = "click <b>collect data</b> to get a new result";
         }

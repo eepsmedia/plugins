@@ -68,8 +68,8 @@ journal.ui = {
     update: async function () {
         //  all the data we need to await...
 
-        const pAllPapers = journal.DB_Connect.getPapers(journal.state.worldID, null);
-        const pAllTeams = journal.DB_Connect.getMyTeams(journal.state.worldID);
+        const pAllPapers = nos2.DBconnect.getPapers(journal.state.worldID, null);
+        const pAllTeams = nos2.DBconnect.getMyTeams(journal.state.worldID);
 
         const [theTeams, thePapers] = await Promise.all([pAllTeams, pAllPapers]);
 
@@ -142,7 +142,7 @@ journal.ui = {
 
         //  update the full journal
 
-        document.getElementById("journalDiv").innerHTML = await journal.DB_Connect.getPublishedJournal();
+        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal();
 
 
 

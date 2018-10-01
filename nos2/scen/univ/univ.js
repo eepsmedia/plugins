@@ -26,11 +26,31 @@ limitations under the License.
 
 */
 
+/*
+# Notes on design
+
+## Where is the data?
+There are really two copies of the experimental results: one in CODAP and one in the DB. This is unfortunate but inevitable.
+We decide this:
+
+When we display data in the plugin, we rely on CODAP's copy.
+
+To make this work, we do several things:
+* Whenever we take new data, we save it to the DB and to CODAP.
+* Whenever we join a game -- enter a fresh CODAP doc -- we retrieve all KNOWN data from the database
+  and add it to CODAP.
+
+So see that in `univ.ui.update`, when we update `dataView`, we go out to CODAP every time and get
+the data.
+
+ */
+
 let univ = {
 
     whence : "local",
     playPhase : null,
     state : {},
+    currentSnapshot : null,
 
 
     freshState : {
@@ -66,9 +86,8 @@ let univ = {
         univ.telescopeView.initialize( document.getElementById("telescope") );
         univ.dataView.initialize( document.getElementById("dataView") );
 
-        //  register for selection events
-
         //  register to receive notifications about selection
+
         codapInterface.on(
             'notify',
             'dataContextChangeNotice[' + univ.constants.kUnivDataSetName + ']',
@@ -101,34 +120,98 @@ let univ = {
         }
     },
 
+    /**
+     * Called from userActions
+     *
+     * @param iPoint
+     * @returns {Promise<void>}
+     */
     doObservation : async function(iPoint) {
         const [ULCc, ULCr] = iPoint;
-        let result = {O : 0, R : 0, G : 0, B : 0};
+
+        //  the specific data appropriate to this scenario.
+        //  epoch, team, and source are added when we make a Result object.
+        let data = {
+            O : 0, R : 0, G : 0, B : 0,
+            col : ULCc, row : ULCr,
+            dim : univ.telescopeView.experimentSize
+        };
         for ( let c = 0; c < univ.telescopeView.experimentSize; c++ ) {
             for (let r = 0; r < univ.telescopeView.experimentSize; r++) {
                 let letter = univ.state.truth[ULCc + c][ULCr + r];
-                result[letter]++;
+                data[letter]++;
             }
         }
-        univ.telescopeView.latestResult = result;       //  make sure the telescope knows for its display
-        const tNewResult = new Result(result, iPoint);      //  encapsulate all this information
-        const theNewID = await univ.DBconnect.saveNewResult(tNewResult.values);     //  save to DB, get the db ID
-        tNewResult.values.dbid = theNewID;      //  make sure that's in the values
+
+        const tNewResult = new Result(data);      //  encapsulate all this information
+        univ.telescopeView.latestResult = tNewResult;       //  make sure the telescope knows for its display
+        const theNewID = await univ.DBconnect.saveNewResult(tNewResult);     //  save to DB, get the db ID
+        tNewResult.dbid = theNewID;      //  make sure that's in the values
 
         console.log("New result " + tNewResult.toString() + " added and got dbid = " + theNewID);
 
-        univ.CODAPconnect.saveItemsToCODAP(tNewResult.values);  //  store it in CODAP
+        univ.DBconnect.assertKnowledge(theNewID);
+
+        univ.CODAPconnect.saveResultsToCODAP(tNewResult);  //  store it in CODAP. This has the dbid field.
+    },
+
+    /**
+     * Called from userActions
+     */
+    makeSnapshot : function() {
+        this.currentSnapshot = new Snapshot();
+        this.currentSnapshot.theInnerSVG = univ.dataView.thePaper.innerSVG();
+        this.currentSnapshot.theResults = univ.dataView.results;
+        document.getElementById("snapshotCaption").value = this.currentSnapshot.theCaption;
+        document.getElementById("snapshotTitle").value = this.currentSnapshot.theTitle;
+        document.getElementById("snapshotNotes").value = this.currentSnapshot.theNotes;
+
+        //  change to the thumbnail tab
+
+        this.goToTabNumber(2);
+
+        //  The thumbnail is for DISPLAY.
+        const theThumbnail = document.getElementById("thumbnail");
+        theThumbnail.innerHTML = this.currentSnapshot.theInnerSVG;
+        theThumbnail.setAttribute("viewBox", "0 0 500 300");
+
     },
 
 
-    convertValuesToResults : function( iValues ) {
-        out = [];
+    /**
+     *
+     * @param iValues   an OBJECT one of whose fields is an array called values
+     * @returns {Array}
+     */
+    convertAllCasesToResults : function( iValues ) {
+        let out = [];
         iValues.values.forEach( v => {
-            let r = new Result({}, [1,2]);
-            r.values = v.values;        //  that's right: values has two fields, id (the item id) and values. Sheesh.
+            let r = Result.resultFromCODAPValues(v.values);
             out.push(r);
         })
         return out;
+    },
+
+    /**
+     *
+     * @param iValues   an ARRAY of objects with {success , values}
+     * @returns {Array}
+     */
+    convertSelectedCasesToResults : function( iValues ) {
+        if (iValues.length === 0) {
+            return [];
+        }
+
+        let out = [];
+        iValues.forEach( iV => {
+            let r = Result.resultFromCODAPValues(iV.values.case.values);
+            out.push(r);
+        })
+        return out;
+    },
+
+    goToTabNumber : function(iTab) {
+        $( "#tabs" ).tabs(  "option", "active", iTab );
     },
 
     colors: {

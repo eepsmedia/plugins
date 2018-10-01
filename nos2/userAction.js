@@ -38,7 +38,7 @@ journal.userAction = {
         const tGameState = { truth : tTheTruthOfThisScenario };    //  temp!
 
         journal.state.worldCode = tWorldCode;
-        journal.state.worldID = await nos2.DB_Connect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName, tScenario, tGameState);
+        journal.state.worldID = await nos2.DBconnect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName, tScenario, tGameState);
 
         journal.adminPhase = journal.constants.kAdminPhasePlaying;
         await journal.ui.update();
@@ -48,7 +48,7 @@ journal.userAction = {
     newTeam : async function() {
         const tCode = document.getElementById("newTeamCodeBox").value;
         const tName = document.getElementById("newTeamNameBox").value;
-        await nos2.DB_Connect.addTeam(journal.state.worldID, tCode, tName);
+        await nos2.DBconnect.addTeam(journal.state.worldID, tCode, tName);
         this.suggestTeam();
         await journal.ui.update();
     },
@@ -75,9 +75,9 @@ journal.userAction = {
     joinWorld: async function () {
         let tWorldCode = document.getElementById("worldCodeBox").value;
 
-        let tWorldData = await nos2.DB_Connect.getWorldData(tWorldCode);
+        let tWorldData = await nos2.DBconnect.getWorldData(tWorldCode);
 
-        console.log("About " + tWorldCode + " ... " + (tWorldData ? JSON.stringify(tWorldData) : " it doesn't exist."));
+        console.log("About " + tWorldCode + " ... " + (tWorldData ? " year " + tWorldData.epoch : " it doesn't exist."));
 
         if (tWorldData) {
             journal.state.worldID = tWorldData.id;
@@ -112,7 +112,7 @@ journal.userAction = {
         const tText = $('#paperTextBox').val();
         const tAComments = $('#paperAuthorCommentsBox').val();
 
-        const tPaperData = await nos2.DB_Connect.savePaper(tAuthors, tTitle, tText, tAComments, journal.state.teamID, journal.currentPaperID);
+        const tPaperData = await nos2.DBconnect.savePaper(tAuthors, tTitle, tText, tAComments, journal.state.teamID, journal.currentPaperID);
         const theID = tPaperData["id"];
         journal.currentPaperID = theID;
 
@@ -126,7 +126,7 @@ journal.userAction = {
             journal.constants.kPaperStatusReSubmitted :
             journal.constants.kPaperStatusSubmitted;
         const tPaperData = await journal.userAction.savePaper();
-        await nos2.DB_Connect.submitPaper(tPaperData.id, tNewStatus);
+        await nos2.DBconnect.submitPaper(tPaperData.id, tNewStatus);
         await journal.ui.update();
         journal.ui.erasePaper();
         journal.goToTabNumber(0);   //  return to the list
@@ -135,7 +135,7 @@ journal.userAction = {
 
     judgePaper: async function( iJudgment ) {
         const tEditorComments = document.getElementById("paperEditorCommentsBox").value;
-        const tPaperData = await nos2.DB_Connect.judgePaper(journal.currentPaperID, iJudgment, tEditorComments);
+        const tPaperData = await nos2.DBconnect.judgePaper(journal.currentPaperID, iJudgment, tEditorComments);
         await journal.ui.update();
         journal.ui.erasePaper();    //  clean up the boxes
         journal.goToTabNumber(0);   //  return to the list
@@ -143,12 +143,12 @@ journal.userAction = {
 
     godSignIn: async function () {
         const tUsername = $('#godUsernameBox').val();
-        const tUserData = await nos2.DB_Connect.getGodData(tUsername);
+        const tUserData = await nos2.DBconnect.getGodData(tUsername);
         if (tUserData) {        //  user exists; sign in
             journal.myGodID = tUserData.id;
             console.log(tUsername + ' signed in as #' + journal.myGodID);
         } else {
-            const tNewUserData = await nos2.DB_Connect.newGod(tUsername);
+            const tNewUserData = await nos2.DBconnect.newGod(tUsername);
             journal.myGodID = tNewUserData.id;
             console.log(tUsername + ' newly signed in as #' + journal.myGodID);
         }

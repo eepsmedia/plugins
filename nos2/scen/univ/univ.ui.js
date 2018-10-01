@@ -84,12 +84,13 @@ univ.ui = {
 
         //  in data view
 
-        const allData = await univ.CODAPconnect.getAllCases();
+        univ.dataView.redraw();
+
+        //  in snapshot view
 
 
-        univ.dataView.displaySomeResults( univ.convertValuesToResults(allData));
 
-        //  display entire grid. Just for now.
+        //  display entire grid in "truth". Just for now.
 
         if (univ.playPhase === univ.constants.kPhasePlaying) {
             univ.universeView.drawArray( univ.state.truth );

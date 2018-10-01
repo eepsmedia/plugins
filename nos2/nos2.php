@@ -44,13 +44,26 @@ $out = json_encode(['Unhandled command' => $command]);
 switch ($command) {
 
     case 'saveNewResult':
-        $valuesJSONString = $_REQUEST["v"];
+        $params = [
+            "data" => $_REQUEST['data'],
+            "epoch" => $_REQUEST['epoch'],
+            "teamID" => $_REQUEST['teamID'],
+            "source" => $_REQUEST['source'],
+        ];
 
+        $query = "INSERT INTO results (data, epoch, teamID, source) ".
+            "VALUES (:data, :epoch, :teamID, :source)";
+
+        $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        $out = $DBH->lastInsertId();
+        break;
+
+    case 'saveSnapshot':
+        $valuesJSONString = $_REQUEST["v"];
         $params = json_decode($valuesJSONString, true);
 
-        $query = "INSERT INTO results (O, R, G, B, col, row, epoch, dim, team, source) ".
-            "VALUES (:O, :R, :G, :B, :col, :row, :epoch, :dim, :team, :source)";
-
+        $query = "INSERT INTO datapacks (worldID, teamID, resultsList, figure, format, caption, title, notes) ".
+            "VALUES (:worldID, :teamID, :resultsList, :figure, :format, :caption, :title, :notes)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $out = $DBH->lastInsertId();
         break;
@@ -113,12 +126,13 @@ switch ($command) {
         $params["worldID"] = $_REQUEST["worldID"];
         $params["authors"] = $_REQUEST["authors"];
         $params["title"] = $_REQUEST["title"];
-        $params["team"] = $_REQUEST["team"];
+        $params["teamID"] = $_REQUEST["teamID"];
+        $params["teamName"] = $_REQUEST["teamName"];
         $params["text"] = $_REQUEST["text"];
         $params["ac"] = $_REQUEST["ac"];
 
-        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, authorComments) ".
-            "VALUES (:worldID, :title, :authors, :text, :team, :ac)";
+        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, authorComments) ".
+            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $theID = $DBH->lastInsertId();
         reportToFile("[$command]...... new paper number: " . $theID);
@@ -131,13 +145,14 @@ switch ($command) {
         $params["authors"] = $_REQUEST["authors"];
         $params["title"] = $_REQUEST["title"];
         $params["text"] = $_REQUEST["text"];
-        $params["team"] = $_REQUEST["team"];
+        $params["teamID"] = $_REQUEST["teamID"];
+        $params["teamName"] = $_REQUEST["teamName"];
         $params["id"] = $_REQUEST["id"];
         $params["ac"] = $_REQUEST["ac"];
 
         //  reportToFile("Updating paper, params = " . print_r($params, true));
 
-        $query = "UPDATE papers SET title = :title, authors = :authors, text=:text, teamID = :team, authorComments = :ac WHERE id = :id";
+        $query = "UPDATE papers SET title = :title, authors = :authors, text=:text, teamID = :teamID, teamName = :teamName, authorComments = :ac WHERE id = :id";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $out = ["id" => $_REQUEST["id"]];
         break;
@@ -155,6 +170,24 @@ switch ($command) {
         $params = ["id" => $_REQUEST["id"],"s" => $_REQUEST["s"]];  //  s is the status
 
         $query = "UPDATE papers SET status = :s WHERE id = :id";
+        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        break;
+
+    case 'getKnownResults':      //  that is, retrieve known data cases
+        $w =  $_REQUEST['w'];
+        $t = $_REQUEST['t'];
+        reportToFile("[$command]...... w = $w, t = $t ");
+
+        if ($_REQUEST["t"] != 'null') {
+            $params = ["w" => $w, "t" => $t];
+            $query = "SELECT results.id as dbid, results.data, results.epoch, results.teamID, results.source ".
+                " FROM results, knowledge ".
+                "WHERE knowledge.worldID = :w AND knowledge.teamID = :t AND knowledge.resultID = results.id";
+        } else {
+            $params = [ "w" => $w ];
+            $query = "SELECT * FROM results WHERE worldID = :w ";
+        }
+        //  reportToFile("[$command]...... query: " . $query);
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         break;
 
@@ -216,16 +249,19 @@ switch ($command) {
 
         foreach ($papers as $p) {
 
-            $dsturl = "p" . $p[id];
-            $ref = "#p" . $p[id];
+            $dsturl = "p" . $p['id'];
+            $ref = "#p" . $p['id'];
+            $teamID = $p['teamID'];
+            $teamName = $p['teamName'];
+            $teamString = $teamName ? $teamName : "team $teamID";
 
             $toc .= "<li><a class='journalTOC' href='" . $ref . "'>$p[title]</a> ($p[authors])</li>";
 
             $guts .= "<hr>";
             $guts .= "<span id='$dsturl' class='paperTitle'>$p[title]</span><br>";
-            $guts .= "<span class='paperAuthors'>$p[authors]</span>";
-            $guts .= "<span class='paperTeam'>$p[team]</span>";
-            $guts .= $Parsedown->text($p[text]);
+            $guts .= "<span class='paperAuthors'>$p[authors]</span>&nbsp;&bull;&nbsp;";
+            $guts .= "<span class='paperTeam'>$teamString</span>";
+            $guts .= $Parsedown->text($p['text']);
         }
 
 
@@ -233,6 +269,12 @@ switch ($command) {
             ? "<h2>Contents</h2><ul>$toc</ul><h2>Papers</h2>$guts"
             : "<p>No papers in the journal yet";
 
+        break;
+
+    case 'assertKnowledge':
+        $params = [ "w" => $_REQUEST["w"], "t" => $_REQUEST["t"], "r" => $_REQUEST["r"] ];
+        $query = "INSERT INTO knowledge (resultID, worldID, teamID) VALUES (:r, :w, :t)";
+        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         break;
 }
 

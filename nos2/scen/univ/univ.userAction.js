@@ -50,6 +50,12 @@ univ.userAction = {
         univ.state.teamID = iTeamID;
         univ.state.teamName = iTeamName;
         univ.playPhase = univ.constants.kPhasePlaying;
+
+        const theDBResults = await univ.DBconnect.getKnownResults();
+
+        //  this need not be awaited.
+        univ.CODAPconnect.saveResultsToCODAP( theDBResults );     //  add our known-from-before results to CODAP
+
         univ.ui.update();
     },
 
@@ -58,5 +64,13 @@ univ.userAction = {
             await univ.doObservation(univ.telescopeView.selectedPoint);
             univ.ui.update();
         }
+    },
+
+    snap : async function() {
+        await univ.makeSnapshot();
+    },
+
+    saveSnapshot : async function() {
+        univ.DBconnect.saveCurrentSnapshot();
     }
 };

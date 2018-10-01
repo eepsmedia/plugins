@@ -37,9 +37,9 @@ journal.ui = {
         //  all the data we need to await...
 
 
-        const pMyPapers = nos2.DB_Connect.getPapers(journal.state.worldID, journal.state.teamID);
-        const pMyWorlds = nos2.DB_Connect.getMyWorlds(journal.myGodID);
-        const pMyTeams = nos2.DB_Connect.getMyTeams(journal.state.worldID);
+        const pMyPapers = nos2.DBconnect.getPapers(journal.state.worldID, journal.state.teamID);
+        const pMyWorlds = nos2.DBconnect.getMyWorlds(journal.myGodID);
+        const pMyTeams = nos2.DBconnect.getMyTeams(journal.state.worldID);
 
         const [tPapers, tWorlds, tTeams] = await Promise.all([pMyPapers, pMyWorlds, pMyTeams]);
 

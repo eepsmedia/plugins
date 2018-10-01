@@ -56,7 +56,7 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
     <script src="../../../common/TEEUtils.js"></script>
 
     <script src="../../nos2.js"></script>
-    <script src="../../DB_Connect.js"></script>
+    <script src="../../nos2.DBconnect.js"></script>
     <script src="univ.js"></script>
     <script src="univ.model.js"></script>
     <script src="univ.ui.js"></script>
@@ -69,6 +69,7 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
     <script src="dataView.js"></script>
 
     <script src="Result.js"></script>
+    <script src="Snapshot.js"></script>
 
 
     <script>
@@ -106,6 +107,7 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
     <ul>
         <li><a href="#observationsTab">Observations</a></li>
         <li><a href="#dataTab">Data</a></li>
+        <li><a href="#snapshotTab">Data snapshot</a></li>
         <li><a href="#truthTab">Truth</a></li>
         <li><a href="#optionsTab">Options</a></li>
     </ul>
@@ -121,6 +123,24 @@ LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
 
     <div id="dataTab">
         <svg id="dataView" width="500" height="300"></svg>
+        <br>
+        <input type="radio" name="dataDisplayChoice" value="selection" onclick="univ.ui.update()"> selection
+        <input type="radio" name="dataDisplayChoice" value="all"  onclick="univ.ui.update()" checked> all
+        <button onclick="univ.userAction.snap()">snap</button>
+    </div>
+
+    <div id="snapshotTab">
+        <label for="snapshotTitle">Title: </label>
+        <input type="text" size="30"  id="snapshotTitle" onblur="univ.currentSnapshot.setText()">
+        <button onclick="univ.userAction.saveSnapshot()">Save this snapshot</button>
+        <br>
+        <svg id="thumbnail" width="250" height="150"></svg>
+        <br>
+        <label for="snapshotCaption">caption</label><br>
+        <textarea id="snapshotCaption" rows="4" cols="40" onblur="univ.currentSnapshot.setText()"></textarea>
+        <br>
+        <label for="snapshotNotes">notes</label><br>
+        <textarea id="snapshotNotes" rows="2" cols="40" onblur="univ.currentSnapshot.setText()"></textarea>
     </div>
 
     <div id="truthTab">
