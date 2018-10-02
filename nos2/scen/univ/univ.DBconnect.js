@@ -75,7 +75,7 @@ univ.DBconnect = {
 
 
     /**
-     * Save the current Snapshot IN THE MYSQL
+     * Save the current DataPack IN THE MYSQL
      */
     saveCurrentSnapshot : async function() {
         let theResultDBISs = [];
@@ -90,7 +90,9 @@ univ.DBconnect = {
                 "resultsList": JSON.stringify(theResultDBISs),
                 "worldID": univ.state.worldID,
                 "teamID": univ.state.teamID,
-                "figure": univ.currentSnapshot.theInnerSVG,
+                "figure": univ.currentSnapshot.theFigure,
+                "figureWidth" : univ.currentSnapshot.figureWidth,
+                "figureHeight" : univ.currentSnapshot.figureHeight,
                 "format": univ.currentSnapshot.theFormat,
                 "caption": univ.currentSnapshot.theCaption,
                 "notes": univ.currentSnapshot.theNotes,

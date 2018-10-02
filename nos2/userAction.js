@@ -111,8 +111,11 @@ journal.userAction = {
         const tTitle = $('#paperTitleBox').val();
         const tText = $('#paperTextBox').val();
         const tAComments = $('#paperAuthorCommentsBox').val();
+        const tPacks = [];
+        const tRefs = [];
 
-        const tPaperData = await nos2.DBconnect.savePaper(tAuthors, tTitle, tText, tAComments, journal.state.teamID, journal.currentPaperID);
+        const tPaperData = await nos2.DBconnect.savePaper(tAuthors, tTitle, tText, tAComments, tPacks, tRefs,
+            journal.state.teamID, journal.state.teamName, journal.currentPaperID);
         const theID = tPaperData["id"];
         journal.currentPaperID = theID;
 

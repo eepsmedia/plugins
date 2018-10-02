@@ -62,8 +62,8 @@ switch ($command) {
         $valuesJSONString = $_REQUEST["v"];
         $params = json_decode($valuesJSONString, true);
 
-        $query = "INSERT INTO datapacks (worldID, teamID, resultsList, figure, format, caption, title, notes) ".
-            "VALUES (:worldID, :teamID, :resultsList, :figure, :format, :caption, :title, :notes)";
+        $query = "INSERT INTO datapacks (worldID, teamID, resultsList, figure, figureWidth, figureHeight, format, caption, title, notes) ".
+            "VALUES (:worldID, :teamID, :resultsList, :figure, :figureWidth, :figureHeight, :format, :caption, :title, :notes)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $out = $DBH->lastInsertId();
         break;
@@ -130,9 +130,11 @@ switch ($command) {
         $params["teamName"] = $_REQUEST["teamName"];
         $params["text"] = $_REQUEST["text"];
         $params["ac"] = $_REQUEST["ac"];
+        $params["pkk"] = $_REQUEST["packs"];
+        $params["refs"] = $_REQUEST["references"];
 
-        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, authorComments) ".
-            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac)";
+        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, authorComments, packs, references) ".
+            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac, :pkk, :refs)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $theID = $DBH->lastInsertId();
         reportToFile("[$command]...... new paper number: " . $theID);
@@ -149,10 +151,13 @@ switch ($command) {
         $params["teamName"] = $_REQUEST["teamName"];
         $params["id"] = $_REQUEST["id"];
         $params["ac"] = $_REQUEST["ac"];
+        $params["pkk"] = $_REQUEST["packs"];
+        $params["refs"] = $_REQUEST["references"];
 
         //  reportToFile("Updating paper, params = " . print_r($params, true));
 
-        $query = "UPDATE papers SET title = :title, authors = :authors, text=:text, teamID = :teamID, teamName = :teamName, authorComments = :ac WHERE id = :id";
+        $query = "UPDATE papers SET title = :title, authors = :authors, text=:text, teamID = :teamID, ".
+            "teamName = :teamName, authorComments = :ac, packs = :pkk, references = :refs WHERE id = :id";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $out = ["id" => $_REQUEST["id"]];
         break;
@@ -262,6 +267,7 @@ switch ($command) {
             $guts .= "<span class='paperAuthors'>$p[authors]</span>&nbsp;&bull;&nbsp;";
             $guts .= "<span class='paperTeam'>$teamString</span>";
             $guts .= $Parsedown->text($p['text']);
+            $guts .= "<div>References</div>";
         }
 
 
@@ -276,6 +282,13 @@ switch ($command) {
         $query = "INSERT INTO knowledge (resultID, worldID, teamID) VALUES (:r, :w, :t)";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         break;
+
+    case 'getMyDataPacks':
+        $params = [ "w" => $_REQUEST["w"], "t" => $_REQUEST["t"] ];
+        $query = "SELECT * FROM datapacks WHERE worldID = :w AND teamID = :t";
+        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        break;
+
 }
 
 $jout = json_encode($out);

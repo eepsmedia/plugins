@@ -61,6 +61,7 @@ limitations under the License.
     <script src="userAction.js" language="javascript"></script>
     <script src="writerUI.js" language="javascript"></script>
     <script src="strings.js" language="javascript"></script>
+    <script src="DataPack.js" language="javascript"></script>
 
     <script>
         $(function () {
@@ -144,6 +145,28 @@ limitations under the License.
         <button id="erasePaperButton" onclick="journal.ui.erasePaper()">erase</button>
         <button id="savePaperButton" onclick="journal.userAction.savePaper()">save</button>
         <button id="submitPaperButton" onclick="journal.userAction.submitPaper()">save and submit for publication</button>
+
+        <!--    Section about data packs -->
+
+        <details>
+            <summary>Data</summary>
+            <div>
+                <table>
+                    <tr>
+                        <td>
+                            <div id="writerDataListContents">The contents of the list</div>
+                        </td>
+                        <td>
+                            <div id="oneDataPackTitle"></div>
+                            <svg id="oneDataPackFigure" width="500" height="300"></svg>
+                            <div id="oneDataPackCaption"></div>
+                            <button onclick="journal.assignFigure()">use this one!</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+
     </div>
 
 

@@ -98,4 +98,9 @@ let journal = {
 
     },
 
+    assignFigure : function() {
+
+    }
+
+
 };

@@ -45,11 +45,14 @@ univ.ui = {
         //  status bar
 
         document.getElementById("univStatusBarDiv").innerHTML =
+            (univ.state.epoch ?  univ.state.epoch + " | " : "") +
+            (univ.state.teamName ? univ.state.teamName + " | " : "")  +
+            (univ.state.worldCode ? univ.state.worldCode  : "") +
+            "&nbsp;&nbsp;&nbsp;&nbsp;" +
+            "<button onclick='univ.logout()'>log out</button>" +
+            "&nbsp;&nbsp;&nbsp;&nbsp;" +
             univ.constants.version + " | " +
-            univ.whence +
-            (univ.state.worldCode ? " | " + univ.state.worldCode  : "") +
-            (univ.state.teamID ? " | " + univ.state.teamName : "") + "&nbsp;&nbsp;&nbsp;&nbsp;" +
-            "<button onclick='univ.logout()'>log out</button>";
+            univ.whence ;
 
 
         //  choose team list. ONLY IN THE APPROPRIATE PHASE!

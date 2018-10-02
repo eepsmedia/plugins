@@ -93,3 +93,23 @@ p, li {
     font-size: 18px;
     font-weight: bold;
 }
+
+/*
+    "details" is for the list of data that gets disclosed
+ */
+details {
+    /*  border: 1px solid #aaa; */
+    padding-top: 1em;
+    background-color: #def;
+    border-radius: 4px;
+}
+
+summary {
+    font-weight: bold;
+    margin: -.5em -.5em 0;
+    padding: .5em;
+}
+
+details[open] {
+    padding: .5em;
+}

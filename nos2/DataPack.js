@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-Snapshot in nos2
+DataPack in nos2
 
 Author:   Tim Erickson
 
@@ -27,16 +27,19 @@ limitations under the License.
 */
 
 
-class Snapshot {
+class DataPack {
 
     constructor() {
-        this.theInnerSVG = "";
+        this.theFigure = "";
+        this.figureWidth = 100;
+        this.figureHeight = 100;
         this.theResults = [];
         this.theCaption = "a caption";
         this.theTitle = "a title";
         this.theNotes = "some notes";
         this.source = "local";
         this.theFormat = "svg";
+        this.dbid = null;
     }
 
     setText() {
@@ -48,3 +51,19 @@ class Snapshot {
         this.theNotes = theNotesBox.value;
     }
 }
+
+DataPack.dataPackFromDBArray = function(iDBArray) {
+    let out = new DataPack();
+
+    out.dbid = iDBArray["id"];
+    out.theFigure = iDBArray["figure"];
+    out.theFormat = iDBArray["format"];
+    out.theTitle = iDBArray["title"];
+    out.theNotes = iDBArray["notes"];
+    out.theCaption = iDBArray["caption"];
+    out.theResults = iDBArray["resultsList"];
+    out.figureHeight = iDBArray["figureHeight"];
+    out.figureWidth = iDBArray["figureWidth"];
+
+    return out;
+};

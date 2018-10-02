@@ -98,6 +98,12 @@ let univ = {
         univ.ui.update();
     },
 
+    logout : function() {
+        this.state = univ.freshState;
+        univ.playPhase = univ.constants.kPhaseNoWorld;
+        univ.ui.update();
+    },
+
     /**
      * Typically called from userAction, when we join a world.
      * Note: the worldID is the unique integer in the db;
@@ -159,8 +165,11 @@ let univ = {
      * Called from userActions
      */
     makeSnapshot : function() {
-        this.currentSnapshot = new Snapshot();
-        this.currentSnapshot.theInnerSVG = univ.dataView.thePaper.innerSVG();
+        this.currentSnapshot = new DataPack();
+        this.currentSnapshot.theFigure = univ.dataView.thePaper.innerSVG();
+        this.currentSnapshot.figureWidth = univ.dataView.thePaper.attr("width");
+        this.currentSnapshot.figureHeight = univ.dataView.thePaper.attr("height");
+
         this.currentSnapshot.theResults = univ.dataView.results;
         document.getElementById("snapshotCaption").value = this.currentSnapshot.theCaption;
         document.getElementById("snapshotTitle").value = this.currentSnapshot.theTitle;
@@ -171,9 +180,11 @@ let univ = {
         this.goToTabNumber(2);
 
         //  The thumbnail is for DISPLAY.
+
         const theThumbnail = document.getElementById("thumbnail");
-        theThumbnail.innerHTML = this.currentSnapshot.theInnerSVG;
-        theThumbnail.setAttribute("viewBox", "0 0 500 300");
+        theThumbnail.innerHTML = this.currentSnapshot.theFigure;
+        const theViewBoxString = "0 0 " + this.currentSnapshot.figureWidth + " " + this.currentSnapshot.figureHeight;
+        theThumbnail.setAttribute("viewBox", theViewBoxString);
 
     },
 

@@ -137,9 +137,14 @@ nos2.DBconnect = {
 
     getPapers: async function (iWorldID, iTeamID) {
         if (iWorldID && iTeamID) {
-            let out = null;
+            let out = [];
+            let dbout = [];
             try {
-                out = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+                dbout = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+
+                dbout.forEach( dbp => {
+                    out.push(Paper.paperFromDBArray(dbp));
+                });
                 return out.length == 0 ? null : out;
 
             } catch (msg) {
@@ -151,26 +156,25 @@ nos2.DBconnect = {
 
     },
 
-    savePaper: async function (iAuthors, iTitle, iText, iAComments, iTeamID, iTeamName, iPaperID) {
+    savePaper: async function (iPaper) {
         let theCommands = {};
         try {
             if (iPaperID) {
                 theCommands = {
-                    "c": "updatePaper", "authors": iAuthors,
-                    "title": iTitle, "text": iText,
-                    "teamID": iTeamID, "teamName" : iTeamName,
-                    "ac": iAComments,
-                    "id": iPaperID
+                    "c": "updatePaper",
+                    "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
+                    "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
+                    "ac": iPaper.authorComments,
+                    "packs" : iPaper.packs, "references" : iPaper.references,
+                    "id": iPaper.dbid
                 };
             } else {
                 theCommands = {
                     "c": "newPaper",
-                    "authors": iAuthors,
-                    "title": iTitle,
-                    "text": iText,
-                    "teamID": iTeamID,
-                    "teamName" : iTeamName,
-                    "ac": iAComments,
+                    "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
+                    "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
+                    "ac": iPaper.authorComments,
+                    "packs" : iPaper.packs, "references" : iPaper.references,
                     "worldID": journal.state.worldID
                 };
             }
@@ -267,5 +271,24 @@ nos2.DBconnect = {
             console.log('getPublishedJournal() error: ' + e);
         }
 
+    },
+
+    getMyDataPacks : async function(iWorld, iTeam) {
+        try {
+            const theDBPacks = await nos2.DBconnect.sendCommand({
+                c : "getMyDataPacks",
+                w : iWorld,
+                t : iTeam
+            })
+
+            let dataPacksOut = []
+            theDBPacks.forEach( pk => {
+                dataPacksOut.push(DataPack.dataPackFromDBArray(pk));
+            });
+            return dataPacksOut;
+        } catch (e) {
+            console.log('Trouble retrieving in getMyDataPacks(): ' + e)
+        }
     }
+
 };
