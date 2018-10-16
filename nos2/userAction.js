@@ -102,22 +102,33 @@ journal.userAction = {
         journal.state.teamID = iTeamID;
         journal.state.teamName = iTeamName;
         journal.writerPhase = journal.constants.kWriterPhasePlaying;
+        journal.currentPaper = new Paper();     //  because we have to have a teamID before we make a paper
+
         journal.ui.update();
 
     },
 
-    savePaper: async function () {
-        const tAuthors = $('#paperAuthorsBox').val();
-        const tTitle = $('#paperTitleBox').val();
-        const tText = $('#paperTextBox').val();
-        const tAComments = $('#paperAuthorCommentsBox').val();
-        const tPacks = [];
-        const tRefs = [];
+    assignDataPack : function() {
+        journal.currentPaper.addPack( journal.ui.currentPack);
+    },
 
-        const tPaperData = await nos2.DBconnect.savePaper(tAuthors, tTitle, tText, tAComments, tPacks, tRefs,
-            journal.state.teamID, journal.state.teamName, journal.currentPaperID);
+    erasePaper : async function() {
+        journal.currentPaper = new Paper();
+        await journal.ui.update();
+    },
+
+    savePaper: async function ( ) {
+
+        journal.currentPaper.authors = $('#paperAuthorsBox').val();
+        journal.currentPaper.title = $('#paperTitleBox').val();
+        journal.currentPaper.text = $('#paperTextBox').val();
+        journal.currentPaper.authorComments = $('#paperAuthorCommentsBox').val();
+        //  thePaper.packs = [];
+        //  thePaper.references = [];
+
+        const tPaperData = await nos2.DBconnect.savePaper(journal.currentPaper.convertToAssociativeArray());
         const theID = tPaperData["id"];
-        journal.currentPaperID = theID;
+        journal.currentPaper.dbid = theID;
 
         await journal.ui.update();
         return tPaperData
@@ -125,11 +136,12 @@ journal.userAction = {
 
     submitPaper: async function () {
         const thePaper = journal.thePapers[journal.currentPaperID];
-        const tNewStatus = thePaper.status = journal.constants.kPaperStatusRevise ?
+        const tNewStatus = journal.currentPaper.status =
+            journal.constants.kPaperStatusRevise ?
             journal.constants.kPaperStatusReSubmitted :
             journal.constants.kPaperStatusSubmitted;
         const tPaperData = await journal.userAction.savePaper();
-        await nos2.DBconnect.submitPaper(tPaperData.id, tNewStatus);
+        await nos2.DBconnect.submitPaper(journal.currentPaper.dbid, tNewStatus);
         await journal.ui.update();
         journal.ui.erasePaper();
         journal.goToTabNumber(0);   //  return to the list

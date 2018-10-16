@@ -28,17 +28,19 @@ limitations under the License.
 
 journal.ui = {
 
+    packs : [],
+    currentPack : null,
+
     initialize : function() {
 
     },
 
     openPaper :  function( iPaperID) {
-        journal.currentPaperID = iPaperID;
-        const thePaper = journal.thePapers[journal.currentPaperID];
+        const thePaper = journal.currentPaper = journal.thePapers[iPaperID];
 
         journal.goToTabNumber(1);   //  the second tab
 
-        document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.id + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
+        document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.dbid + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
         document.getElementById('paperTitleBox').value = thePaper.title;    //  .value because it's an <input>
         document.getElementById('paperAuthorsBox').value = thePaper.authors;
         document.getElementById('paperTextBox').value = thePaper.text;
@@ -46,10 +48,39 @@ journal.ui = {
         document.getElementById('paperAuthorCommentsBox').value = thePaper.authorComments;
         document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? journal.state.teamName : "-");
 
+        //journal.ui.currentPack = thePaper.packs[0];
+    },
+
+    displayCurrentPaper(  ) {
+        const thePaper = journal.currentPaper;
+
+        journal.goToTabNumber(1);   //  the second tab
+
+        if (journal.currentPaper) {
+            document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.dbid + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
+            document.getElementById('paperTitleBox').value = thePaper.title;    //  .value because it's an <input>
+            document.getElementById('paperAuthorsBox').value = thePaper.authors;
+            document.getElementById('paperTextBox').value = thePaper.text;
+            document.getElementById('paperEditorCommentsBox').innerHTML = thePaper.editorComments;  //  because it's a span
+            document.getElementById('paperAuthorCommentsBox').value = thePaper.authorComments;
+            document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? thePaper.teamName : "-");
+            document.getElementById('dataPackList').innerHTML = thePaper.packs;
+        } else {
+            journal.currentPaper = null;
+            //  $('#paperAuthorsBox').val("");    //  leave the authors in
+            $('#paperStatusBox').html("no paper selected");
+            $('#paperTitleBox').val("");
+            $('#paperTextBox').val("");
+            $('#paperTeamBox').html("");
+            $('#paperAuthorCommentsBox').val("");
+            $('#paperEditorCommentsBox').html("");
+            $('#dataPackList').html("");
+
+        }
     },
 
     erasePaper: function () {
-        journal.currentPaperID = null;
+        journal.currentPaper = null;
         //  $('#paperAuthorsBox').val("");    //  leave the authors in
         $('#paperStatusBox').html("no paper selected");
         $('#paperTitleBox').val("");
@@ -66,18 +97,50 @@ journal.ui = {
         }
     },
 
+    makeDataPackChoiceControl : async function() {
+        this.packs = await nos2.DBconnect.getMyDataPacks( journal.state.worldID, journal.state.teamID);
+
+        let out = "";
+        this.packs.forEach( pk => {
+            out += "<input type='radio' name='dataPackChoice' value=" + pk.dbid +
+                " onChange='journal.ui.displayOneDataPack(" + pk.dbid + ")'>" + pk.theTitle + "<br>";
+        })
+
+        return out;
+    },
+
+    displayOneDataPack : function(iDBID) {
+        let thePack = null;
+
+        this.packs.forEach( pk => {
+            if (pk.dbid === iDBID) {
+                journal.ui.currentPack = pk;
+            }
+        });
+        document.getElementById("oneDataPackTitle").innerHTML = "<b>" + journal.ui.currentPack.theTitle + "</b>";
+        document.getElementById("oneDataPackCaption").innerHTML = "<i>" + journal.ui.currentPack.theCaption + "</i>";
+
+        const theSVG = document.getElementById("oneDataPackFigure");
+        theSVG.innerHTML = journal.ui.currentPack.theFigure;
+        const theViewBoxString = "0 0 " + journal.ui.currentPack.figureWidth + " " + journal.ui.currentPack.figureHeight;
+        theSVG.setAttribute("viewBox", theViewBoxString);
+
+    },
 
     update : async function() {
         //  all the data we need to await...
 
-        const pMyPapers = nos2.DBconnect.getPapers(journal.state.worldID, journal.state.teamID);
+        const pMyPapers = nos2.DBconnect.getPapers(journal.state.worldID, journal.state.teamID);    //  these are of class Paper
         tPapers = await pMyPapers;
+
+        //  assemble the journal.thePapers object by parsing the array from the DB;
+        //  make it so that we are KEYED by the paperID, for easy access.
 
         journal.thePapers = {};
 
-        if (tPapers) {
+        if (Array.isArray(tPapers)) {
             tPapers.forEach(p => {
-                journal.thePapers[p.id] = p;
+                journal.thePapers[p.dbid] = p;
             });
         }
 
@@ -106,7 +169,7 @@ journal.ui = {
 
         document.getElementById("paperTeamBox").innerHTML = journal.state.teamName;
 
-        //  choose team list. ONLY IN THE APPROPRIATE PHASE!
+        //  choose team from list. ONLY IN THE APPROPRIATE PHASE!
 
         if (journal.writerPhase === journal.constants.kWriterPhaseNoTeam) {
             //  get the team list only if we're in this phase.
@@ -137,18 +200,18 @@ journal.ui = {
         if (Array.isArray(tPapers)) {
             let text = "<table><tr><th>id</th><th>title</th><th>status</th><th>action</th></tr>";
             tPapers.forEach(p => {
-                    text += "<tr><td>" + p.id + "</td><td>" + p.title + "</td>";
+                    text += "<tr><td>" + p.dbid + "</td><td>" + p.title + "</td>";
                     text += "<td>" + p.status + "</td>";
                     switch (p.status) {
                         case journal.constants.kPaperStatusInProgress:
-                            text += "<td><button onclick='journal.ui.openPaper(" + p.id + ")'>edit</button></td> ";
+                            text += "<td><button onclick='journal.ui.openPaper(" + p.dbid + ")'>edit</button></td> ";
                             break;
                         case journal.constants.kPaperStatusRevise:
-                            text += "<td><button onclick='journal.ui.openPaper(" + p.id + ")'>edit</button></td> ";
+                            text += "<td><button onclick='journal.ui.openPaper(" + p.dbid + ")'>edit</button></td> ";
                             break;
                         case journal.constants.kPaperStatusPublished:
                             tPaperCount++;
-                            text += "<td><button onclick='journal.ui.viewPaper(" + p.id + ", true)'>view</button></td> ";
+                            text += "<td><button onclick='journal.ui.viewPaper(" + p.dbid + ", true)'>view</button></td> ";
                             break;
                         case journal.constants.kPaperStatusRejected:
                             text += "<td>-</td> ";
@@ -167,6 +230,14 @@ journal.ui = {
         } else {
             tPaperDiv.innerHTML = "<p>Sorry, no papers to display</p>";
         }
+
+        //  fix text and "pack"-finding stuff in the paper-writing tab
+
+        journal.ui.displayCurrentPaper();
+        const tDataPackList = document.getElementById("writerDataListContents");
+        const theListGuts = await journal.ui.makeDataPackChoiceControl();
+
+        tDataPackList.innerHTML = theListGuts;
 
         //  update the full journal
 

@@ -30,7 +30,7 @@ let journal = {
 
     state : {},
     epoch : 2022,        //  the time.
-    currentPaperID : null,
+    currentPaper : null,
     myGodID : null,
     myGodName : null,
     adminPhase : null,
@@ -98,9 +98,6 @@ let journal = {
 
     },
 
-    assignFigure : function() {
-
-    }
 
 
 };

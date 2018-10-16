@@ -159,13 +159,14 @@ nos2.DBconnect = {
     savePaper: async function (iPaper) {
         let theCommands = {};
         try {
-            if (iPaperID) {
+            if (iPaper.dbid) {
                 theCommands = {
                     "c": "updatePaper",
                     "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
                     "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
                     "ac": iPaper.authorComments,
                     "packs" : iPaper.packs, "references" : iPaper.references,
+                    "status" : iPaper.status,
                     "id": iPaper.dbid
                 };
             } else {
@@ -175,6 +176,7 @@ nos2.DBconnect = {
                     "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
                     "ac": iPaper.authorComments,
                     "packs" : iPaper.packs, "references" : iPaper.references,
+                    "status" : iPaper.status,
                     "worldID": journal.state.worldID
                 };
             }

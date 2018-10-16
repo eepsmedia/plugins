@@ -11,6 +11,40 @@ function reportToFile($message)
     file_put_contents("Jdebug.txt", $message . "\n", FILE_APPEND);
 }
 
+function    makeOnePaperHTML($DBH, $p) {
+    $theTitle = $p['title'];
+    $Parsedown = new Parsedown();
+    $theParsedText =    $Parsedown->text($p['text']);
+
+    error_log("Making one preview for $theTitle");
+    error_log("Parsed text: $theParsedText");
+
+    $destURL = "p" . $p['id'];
+    $teamID = $p['teamID'];
+    $teamName = $p['teamName'];
+    $teamString = $teamName ? $teamName : "team $teamID";
+    $packs = json.decode($p.packs);     //      todo: fix this. This is not the right way!
+
+    if ($packs.count > 0) {
+        $params = ["pkid" => $packs[0]];
+        $query = "SELECT figure FROM datapacks WHERE id = :pkid";
+        $fig = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+    };
+
+    $guts = "";
+
+    $guts .= "<span id='$destURL' class='paperTitle'>$theTitle</span><br>";
+    $guts .= "<span class='paperAuthors'>$p[authors]</span>&nbsp;&bull;&nbsp;";
+    $guts .= "<span class='paperTeam'>$teamString</span>";
+    $guts .= $theParsedText;
+    $guts .= "<h3>Figures</h3>";
+
+    $guts .= "<svg>$fig</svg>";
+    $guts .= "<h3>References</h3>";
+
+    return $guts;
+}
+
 $user = null;
 $pass = null;
 $dbname = null;
@@ -132,9 +166,10 @@ switch ($command) {
         $params["ac"] = $_REQUEST["ac"];
         $params["pkk"] = $_REQUEST["packs"];
         $params["refs"] = $_REQUEST["references"];
+        $params["status"] = $_REQUEST["status"];
 
-        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, authorComments, packs, references) ".
-            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac, :pkk, :refs)";
+        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, authorComments, packs, `references`, status) ".
+            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac, :pkk, :refs, :status)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $theID = $DBH->lastInsertId();
         reportToFile("[$command]...... new paper number: " . $theID);
@@ -153,11 +188,12 @@ switch ($command) {
         $params["ac"] = $_REQUEST["ac"];
         $params["pkk"] = $_REQUEST["packs"];
         $params["refs"] = $_REQUEST["references"];
+        $params["status"] = $_REQUEST["status"];
 
         //  reportToFile("Updating paper, params = " . print_r($params, true));
 
         $query = "UPDATE papers SET title = :title, authors = :authors, text=:text, teamID = :teamID, ".
-            "teamName = :teamName, authorComments = :ac, packs = :pkk, references = :refs WHERE id = :id";
+            "teamName = :teamName, authorComments = :ac, packs = :pkk, `references` = :refs, status = :status WHERE id = :id";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $out = ["id" => $_REQUEST["id"]];
         break;
@@ -250,24 +286,13 @@ switch ($command) {
 
         reportToFile("how many papers? : " . count($papers));
 
-        $Parsedown = new Parsedown();
-
         foreach ($papers as $p) {
 
-            $dsturl = "p" . $p['id'];
             $ref = "#p" . $p['id'];
-            $teamID = $p['teamID'];
-            $teamName = $p['teamName'];
-            $teamString = $teamName ? $teamName : "team $teamID";
-
             $toc .= "<li><a class='journalTOC' href='" . $ref . "'>$p[title]</a> ($p[authors])</li>";
 
+            $guts .= makeOnePaperHTML($DBH, $p);
             $guts .= "<hr>";
-            $guts .= "<span id='$dsturl' class='paperTitle'>$p[title]</span><br>";
-            $guts .= "<span class='paperAuthors'>$p[authors]</span>&nbsp;&bull;&nbsp;";
-            $guts .= "<span class='paperTeam'>$teamString</span>";
-            $guts .= $Parsedown->text($p['text']);
-            $guts .= "<div>References</div>";
         }
 
 
