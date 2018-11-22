@@ -49,7 +49,7 @@ univ.CODAPconnect = {
             "resource": "interactiveFrame",
             "values": {
                 "preventBringToFront": false,
-                "preventDataContextReorg": false
+                "preventDataContextReorg": true,         //      false.  Saves selection functionality
             }
         };
 
@@ -90,20 +90,111 @@ univ.CODAPconnect = {
 
     },
 
-    getAllCases: async function() {
+    selectTheseCases : async function( iDataContextName, iCaseIDList )  {
+        const tMessage = {
+            "action" : "update",
+            "resource": "dataContext[" + iDataContextName + "].selectionList",
+            "values" : iCaseIDList,
+        };
+
+        const tSelectionResult = await codapInterface.sendRequest( tMessage );
+        univ.ui.update();
+    },
+
+    deselectTheseCases : async function( iDataContextName, iCaseIDList )  {
+        // get the selection list...
+        const theSelectedCaseIDs = await this.getListOfSelectedCaseIDs(iDataContextName);
+        let theNewList = [];
+        theSelectedCaseIDs.forEach( id => {
+           if (!iCaseIDList.includes(id)) {
+               theNewList.push(id);
+           }
+        });
+
+        const tMessage = {
+            "action": "create",
+            "resource": "dataContext[" + iDataContextName + "].selectionList",
+            "values": theNewList
+        }
+
+        await codapInterface.sendRequest( tMessage );
+        univ.ui.update();
+    },
+
+    getListOfSelectedCaseIDs : async function( iDataContextName ) {
+        //  process the selected cases to make an array of caseIDs
+        const tSelectionListMessage = {
+            "action": "get",
+            "resource": "dataContext[" + iDataContextName + "].selectionList"
+        };
+        const getSelectedCasesListResult = await codapInterface.sendRequest(tSelectionListMessage);
+
+        let theSelectedCaseIDs = [];
+
+        if (getSelectedCasesListResult.success) {
+            getSelectedCasesListResult.values.forEach(obj => {
+
+                //  Note: obj.collectionName holds the collection name at the level of selection;
+                //  this could be important if the user has reorganized the table.
+
+                theSelectedCaseIDs.push(obj.caseID);
+            });
+        }
+        return theSelectedCaseIDs;
+    },
+
+    getAllCasesAsResultsWithSelection : async function(iDataContextName) {
+
+        const theSelectedCaseIDs = await this.getListOfSelectedCaseIDs(iDataContextName);
+
+       //   now get all the cases.
+
+        //  NOTE: we use iDataContextName for the collection name. This is fundamentally wrong todo: fix this.
+        //  One issue is to somehow find the collection name more generally.
+        //  Next issue: you only get values at that level. So for now we will prohibit reorganization.
+        //  but ultimately, CODAP needs a fix, OR we will have to recursively
+        //  look up the tree -- each case result from caseSearch will have a parent item which is the caseID of the parent case.
+        //  then restore any values stored in the parent that might be needed to construct the Result. What a pain.
+
+        const getAllCasesMessage = {
+            "action": "get",
+            "resource": "dataContext[" + iDataContextName + "].collection[" + iDataContextName + "].caseSearch[epoch!=-1]"
+        };
+
+        const getAllCasesResult = await codapInterface.sendRequest(getAllCasesMessage);
+
+        let allResults = [];    //  this will hold objects of class Result
+
+        if (getAllCasesResult.success) {
+            getAllCasesResult.values.forEach(aCase => {     // aCase has form.... {id : <caseID> values : {} }
+                aCase.values.selected = theSelectedCaseIDs.includes(aCase.id);    //  insert a selected attribute
+                aCase.values.caseID = aCase.id;     //  save the case ID for this result (need for selection)
+                let aResult = Result.resultFromCODAPValues(aCase.values);
+                allResults.push(aResult);
+            });
+
+            return allResults;
+        } else {
+            return null;
+        }
+
+    },
+
+/*
+    getAllCases: async function(iDataContextName) {
         const theMessage = {
             "action": "get",
-            "resource": "dataContext[" + univ.constants.kUnivDataSetName + "].itemSearch[epoch!=-1]"
+            "resource": "dataContext[" + iDataContextName + "].itemSearch[epoch!=-1]"
         };
 
         const getAllCasesResult = await codapInterface.sendRequest(theMessage);
         return getAllCasesResult;
     },
 
-    getSelectedCases: async function() {
+    getSelectedCases: async function(iDataContextName) {
         const theMessage = {
             "action": "get",
-            "resource": "dataContext[" + univ.constants.kUnivDataSetName + "].selectionList"
+            "resource": "dataContext[" + iDataContextName + "].selectionList"
         };
 
         const getSelectedCasesListResult = await codapInterface.sendRequest(theMessage);
@@ -121,7 +212,7 @@ univ.CODAPconnect = {
         }
         return allSelectedCases;
     },
-
+*/
     univDataContextSetupObject: {
         name: univ.constants.kUnivDataSetName,
         title: univ.constants.kUnivDataSetTitle,
@@ -158,7 +249,7 @@ univ.CODAPconnect = {
         name: 'univ',
         title: 'four-color universe',
         dimensions: {width: 555, height: 500},
-        preventDataContextReorg: false
+        preventDataContextReorg: true           //      doing this (and the thing in init) saves our selection functionality
     }
 
 };

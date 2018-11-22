@@ -104,6 +104,9 @@ univ.telescopeView = {
                 const tColor = theLetter ? univ.colors[theLetter] : "black";
 
                 let tr = this.thePaper.rect(tx, ty, box - 2, box - 2).attr({"fill": tColor});
+
+                //  set up the handlers for mouse over and mouse up
+
                 tr.mouseover(e => {
                     this.possiblePoint = [col, row];
                     const tA = this.prepareArray();
@@ -113,7 +116,7 @@ univ.telescopeView = {
                     const tA = this.prepareArray();
                     this.drawArray(tA);
 
-                    //  when out pointing changes, blank the latest result display
+                    //  when pointing changes, blank the latest result display
                     this.latestResult = null;
                     univ.ui.update();
 

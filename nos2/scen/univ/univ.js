@@ -188,6 +188,13 @@ let univ = {
 
     },
 
+    convertCODAPValuesToResults : function( iValues, iSelected) {
+        let out = [];
+
+        iValues.forEach( v => out.push(Result.resultFromCODAPValues(v)) );
+
+        return out;
+    },
 
     /**
      *
@@ -199,7 +206,7 @@ let univ = {
         iValues.values.forEach( v => {
             let r = Result.resultFromCODAPValues(v.values);
             out.push(r);
-        })
+        });
         return out;
     },
 
@@ -217,7 +224,7 @@ let univ = {
         iValues.forEach( iV => {
             let r = Result.resultFromCODAPValues(iV.values.case.values);
             out.push(r);
-        })
+        });
         return out;
     },
 
@@ -232,7 +239,9 @@ let univ = {
         "G": "green",
         "K": "black",
         "Y": "yellow",
-        "obs" : "#89F",
+        "selected" : "#72bfca",     //  "#89F",
+        "unselected" : "gold",
+
     },
 
 

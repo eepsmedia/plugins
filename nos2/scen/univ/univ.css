@@ -25,3 +25,8 @@ limitations under the License.
 ==========================================================================
 
 */
+
+.plaqueText {
+    font-size : 12px;
+    color : red;
+}

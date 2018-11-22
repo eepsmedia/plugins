@@ -63,16 +63,28 @@ univ.dataView = {
     },
 
     redraw : async function() {
+        let theDisplayedResults = [];   //  array of Result objects
+
         let tDataDisplayChoice = $('input[name=dataDisplayChoice]:checked').val();
-        let theDisplayedResults = null;
+
+        const allResults = await univ.CODAPconnect.getAllCasesAsResultsWithSelection(univ.constants.kUnivDataSetName);
 
         if (tDataDisplayChoice === "selection") {
-            const selectedData = await univ.CODAPconnect.getSelectedCases();
-            theDisplayedResults = univ.convertSelectedCasesToResults(selectedData);
+            allResults.forEach( r => {
+                if (r.selected) {
+                    theDisplayedResults.push(r)
+                }
+            });
+
+            //  const selectedData = await univ.CODAPconnect.getSelectedCases(univ.constants.kUnivDataSetName);
+            //  theDisplayedResults = univ.convertSelectedCasesToResults(selectedData);
         } else {
-            const allData = await univ.CODAPconnect.getAllCases();
-            theDisplayedResults = univ.convertAllCasesToResults(allData);
+            //  const allData = await univ.CODAPconnect.getAllCases(univ.constants.kUnivDataSetName);
+            //  theDisplayedResults = univ.convertAllCasesToResults(allData);
+
+            theDisplayedResults = allResults;
         }
+
         univ.dataView.displaySomeResults(theDisplayedResults);
     },
 /*
@@ -83,7 +95,7 @@ univ.dataView = {
 */
     displaySomeResults : function( iResults ) {
 
-        iResults.sort( (a,b) => { return a.data.row - b.data.row});
+        iResults.sort( (a,b) => { return a.data.row - b.data.row}); //  sort results by row
         this.results = iResults;
         this.thePaper.clear();
         this.drawArray(this.makeUniformArray("K"));
@@ -111,16 +123,21 @@ univ.dataView = {
                 lineStartY = plaqueY + pq.attr("height")/2;
             }
 
+            //  draw the plaque
             this.thePaper.append(pq.attr({ x: plaqueX, y : plaqueY }));
 
+            //  draw the shaded box in the grid
             const rectX = this.gridLeft + (r.data.col * this.box) + 1;
             const rectY = (r.data.row * this.box) + 1;
             const rectW = (Number(r.data.dim) * this.box) - 2;
-            this.thePaper.rect(rectX, rectY, rectW, rectW).attr({fill : univ.colors.obs, "fill-opacity" : 0.4});
+            const theColor = r.selected ? univ.colors.selected : univ.colors.unselected;
+            const theObservation = this.thePaper.rect(rectX, rectY, rectW, rectW).attr({fill : theColor, "fill-opacity" : 0.4});
+            theObservation.click( e => r.toggleSelection() );   //  note the function call!
 
             const lineEndX = rectX + rectW/2;
             const lineEndY = rectY + rectW/2;
 
+            //  finally, on top, draw the line connecting the plaque to the middle of the shaded box
             this.thePaper.line( lineStartX, lineStartY, lineEndX, lineEndY).attr({ stroke : "black"});
         })
 

@@ -13,8 +13,8 @@ function reportToFile($message)
 
 function    makeOnePaperHTML($DBH, $p) {
     $theTitle = $p['title'];
-    $Parsedown = new Parsedown();
-    $theParsedText =    $Parsedown->text($p['text']);
+    $tHTMLParser = new Parsedown();
+    $theParsedText =    $tHTMLParser->text($p['text']);
 
     error_log("Making one preview for $theTitle");
     error_log("Parsed text: $theParsedText");
