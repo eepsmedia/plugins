@@ -69,7 +69,7 @@ nos2.DBconnect = {
                 'state': JSON.stringify(iGameState)
             };
             const iData = await nos2.DBconnect.sendCommand(theCommands);
-            return iData;
+            return iData;       //  an array with the new world in it?
         }
 
         catch (msg) {

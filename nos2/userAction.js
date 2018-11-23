@@ -38,7 +38,9 @@ journal.userAction = {
         const tGameState = { truth : tTheTruthOfThisScenario };    //  temp!
 
         journal.state.worldCode = tWorldCode;
-        journal.state.worldID = await nos2.DBconnect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName, tScenario, tGameState);
+        const tArrayOfNewWorlds = await nos2.DBconnect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName, tScenario, tGameState);
+
+        journal.state.worldID = tArrayOfNewWorlds[0].id;
 
         journal.adminPhase = journal.constants.kAdminPhasePlaying;
         await journal.ui.update();
