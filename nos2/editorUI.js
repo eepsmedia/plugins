@@ -28,17 +28,17 @@ limitations under the License.
 
 journal.ui = {
 
-    initialize: function () {
 
+    initialize: function () {
+        journal.ui.update();
     },
 
     openPaper :  function( iPaperID) {
-        journal.currentPaperID = iPaperID;
-        const thePaper = journal.thePapers[journal.currentPaperID];
+        const thePaper = journal.currentPaper = journal.thePapers[iPaperID];    //  thePapers is a keyed object, not an array
 
         journal.goToTabNumber(1);   //  the second tab
 
-        document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.id + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
+        document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.dbid + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
         document.getElementById('paperTitleBox').innerHTML = thePaper.title;    //  .value because it's an <input>
         document.getElementById('paperAuthorsBox').innerHTML = thePaper.authors;
         document.getElementById('paperTextBox').innerHTML = thePaper.text;
@@ -46,10 +46,10 @@ journal.ui = {
         document.getElementById('paperAuthorCommentsBox').innerHTML = thePaper.authorComments;
         document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? journal.state.teamName : "-");
 
+        this.currentPack = journal.getCurrentPack();   //  depends on currentPaper. Null if nonexistent
     },
 
     erasePaper: function () {
-        journal.currentPaperID = null;
         $('#paperStatusBox').html("no paper selected");
         $('#paperAuthorsBox').html("");    //  leave the authors in
         $('#paperTitleBox').html("");
@@ -106,7 +106,7 @@ journal.ui = {
 
         if (thePapers) {
             thePapers.forEach(p => {
-                journal.thePapers[p.id] = p;
+                journal.thePapers[p.dbid] = p;
             });
         }
 
@@ -120,8 +120,8 @@ journal.ui = {
             thePapers.forEach(p => {
                 if (p.status === journal.constants.kPaperStatusSubmitted || p.status === journal.constants.kPaperStatusReSubmitted) {
                     tPaperCount++;
-                    text += "<tr><td>" + p.id + "</td>"
-                    text += "<td><button onclick='journal.ui.openPaper(" + p.id + ")'>read</button>&nbsp;" + p.title + "</td>";
+                    text += "<tr><td>" + p.dbid + "</td>"
+                    text += "<td><button onclick='journal.ui.openPaper(" + p.dbid + ")'>read</button>&nbsp;" + p.title + "</td>";
                     text += "<td>" + p.status + "</td>";
                     text += "<td>" + (p.teamID ? journal.theTeams[p.teamID].code : "-") + "</td>";
                     text += "</tr>";
@@ -142,9 +142,7 @@ journal.ui = {
 
         //  update the full journal
 
-        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal();
-
-
+        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(journal.state.worldID);
 
     }
 };

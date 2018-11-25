@@ -30,7 +30,7 @@ limitations under the License.
 class DataPack {
 
     constructor() {
-        this.theFigure = "";
+        this.theFigure = "";    //  for now, the svg text of the figure
         this.figureWidth = 100;
         this.figureHeight = 100;
         this.theResults = [];

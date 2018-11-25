@@ -31,6 +31,8 @@ let journal = {
     state : {},
     epoch : 2022,        //  the time.
     currentPaper : null,
+    currentPack : null, //  the actual DataPack currently being displayed/edited: journal.currentPack
+
     myGodID : null,
     myGodName : null,
     adminPhase : null,
@@ -89,11 +91,41 @@ let journal = {
         $( "#tabs" ).tabs(  "option", "active", iTab );
     },
 
+    /**
+     *  returns a DataPack assuming that journal.currentPaper is set.
+     * Will be null if it is not.
+     */
+
+    getCurrentPack : function() {
+        out = null;
+        if (journal.currentPaper) {
+            if (journal.currentPaper.packs.length > 0) {
+                out = this.currentPackByDBID( journal.currentPaper.packs[0] );
+            }
+        }
+        return out;
+    },
+
+    /**
+     * Returns the DataPack corresponding the the DBID
+     * @param iDBID     the DBID
+     */
+    currentPackByDBID : function( iDBID ) {
+        let out = null;
+
+        journal.ui.packs.forEach( pk => {
+            if (pk.dbid === iDBID) {
+                out =  pk;
+            }
+        });
+        return out;
+    },
+
     initialize : function() {
         this.logout();
         journal.state = journal.constants.freshState;       //      todo: fix when we add CODAP
 
-        journal.ui.initialize();
+        journal.ui.initialize();    //  whichever UI it is!
         journal.ui.update();
 
     },

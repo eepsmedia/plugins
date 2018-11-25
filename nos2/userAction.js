@@ -28,17 +28,17 @@ limitations under the License.
 
 journal.userAction = {
 
-    newWorld : async function() {
+    newWorld: async function () {
         const tWorldCode = document.getElementById("worldCodeBox").value;
         const tJournalName = document.getElementById("journalNameBox").value;
         const tEpoch = document.getElementById("epochBox").value;
         const tScenario = document.getElementById("worldScenarioMenu").value;
 
         const tTheTruthOfThisScenario = univ.model.getNewStateTemp();
-        const tGameState = { truth : tTheTruthOfThisScenario };    //  temp!
+        const tGameState = {truth: tTheTruthOfThisScenario};    //  temp!
 
         journal.state.worldCode = tWorldCode;
-        const tArrayOfNewWorlds = await nos2.DBconnect.makeNewWorld(journal.myGodID, tWorldCode,tEpoch,tJournalName, tScenario, tGameState);
+        const tArrayOfNewWorlds = await nos2.DBconnect.makeNewWorld(journal.myGodID, tWorldCode, tEpoch, tJournalName, tScenario, tGameState);
 
         journal.state.worldID = tArrayOfNewWorlds[0].id;
 
@@ -47,7 +47,7 @@ journal.userAction = {
 
     },
 
-    newTeam : async function() {
+    newTeam: async function () {
         const tCode = document.getElementById("newTeamCodeBox").value;
         const tName = document.getElementById("newTeamNameBox").value;
         await nos2.DBconnect.addTeam(journal.state.worldID, tCode, tName);
@@ -55,7 +55,7 @@ journal.userAction = {
         await journal.ui.update();
     },
 
-    suggestTeam : function() {
+    suggestTeam: function () {
         const tCodeBox = document.getElementById("newTeamCodeBox");
         const tNameBox = document.getElementById("newTeamNameBox");
         const suggestionType = $('input[name=teamNameType]:checked').val();
@@ -100,7 +100,7 @@ journal.userAction = {
         journal.ui.update();
     },
 
-    joinTeamByID : function( iTeamID, iTeamName ) {
+    joinTeamByID: function (iTeamID, iTeamName) {
         journal.state.teamID = iTeamID;
         journal.state.teamName = iTeamName;
         journal.writerPhase = journal.constants.kWriterPhasePlaying;
@@ -110,16 +110,59 @@ journal.userAction = {
 
     },
 
-    assignDataPack : function() {
-        journal.currentPaper.addPack( journal.ui.currentPack);
+    /**
+     * User has chosen a data pack from a menu while editing a paper.
+     * In this version, the user can have only one.
+     *
+     * The idea is, they have to assemble the data pack they want in their scenario (in CODAP)
+     * before heading here to write the paper.
+     */
+    chooseOneDataPack: function (theMenu) {
+        const thePackNumber = Number(theMenu.value);
+        journal.currentPack = journal.currentPackByDBID(thePackNumber);   //  currentPack is the actual entire pack
+
+        if (journal.currentPaper) {
+            if (journal.currentPaper.isEditable()) {
+                journal.currentPaper.setThisPack(thePackNumber);   //  the value in the Paper is just the number
+            }
+        }
+
+        journal.ui.update();
     },
 
-    erasePaper : async function() {
+    assignDataPack: function () {
+        journal.currentPaper.addPack(journal.currentPack);
+    },
+
+    sendMessageFrom: async function (iSender) {
+        const theNewMessage = document.getElementById("messageTextBox").value;
+        let out = (iSender === "author") ? "<tr><td>author</td>" : "<tr><td>editor</td>";
+        out += "<td>" + theNewMessage + "</td></tr>";
+
+        nos2.DBconnect.appendMessageToConvo( out, journal.currentPaper.dbid );
+    },
+
+    makePaperPreview: async function () {
+        const tPaperID = journal.currentPaper.dbid;
+
+        let thePreviewHTML = "";
+        if (journal.currentPaper) {
+            thePreviewHTML = await nos2.DBconnect.getPaperPreview(tPaperID);
+        } else {
+            thePreviewHTML = "No paper specified."
+        }
+
+        document.getElementById("paperPreview").innerHTML = thePreviewHTML;
+
+        $("#paperPreview").dialog("open");
+    },
+
+    erasePaper: async function () {
         journal.currentPaper = new Paper();
         await journal.ui.update();
     },
 
-    savePaper: async function ( ) {
+    savePaper: async function () {
 
         journal.currentPaper.authors = $('#paperAuthorsBox').val();
         journal.currentPaper.title = $('#paperTitleBox').val();
@@ -128,9 +171,8 @@ journal.userAction = {
         //  thePaper.packs = [];
         //  thePaper.references = [];
 
-        const tPaperData = await nos2.DBconnect.savePaper(journal.currentPaper.convertToAssociativeArray());
-        const theID = tPaperData["id"];
-        journal.currentPaper.dbid = theID;
+        const tPaperData = await nos2.DBconnect.savePaper(journal.currentPaper);    //  send the Paper
+        journal.currentPaper.dbid = Number(tPaperData["id"]);
 
         await journal.ui.update();
         return tPaperData
@@ -140,17 +182,17 @@ journal.userAction = {
         const thePaper = journal.thePapers[journal.currentPaperID];
         const tNewStatus = journal.currentPaper.status =
             journal.constants.kPaperStatusRevise ?
-            journal.constants.kPaperStatusReSubmitted :
-            journal.constants.kPaperStatusSubmitted;
+                journal.constants.kPaperStatusReSubmitted :
+                journal.constants.kPaperStatusSubmitted;
         const tPaperData = await journal.userAction.savePaper();
         await nos2.DBconnect.submitPaper(journal.currentPaper.dbid, tNewStatus);
-        await journal.ui.update();
         journal.ui.erasePaper();
         journal.goToTabNumber(0);   //  return to the list
+        await journal.ui.update();
     },
 
 
-    judgePaper: async function( iJudgment ) {
+    judgePaper: async function (iJudgment) {
         const tEditorComments = document.getElementById("paperEditorCommentsBox").value;
         const tPaperData = await nos2.DBconnect.judgePaper(journal.currentPaperID, iJudgment, tEditorComments);
         await journal.ui.update();

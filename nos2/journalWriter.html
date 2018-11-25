@@ -66,13 +66,37 @@ limitations under the License.
 
     <script>
         $(function () {
-            $("#tabs").tabs();
+            $("#tabs").tabs({
+                activate : (event, ui) => {
+                    const theNewTabName = ui.newTab[0].innerText;
+                    journal.ui.changeTabTo(theNewTabName);
+                }
+            });
+
+            $("#paperPreview").dialog({
+                autoOpen: false,
+
+                show: {
+                    effect: "blind",
+                    duration: 200
+                },
+                hide: {
+                    effect: "blind",
+                    duration: 200
+                }
+
+            });
+
             journal.initialize();
         });
     </script>
 
 </head>
 <body>
+
+<div id="paperPreview">
+
+</div>
 
 <div id="writerStatusBarDiv">
 
@@ -113,6 +137,11 @@ limitations under the License.
 
     <div id="writing">
         <h1>Writing Papers</h1>
+        <button id="savePaperButton" onclick="journal.userAction.savePaper()">save</button>
+        <button id="submitPaperButton" onclick="journal.userAction.submitPaper()">save and submit for publication</button>
+        <button id="previewPaperButton" onclick="journal.userAction.makePaperPreview( )">preview</button>
+        <br>
+
         <table>
             <tr>
                 <td><label for="paperStatusBox" >status:</label></td>
@@ -135,28 +164,28 @@ limitations under the License.
                 <td><textarea id="paperTextBox" placeholder="Your text here" rows="5", cols="44"></textarea></td>
             </tr>
             <tr>
-                <td><label for="paperEditorCommentsBox">editor:</label></td>
-                <td id="paperEditorCommentsBox" placeholder="Editor comments" rows="1", cols="44"></td>
-            </tr>
-            <tr>
-                <td><label for="paperAuthorCommentsBox">author:</label></td>
-                <td><textarea id="paperAuthorCommentsBox" placeholder="Author comments" rows="1", cols="44"></textarea></td>
-            </tr>
-            <tr>
-                <td><label for="dataPackList">packs:</label></td>
-                <td><textarea id="dataPackList" placeholder="Author comments" rows="1", cols="30"></textarea></td>
-
+                <td><label for="dataPackMenu">Data:</label></td>
+                <td><select id="dataPackMenu" onchange = "journal.userAction.chooseOneDataPack(this)"></select></td>
             </tr>
         </table>
+        <br>
+<!--
         <button id="erasePaperButton" onclick="journal.userAction.erasePaper()">erase</button>
-        <button id="savePaperButton" onclick="journal.userAction.savePaper()">save</button>
-        <button id="submitPaperButton" onclick="journal.userAction.submitPaper()">save and submit for publication</button>
+-->
 
         <!--    Section about data packs -->
 
         <details>
-            <summary>Data</summary>
+            <summary>
+                View figure(s)
+            </summary>
             <div>
+
+                <div id="oneDataPackTitle"></div>
+                <svg id="oneDataPackFigure"></svg>
+                <div id="oneDataPackCaption"></div>
+
+<!--
                 <table>
                     <tr>
                         <td>
@@ -170,6 +199,20 @@ limitations under the License.
                         </td>
                     </tr>
                 </table>
+-->
+            </div>
+        </details>
+
+        <!--        comversation section    -->
+        <details>
+            <summary>Convo History</summary>
+            <div>
+                <td><label for="messageTextBox">message:</label></td>
+                <button id="sendMessageButton" onclick="journal.userAction.sendMessageFrom('author')">send to editor</button>
+                <td><textarea id="messageTextBox" placeholder="Message to the editor" rows="5", cols="44"></textarea></td>
+                <div>
+                    <table id="paperConvoHistory"></table>
+                </div>
             </div>
         </details>
 

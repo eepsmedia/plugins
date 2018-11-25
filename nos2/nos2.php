@@ -23,12 +23,24 @@ function    makeOnePaperHTML($DBH, $p) {
     $teamID = $p['teamID'];
     $teamName = $p['teamName'];
     $teamString = $teamName ? $teamName : "team $teamID";
-    $packs = json.decode($p.packs);     //      todo: fix this. This is not the right way!
 
-    if ($packs.count > 0) {
+    $rawpacks = $p['packs'];
+    $packs = json_decode($rawpacks);
+
+    $figureGuts = "";
+
+    if (count($packs) > 0) {
         $params = ["pkid" => $packs[0]];
-        $query = "SELECT figure FROM datapacks WHERE id = :pkid";
-        $fig = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        error_log(" params: " . print_r($params, true));
+        $query = "SELECT figure, figureWidth, figureHeight FROM datapacks WHERE id = :pkid";
+        $figureResult = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        $ff = $figureResult[0];
+        $fig = $ff['figure'];
+        $figW = $ff['figureWidth'];
+        $figH = $ff['figureHeight'];
+        $viewBoxParams = "0 0 $figW $figH";
+        error_log(" view: $viewBoxParams");
+        $figureGuts = "<svg viewBox='" . $viewBoxParams . "'>$fig</svg>";
     };
 
     $guts = "";
@@ -39,7 +51,7 @@ function    makeOnePaperHTML($DBH, $p) {
     $guts .= $theParsedText;
     $guts .= "<h3>Figures</h3>";
 
-    $guts .= "<svg>$fig</svg>";
+    $guts .= $figureGuts;
     $guts .= "<h3>References</h3>";
 
     return $guts;
@@ -69,7 +81,7 @@ include '../common/TE_DBCommon.php';    //  in the common folder
 $DBH = CODAP_MySQL_connect("localhost", $user, $pass, $dbname);     //  works under MAMP....
 
 $params = array();  //  accumulate parameters for query
-$query = "SELECT * FROM worlds LIMIT 10";
+$query = "SELECT * FROM worlds LIMIT 10 ";
 
 $command = $_REQUEST["c"];     //  this is the overall command, the only required part of the POST
 
@@ -141,7 +153,6 @@ switch ($command) {
         $query = "SELECT * FROM worlds Where code = :code";
 
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
-        //  reportToFile("[$command]...... out: " . print_r($out, true));
         break;
 
     case 'newGod':
@@ -163,12 +174,11 @@ switch ($command) {
         $params["teamID"] = $_REQUEST["teamID"];
         $params["teamName"] = $_REQUEST["teamName"];
         $params["text"] = $_REQUEST["text"];
-        $params["ac"] = $_REQUEST["ac"];
         $params["pkk"] = $_REQUEST["packs"];
         $params["refs"] = $_REQUEST["references"];
         $params["status"] = $_REQUEST["status"];
 
-        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, authorComments, packs, `references`, status) ".
+        $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, packs, `references`, status) ".
             "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac, :pkk, :refs, :status)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $theID = $DBH->lastInsertId();
@@ -177,7 +187,7 @@ switch ($command) {
         break;
 
     case 'updatePaper':
-        reportToFile("[$command]...... title: " . $_REQUEST['title']);
+        reportToFile("[$command]...... title: " . $_REQUEST['title'] . " packs: " . $_REQUEST['packs'] );
         $params = array();
         $params["authors"] = $_REQUEST["authors"];
         $params["title"] = $_REQUEST["title"];
@@ -185,15 +195,12 @@ switch ($command) {
         $params["teamID"] = $_REQUEST["teamID"];
         $params["teamName"] = $_REQUEST["teamName"];
         $params["id"] = $_REQUEST["id"];
-        $params["ac"] = $_REQUEST["ac"];
         $params["pkk"] = $_REQUEST["packs"];
         $params["refs"] = $_REQUEST["references"];
         $params["status"] = $_REQUEST["status"];
 
-        //  reportToFile("Updating paper, params = " . print_r($params, true));
-
         $query = "UPDATE papers SET title = :title, authors = :authors, text=:text, teamID = :teamID, ".
-            "teamName = :teamName, authorComments = :ac, packs = :pkk, `references` = :refs, status = :status WHERE id = :id";
+            "teamName = :teamName, packs = :pkk, `references` = :refs, status = :status WHERE id = :id";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $out = ["id" => $_REQUEST["id"]];
         break;
@@ -239,10 +246,10 @@ switch ($command) {
 
         if ($_REQUEST["t"] != 'null') {
             $params = ["w" => $w, "t" => $t];
-            $query = "SELECT * FROM papers WHERE worldID = :w AND teamID = :t";
+            $query = "SELECT * FROM papers WHERE worldID = :w AND teamID = :t ORDER BY id DESC" ;
         } else {
             $params = [ "w" => $w ];
-            $query = "SELECT * FROM papers WHERE worldID = :w ";
+            $query = "SELECT * FROM papers WHERE worldID = :w ORDER BY id DESC";
         }
         reportToFile("[$command]...... query: " . $query);
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
@@ -252,7 +259,7 @@ switch ($command) {
         reportToFile("[$command]......  ");
         $params = ["g" => $_REQUEST["g"]];
 
-        $query = "SELECT * FROM worlds WHERE godID = :g";
+        $query = "SELECT * FROM worlds WHERE godID = :g ORDER BY id DESC";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         reportToFile("[$command]...... query: " . $query);
         break;
@@ -261,7 +268,7 @@ switch ($command) {
         reportToFile("[$command]......  ");
         $params = ["w" => $_REQUEST["w"]];
 
-        $query = "SELECT * FROM teams WHERE worldID = :w";
+        $query = "SELECT * FROM teams WHERE worldID = :w ORDER BY id DESC";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         //  reportToFile("[$command]...... query: " . $query);
         break;
@@ -274,6 +281,17 @@ switch ($command) {
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         break;
 
+    case 'getPaperPreview':
+        reportToFile("[$command]...... paperID: " . $_REQUEST['paperID']);
+
+        $par = ['paperID' => $_REQUEST["paperID"]];     //  parameter
+        $q = "SELECT * FROM papers WHERE id = :paperID";
+        $p = CODAP_MySQL_getQueryResult($DBH, $q, $par);
+
+        $out = makeOnePaperHTML($DBH, $p[0]);   //  just the one paper
+
+        break;
+
     case 'getJournal':
         reportToFile("[$command]...... worldID: " . $_REQUEST['w']);
         $par = [ "w" => $_REQUEST["w"] ];
@@ -284,7 +302,7 @@ switch ($command) {
         $toc = "";
         $guts = "";
 
-        reportToFile("how many papers? : " . count($papers));
+        reportToFile("The journal has : " . count($papers) . " papers.");
 
         foreach ($papers as $p) {
 
@@ -310,7 +328,21 @@ switch ($command) {
 
     case 'getMyDataPacks':
         $params = [ "w" => $_REQUEST["w"], "t" => $_REQUEST["t"] ];
-        $query = "SELECT * FROM datapacks WHERE worldID = :w AND teamID = :t";
+        $query = "SELECT * FROM datapacks WHERE worldID = :w AND teamID = :t ORDER BY id DESC";
+        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        reportToFile("\n[$command]......query: $query");
+        break;
+
+    case 'appendToConvo':
+        $query = "SELECT convo FROM papers WHERE id = :p";
+        $params = [ "p" => $_REQUEST["p"]];
+        $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
+        $currentConvo = $out[0]['convo'];
+        reportToFile("\n[$command]...... convo out: " . print_r($out, true));
+
+        $newConvo = $currentConvo . $_REQUEST['t'];     //  the appended convo
+        $params = [ "p" => $_REQUEST["p"], "t" => $newConvo];
+        $query = "UPDATE papers SET convo = :t WHERE id = :p";
         $out = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         break;
 

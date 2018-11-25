@@ -135,51 +135,25 @@ nos2.DBconnect = {
         }
     },
 
-    getPapers: async function (iWorldID, iTeamID) {
-        if (iWorldID && iTeamID) {
-            let out = [];
-            let dbout = [];
-            try {
-                dbout = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
-
-                dbout.forEach( dbp => {
-                    out.push(Paper.paperFromDBArray(dbp));
-                });
-                return out.length == 0 ? null : out;
-
-            } catch (msg) {
-                console.log('getPapers() error: ' + msg);
-            }
-        } else {
-            return null;
-        }
-
-    },
-
     savePaper: async function (iPaper) {
-        let theCommands = {};
+
+        let theCommands = {
+            "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
+            "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
+            "packs" : JSON.stringify(iPaper.packs),     //  because it's an array, we'll store it as a string
+            "references" : JSON.stringify(iPaper.references),
+            "status" : iPaper.status,
+        };
+
         try {
             if (iPaper.dbid) {
-                theCommands = {
-                    "c": "updatePaper",
-                    "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
-                    "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
-                    "ac": iPaper.authorComments,
-                    "packs" : iPaper.packs, "references" : iPaper.references,
-                    "status" : iPaper.status,
-                    "id": iPaper.dbid
-                };
+                theCommands.c = "updatePaper";
+                theCommands.id = iPaper.dbid;   //  because that's the name of the field in Paper.
             } else {
-                theCommands = {
-                    "c": "newPaper",
-                    "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
-                    "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
-                    "ac": iPaper.authorComments,
-                    "packs" : iPaper.packs, "references" : iPaper.references,
-                    "status" : iPaper.status,
-                    "worldID": journal.state.worldID
-                };
+                theCommands.c = "newPaper";
+                theCommands.worldID = journal.state.worldID;
             }
+
             const out = await nos2.DBconnect.sendCommand(theCommands);
 
             return out;
@@ -265,32 +239,80 @@ nos2.DBconnect = {
         }
     },
 
-    getPublishedJournal: async function () {
-        try {
-            const out = await nos2.DBconnect.sendCommand({"c": "getJournal", "w": journal.state.worldID});
-            return out;
-        } catch (e) {
-            console.log('getPublishedJournal() error: ' + e);
+    getPaperPreview : async  function( iPaperID ) {
+        let out = null;
+        if (iPaperID) {
+            try {
+                out = await nos2.DBconnect.sendCommand({"c": "getPaperPreview", "paperID": iPaperID});
+            } catch (e) {
+                console.log('getPaperPreview() error: ' + e);
+            }
+        }
+        return out;
+    },
+
+    getPublishedJournal: async function (iWorldID) {
+        let out = null;
+        if (iWorldID) {
+            try {
+                out = await nos2.DBconnect.sendCommand({"c": "getJournal", "w": iWorldID});
+            } catch (e) {
+                console.log('getPublishedJournal() error: ' + e);
+            }
+        }
+        return out;
+    },
+
+    getPapers: async function (iWorldID, iTeamID = null) {
+        if (iWorldID) {     //  if iTeamID is null, the getPapers command will get them for all teams
+            let out = [];
+            try {
+                const dbout = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+
+                dbout.forEach( dbp => {
+                    out.push(Paper.paperFromDBArray(dbp));  //  convert to Papers
+                });
+                return out.length == 0 ? null : out;
+
+            } catch (msg) {
+                console.log('getPapers() error: ' + msg);
+            }
+        } else {
+            return null;
         }
 
     },
 
     getMyDataPacks : async function(iWorld, iTeam) {
-        try {
-            const theDBPacks = await nos2.DBconnect.sendCommand({
-                c : "getMyDataPacks",
-                w : iWorld,
-                t : iTeam
-            })
+        if (iWorld && iTeam) {
+            let dataPacksOut = [];
+            try {
+                const theDBPacks = await nos2.DBconnect.sendCommand({
+                    c: "getMyDataPacks",
+                    w: iWorld,
+                    t: iTeam
+                });
 
-            let dataPacksOut = []
-            theDBPacks.forEach( pk => {
-                dataPacksOut.push(DataPack.dataPackFromDBArray(pk));
-            });
-            return dataPacksOut;
-        } catch (e) {
-            console.log('Trouble retrieving in getMyDataPacks(): ' + e)
+                theDBPacks.forEach(pk => {
+                    dataPacksOut.push(DataPack.dataPackFromDBArray(pk));    //  convert to DataPacks
+                });
+                return dataPacksOut;
+            } catch (e) {
+                console.log('Trouble retrieving in getMyDataPacks(): ' + e)
+            }
+        } else {
+            return [];
         }
+    },
+
+    /**
+     * Note: not asynchronous. We can wait for this to come through.
+     * @param iText
+     * @param iPaper
+     */
+    appendMessageToConvo :  function(iText, iPaper) {
+        const theCommand = {c : "appendToConvo", t : iText, p : iPaper};
+        nos2.DBconnect.sendCommand(theCommand);
     }
 
 };

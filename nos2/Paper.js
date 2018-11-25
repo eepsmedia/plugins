@@ -38,15 +38,21 @@ class Paper {
         this.teamID = journal.state.teamID;
         this.teamName = journal.state.teamName;
 
-        this.authorComments = "";
-        this.editorComments = "";
+        this.convo = "";
 
-        this.packs = [];
+        this.packs = [];        //  array of dbids of DataPacks for This Papaer
 
         this.status = journal.constants.kPaperStatusInProgress;
         this.pubYear = "";
         this.citation = "";
         this.references = [];
+    }
+
+    isEditable() {
+        return (
+            this.status === journal.constants.kPaperStatusInProgress ||
+            this.status === journal.constants.kPaperStatusRevise
+        );
     }
 
     convertToAssociativeArray() {
@@ -60,8 +66,7 @@ class Paper {
         out["teamID"] = this.teamID;
         out["teamName"] = this.teamName;
 
-        out["authorComments"] = this.authorComments;
-        out["editorComments"] = this.editorComments;
+        out["convo"] = this.convo;
 
         out["packs"] = JSON.stringify(this.packs);
 
@@ -74,11 +79,17 @@ class Paper {
         return out;
     }
 
+    setThisPack(iDatapackNumber) {
+        this.packs = [ iDatapackNumber ];
+        console.log("Set snapshot (pack) " + iDatapackNumber + " for paper " + this.title);
+    }
+
     addPack(iDataPack) {
         if (this.packs.includes( iDataPack.dbid)) {
-            console.log("Paper " + this.title + " already has pack " + iDataPack.dbid);
+            console.log("Paper " + this.title + " already has snapshot (pack) " + iDataPack.dbid);
         } else {
             this.packs.push( iDataPack.dbid );
+            console.log("Added snapshot (pack) " + iDataPack.dbid + " to paper " + this.title);
         }
     }
 }
@@ -97,9 +108,7 @@ Paper.paperFromDBArray = function(iDBArray) {
     out.pubYear = iDBArray["pubYear"];
     out.citation = iDBArray["citation"];
 
-
-    out.authorComments = iDBArray["authorComments"];
-    out.editorComments = iDBArray["editorComments"];
+    out.convo = iDBArray["convo"];
 
     let dbPacks = iDBArray["packs"];
     let dbRefs = iDBArray["references"];
@@ -107,8 +116,16 @@ Paper.paperFromDBArray = function(iDBArray) {
     if (dbPacks == "") dbPacks = "[]";
     if (dbRefs == "") dbRefs = "[]";
 
-    out.references = JSON.parse(dbRefs);   //  convert to array of ints
-    out.packs = JSON.parse(dbPacks);   //  convert to array of ints
+    try {
+        out.references = JSON.parse(dbRefs);   //  convert to array of ints
+    } catch(e) {
+        out.references = [];
+    }
+    try {
+        out.packs = JSON.parse(dbPacks);   //  convert to array of ints
+    } catch {
+        out.packs = [];
+    }
 
     return out;
 };
