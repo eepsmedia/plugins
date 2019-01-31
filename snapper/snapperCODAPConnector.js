@@ -39,7 +39,7 @@ snapper.connect = {
         let message = {
             "action": "get",
             "resource": "dataContextList"
-        }
+        };
 
         const tDataContextListResult = await codapInterface.sendRequest(message);
 
@@ -49,12 +49,113 @@ snapper.connect = {
         version: snapper.constants.version,
         name: 'snapper',
         title: 'Snapper!',
-        dimensions: {width: 222, height: 222}
+        dimensions: {width: 222, height: 333}
     },
 
-    makeDataContextMenuGuts : async function() {
+    destroyAnyExistingDataContextNamed : async  function(iName) {
+        const message = {
+            "action": "delete",
+            "resource": "dataContext[" + iName + "]"
+        };
+        await codapInterface.sendRequest(message);
+    },
+
+    getListOfSliders : async function() {
+        const tAllComponents = await codapInterface.sendRequest({ "action": "get", "resource": "componentList"});
+        let theSliders = [];
+
+        tAllComponents.values.forEach(async c => {
+            if (c.type == "slider") {
+                const tMessage = {"action" : "get", "resource" : "component[" + c.id + "]"};
+                //  const sliderResult = await codapInterface.sendRequest(tMessage);
+                theSliders.push({id : c.id, title : c.title});
+
+            }
+        });
+
+        return theSliders;
+    },
+
+    getSliderValue : async function(iSliderID) {
+        const sliderResult = await codapInterface.sendRequest({"action" : "get", "resource" : "component[" + iSliderID + "]"});
+        return sliderResult.value;
+    },
+
+    makeResultsDataContext : async function() {
+        await this.destroyAnyExistingDataContextNamed(snapper.state.resultsDataContextName);
+
+        let attrGuts = [];
+
+        //  first we get the list of sliders (globals), then we add the attributes
+        const tGlobalsResult = await codapInterface.sendRequest({ "action": "get", "resource": "globalList"});
+
+        snapper.state.theSliders = await this.getListOfSliders();
+
+        snapper.state.theSliders.forEach(s => {
+            const tSliderAtt = {
+                name : s.title + snapper.state.sliderSuffix,
+                editable : false
+            };
+            attrGuts.push(tSliderAtt);
+            //  register for events
+
+            codapInterface.on(
+                'notify',
+                'global[' + s.id + ']',       //  was s.name
+                null,
+                snapper.sliderChanged
+            );
+
+        });
+
+        snapper.state.collectedAttrs.forEach(a => {
+            const oneAttr = {
+                name : a.name,
+                description : a.description,
+                editable : false,
+                unit : a.unit
+            };
+            attrGuts.push(oneAttr);
+        });
+
+        let resultsDataContextSetupObject = {
+            name : snapper.state.resultsDataContextName,
+            title : snapper.state.resultsDataContextName,
+            description : 'Collected data',
+            collections : [
+                {
+                    name : "measurements",
+                    attrs : attrGuts
+                }
+            ]
+        };
+
+        await pluginHelper.initDataSet(resultsDataContextSetupObject);
+
+        codapInterface.sendRequest({
+            "action" : "create",
+            "resource" : "component",
+            "values" : {
+                "type" : "caseTable",
+                "name" : snapper.state.resultsDataContextName
+            }
+        })
+
+        //  register to receive notifications about val;ue changes (i.e., slider moves)
+/*
+        codapInterface.on(
+            'notify',
+            'dataContextChangeNotice[' + snapper.state.dcName + ']',
+            'dependentCases',
+            snapper.sliderChanged
+        );
+*/
+
+
+    },
+
+    makeDataContextMenuGuts : async function(iName) {
         let out = "";
-        let chosenDataContextName = null;
 
         let message = {
             "action": "get",
@@ -65,13 +166,19 @@ snapper.connect = {
 
         if (tDataContextListResult.values.length > 0) {
             tDataContextListResult.values.forEach( v => {
-                out += "<option value='" + v.name + "'>" + v.title + "</option>";
+                let selectedText = v.name == iName ? "selected" : "";
+                out += "<option value='" + v.name + "' " + selectedText + ">" + v.title + "</option>";
             })
         } else {
             out = "<option value='null' disabled>No data!</option>";
         }
 
-        return {guts : out}
+        return out;
+    },
+
+    emitOneCase : function(iValues) {
+        pluginHelper.createItems(iValues, snapper.state.resultsDataContextName);
+
     }
 
-}
+};

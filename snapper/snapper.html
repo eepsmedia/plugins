@@ -34,7 +34,7 @@ LOCALLY: http://localhost/~tim/codap/static/dg/en/cert/index.html
 MAMP:
 
 MAMP import: localhost:8888/plugins/snapper/snapper.html
-
+eeps import: https://www.eeps.com/plugins/snapper/snapper.html
 -->
 
 <head>
@@ -52,6 +52,7 @@ MAMP import: localhost:8888/plugins/snapper/snapper.html
     <script src="../common/jqueryFolder/jquery-ui.min.js" language="javascript"></script>
 
     <script src="snapper.js" language="JavaScript"></script>
+    <script src="structure.js" language="JavaScript"></script>
     <script src="snapperCODAPConnector.js" language="JavaScript"></script>
 
 
@@ -65,7 +66,21 @@ MAMP import: localhost:8888/plugins/snapper/snapper.html
 </head>
 <body>
     <h2>Snapper</h2>
-    <select id="dataContextMenu"></select>
-    <div id="debug">foo</div>
+    <fieldset>
+        <legend> <button id="setupButton" onclick="snapper.doSetup()">setup</button></legend>
+
+        <label for="dataContextMenu">From: </label>
+        <select id="dataContextMenu" onchange="snapper.structure.setDataContext()"></select>
+        <br>
+        <label for="resultsDataContextTextBox">To: </label>
+        <input id="resultsDataContextTextBox" type="text" value="results">
+        <br>
+    </fieldset>
+    <br>
+    <button id="getOneCase" onclick="snapper.structure.getNewCaseValues()">one case</button> &nbsp;
+    <input type="checkbox" id="autoCollectCheckbox">
+    <label for="autoCollectCheckbox">auto collect</label>
+    <hr>
+    <div id="status">foo</div>
 </body>
 </html>

@@ -27,26 +27,68 @@ limitations under the License.
 */
 
 let snapper = {
-    
-    state : {
-        
+
+    state: {
+        dcName: null,
+        topCollectionName : null,
+        resultsDataContextName: null,
+        collectedAttrs : [],
+        theSliders : [],        //  a list of objects, each of which has id, name, and title.
+        OKtoCollect : false,
+        reasonYouCant : "you need to set up a results dataset",
+        sliderSuffix : "_values"
     },
 
-    constants : {
-        version : "000"
+    constants: {
+        version: "000"
     },
 
-    initialize : async function() {
+    domObjects: {
+        dataContextMenu: null,
+        resultsDataContextNameBox: null,
+        autoCollect : null
+    },
+
+    initialize: async function () {
+
+        this.domObjects.dataContextMenu = document.getElementById('dataContextMenu');
+        this.domObjects.resultsDataContextNameBox = document.getElementById('resultsDataContextTextBox');
+        this.domObjects.statusDiv = document.getElementById('status');
+        this.domObjects.autoCollect = document.getElementById('autoCollectCheckbox');
+
         await snapper.connect.initialize();
+        await snapper.structure.constructDataContextMenu();
+        await snapper.structure.setDataContext();
 
-        const theGuts = await snapper.connect.makeDataContextMenuGuts();
-
-        console.log("The guts: " + theGuts.guts);
-
-        const theDataContextMenu = document.getElementById("dataContextMenu");
-        theDataContextMenu.innerHTML = theGuts.guts;
-        
-        //  $("#dataContextMenu").empty().append(theGuts);   // put them into the DOM 
+        snapper.state.resultsDataContextName = snapper.domObjects.resultsDataContextNameBox.value;
+        this.setStatus({ok: false, text : "you need to set up a results dataset"});
     },
-    
-}
+
+    setStatus : function(iStatus) {
+        snapper.state.OKtoCollect = iStatus.ok;
+
+        let theText = "You're ready to collect data";
+        if (!snapper.state.OKtoCollect) {
+            snapper.state.reasonYouCant = iStatus.text;
+            theText = "<strong>NOT READY: </strong>" + snapper.state.reasonYouCant;
+        }
+        this.domObjects.statusDiv.innerHTML = theText;
+    },
+
+    doSetup: async function () {
+        snapper.state.resultsDataContextName = snapper.domObjects.resultsDataContextNameBox.value;
+        console.log("Setting up for results in " + snapper.state.resultsDataContextName);
+        await snapper.structure.setDataContext();
+
+        if (snapper.state.OKtoCollect) {
+            await snapper.connect.makeResultsDataContext();
+        }
+    },
+
+    sliderChanged : async function(iMessage) {
+        if (snapper.domObjects.autoCollect.checked) {
+            console.log("Slider moved! " + JSON.stringify(iMessage));
+            await snapper.structure.getNewCaseValues();
+        }
+    }
+};
