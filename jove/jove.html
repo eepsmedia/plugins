@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 2019-04-10.
+ 
+ 
+ ==========================================================================
+jove.html in jove
+
+    Author:   Tim Erickson
+
+Copyright (c) 2019 by Epistemological Engineering. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+MAMP local for insert: http://localhost:8888/plugins/jove/jove.html
+MAMP local di format: http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/jove/jove.html
+eeps di format: http://localhost:8888/codap/static/dg/en/cert/index.html?di=https://www.eeps.com/plugins/jove/jove.html
+
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Jove</title>
+
+    <!--        stylesheets         -->
+    <link rel='stylesheet' type='text/css' href='jove.css'/>
+
+    <!-- These two scripts take care of the communication with CODAP and commons -->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js" ></script>
+
+    <script src="../common/pluginHelper.js" ></script>
+
+    <script src="../common/TEEUtils.js" ></script>
+    <script src="../common/Location.js" ></script>
+
+    <!-- Snap -->
+    <script src="../common/snap.svg-min.js"></script>
+
+    <!--            our source         -->
+    <script src="jove.js" ></script>
+    <script src="model.js" ></script>
+    <script src="skyView.js" ></script>
+    <script src="connector.js" ></script>
+    <script src="Moon.js" ></script>
+
+
+
+</head>
+<body>
+<div id="statusDiv">
+    <span id="statusText"></span>
+    <button onclick="jove.tomorrow()">tomorrow</button>
+</div>
+<br>
+<svg id="sky" width="500" height="100">
+    <rect width="100" height="100" fill="dodgerblue"></rect>
+</svg>
+
+<div id="options">
+    <label for="weatherOption">weather: </label>
+    <input id="weatherOption" type="checkbox">
+</div>
+
+
+<script>
+    jove.initialize();
+</script>
+
+</body>
+</html>
