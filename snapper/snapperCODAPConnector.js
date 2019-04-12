@@ -76,9 +76,15 @@ snapper.connect = {
         return theSliders;
     },
 
-    getSliderValue : async function(iSliderID) {
-        const sliderResult = await codapInterface.sendRequest({"action" : "get", "resource" : "component[" + iSliderID + "]"});
-        return sliderResult.value;
+    /**
+     * get the value of the slider
+     * @param iSlider   the slider. This is an object with .id and .title.
+     * @returns {Promise<*>}
+     */
+    getSliderValue : async function(iSlider) {
+        const theResource = "global[" + iSlider.title + "]";
+        const globalResult = await codapInterface.sendRequest({"action" : "get", "resource" : theResource});
+        return globalResult.values.value;
     },
 
     makeResultsDataContext : async function() {
@@ -101,7 +107,7 @@ snapper.connect = {
 
             codapInterface.on(
                 'notify',
-                'global[' + s.id + ']',       //  was s.name
+                'global[' + s.title + ']',       //  was s.name or s.id
                 null,
                 snapper.sliderChanged
             );

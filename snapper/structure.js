@@ -76,19 +76,17 @@ snapper.structure = {
                 };
                 const tAllCasesResult = await codapInterface.sendRequest(aMessage);
                 if (tAllCasesResult.values.cases.length > 1) {
-                    snapper.setStatus({
+                    snapper.setStatusText({
                         ok: false,
                         text: "you can't have more than one case in your top-level collection"
                     });
                 } else {
-                    snapper.setStatus({ok: true});
+                    snapper.setStatusText({ok: true});
                 }
-
-
-                console.log(snapper.state.topCollectionName + " -- Cases: " + JSON.stringify(tAllCasesResult));
+                //  console.log(snapper.state.topCollectionName + " -- Cases: " + JSON.stringify(tAllCasesResult));
             } else {
                 //  no attributes, for some reason
-                snapper.setStatus({
+                snapper.setStatusText({
                     ok: false,
                     text: "you need an attribute in your top-level collection"
                 });
@@ -96,7 +94,7 @@ snapper.structure = {
             }
 
         } else {
-            snapper.setStatus({ok: false, text: "you have to have an attribute to collect"});
+            snapper.setStatusText({ok: false, text: "you have to have an attribute to collect"});
         }
     },
 
@@ -113,7 +111,7 @@ snapper.structure = {
 
         //  now get the sliders
         for (const s of snapper.state.theSliders) {
-            values[s.title + snapper.state.sliderSuffix] = await snapper.connect.getSliderValue(s.id);
+            values[s.title + snapper.state.sliderSuffix] = await snapper.connect.getSliderValue(s);
         }
 
         snapper.connect.emitOneCase( values );

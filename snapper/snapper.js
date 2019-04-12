@@ -61,10 +61,10 @@ let snapper = {
         await snapper.structure.setDataContext();
 
         snapper.state.resultsDataContextName = snapper.domObjects.resultsDataContextNameBox.value;
-        this.setStatus({ok: false, text : "you need to set up a results dataset"});
+        this.setStatusText({ok: false, text : "you need to set up a results dataset"});
     },
 
-    setStatus : function(iStatus) {
+    setStatusText : function(iStatus) {
         snapper.state.OKtoCollect = iStatus.ok;
 
         let theText = "You're ready to collect data";
