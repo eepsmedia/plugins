@@ -51,13 +51,13 @@ jove.model = {
         const tPrimary = {
             mass: jove.model.constants.primaryMass
         };
-        this.addBasicMoon(tPrimary, jove.model.constants.ganymedeOrbit, false);    //  temp, Ganymede
-        this.addBasicMoon(tPrimary, jove.model.constants.ioOrbit, true);          //  temp, Io
-        this.addBasicMoon(tPrimary, jove.model.constants.europaOrbit, false);      //  temp, Europa
-        this.addBasicMoon(tPrimary, jove.model.constants.callistoOrbit, false);    //  temp, Callisto
+        this.addBasicMoon(tPrimary, jove.model.constants.ganymedeOrbit, "Ganymede", false);    //  temp, Ganymede
+        this.addBasicMoon(tPrimary, jove.model.constants.ioOrbit, "Io", true);          //  temp, Io
+        this.addBasicMoon(tPrimary, jove.model.constants.europaOrbit, "Europa", false);      //  temp, Europa
+        this.addBasicMoon(tPrimary, jove.model.constants.callistoOrbit, "Callisto", false);    //  temp, Callisto
     },
 
-    addBasicMoon: function (iPrimary, iRadius, flip) {
+    addBasicMoon: function (iPrimary, iRadius, iName, flip) {
         const GM = jove.model.constants.bigG * iPrimary.mass;
         const r = flip ? -iRadius : iRadius;
         const v = flip ? -Math.sqrt(GM / iRadius) : Math.sqrt(GM / iRadius);
@@ -65,7 +65,8 @@ jove.model = {
         let tMoon = new Moon(
             new Location(r, 0, 0),
             new Location(0, v, 0),
-            iPrimary
+            iPrimary,
+            iName
         );
         this.moons.push(tMoon);
 
@@ -89,7 +90,7 @@ jove.model = {
         }
 
         //  weather
-        this.clear = jove.options.weather ? (Math.random() < 0.4) : true;
+        this.clear = jove.state.weather ? (Math.random() < 0.4) : true;
     },
 
     primaryData : function() {
@@ -115,7 +116,8 @@ jove.model = {
                 const moonObject = {
                     t: jove.model.time / jove.model.constants.secondsPerDay,
                     x: m.x.x / pd.distance * 1000,
-                    y: m.x.z / pd.distance * 1000
+                    y: m.x.z / pd.distance * 1000,
+                    name: (jove.state.moonNames ? m.name : "")
                 };
                 out.push(moonObject);
             }

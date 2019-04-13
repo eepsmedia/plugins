@@ -26,10 +26,11 @@ limitations under the License.
 
 */
 
-let Moon = function(iX, iV, iPrimary) {
+let Moon = function(iX, iV, iPrimary, iName) {
     this.x = iX;
     this.v = iV;
     this.primary = iPrimary;
+    this.name = iName;
 };
 
 Moon.prototype.acceleration = function(x) {

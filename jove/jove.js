@@ -29,14 +29,13 @@ limitations under the License.
 
 let jove = {
         state: {
-        },
-
-        options : {
-            weather : true
+            weather : true,
+            moonNames : true
         },
 
         readOptions : function() {
-            this.options.weather = document.getElementById("weatherOption").checked
+            this.state.weather = !document.getElementById("weatherOption").checked;
+            this.state.moonNames = document.getElementById("idOption").checked;
         },
 
         constants: {
