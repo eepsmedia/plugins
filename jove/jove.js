@@ -32,11 +32,13 @@ let jove = {
         },
 
         options : {
-            weather : true
+            weather : true,
+            moonNames : true
         },
 
         readOptions : function() {
-            this.options.weather = document.getElementById("weatherOption").checked
+            this.options.weather = !document.getElementById("weatherOption").checked;
+            this.options.moonNames = document.getElementById("idOption").checked;
         },
 
         constants: {
