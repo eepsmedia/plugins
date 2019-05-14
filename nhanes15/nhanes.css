@@ -54,7 +54,7 @@ h1 {
     font-family: 'Rokkitt',sans-serif;font-size: 16px;
     font-weight: 700;
     width: 3.5em;
-    align-content: right;
+    /* align-content: right;    */
 }
 
 #getCasesButton {

@@ -24,6 +24,11 @@
  * Time: 09:27
  */
 
+$pass = "";
+$user = "";
+$dbname = "";
+
+
 include 'nhanes.establishCredentials.php';     //  defines the credentials we need for mySQL
 
 /*
@@ -45,6 +50,7 @@ if (file_exists($theCredentialsFilename)) {
 //  reportToFile(print_r("CRED LOCAL = " . $credentials['local'], true));
 
 header('Access-Control-Allow-Origin: *');
+
 
 function reportToFile($message)
 {
