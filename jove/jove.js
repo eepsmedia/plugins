@@ -39,7 +39,7 @@ let jove = {
         },
 
         constants: {
-            version: "001a"
+            version: "001b"
         },
 
         initialize: async function () {
@@ -47,6 +47,8 @@ let jove = {
             jove.skyView.initialize(jove.model);
             await jove.connector.initialize();
             console.log("JOVE initialization complete");
+
+            await this.makeGuide();
 
             this.update(0);
         },
@@ -65,6 +67,27 @@ let jove = {
             }
 
             this.update_ui();
+        },
+
+        makeGuide : async function() {
+            await codapInterface.sendRequest({
+                "action": "create",
+                "resource": "component",
+                "values": {
+                    "type": "guideView",
+                    "name": "Galileo Guide",
+                    dimensions : {
+                        width : 400,
+                        height : 500
+                    },
+                    isVisible : true,
+                    items : [{
+                        itemTitle : "Galileo",
+                        url : "https://www.eeps.com/plugins/jove/joveGuide.html"
+                    }],
+                    position : 'top'
+                }
+            })
         },
 
         update_ui : function() {

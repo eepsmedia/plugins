@@ -96,7 +96,7 @@ jove.connector = {
                         {name: "t", type: 'numeric', precision: 2, unit: 'days', description: "time"},
                         {name: "x", type: 'numeric', precision: 3, unit: 'mr', description: "x-coordinate"},
                         {name: "y", type: 'numeric', precision: 3, unit: 'mr', description: "y-coordinate"},
-                        {name: "name", type: 'categorical', description: "object name"},
+                        {name: "name", type: 'categorical', editable : true, description: "object name"},
                     ]
                 }
 

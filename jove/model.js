@@ -91,6 +91,9 @@ jove.model = {
 
         //  weather
         this.clear = jove.state.weather ? (Math.random() < 0.4) : true;
+        if (this.time === 0) {
+            this.clear = true;
+        }
     },
 
     primaryData : function() {
@@ -122,6 +125,8 @@ jove.model = {
                 out.push(moonObject);
             }
         });
+
+        out = out.sort( (a, b) => {return a.x - b.x});
         return out;
     }
 };

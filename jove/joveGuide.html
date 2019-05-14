@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 2019-04-29.
+ 
+ 
+ ==========================================================================
+joveGuide in jove
+
+    Author:   Tim Erickson
+
+Copyright (c) 2019 by Epistemological Engineering. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+
+localhost:  http://localhost:8888/plugins/jove/joveGuide.html
+eeps:  https://www.eeps.com/plugins/jove/joveGuide.html
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Galileo Guide</title>
+
+    <link rel='stylesheet' type='text/css' href='joveGuide.css'/>
+
+</head>
+<body>
+<h1>How to be Galileo</h1>
+<p>
+    The "Jove" CODAP plugin lets you simulate being Galileo.
+    On clear nights, you see Jupiter and its nearby moons.
+    The plugin records the positions of the moons in a data table.
+    You can graph the data to figure out more about the universe&mdash;or at least about the planet and its moons.
+</p>
+<img src="art/galileo.png" width="100%">
+<p>
+    It might be cloudy, in which case the sky is gray.
+    If so, there's nothing to do but wait til tomorrow.
+    (Press the <strong>tomorrow</strong> button.)
+</p>
+<p>
+    To graph your data, first make a graph by clicking the graph icon in the tool bar,
+    then label your axes by dragging column headings from the table to the axes of the graph.
+    For your first graph, put <code>t</code> (time) on the horizontal axis.
+    Then put <code>x</code> on the vertical axis.
+    (For now, all values of <code>y</code> are zero.)
+</p>
+<p>
+    Here are some things you can do:
+</p>
+<ul>
+    <li>
+        Figure out which moon is which.
+        You can label individual observations in the table,
+        for example, you can try to label one moon as <code>A</code>
+        by entering <code>A</code> in the <code>name</code> column.
+    </li>
+    <li>
+        Drag <code>name</code> to the middle of the graph to label the points.
+    </li>
+    <li>
+        Select all the points from one moon and then hide them using the "eyeball"
+        inspector in the graph.
+        This might make it easier to track a different moon.
+    </li>
+    <li>
+        Figure out the period of a moon.
+    </li>
+    <li>
+        Model a moon's <code>x</code> graph with a function.
+        Look in the graph's "ruler" inspector to find how to enter a function.
+        Don't forget: the argument of a sine function is in <i>radians</i>.
+    </li>
+    <li>
+        Figure out the relationship between a moon's period and the radius of its orbit.
+    </li>
+</ul>
+<p>
+    If you want to make your life easier (but why would you?)
+    you can check either or both of the options boxes:
+</p>
+<ul>
+    <li>
+        <strong>no clouds</strong> means you get data every day, no gaps!
+    </li>
+    <li>
+        <strong>include moon names</strong> means you don't have to figure out the names.
+        You get the true Jovian names: Io, Europa, Ganymede, and Callisto.
+    </li>
+</ul>
+</body>
+</html>
