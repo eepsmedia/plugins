@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 2019-05-25.
+ 
+ 
+ ==========================================================================
+index in blodgett
+
+    Author:   Tim Erickson
+
+Copyright (c) 2019 by Epistemological Engineering. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+
+local plugin only:
+    localhost:8888/plugins/blodgett/
+
+local in CODAP:
+    http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/blodgett/
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Blodgett Forest</title>
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+
+    <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css">
+
+    <link rel='stylesheet' type='text/css' href='blodgett.css'/>
+
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/TEEUtils.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.js"></script>
+
+    <script src="blodgett.js"></script>
+    <script src="whence.js"></script>
+    <script src="blodgett.CODAPconnect.js"></script>
+    <script src="blodgett.DBconnect.js"></script>
+    <script src="blodgett.variables.js"></script>
+
+
+</head>
+<body>
+
+<table id="getDataTable" style="padding: 6px; margin-bottom:6px; background-color:#ddf;">
+    <tr>
+        <td style="padding: 12px">
+            <button id="getDataButton" onclick="blodgett.getDataButtonPressed()">get data</button>
+
+        </td>
+        <td valign="middle" align="right" style="padding-right: 12px">
+            Click<br><strong>get data</strong><br> to:
+        </td>
+        <td valign="middle">
+            <span id="downloadDataRequestText">The data request will appear here</span>
+        </td>
+    </tr>
+</table>
+
+<fieldset id="getDataBlock" onchange="blodgett.ui.updateUI()">
+    <legend>Specify time period (don't use IE)</legend>
+    <!--
+                <span>
+                    ... current setting:<br>
+                    <span id="dataIntervalStatement"></span>
+                </span>
+                <br><br>
+    -->
+    <label>start date: <input id="dateControl" type="date"></label><br>
+    <label>how much data?
+        <select id="numberOfDaysControl">
+            <option value="1">1 day</option>
+            <option value="3">3 days</option>
+            <option value="7">7 days</option>
+            <option value="30">30 days</option>
+        </select>
+    </label>
+</fieldset>
+
+</body>
+
+<script>
+    //  $(function () {
+    //  $("#tabs").tabs();
+    blodgett.initialize();
+    //  );
+
+</script>
+
+</html>
