@@ -24,30 +24,34 @@ nhanes.userActions = {
         let oData = [];
         let tData = await nhanes.DBconnect.getCasesFromDB(nhanes.ui.getArrayOfChosenAttributes(), ageClauseArray );
 
-        //  okay, tData is an Array of objects whose keys are the variable names.
+        //  here, tData is an Array of objects whose keys are the variable names.
         //  now we have to translate names and values...
 
-        tData.forEach( c => {
-            //  c is a case object
-            let o = { sample : nhanes.state.sampleNumber };
-            for (let key in c) {
-                if (c.hasOwnProperty(key)) {
-                    const tAtt = nhanes.allAttributes[key];    //  the Attribute
-                    const tValue = tAtt.decodeValue( c[key]);
-                    o[tAtt.title] = tValue;
+        if (tData) {
+            tData.forEach(c => {
+                //  c is a case object
+                let o = {sample: nhanes.state.sampleNumber};
+                for (let key in c) {
+                    if (c.hasOwnProperty(key)) {
+                        const tAtt = nhanes.allAttributes[key];    //  the Attribute
+                        o[tAtt.title] = tAtt.decodeValue(c[key]);
+                    }
                 }
-            }
-            oData.push(o);
-        });
+                oData.push(o);
+            });
 
-        //     make sure the case table is showing
+            console.log("Got " + tData.length + " from " + nhanes.whence);
+            //     make sure the case table is showing
 
-        await nhanes.CODAPconnect.makeCaseTableAppear();
+            await nhanes.CODAPconnect.makeCaseTableAppear();
 
-        //  console.log("the cases: " + JSON.stringify(oData));
+            //  console.log("the cases: " + JSON.stringify(oData));
 
-        nhanes.CODAPconnect.saveCasesToCODAP( oData );
-        nhanes.state.sampleNumber++;
+            nhanes.CODAPconnect.saveCasesToCODAP(oData);
+            nhanes.state.sampleNumber++;
+        } else {
+            alert("nhanes.userActions: No data returned");
+        }
     },
 
     changeAttributeCheckbox : function(iAttName) {
@@ -57,6 +61,7 @@ nhanes.userActions = {
         nhanes.ui.updateWholeUI();
     },
 
+/*
     clickMakeMapButton : async function() {
         const thePUMA = Number(document.getElementById("pumaNumberBox").value);
         const latlong = await nhanes.DBconnect.getLatLon( thePUMA );
@@ -74,5 +79,6 @@ nhanes.userActions = {
         }
 
     }
+*/
 
 };

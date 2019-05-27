@@ -22,7 +22,7 @@
 
 let nhanes = {
     state: null,
-    whence: "local",
+    //  whence: "local",
     allAttributes: {},     //  object containing all Attributes (Attribute is a class), keyed by NAME.
     /**
      * An object whose keys are variable naames and whose value is an object...
@@ -65,7 +65,7 @@ let nhanes = {
         // nhanes.ancestries = await nhanes.DBconnect.getDBInfo("getAncestries");
         const tAtts = await nhanes.DBconnect.getDBInfo("getAllAttributeInfo");
 
-        console.log("the variables: " + JSON.stringify(tAtts));
+        //  console.log("the variables: " + JSON.stringify(tAtts));
 
         tAtts.forEach(a => {
             let tA = new Attribute(a);

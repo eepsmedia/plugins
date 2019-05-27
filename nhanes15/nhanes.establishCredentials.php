@@ -17,18 +17,14 @@
  *
  */
 
-//  echo print_r($_SERVER, true);       //  un-comment to find the actual pathname of the server
-
 $whence  = $_REQUEST['whence'];
 
 $credentialFileNames = [
     "local" => "/Applications/MAMP/cred/nhanes15Cred.php",
-    "eeps" => "/home1/denofinq/cred/nhanes15Cred.php"
+    "xyz" => "/home/codapxyz/cred/nhanes15cred.php"
 ];
 
 $thisFileName = $credentialFileNames[$whence];
-
-//  echo "Credential file: $thisFileName <br>";
 
 try {
     include_once($thisFileName);
@@ -39,6 +35,5 @@ try {
 $user = $credentials[$whence]["user"];
 $pass = $credentials[$whence]["pass"];
 $dbname = $credentials[$whence]["dbname"];
-
 
 ?>
