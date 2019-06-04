@@ -25,7 +25,7 @@ let nhanes = {
     //  whence: "local",
     allAttributes: {},     //  object containing all Attributes (Attribute is a class), keyed by NAME.
     /**
-     * An object whose keys are variable naames and whose value is an object...
+     * An object whose keys are variable names and whose value is an object...
      * ...whose keys are (numeric) values and whose values are the "decoded" strings for the values,
      *
      * e.g. { "sex" : { 1 : "Male", 2: Female}, ... }
@@ -84,7 +84,8 @@ let nhanes = {
         6 : "tchol",         //  total cholesterol
         7 : "hiv",
         8 : "chlamydia",
-        9 : "bpq"
+        9 : "bpq",
+        10 : "biochem"
     },
 
     attributeGroups: [

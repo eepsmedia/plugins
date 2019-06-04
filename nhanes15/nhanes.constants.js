@@ -19,7 +19,7 @@
 
 nhanes.constants = {
 
-    version: "001b",
+    version: "001c",
 
     kNHANESDataSetName: "NHANESdata",
     kNHANESDataSetTitle: "NHANESdata",

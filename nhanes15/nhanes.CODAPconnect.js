@@ -119,9 +119,9 @@ nhanes.CODAPconnect = {
 
         const makeCaseTableResult = await codapInterface.sendRequest( theMessage );
         if (makeCaseTableResult.success) {
-            console.log("Success creating case table: " + theMessage.title);
+            console.log("Success creating case table: " + theMessage.values.name);
         } else {
-            console.log("FAILED to create case table: " + theMessage.title);
+            console.log("FAILED to create case table: " + theMessage.values.name);
         }
 
     },
