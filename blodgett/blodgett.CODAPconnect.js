@@ -32,7 +32,7 @@ blodgett.CODAPconnect = {
 
     initialize: async function (iCallback) {
         await codapInterface.init(this.iFrameDescriptor, null)
-        await pluginHelper.initDataSet(this.BlodgettDataContextSetupObject);
+        await pluginHelper.initDataSet(this.blodgettDataContextSetupObject);
 
         //  restore the state if possible
 
@@ -137,7 +137,7 @@ blodgett.CODAPconnect = {
 
     },
 
-    BlodgettDataContextSetupObject: {
+    blodgettDataContextSetupObject: {
         name: blodgett.constants.kBlodgettDataSetName,
         title: blodgett.constants.kBlodgettDataSetTitle,
         description: 'blodgett forest portal',
@@ -150,21 +150,22 @@ blodgett.CODAPconnect = {
                     setOfCasesWithArticle: "the data"
                 },
 
-                attrs: [ // note how this is an array of objects.
+                attrs: [ // note how this is an array of objects. These are the "requires" attributes.
                     {name: "sample", type: 'categorical', description: "sample number"},
-                    {name: "date", type: 'date', description: "date"},
+                    {name: "when", type: 'date', description: "date and time"},
+                    {name: "hour", type: 'numeric', description: "hour (24-hour clock)", precision : 2, units: "hours"},
                     {name: "decimalDate", type: 'numeric', description: "decimal date", units: "days"},
+                    {name: "stringDate", type: 'categorical', description: "date as a string"},
                 ]
             }
         ]
     },
 
-
     iFrameDescriptor: {
         version: blodgett.constants.version,
         name: 'blodgett',
         title: 'Blodgett Forest Data Portal',
-        dimensions: {width: 444, height: 555},
+        dimensions: {width: 400, height: 222},
         preventDataContextReorg: false
     }
 

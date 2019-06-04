@@ -28,6 +28,7 @@ limitations under the License.
 
 
 blodgett.variables = [
+/*
     {
         queryName: "Date",
         screenName: "date",
@@ -43,6 +44,21 @@ blodgett.variables = [
         units: "A.D."
     },
     {
+        queryName: "Hour",
+        screenName: "hour",
+        description: "hour (24-hour clock)",
+        choosable : false,
+        units: "hours"
+    },
+    {
+        queryName: "Minute",
+        screenName: "minute",
+        description: "minutes",
+        choosable : false,
+        units: "minutes"
+    },
+*/
+    {
         queryName: "dayDec",
         screenName: "decimalDate",
         description: "decimal days",
@@ -51,16 +67,38 @@ blodgett.variables = [
     },
     {
         queryName: "T_0",
-        screenName: "temp-ground",
-        description: "temperature at ground level (10 feet up)",
+        screenName: "T_10ft",
+        description: "air temperature at ground level (10 feet up)",
+        choosable : true,
+        units: "°C"
+    },
+    {
+        queryName: "T_140",
+        screenName: "T_140ft",
+        description: "air temperature on the tower (140 feet up)",
         choosable : true,
         units: "°C"
     },
     {
         queryName: "SoilT20",
-        screenName: "temp-soil",
+        screenName: "T_soil",
         description: "temperature in the soil (20 cm down)",
         choosable : true,
         units: "°C"
+    },
+    {
+        queryName: "Precip",
+        screenName: "precip",
+        description: "precipitation (15 minutes)",
+        choosable : true,
+        units: "mm"
+    },
+    {
+        queryName: "Pressure",
+        screenName: "pressure",
+        description: "air pressure",
+        choosable : true,
+        units: "mb"
     }
+
 ];

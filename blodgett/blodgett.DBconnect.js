@@ -55,16 +55,19 @@ blodgett.DBConnect = {
     },
 
     getCasesFromDB: async function (iAtts) {
+
+        //  Suppose the date in the picker is Sept 10 1987
+
         const tNumberOfDays = document.getElementById("numberOfDaysControl").value;
-        const d0 = blodgett.state.currentStartDate; //  set in UI on change of date. ISO string.
-        const d0_Date = new Date(d0);
-        const d0_milliseconds = d0_Date.getTime() + 60000 * d0_Date.getTimezoneOffset();
+        const d0 = blodgett.state.currentStartDate; //  set in UI on change of date. ISO string. "1987-09-10"
+        const d0_Date = new Date(d0);       //  This is the Date of "1987-09-10T00:00Z" which is of course on 1987-09-09
+        const d0_milliseconds = d0_Date.getTime() + 60000 * d0_Date.getTimezoneOffset(); // the ms for our local midnight
 
-        const tDt = (tNumberOfDays - 1) * 86400 * 1000;     //  milliseconds in a day
-        const d1_Date = new Date(d0_milliseconds + tDt);
-        const d1 = d1_Date.ISO_8601_string();
+        const tDt = (tNumberOfDays - 1) * 86400 * 1000;     //  milliseconds in a day. ms for Local midnight.
+        const d1_Date = new Date(d0_milliseconds + tDt); // the Date at our local midnight
+        const d1 = d1_Date.ISO_8601_string();       //  the ISO day-only string for that date.
 
-        let tAttNames = ["Date", "dayDec"];
+        let tAttNames = ["Date", "dayDec", "Hour", "Minute"];
 
         iAtts.forEach(a => {
             tAttNames.push(a.queryName);
