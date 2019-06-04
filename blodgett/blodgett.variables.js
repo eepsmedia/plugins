@@ -87,6 +87,20 @@ blodgett.variables = [
         units: "°C"
     },
     {
+        queryName: "RH10",
+        screenName: "hum_10ft",
+        description: "relative humidity at ground level (10 feet up)",
+        choosable : true,
+        units: "%"
+    },
+    {
+        queryName: "RH140",
+        screenName: "hum_140ft",
+        description: "relative humidity on the tower (140 feet up)",
+        choosable : true,
+        units: "%"
+    },
+    {
         queryName: "Precip",
         screenName: "precip",
         description: "precipitation (15 minutes)",

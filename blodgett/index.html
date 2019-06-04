@@ -70,7 +70,7 @@ local in CODAP:
             <button id="getDataButton" onclick="blodgett.getDataButtonPressed()">get data</button>
         </td>
         <td style="padding-right: 12px">
-            Click <strong>get data</strong> to:<br>
+            Click <strong>get data</strong> to collect data<br>
             <span id="downloadDataRequestText">The data request will appear here</span>
         </td>
     </tr>
@@ -78,21 +78,19 @@ local in CODAP:
 
 <fieldset id="getDataBlock" onchange="blodgett.ui.updateUI()">
     <legend>Specify time period (don't use IE)</legend>
-    <!--
-                <span>
-                    ... current setting:<br>
-                    <span id="dataIntervalStatement"></span>
-                </span>
-                <br><br>
-    -->
-    <label>start date: <input id="dateControl" type="date"></label><br>
+    <label>start date: <input id="dateControl" type="date"  onchange="blodgett.ui.updateUI()"></label><br>
     <label>how much data?
-        <select id="numberOfDaysControl">
+        <select id="numberOfDaysControl" onchange="blodgett.ui.updateUI()">
             <option value="1">1 day</option>
             <option value="3">3 days</option>
             <option value="7">7 days</option>
             <option value="30">30 days</option>
         </select>
+    </label>
+    <br>
+    <label>how often?
+        <input type="radio" name="interval" value="15 minutes" onchange="blodgett.ui.updateUI()" checked> 15 min |
+        <input type="radio" name="interval" value="2 hours" onchange="blodgett.ui.updateUI()"> 2 hrs
     </label>
 </fieldset>
 

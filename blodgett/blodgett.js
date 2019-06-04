@@ -35,7 +35,7 @@ See the wiki for how we handle the data, especially time attributes: https://git
 let blodgett = {
 
     constants : {
-        version : "000a",
+        version : "000b",
         kDefaultDate : "2017-09-10",
         kBlodgettDataSetName : "blodgett",
         kBlodgettCollectionName : "blodgett",
@@ -72,6 +72,7 @@ let blodgett = {
         if (tDBCases.length > 0) {
             const tCODAPCases = this.convertDataFromDBToCODAP( tDBCases );
             await blodgett.CODAPconnect.saveCasesToCODAP(tCODAPCases);
+            blodgett.ui.bumpCalendar();
         }
     },
 
@@ -111,6 +112,14 @@ let blodgett = {
      */
     ui : {
 
+        bumpCalendar : function() {
+            const theCalendar = document.getElementById("dateControl");
+            const theCurrentDate = new Date(theCalendar.value);
+            const newDate = theCurrentDate.addDays( blodgett.state.numberOfDays  );
+            theCalendar.valueAsDate = newDate;
+            this.updateUI();
+        },
+
         getArrayOfChosenAttributes : function() {   //  todo: really implement
             let out = [];
             blodgett.variables.forEach( v => {
@@ -122,12 +131,26 @@ let blodgett = {
         },
 
         updateUI : function () {
-            const tCalendar = document.getElementById("dateControl");
-            blodgett.state.currentStartDate = tCalendar.value;      //  just the string
+            blodgett.state.currentStartDate = document.getElementById("dateControl").value;      //  just the string
+            blodgett.state.numberOfDays = document.getElementById("numberOfDaysControl").value;
+            blodgett.state.intervalString = document.querySelector("input[name='interval']:checked").value;
 
-            const tNewRequestText = "collect data starting on " + blodgett.state.currentStartDate;
+            const tNewRequestText = "starting on " + blodgett.state.currentStartDate
+                + " for " + blodgett.state.numberOfDays + " day" + (blodgett.state.numberOfDays == 1 ? "" : "s");
             const tDataRequestText = document.getElementById("downloadDataRequestText");
             tDataRequestText.textContent = tNewRequestText;
         }
     }
+};
+
+Date.prototype.addDays = function(days) {
+    const out = new Date(
+        this.getFullYear(),
+        this.getMonth(),
+        this.getDate() + Number(days),
+        this.getHours(),
+        this.getMinutes(),
+        this.getSeconds()
+    );
+    return out;
 };

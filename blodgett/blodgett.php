@@ -43,6 +43,10 @@ switch ($command) {
 
         $dateRange = " ( Date BETWEEN :d0 AND :d1 ) ";
 
+        if ($_REQUEST['interval'] == "2 hours") {
+            $dateRange .= " AND Minute = 0 AND Hour % 2 = 0";
+        }
+
         $query = "SELECT $theVariables FROM blodgett WHERE " . $dateRange;
         reportToFile("Get cases query : $query");
 

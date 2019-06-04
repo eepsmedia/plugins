@@ -58,12 +58,12 @@ blodgett.DBConnect = {
 
         //  Suppose the date in the picker is Sept 10 1987
 
-        const tNumberOfDays = document.getElementById("numberOfDaysControl").value;
+        // const tNumberOfDays = document.getElementById("numberOfDaysControl").value;
         const d0 = blodgett.state.currentStartDate; //  set in UI on change of date. ISO string. "1987-09-10"
         const d0_Date = new Date(d0);       //  This is the Date of "1987-09-10T00:00Z" which is of course on 1987-09-09
         const d0_milliseconds = d0_Date.getTime() + 60000 * d0_Date.getTimezoneOffset(); // the ms for our local midnight
 
-        const tDt = (tNumberOfDays - 1) * 86400 * 1000;     //  milliseconds in a day. ms for Local midnight.
+        const tDt = (blodgett.state.numberOfDays - 1) * 86400 * 1000;     //  milliseconds in a day. ms for Local midnight.
         const d1_Date = new Date(d0_milliseconds + tDt); // the Date at our local midnight
         const d1 = d1_Date.ISO_8601_string();       //  the ISO day-only string for that date.
 
@@ -77,6 +77,7 @@ blodgett.DBConnect = {
             const theCommands = {
                 "c": "getCases",
                 "atts": tAttNames.join(','),  //  iAttNames is an array, we need a comma-separated string
+                "interval" : blodgett.state.intervalString,
                 "d0": d0,
                 "d1": d1
             };
