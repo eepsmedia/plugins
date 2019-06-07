@@ -1,7 +1,7 @@
 <!--
 
 ==========================================================================
-dsgBART.html
+bart.html
 
 HTML for BART aggregate data.
 
@@ -29,6 +29,13 @@ URLs:   http://localhost:8888/barty/barty.html
             xyz:    https://codap.xyz/plugins/barty/barty.html
 
             eeps:   https://www.eeps.com/codap/barty/barty.html
+
+
+Local, all MAMP:
+http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/barty/barty.html
+
+COAP convcord, local barty:
+http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/barty/barty.html
 
 
 -->
@@ -60,23 +67,23 @@ HOW TO DEPLOY THIS THING
     <link rel='stylesheet' type='text/css' href='../common/jqueryFolder/jquery-ui.css'/>
 
     <!-- These scripts take care of the communication with CODAP and commons -->
-    <script src="../common/iframe-phone.js" language="javascript"></script>
-    <script src="../common/codapInterface.js" language="javascript"></script>
-    <script src="../common/pluginHelper.js" language="javascript"></script>
+    <script src="../common/iframe-phone.js" ></script>
+    <script src="../common/codapInterface.js" ></script>
+    <script src="../common/pluginHelper.js" ></script>
 
-    <script src="../common/TEEUtils.js" language="javascript"></script>
+    <script src="../common/TEEUtils.js" ></script>
     <script src="../common/jqueryFolder/jquery.min.js"></script>
     <script src="../common/jqueryFolder/jquery-ui.js"></script>
 
 
     <!-- Our game source -->
-    <script src="barty.js" language="JavaScript"></script>
-    <script src="barty.constants.js" language="JavaScript"></script>
-    <script src="bartyManager.js" language="JavaScript"></script>
-    <script src="barty.ui.js" language="JavaScript"></script>
-    <script src="bartyCODAPConnector.js" language="JavaScript"></script>
-    <script src="bartyMeetings.js" language="JavaScript"></script>
-    <script src="bartStations.js" language="JavaScript"></script>
+    <script src="barty.js" ></script>
+    <script src="barty.constants.js" ></script>
+    <script src="bartyManager.js" ></script>
+    <script src="barty.ui.js" ></script>
+    <script src="bartyCODAPConnector.js" ></script>
+    <script src="bartyMeetings.js" ></script>
+    <script src="bartStations.js" ></script>
 
 
     <script>
@@ -260,49 +267,6 @@ HOW TO DEPLOY THIS THING
         <p>Thanks to Pam Herhold, BART, for access!</p>
 
     </div>
-
-
-    <!--
-        <div id="scenarioTab">
-            <p>You are trying to find a meeting in the Bay Area, and you have only BART data to do it with.
-                You know the meeting is near a BART station. You know it's at the same time very week.</p>
-            <p>Before you press <strong>new game</strong>, check out the <strong>Options</strong> tab.
-            </p>
-            <p>Use that to set up the game.</p>
-            <ul>
-                <li>Begin by using the defaults (Orinda, Tuesday, 2 PM, 160 people). So you know the answer.</li>
-                <li>See if you can make a graph that shows the meeting in the BART data.</li>
-                <ul>
-                    <li>Notice that the controls let you define what data to get, for example, what date and for what
-                        hours.
-                    </li>
-                    <li>Notice that you can learn the cost of your data.
-                        <b>Eventually, you will have to confirm your purchase.</b></li>
-                </ul>
-                <li>When you have that nailed, set the time to "surprise me" and play another game.
-                    See if you can figure out the time.
-                </li>
-                <li>Gradually move up to other attributes or even to combinations!</li>
-            </ul>
-            <h2>Hints</h2>
-            <p>If you're stuck about making a graph with the default options:</p>
-            <ol>
-                <li>Make sure a Tuesday is selected, such as April 14.</li>
-                <li>Make sure "From Embarcadero to Orinda" is selected. Click <strong>get data</strong>.</li>
-                <li>Click the <strong>Tables</strong> icon above. A data table appears. See what it looks like.</li>
-                <li>Click <strong>Graph</strong>. A mixed-up graph appears.
-                    Drag the heading <strong>hours</strong> to the horizontal axis of the graph.
-                </li>
-                <li>Drag <strong>count</strong> to the vertical axis. You should see a bump at 2 PM.</li>
-                <li>Try dragging other attributes to various axes &#45;&#45; or to the middle of the graph.</li>
-
-            </ol>
-            <p>Notice that we "knew" Embarcadero would be a good source. In reality, you don't know that.
-                How would you figure it out?</p>
-            <p>That should get you started. Oh: to start over, just reload the page.</p>
-        </div>
-    -->
-
 
     <div id="mapTab">
         <img src="https://www.bart.gov/sites/all/themes/bart_desktop/img/system-map.gif">
