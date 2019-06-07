@@ -34,11 +34,18 @@ LOCAL, TESTING:         http://localhost:8888/plugins/fish/fish.html?lang=es
 
 On eeps: https://www.eeps.com/codap/fish/fish.html
 
-On greenGeeks:  https://codap.xyz/projects/fish/fish.html
+On greenGeeks:  https://codap.xyz/plugins/fish/fish.html
 
-PHP general log setup
+local plugin only:
+    localhost:8888/plugins/fish/
+
+local in CODAP:
+    http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/fish/
+
+
+MySQL general log setup, run this in MYSQL
 set global general_log = 'on';
-set global general_log_file = '/Users/tim/Desktop/llog.txt';
+set global general_log_file = '/Users/tim/Desktop/f.log';
 SHOW VARIABLES LIKE "general_log%";
 
 
@@ -64,24 +71,25 @@ todo: fix bug: at end of game, historical records don't include the very last on
 
     <link rel='stylesheet' type='text/css' href='fish.css'/>
 
-    <script src="../common/iframe-phone.js" language="javascript"></script>
-    <script src="../common/codapInterface.js" language="javascript"></script>
-    <script src="../common/pluginHelper.js" language="javascript"></script>
-    <script src="../common/TEEUtils.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/jquery.min.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/jquery-ui.min.js" language="javascript"></script>
+    <script src="../common/iframe-phone.js" ></script>
+    <script src="../common/codapInterface.js" ></script>
+    <script src="../common/pluginHelper.js" ></script>
+    <script src="../common/TEEUtils.js" ></script>
+    <script src="../common/jqueryFolder/jquery.min.js" ></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js" ></script>
 
-    <script src="fish.js" language="JavaScript"></script>
+    <script src="fish.js" ></script>
 
-    <script src="fishGameConfigurations.js" language="JavaScript"></script>
-    <script src="fishStrings.js" language="JavaScript"></script>
+    <script src="fishGameConfigurations.js" ></script>
+    <script src="fishStrings.js" ></script>
 
-    <script src="fishphpConnector.js" language="JavaScript"></script>
-    <script src="fishCODAPConnector.js" language="JavaScript"></script>
-    <script src="fishUI.js" language="JavaScript"></script>
-    <script src="fishUserActions.js" language="JavaScript"></script>
-    <script src="fishModel.js" language="JavaScript"></script>
-    <script src="fishHistoricalData.js" language="JavaScript"></script>
+    <script src="fishphpConnector.js" ></script>
+    <script src="fishCODAPConnector.js" ></script>
+    <script src="fishUI.js" ></script>
+    <script src="fishUserActions.js" ></script>
+    <script src="fishModel.js" ></script>
+    <script src="fishHistoricalData.js" ></script>
+    <script src="whence.js" ></script>
 
     <script>
         $(function () {

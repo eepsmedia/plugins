@@ -85,6 +85,9 @@ fish.userActions = {
                 fish.setNotice("The new game is named <b>" + iGameCode + "</b>");
                 await fish.userActions.joinGame(fish.state.gameCode);       //  join it!
             }
+
+            //  start actually playing NOW
+            fish.mainLoop();
         }
         catch (msg) {
             console.log('clickJoinButton() error: ' + msg);
@@ -170,7 +173,8 @@ fish.userActions = {
 
             //  start polling when you join!
             if (fish.constants.kUsingTimer) {
-                setTimeout(fish.doTimer, fish.constants.kTimerInterval);
+
+                //  setTimeout(fish.doTimer, fish.constants.kTimerInterval);
             }
 
             fish.fishUpdate();

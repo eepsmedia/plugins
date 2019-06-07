@@ -33,7 +33,6 @@ limitations under the License.
  */
 let fish = {
 
-    whence: "local",        //  local, xyz, or eeps.
     debugThing: null,      //  UI element
 
     state: null,            //  object to hold the current state of the game. Very important.
@@ -191,6 +190,26 @@ let fish = {
         fish.ui.update();
     },
 
+    mainLoop : async function() {
+        let gameOver = false;
+
+        while (!gameOver) {
+            fish.state.timerCount++;
+
+            try {
+                if (fish.state.gameCode && fish.state.playerName) {
+                    gameOver = await fish.fishUpdate();     //  update the model
+                    await fish.ui.update();             //  update the view
+                } else {
+                    fish.setNotice(fish.strings.waitingToStartText);
+                }
+            } catch (msg) {
+                console.error("fish.mainLoop() error (in fish.mainLoop()) " + msg);
+            }
+            await setTimeout(fish.ui.update, fish.constants.kTimerInterval);
+        }
+    },
+
     /**
      * Called periodically (fish.constants.kTimerInterval)
      * If a game is in progress, updates model and view.
@@ -209,7 +228,7 @@ let fish = {
             }
         }
         catch (msg) {
-            console.error("doTimer() timer error (fishUpdate())? " + msg);
+            console.error("fish.doTimer() error (in fish.fishUpdate()) " + msg);
         }
 
         if (!done) {
@@ -224,8 +243,7 @@ let fish = {
      */
     fishUpdate: async function () {
         let done = false;
-        const p1 = fish.phpConnector.getGameData();
-        const tDBgame = await p1;
+        const tDBgame = await fish.phpConnector.getGameData();
 
         const tNewGameTurn = Number(tDBgame['turn']);
         fish.state.gameState = tDBgame['gameState'];
@@ -310,9 +328,9 @@ let fish = {
     constants: {
         version: "001e",
 
-        kTimerInterval: 700,       //      milliseconds, ordinarily 1000
+        kTimerInterval: 2000,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
-        kInitialLanguage : 'en',    //  can override with URL parameter *lang*, e.g., "...fish.html?lang=es"
+        kInitialLanguage : 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
 
         kBaseURL: {
             local: "http://localhost:8888/plugins/fish/fish.php",
