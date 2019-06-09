@@ -115,7 +115,7 @@ nhanes.CODAPconnect = {
                 name : nhanes.constants.kNHANESCaseTableName,
                 cannotClose : true
             }
-        }
+        };
 
         const makeCaseTableResult = await codapInterface.sendRequest( theMessage );
         if (makeCaseTableResult.success) {
