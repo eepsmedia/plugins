@@ -26,6 +26,7 @@ limitations under the License.
 
 */
 
+/* global codapInterface, pluginHelper */
 
 fish.CODAPConnector = {
 
@@ -35,25 +36,32 @@ fish.CODAPConnector = {
      * @param iCallback
      * @returns {Promise<T | never>}
      */
-    initialize: function (iCallback) {
-        return codapInterface.init(this.iFrameDescriptor, null)
-            .then(
-                function () {
-                    pluginHelper.initDataSet(fish.localize.getHistoricalDataContextSetupObject());
-                    pluginHelper.initDataSet(fish.localize.getFishDataContextSetupObject());
+    initialize: async function ( ) {
+        await codapInterface.init(this.iFrameDescriptor, null)
+        let thePromises = [];
+        thePromises.push(pluginHelper.initDataSet(fish.localize.getHistoricalDataContextSetupObject()));
+        thePromises.push(pluginHelper.initDataSet(fish.localize.getFishDataContextSetupObject()));
 
-                    //  restore the state if possible
+        const tMutabilityMessage = {
+            "action": "update",
+            "resource": "interactiveFrame",
+            "values": {
+                "preventBringToFront": false,
+                "preventDataContextReorg": false
+            }
+        };
 
-                    fish.state = codapInterface.getInteractiveState();
+        thePromises.push(codapInterface.sendRequest(tMutabilityMessage));
 
-                    if (jQuery.isEmptyObject(fish.state)) {
-                        codapInterface.updateInteractiveState(fish.freshState);
-                        console.log("fish: getting a fresh state");
-                    }
-                    console.log("fish.state is " + JSON.stringify(fish.state));   //  .length + " chars");
+        //  restore the state if possible
+        fish.state = codapInterface.getInteractiveState();
+        if (jQuery.isEmptyObject(fish.state)) {
+            codapInterface.updateInteractiveState(fish.freshState);
+            console.log("fish: getting a fresh state");
+        }
 
-                }.bind(this)
-            );
+        await Promise.all(thePromises);
+        //  console.log("fish.state is " + JSON.stringify(fish.state));   //  .length + " chars");
     },
 
     /**
@@ -78,7 +86,9 @@ fish.CODAPConnector = {
 
         //  const localizedTurn = fish.localize.localizeValuesObject(aTurn);
 
+        console.log("    new turn record: " + JSON.stringify(aTurn));
         await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
+        this.makeCaseTableAppear();
         return aTurn;   //  localizedTurn
     },
 
@@ -121,22 +131,28 @@ fish.CODAPConnector = {
                 theWholeTurn = theResult.values;
                 Object.assign(theWholeTurn, tValues);       //  merge the new values into the "turn" data (for return)
             } else {
-                throw("unsuccessful item search, year " + iYear);
+                throw("    unsuccessful item search, year " + iYear);
             }
 
             //      now do the update
+            tResource = "dataContext[" + fish.constants.kFishDataSetName +
+                "].itemByID[" + theItemID + "]";
+            //  sample tResource:  "dataContext[fish].itemByID[id:Cpz-fhDXr49K_u2R]"
+            //  sample tValues:     {unitPrice: 100, income: 3300, after: 6300}
 
-            tResource = "dataContext[" + fish.constants.kFishDataSetName + "].item[" + theItemID + "]";
             tMessage = {action: "update", resource: tResource, values: tValues};    //  fish.localize.localizeValuesObject(tValues)};
             const tUpdateResult = await codapInterface.sendRequest(tMessage);
 
             if (!tUpdateResult.success) {
-                throw("unsuccessful case update, year " + iYear + " values: " + JSON.stringify(tValues));
+                const errorString = "    unsuccessful update, item " + theItemID +
+                    " | year: " + iYear + " | error: " + tUpdateResult.values.error +
+                    " | message: " + JSON.stringify(tMessage);
+                console.log(errorString);
             }
 
             return theWholeTurn;       //      resolve to the most recent turn.
         } catch (msg) {
-            console.log("updateFishItemInCODAP(): " + msg);
+            console.log("    error in updateFishItemInCODAP(): " + msg);
         }
     },
 
@@ -146,12 +162,13 @@ fish.CODAPConnector = {
         console.log("Fish ... createFishItems with " + iValues.length + " case(s)");
 
         try {
-            res = await pluginHelper.createItems(iValues, fish.constants.kFishDataSetName);
+            const res = await pluginHelper.createItems(iValues, fish.constants.kFishDataSetName);
             console.log("Resolving createFishItems() with " + JSON.stringify(res));
             return res;
         } catch {
             console.log("Problem creating items using iValues = " + JSON.stringify(iValues));
         }
+
     },
 
     createHistoricalFishItems: function (iValues) {
@@ -187,12 +204,26 @@ fish.CODAPConnector = {
         }
     },
 
+    makeCaseTableAppear : async function() {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'caseTable',
+                dataContext : fish.constants.kFishDataSetName,
+                name : fish.constants.kFishDataSetTitle,
+                cannotClose : true
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
     iFrameDescriptor: {
         version: fish.constants.version,
         name: 'fish',
         title: 'Fishing!',
         dimensions: {width: 360, height: 344},
-        preventDataContextReorg: false              //  todo: figure out why this seems not to work!
+        preventDataContextReorg: false
     },
 
     historicalDataContextSetupStrings: {},

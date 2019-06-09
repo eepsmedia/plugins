@@ -195,6 +195,7 @@ let fish = {
 
         while (!gameOver) {
             fish.state.timerCount++;
+            await new Promise(resolve => setTimeout(resolve, fish.constants.kTimerInterval)); // 3 sec
 
             try {
                 if (fish.state.gameCode && fish.state.playerName) {
@@ -206,7 +207,6 @@ let fish = {
             } catch (msg) {
                 console.error("fish.mainLoop() error (in fish.mainLoop()) " + msg);
             }
-            await setTimeout(fish.ui.update, fish.constants.kTimerInterval);
         }
     },
 
@@ -326,9 +326,9 @@ let fish = {
     },
 
     constants: {
-        version: "001e",
+        version: "001f",
 
-        kTimerInterval: 2000,       //      milliseconds, ordinarily 1000
+        kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
         kInitialLanguage : 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
 
@@ -359,5 +359,6 @@ let fish = {
 
         foo: 42
     }
-
 };
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
