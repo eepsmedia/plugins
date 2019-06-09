@@ -235,17 +235,6 @@ barty.manager = {
             } else {
                 barty.manager.possibleCosts[iQT] = "too much data<br>to download";
                 barty.ui.fixUI();
-
-                //  todo: fix the following loop, not working as of 2016-03-14
-
-/*
-                if (barty.constants.queryTypes.every(function (iQT) {
-                    barty.manager.caseCounts[iQT] >= 0;
-                })) {
-                    console.log("All case counts retrieved");
-                }
-*/
-
             }
         });
     },
