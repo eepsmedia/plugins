@@ -44,6 +44,18 @@ timer.connect = {
             console.log('Problem initializing the connection to CODAP: ' + msg);
         }
 
+        //  now update the iframe to be mutable...
+
+        const tMessage = {
+            "action": "update",
+            "resource": "interactiveFrame",
+            "values": {
+                "preventBringToFront": false,
+                "preventDataContextReorg": false
+            }
+        };
+
+        const updateResult = await codapInterface.sendRequest(tMessage);
 
     },
 
