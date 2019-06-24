@@ -34,10 +34,31 @@ let timer = {
     setNumber : 0,
     sequenceNumber : 1,
     previousTime : null,
+    timerMode : true,
+
+    state : null,
+
+    freshState : function() {
+        return {
+            configurationText : "data"
+        }
+    },
 
     initialize : async function() {
-        window.onkeydown = (e) => this.doKeyDown(e);
-        window.focus();
+        const wholeShebang = document.getElementById("wholeTimer");
+        wholeShebang.addEventListener("keydown", event => {
+            if (event.isComposing) {
+                return;
+            }
+            this.doKeyDown(event);
+            // do something
+        });
+        wholeShebang.focus();
+
+        timer.state = codapInterface.getInteractiveState();
+        if (Object.keys(timer.state).length === 0) {
+            codapInterface.updateInteractiveState( timer.freshState() );
+        }
 
         await timer.connect.initialize();
         timer.ui.initialize();
@@ -48,12 +69,8 @@ let timer = {
     },
 
     doKeyDown : function(e) {
-        console.log(e.key + " " + e.keyCode);
-        if (e.keyCode >= 48 && e.keyCode <= 57) {   //  digit
-            this.doDataButton(e.key);
-        } else if (e.keyCode >= 65 && e.keyCode <= 90) {   //  lc letter
-            this.doDataButton(e.key);
-        }
+        console.log(e.key + " " + e.code);
+        this.doDataButton(e.key);
     },
 
     doNewSetButton : function () {
@@ -64,6 +81,9 @@ let timer = {
 
     doDataButton : async function(iKey) {
         let tDt = null;
+
+        //  if we press a button and we're WAITING,
+        //  we must be starting a new set.
         if (this.waiting) {
             this.waiting = false;
             this.startTime = new Date();
@@ -102,8 +122,20 @@ let timer = {
         }
     },
 
+    doEditButton : function () {
+        this.waiting = true;
+        this.timerMode = !this.timerMode;   //  toggle
+        console.log("Editing buttons...");
+        timer.state.configurationText = document.getElementById("timerConfigurationTextBox").value;
+        this.updateAll();
+    },
+
+    doDoneEditingButtons : function() {
+
+    },
+
     constants : {
-        version : "000a",
+        version : "001b",
 
         kTimerDataSetName : "Times",
         kTimerDataSetTitle : "Times",

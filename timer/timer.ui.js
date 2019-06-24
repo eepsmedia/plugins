@@ -35,8 +35,13 @@ timer.ui = {
 
     update : function() {
 
+        this.makeDataButtons();
+
         const newSetButton = document.getElementById("newSetButton");
         const statusDiv = document.getElementById("status");
+        const wholeTimerDiv = document.getElementById("wholeTimer");
+        const editorDiv = document.getElementById("editMode");
+        const editorTextBox = document.getElementById("timerConfigurationTextBox");
 
         let tCaseOrCasesWord = (timer.sequenceNumber - 1) === 1 ? " case " : " cases "
 
@@ -46,5 +51,24 @@ timer.ui = {
         newSetButton.style.visibility = timer.waiting ? "hidden" : "visible";
         statusDiv.innerHTML = theStatus;
 
+        wholeTimerDiv.style.display = timer.timerMode ? "block" : "none";
+        editorDiv.style.display = timer.timerMode ? "none" : "block";
+
+        editorTextBox.value = timer.state.configurationText;
+    },
+
+    makeDataButtons : function() {
+        const buttonTextArray = timer.state.configurationText.split(",");
+        let buttonsHTMLArray = [];
+
+        buttonTextArray.forEach( name => {
+            const thisButton =
+                "<button class = 'do' " +
+                " onclick='timer.doDataButton( \"" +  name + "\")'>" +
+                name + "</button>";
+            buttonsHTMLArray.push(thisButton);
+        });
+
+        document.getElementById("dataButtonDiv").innerHTML = buttonsHTMLArray.join('&nbsp;');
     }
 };

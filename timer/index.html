@@ -37,7 +37,7 @@ LOCAL, TESTING:     http://localhost:8888/plugins/timer/
     <meta charset="UTF-8">
     <title>Timer</title>
 
-    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400'   rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
 
     <link rel='stylesheet' type='text/css' href='timer.css'/>
 
@@ -54,12 +54,26 @@ LOCAL, TESTING:     http://localhost:8888/plugins/timer/
 </head>
 <body>
 
-<div id="dataButtonDiv">
-    <button id="dataButton"  class="do" onclick="timer.doDataButton('data')">data</button>
+<div id="wholeTimer">
+    <div id="dataButtonDiv" class="timerDiv"></div>
+
+    <div id="status" class="status"></div>
+
+    <div id="newSetButtonDiv" class="timerDiv">
+        <button id="newSetButton" class="do" onclick="timer.doNewSetButton()">new set</button>
+        <input class="do" type="image" src="../common/art/gear20.png" onclick="timer.doEditButton()">
+    </div>
 </div>
-<hr>
-<div id="status"></div>
-<button id="newSetButton" class="do" onclick="timer.doNewSetButton()">new set</button>
+
+<div id="editMode">
+    <div class="timerDiv">
+        <textarea id="timerConfigurationTextBox"></textarea>
+    </div>
+    <div class="status">Button names separated by commas</div>
+    <div class="timerDiv">
+        <input class="do" type="image" src="../common/art/gear20.png" onclick="timer.doEditButton()">
+    </div>
+</div>
 
 </body>
 

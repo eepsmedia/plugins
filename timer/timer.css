@@ -26,10 +26,33 @@ limitations under the License.
 
 */
 
-#status {
-    font-family: "Sirin Stencil",sans-serif;  font-size: 12px; font-weight: 400;
+body {
+    font-family: "Sirin Stencil",sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    margin : 0px;
+}
+
+#timerConfigurationTextBox {
+    width : 90%;
+}
+
+.status {
+    background-color: #eee;
+    padding : 4px;
+}
+
+.timerDiv {
+    padding : 4px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .do {
-    font-family: "Sirin Stencil",sans-serif;  font-size: 12px; font-weight: 400;
+    font-family: "Sirin Stencil",sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    margin : 2px;
 }
