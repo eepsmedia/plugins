@@ -48,7 +48,7 @@ let texty = {
     analyze: function () {
         texty.state.sampleNumber++;
 
-        texty.state.theText = texty.preprocessText(texty.state.theText);
+        texty.state.theText = texty.preprocessText();
 
         let tValues = [];
         texty.state.theText.forEach((e, i, a) => {
@@ -63,15 +63,14 @@ let texty = {
             tValues.push(aValue);
         });
 
-        texty.connect.sendCases(tValues);
+        texty.connect.sendCases(tValues);   //  no need to await
         texty.connect.makeTableAppear();
     },
 
     /**
-     * Convert the input string into an ARRAY of suitable characters
-     * @param iTextArray
+     * Convert the string in the textarea into an ARRAY of suitable characters
      */
-    preprocessText : function( iTextArray ) {
+    preprocessText : function( ) {
         const pre =  Array.from(document.getElementById("theText").value.toLowerCase());
         let out = [];
         let previousLetter = "";
