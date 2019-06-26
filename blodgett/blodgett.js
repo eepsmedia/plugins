@@ -147,10 +147,12 @@ let blodgett = {
 };
 
 Date.prototype.addDays = function(days) {
+    let dayNumber = this.getDate();
+    dayNumber += Number(days);
     const out = new Date(
         this.getFullYear(),
         this.getMonth(),
-        this.getDate() + Number(days),
+        dayNumber,
         this.getHours(),
         this.getMinutes(),
         this.getSeconds()

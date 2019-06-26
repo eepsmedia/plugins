@@ -77,8 +77,15 @@ local in CODAP:
 </table>
 
 <fieldset id="getDataBlock" onchange="blodgett.ui.updateUI()">
-    <legend>Specify time period (don't use IE)</legend>
-    <label>start date: <input id="dateControl" type="date"  onchange="blodgett.ui.updateUI()"></label><br>
+    <legend>Specify time period (don't use IE, 2017 only)</legend>
+    <label for="dateControl">start date:</label>
+    <input id="dateControl"
+           type="date"
+           min="2017-01-01"
+           max="2017-12-31"
+           onchange="blodgett.ui.updateUI()"
+    >
+    <br>
     <label>how much data?
         <select id="numberOfDaysControl" onchange="blodgett.ui.updateUI()">
             <option value="1">1 day</option>
