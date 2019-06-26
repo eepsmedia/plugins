@@ -41,14 +41,14 @@ LOCAL, TESTING:     http://localhost:8888/plugins/timer/
 
     <link rel='stylesheet' type='text/css' href='timer.css'/>
 
-    <script src="../common/iframe-phone.js" language="javascript"></script>
-    <script src="../common/codapInterface.js" language="javascript"></script>
-    <script src="../common/pluginHelper.js" language="javascript"></script>
-    <script src="../common/TEEUtils.js" language="javascript"></script>
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/TEEUtils.js"></script>
 
-    <script src="timer.js" language="JavaScript"></script>
-    <script src="timer.connect.js" language="JavaScript"></script>
-    <script src="timer.ui.js" language="JavaScript"></script>
+    <script src="timer.js"></script>
+    <script src="timer.connect.js"></script>
+    <script src="timer.ui.js"></script>
 
 
 </head>
@@ -71,7 +71,7 @@ LOCAL, TESTING:     http://localhost:8888/plugins/timer/
     </div>
     <div class="status">Button names separated by commas</div>
     <div class="timerDiv">
-        <input class="do" type="image" src="../common/art/gear20.png" onclick="timer.doEditButton()">
+        <input class="do" type="button" value="back to data" onclick="timer.doEditButton()">
     </div>
 </div>
 
