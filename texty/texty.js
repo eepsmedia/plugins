@@ -74,12 +74,15 @@ let texty = {
     preprocessText : function( iTextArray ) {
         const pre =  Array.from(document.getElementById("theText").value.toLowerCase());
         let out = [];
+        let previousLetter = "";
 
         pre.forEach( L => {
             if ('abcdefghijklmnopqrstuvwxyz'.includes(L)) {
                 out.push(L);
-            } else if (L === " " ) {
+                previousLetter = L;
+            } else if (L === " " && previousLetter !== "_") {   //  no double spaces
                 out.push('_');
+                previousLetter = "_";
             }
         });
 
