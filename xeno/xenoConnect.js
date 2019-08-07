@@ -37,8 +37,8 @@ var xenoConnect = {
      *
      * @param iCallback
      */
-    initialize: function (iCallback) {
-        codapInterface.init(this.iFrameDescriptor, null).then(
+    initialize: async function (iCallback) {
+        await codapInterface.init(this.iFrameDescriptor, null).then(
             function () {
                 pluginHelper.initDataSet(this.xenoDataContextSetupObject);
 
@@ -63,6 +63,19 @@ var xenoConnect = {
                 iCallback();
             }.bind(this)
         );
+
+        //      make the table(s) mutable
+
+        const tMessage = {
+            "action": "update",
+            "resource": "interactiveFrame",
+            "values": {
+                "preventBringToFront": false,
+                "preventDataContextReorg": false
+            }
+        };
+
+        const updateResult = await codapInterface.sendRequest(tMessage);
     },
 
     /**
@@ -73,20 +86,19 @@ var xenoConnect = {
      * @param iCallback
      */
     processUpdateCaseNotification: function (iCommand, iCallback) {
-        var tAutoResultDisplay = document.getElementById("autoResultDisplay");
+        const tAutoResultDisplay = document.getElementById("autoResultDisplay");
 
-        var theOperation = iCommand.values.operation;
-        var theResult = iCommand.values.result;
+        const theOperation = iCommand.values.operation;
+        const theResult = iCommand.values.result;
         if (theResult.success) {
             console.log("xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "]");
-            var theCases = theResult.cases;
+            const theCases = theResult.cases;
             theCases.forEach(function (bigCase) {
-                var c = bigCase.values;
+                const c = bigCase.values;
 
                 xeno.scoreFromPerformance(c.analysis);
                 xenoConnect.casesToProcess -= 1;
                 xenoConnect.casesProcessed.push(c);
-
             })
         } else {
             console.log(" *** xenoConnect fail on notification read ***");
@@ -95,17 +107,17 @@ var xenoConnect = {
         //  the tree has diagnosed all of our new cases...
 
         if (xenoConnect.casesToProcess === 0) {
-            var nCases = xenoConnect.casesProcessed.length;
-            var tDisplay = nCases + ((nCases === 1) ? " case processed. " : " cases processed. ");
-            var tNumberCorrect = 0;
-            var tNumberUndiagnosed = 0;
+            const nCases = xenoConnect.casesProcessed.length;
+            let tDisplay = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
+            let tNumberCorrect = 0;
+            let tNumberUndiagnosed = 0;
 
             this.casesProcessed.forEach(function (c) {
-                tNumberCorrect += (c.analysis[0] === "T") ? 1 : 0;
-                tNumberUndiagnosed += (c.analysis[0] === "?") ? 1 : 0;
+                tNumberCorrect += (c.analysis.charAt(0) === "T") ? 1 : 0;
+                tNumberUndiagnosed += (c.analysis.charAt(0) === "?") ? 1 : 0;
             });
 
-            tDisplay += tNumberCorrect + " correct. ";
+            tDisplay += tNumberCorrect + "&nbsp;correct. ";
 
             if (tNumberCorrect === xenoConnect.casesProcessed.length) {
                 tDisplay += "Great job! ";
@@ -138,6 +150,14 @@ var xenoConnect = {
             iValues,
             xeno.constants.xenoDataSetName
         ); // no callback.
+        codapInterface.sendRequest({
+            "action": "create",
+            "resource": "component",
+            "values": {
+                "type": "caseTable",
+                "dataContext": xeno.constants.xenoDataSetName
+            }
+        })
     },
 
     iFrameDescriptor: {

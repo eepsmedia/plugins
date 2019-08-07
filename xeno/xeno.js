@@ -297,7 +297,7 @@ var xeno = {
     },
 
     constants: {
-        version: '001e',
+        version: '001f',
         kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',
