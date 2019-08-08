@@ -91,6 +91,8 @@ var xenoConnect = {
         const theOperation = iCommand.values.operation;
         const theResult = iCommand.values.result;
         if (theResult.success) {
+            // todo: NOTICE the kludge of using case IDs here.
+            //  You will NOT get the right result if "analysis" has been promoted.
             console.log("xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "]");
             const theCases = theResult.cases;
             theCases.forEach(function (bigCase) {
