@@ -152,6 +152,7 @@ var xenoConnect = {
             iValues,
             xeno.constants.xenoDataSetName
         ); // no callback.
+
         codapInterface.sendRequest({
             "action": "create",
             "resource": "component",
@@ -159,7 +160,27 @@ var xenoConnect = {
                 "type": "caseTable",
                 "dataContext": xeno.constants.xenoDataSetName
             }
-        })
+        });
+
+    },
+
+    createTree : function() {
+        const theArborRequest = {
+            "action": "create",
+            "resource": "component",
+            "values": {
+                "type": "game",
+                "name" : "name-webview",
+                "title" : "diagnostic tree",
+                "URL" : xeno.constants.arborURL,
+                "dimensions" : {
+                    "width" : 500,
+                    "height" : 555
+                }
+            }
+        };
+
+        codapInterface.sendRequest(theArborRequest);
     },
 
     iFrameDescriptor: {

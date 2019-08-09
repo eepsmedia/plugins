@@ -39,6 +39,7 @@ XS = {
         $("#howManyCasesAutoLabel").html(xeno.strings.howManyCasesAutoLabel);
 
         document.getElementById("makeNewCasesButton").value = (xeno.strings.makeNewCasesButtonText);
+        document.getElementById("makeTreeButton").value = (xeno.strings.makeTreeButtonText);
         document.getElementById("runTreeButton").value = (xeno.strings.runTreeButtonText);
         document.getElementById("diagnoseSickButton").value = xeno.strings.sick;
         document.getElementById("diagnoseWellButton").value = xeno.strings.well;
@@ -57,6 +58,7 @@ XS = {
         autoResultDisplay : "Auto-diagnosis results",
 
         makeNewCasesButtonText : "make new cases",
+        makeTreeButtonText : "make the tree",
         runTreeButtonText : "run tree",
 
         blue : "blue",
@@ -175,6 +177,7 @@ creatureString : function (iValues) {
         autoResultDisplay : "Ergebnisanzeige",
 
         makeNewCasesButtonText : "machen neue Fälle",
+        makeTreeButtonText : "machen neue Baum",
         runTreeButtonText : "benutze Baum",
 
         blue : "blaue",

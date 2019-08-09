@@ -306,6 +306,8 @@ var xeno = {
         xenoCollectionName: "creatures",
         autoResultInitialText: "Auto-diagnosis results display",
         initialScore: 200,
+        //  arborURL : "http://localhost:8888/codap-data-interactives/data-science-worlds/arbor/arbor.html",
+        arborURL : "https://codap.xyz/plugins/arbor/arbor.html",
 
         scores: {
             TP: 5,
