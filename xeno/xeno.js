@@ -297,7 +297,7 @@ var xeno = {
     },
 
     constants: {
-        version: '001f',
+        version: '001g',
         kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',
@@ -307,7 +307,7 @@ var xeno = {
         autoResultInitialText: "Auto-diagnosis results display",
         initialScore: 200,
         //  arborURL : "http://localhost:8888/codap-data-interactives/data-science-worlds/arbor/arbor.html",
-        arborURL : "https://codap.xyz/plugins/arbor/arbor.html",
+        arborURL : "https://www.codap.xyz/plugins/arbor/arbor.html",
 
         scores: {
             TP: 5,
