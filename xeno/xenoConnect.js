@@ -54,13 +54,17 @@ var xenoConnect = {
 
                 //  receive notifications about updateCases (done by the tree!)
 
-                codapInterface.on(
+                const tResource = 'dataContextChangeNotice[' + xeno.constants.xenoDataSetName + ']';  //  todo resolve?
+                // const tResource = 'dataContext[' + xeno.constants.xenoDataSetName + '].case';
+
+                    codapInterface.on(
                     'notify',
-                    'dataContextChangeNotice[' + xeno.constants.xenoDataSetName + ']',
+                    tResource,
                     'updateCases',
                     xenoConnect.processUpdateCaseNotification.bind(this)
                 );
                 iCallback();
+                console.log("xeno ... xenoConnect initialized");
             }.bind(this)
         );
 
@@ -85,23 +89,31 @@ var xenoConnect = {
      * @param iCommand
      * @param iCallback
      */
-    processUpdateCaseNotification: function (iCommand, iCallback) {
+    processUpdateCaseNotification: async function (iCommand, iCallback) {
         const tAutoResultDisplay = document.getElementById("autoResultDisplay");
 
         const theOperation = iCommand.values.operation;
         const theResult = iCommand.values.result;
+
+        console.log("xeno ... processUpdateCaseNotification <" + theOperation + ">");
+
         if (theResult.success) {
             // todo: NOTICE the kludge of using case IDs here.
             //  You will NOT get the right result if "analysis" has been promoted.
             console.log("xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "]");
-            const theCases = theResult.cases;
-            theCases.forEach(function (bigCase) {
-                const c = bigCase.values;
 
-                xeno.scoreFromPerformance(c.analysis);
-                xenoConnect.casesToProcess -= 1;
-                xenoConnect.casesProcessed.push(c);
-            })
+            //  loop over all cases, constructing the compound request
+            //  todo: if possible, get items rather than cases, by caseID
+
+            if (typeof theResult.cases !== 'undefined') {
+                theResult.cases.forEach((c) => {
+                    const tValues = c.values;
+
+                    xeno.scoreFromPerformance(tValues.analysis);
+                    xenoConnect.casesToProcess -= 1;
+                    xenoConnect.casesProcessed.push(tValues);
+                })
+            }
         } else {
             console.log(" *** xenoConnect fail on notification read ***");
         }
@@ -110,7 +122,7 @@ var xenoConnect = {
 
         if (xenoConnect.casesToProcess === 0) {
             const nCases = xenoConnect.casesProcessed.length;
-            let tDisplay = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
+            let tAutoResultText = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
             let tNumberCorrect = 0;
             let tNumberUndiagnosed = 0;
 
@@ -119,19 +131,18 @@ var xenoConnect = {
                 tNumberUndiagnosed += (c.analysis.charAt(0) === "?") ? 1 : 0;
             });
 
-            tDisplay += tNumberCorrect + "&nbsp;correct. ";
+            tAutoResultText += tNumberCorrect + "&nbsp;correct. ";
 
             if (tNumberCorrect === xenoConnect.casesProcessed.length) {
-                tDisplay += "Great job! ";
+                tAutoResultText += "Great job! ";
             }
 
             if (tNumberUndiagnosed > 0) {
-                tDisplay += "<br>Your tree left " + tNumberUndiagnosed
+                tAutoResultText += "<br>Your tree left " + tNumberUndiagnosed
                     + ((tNumberUndiagnosed === 1) ? " case undiagnosed." : " cases undiagnosed.");
-
             }
 
-            tAutoResultDisplay.innerHTML = tDisplay;
+            tAutoResultDisplay.innerHTML = tAutoResultText;
         }
     },
 
@@ -141,14 +152,14 @@ var xenoConnect = {
      * @param iValues   An array of objects containing the keys and values
      * corresponding to attributes and values of the new cases.
      */
-    createXenoItems: function (iValues) {
+    createXenoItems: async function (iValues) {
 
         this.casesToProcess = iValues.length;
         this.casesProcessed = [];
 
         iValues = pluginHelper.arrayify(iValues);
         console.log("Xeno ... createXenoItems with " + iValues.length + " case(s)");
-        pluginHelper.createItems(
+        await pluginHelper.createItems(
             iValues,
             xeno.constants.xenoDataSetName
         ); // no callback.
@@ -163,7 +174,10 @@ var xenoConnect = {
         });
 
     },
-
+    /**
+     * tell CODAP to make the tree.
+     * If one exists, we will make a NEW one // todo: maybe check and don't do that.
+     */
     createTree : function() {
         const theArborRequest = {
             "action": "create",

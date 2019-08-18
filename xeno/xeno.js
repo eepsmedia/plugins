@@ -33,7 +33,7 @@ var xeno = {
 
         //  called after connect, so xeno.state is set
 
-        var finishInit = function () {
+        const finishInit = function () {
             //  set UI values based on restored xeno.state
 
 
@@ -89,7 +89,7 @@ var xeno = {
         document.getElementById(xeno.state.mode + "RadioButton").checked = true;
         document.getElementById("xenoScore").innerHTML = xeno.state.score;
 
-        var tAutoResultDisplay = document.getElementById("autoResultDisplay");
+        const tAutoResultDisplay = document.getElementById("autoResultDisplay");
         tAutoResultDisplay.innerHTML = xeno.constants.autoResultInitialText;
     },
 
@@ -105,8 +105,8 @@ var xeno = {
 
         //  delete all data
 
-        var tResource = "dataContext[creatures].collection[creatures].allCases";
-        var tArg = {action: "delete", resource: tResource};
+        const tResource = "dataContext[creatures].collection[creatures].allCases";
+        const tArg = {action: "delete", resource: tResource};
         codapInterface.sendRequest(tArg);
 
         this.setControlsForScenarioStart();
@@ -119,8 +119,8 @@ var xeno = {
      * Also changes the visibility of the corresponding divs.
      */
     controlChange: function () {
-        var tAutoDiagnoseCaseNumberBox = document.getElementById("howManyAutoCases");
-        var tTrainingCaseNumberBox = document.getElementById("howManyCases");
+        const tAutoDiagnoseCaseNumberBox = document.getElementById("howManyAutoCases");
+        const tTrainingCaseNumberBox = document.getElementById("howManyCases");
         xeno.state.mode = $('input[name=xenoMode]:checked').val();  //  "training" or "one by one" or "auto"
         xeno.state.howManyCases = tTrainingCaseNumberBox.value;
         xeno.state.howManyAutoCases = tAutoDiagnoseCaseNumberBox.value;
@@ -166,7 +166,7 @@ var xeno = {
                 break;
         }
         console.log(
-            'mode: ' + xeno.state.mode + ", cases: ("
+            'xeno ... current mode: ' + xeno.state.mode + ", cases: ("
             + xeno.state.howManyCases + ", 1, " + xeno.state.howManyAutoCases + ")"
         );
 
@@ -187,8 +187,8 @@ var xeno = {
     getAnArrayOfCaseValues: function (n, iSource) {
         var theCaseValues = [];
 
-        for (var i = 0; i < n; i++) {
-            var tCase = xeno.model.generateCase(xeno.state.malady);
+        for (let i = 0; i < n; i++) {
+            let tCase = xeno.model.generateCase(xeno.state.malady);
             tCase.source = iSource;
             tCase.diagnosis = "";
             theCaseValues.push(tCase);
@@ -201,10 +201,10 @@ var xeno = {
      * User has asked for new cases while in training.
      */
     makeNewCases: function () {
-        var n = xeno.state.howManyCases;
-        console.log('making ' + n + ' new cases');
+        const n = xeno.state.howManyCases;
+        console.log('xeno ... making ' + n + ' new training cases');
 
-        var theCaseValues = this.getAnArrayOfCaseValues(n, "training");
+        const theCaseValues = this.getAnArrayOfCaseValues(n, "training");
         xeno.updateScore(-n);
         xenoConnect.createXenoItems(theCaseValues);
     },
@@ -237,26 +237,26 @@ var xeno = {
     /**
      * User pressed the auto-diagnose button
      */
-    autoDiagnose: function () {
-        var tAutoResultDisplay = document.getElementById("autoResultDisplay");
-        var tAutoResultText = "Waiting for analysis from the tree.";
+    autoDiagnose: async function () {
+        let tAutoResultDisplay = document.getElementById("autoResultDisplay");
+        const tAutoResultText = "Waiting for analysis from the tree.";
 
         tAutoResultDisplay.innerHTML = tAutoResultText;
 
-        var theCaseValues = this.getAnArrayOfCaseValues(xeno.state.howManyAutoCases, "auto");
+        const theCaseValues = this.getAnArrayOfCaseValues(xeno.state.howManyAutoCases, "auto");
 
-        console.log("AUTODIAGNOSE: We have " + theCaseValues.length + " objects that need diagnosis!");
-        xenoConnect.createXenoItems(theCaseValues);
+        console.log("xeno...AUTODIAGNOSE: We have " + theCaseValues.length + " objects that need diagnosis!");
+        await xenoConnect.createXenoItems(theCaseValues);
     },
 
     displayCurrentCase: function (iPrefix) {
-        var tCaseDescription = xeno.model.creatureString(xeno.state.currentCase);
+        const tCaseDescription = xeno.model.creatureString(xeno.state.currentCase);
         document.getElementById("caseDisplay").innerHTML = iPrefix + tCaseDescription;
 
     },
 
     scoreFromPerformance: function (iPerf) {
-        var tScore = 0;
+        let tScore = 0;
 
         switch (iPerf) {
             case "TP":
@@ -297,7 +297,7 @@ var xeno = {
     },
 
     constants: {
-        version: '001g',
+        version: '001h',
         kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',
