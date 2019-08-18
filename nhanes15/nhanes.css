@@ -27,6 +27,15 @@ body, #summary, #atts, #cases  {
     /* max-width: 400px; */
 }
 
+body {
+    overflow : hidden;
+}
+
+#chooseAttributeDiv {
+    overflow: scroll;
+    height : 333px;
+}
+
 .ui-tabs-anchor {
     font-family: 'Rokkitt',sans-serif;font-size: 18px;
     font-weight: 300;
