@@ -36,9 +36,11 @@ URLs:   http://localhost:8888/barty/barty.html
 Local, all MAMP:
 http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/barty/barty.html
 
-COAP convcord, local barty:
+CODAP convcord, local barty:
 http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/barty/barty.html
 
+CODAP Concord, barty on xyz:
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=https://codap.xyz/plugins/barty/barty.html
 
 -->
 
@@ -51,7 +53,7 @@ HOW TO DEPLOY THIS THING
     You will find relevant material in barty.constants.js (about line 45) and in establishCredentials.php.
     Also in the credential file itself, which is not in the reporitory for security reasons.
 
-    Another key variable is "whence" in constants.
+    Another key variable is "whence" in its own file, whence.js.
 
     Look in the github wiki for detailed instructions.
     https://github.com/concord-consortium/codap-data-interactives/wiki/Configuration
@@ -73,24 +75,24 @@ HOW TO DEPLOY THIS THING
     <link rel='stylesheet' type='text/css' href='../common/jqueryFolder/jquery-ui.css'/>
 
     <!-- These scripts take care of the communication with CODAP and commons -->
-    <script src="../common/iframe-phone.js" ></script>
-    <script src="../common/codapInterface.js" ></script>
-    <script src="../common/pluginHelper.js" ></script>
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
 
-    <script src="../common/TEEUtils.js" ></script>
+    <script src="../common/TEEUtils.js"></script>
     <script src="../common/jqueryFolder/jquery.min.js"></script>
     <script src="../common/jqueryFolder/jquery-ui.js"></script>
 
 
     <!-- Our game source -->
-    <script src="barty.js" ></script>
-    <script src="barty.constants.js" ></script>
-    <script src="bartyManager.js" ></script>
-    <script src="barty.ui.js" ></script>
-    <script src="bartyCODAPConnector.js" ></script>
-    <script src="bartyMeetings.js" ></script>
-    <script src="bartStations.js" ></script>
-    <script src="whence.js" ></script>
+    <script src="barty.js"></script>
+    <script src="barty.constants.js"></script>
+    <script src="bartyManager.js"></script>
+    <script src="barty.ui.js"></script>
+    <script src="bartyCODAPConnector.js"></script>
+    <script src="bartyMeetings.js"></script>
+    <script src="bartStations.js"></script>
+    <script src="whence.js"></script>
 
 
     <script>
@@ -98,7 +100,7 @@ HOW TO DEPLOY THIS THING
             $("#tabs").tabs();
             barty.initialize();
         });
-        $( "#dateControl" ).datepicker({    //  todo: remove this??
+        $("#dateControl").datepicker({    //  todo: remove this??
             changeMonth: true,
             changeYear: true,
             /*
@@ -207,14 +209,14 @@ HOW TO DEPLOY THIS THING
 
             <table>
                 <tr>
-                    <td><img src="art/blueDot.svg"></td>
+                    <td><img src="art/blueDot.svg" alt="departure station"></td>
                     <td colspan="2"><select id="departureSelector"></select></td>
                     <td rowspan="2">
                         <button onclick="barty.ui.swapStations()">swap</button>
                     </td>
                 </tr>
                 <tr>
-                    <td><img src="art/yellowDot.svg"></td>
+                    <td><img src="art/yellowDot.svg" alt="arrival station"></td>
                     <td colspan="3"><select id="arrivalSelector"></select></td>
                 </tr>
                 <tr>
@@ -222,7 +224,7 @@ HOW TO DEPLOY THIS THING
                         <input type="radio" name="dataChoice" id="byRouteItem" value="byRoute" checked/>
                     </td>
                     <td>
-                        <img src="art/byRoute40.jpg">
+                        <img src="art/byRoute40.jpg" alt="betweem those two stations">
                     </td>
                     <td><span id="byRouteItemText"></span></td>
                     <td><span id="byRouteCostText"></span></td>
@@ -232,7 +234,7 @@ HOW TO DEPLOY THIS THING
                         <input type="radio" name="dataChoice" id="byDepartureItem" value="byDeparture"/>
                     </td>
                     <td>
-                        <img src="art/byDeparture40.jpg">
+                        <img src="art/byDeparture40.jpg" alt="from the departure station">
                     </td>
                     <td><span id="byDepartureItemText"></span></td>
                     <td><span id="byDepartureCostText"></span></td>
@@ -242,7 +244,7 @@ HOW TO DEPLOY THIS THING
                         <input type="radio" name="dataChoice" id="byArrivalItem" value="byArrival"/>
                     </td>
                     <td>
-                        <img src="art/byArrival40.jpg">
+                        <img src="art/byArrival40.jpg" alt="to the arrival station">
                     </td>
                     <td><span id="byArrivalItemText"></span></td>
                     <td><span id="byArrivalCostText"></span></td>
@@ -252,7 +254,7 @@ HOW TO DEPLOY THIS THING
                         <input type="radio" name="dataChoice" id="betweenAnyItem" value="betweenAny"/>
                     </td>
                     <td>
-                        <img src="art/betweenAny40.jpg">
+                        <img src="art/betweenAny40.jpg" alt="between any stations">
                     </td>
                     <td><span id="betweenAnyItemText"></span></td>
                     <td><span id="betweenAnyCostText"></span></td>
@@ -303,7 +305,7 @@ HOW TO DEPLOY THIS THING
 
     <div id="optionsTab">
         <p>In this tab, you can set up a "game" in which the user (even you) are trying to
-        find the place, day of week, size, and time of a mystery meeting. </p>
+            find the place, day of week, size, and time of a mystery meeting. </p>
         <button id="newGameButton" onclick="barty.ui.newGameButtonPressed()">new game</button>
         <br><br>
         <div class="options">
@@ -313,7 +315,6 @@ HOW TO DEPLOY THIS THING
             Size: <select id="meetingSizeSelector"></select><br>
         </div>
     </div>
-
 
 
 </div>
