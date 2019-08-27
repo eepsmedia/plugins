@@ -29,7 +29,7 @@ limitations under the License.
 let texty = {
 
     constants: {
-        version: "001a",
+        version: "001b",
         kTextyDataSetName: "text",
         kTextyDataSetTitle: "text data",
         kTextySampleCollectionName: "samples",
@@ -71,15 +71,19 @@ let texty = {
      * Convert the string in the textarea into an ARRAY of suitable characters
      */
     preprocessText : function( ) {
-        const pre =  Array.from(document.getElementById("theText").value.toLowerCase());
+        const theText = document.getElementById("theText").value;
+        const noAccents = theText.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const pre =  Array.from(noAccents.toLowerCase());
         let out = [];
         let previousLetter = "";
 
         pre.forEach( L => {
-            if ('abcdefghijklmnopqrstuvwxyz'.includes(L)) {
+            const isLetter = 'abcdefghijklmnopqrstuvwxyz'.includes(L);
+            const isWhite = ' \n\t—\r,;.:'.includes(L);
+            if (isLetter) {
                 out.push(L);
                 previousLetter = L;
-            } else if (L === " " && previousLetter !== "_") {   //  no double spaces
+            } else if (isWhite && previousLetter !== "_") {   //  no double spaces
                 out.push('_');
                 previousLetter = "_";
             }

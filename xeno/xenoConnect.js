@@ -95,16 +95,16 @@ var xenoConnect = {
         const theOperation = iCommand.values.operation;
         const theResult = iCommand.values.result;
 
-        console.log("xeno ... processUpdateCaseNotification <" + theOperation + ">");
+        //  console.log("xeno ... processUpdateCaseNotification <" + theOperation + ">");
 
         if (theResult.success) {
             // todo: NOTICE the kludge of using case IDs here.
             //  You will NOT get the right result if "analysis" has been promoted.
-            console.log("xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "]");
 
             //  loop over all cases, constructing the compound request
             //  todo: if possible, get items rather than cases, by caseID
 
+            console.log("xeno ... processUpdate... is our result OK?");
             if (typeof theResult.cases !== 'undefined') {
                 theResult.cases.forEach((c) => {
                     const tValues = c.values;
@@ -112,6 +112,8 @@ var xenoConnect = {
                     xeno.scoreFromPerformance(tValues.analysis);
                     xenoConnect.casesToProcess -= 1;
                     xenoConnect.casesProcessed.push(tValues);
+                    console.log("xeno ... xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "], "
+                        + xenoConnect.casesToProcess + " remain.");
                 })
             }
         } else {
@@ -121,6 +123,7 @@ var xenoConnect = {
         //  the tree has diagnosed all of our new cases...
 
         if (xenoConnect.casesToProcess === 0) {
+            console.log("xeno ... all updated cases processed.");
             const nCases = xenoConnect.casesProcessed.length;
             let tAutoResultText = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
             let tNumberCorrect = 0;
