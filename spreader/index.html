@@ -57,11 +57,13 @@ LOCAL:  http://localhost:8888/plugins/spreader/
 <label for="chooseUnits">&#x2192; holds the value's units (if any)</label>
 <hr>
 <button onclick="spreader.spread()">spread</button>
+<input type="image" height="14" width="16" src="../common/art/refresh.png" onclick="spreader.refresh()">
+
 </body>
 
 <script>
-    window.onload = function () {
-        spreader.initialize();
+    window.onload = async function () {
+        await spreader.initialize();
     }
 </script>
 

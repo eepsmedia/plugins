@@ -68,7 +68,7 @@ const noaaStations = {
     },
 
     "GHCND:USW00026411": {
-        name: "Faibanks AK"
+        name: "Fairbanks AK"
     },
 
     "GHCND:ASN00066037": {

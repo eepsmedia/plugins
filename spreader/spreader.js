@@ -24,6 +24,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==========================================================================
 
+LOCAL:  http://localhost:8888/plugins/spreader/
+
+LOCAL MAMP:
 */
 
 let spreader = {
@@ -50,6 +53,10 @@ let spreader = {
         unitsAttribute: null,
 
         tidyDataSetResult : null,
+    },
+
+    refresh : function() {
+        spreader.ui.initialize();
     },
 
     pickDataSet: async function (iName) {
@@ -87,6 +94,7 @@ let spreader = {
         const spreadAttributes = {};  //  to be keyed by attribute name, will hold units.
         const tValues = [];
         let types = [];
+        let units = {};
         for (const parentID in topData) {
             const theParent = topData[parentID];
             const aCase = theParent.values;
@@ -99,6 +107,7 @@ let spreader = {
 
                 if (types.indexOf(theType) === -1) {
                     types.push(theType);
+                    units[theType] = theChildValues[spreader.state.unitsAttribute];
                 }
             });
             tValues.push(aCase);
@@ -121,6 +130,7 @@ let spreader = {
         types.forEach( t => {
             theAttributes.push({
                 "name" : t,
+                "unit" : units[t],
             })
         });
 
