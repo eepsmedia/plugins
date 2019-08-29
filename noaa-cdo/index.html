@@ -36,6 +36,8 @@ simple shared doc: http://localhost:8888/codap/static/dg/en/cert/index.html#shar
     <meta charset="UTF-8">
     <title>NOAA-CDO</title>
 
+    <link rel='stylesheet' type='text/css' href='css/noaa-cdo.css'/>
+
     <script src="../common/iframe-phone.js"></script>
     <script src="../common/codapInterface.js"></script>
     <script src="../common/pluginHelper.js"></script>
@@ -45,6 +47,7 @@ simple shared doc: http://localhost:8888/codap/static/dg/en/cert/index.html#shar
     <script src="noaa.ui.js"></script>
     <script src="CODAPconnect.js"></script>
     <script src="noaaStations.js"></script>
+    <script src="noaaDataTypes.js"></script>
 
 </head>
 <body>
@@ -57,12 +60,23 @@ simple shared doc: http://localhost:8888/codap/static/dg/en/cert/index.html#shar
 <input type="date" id="endDate" onchange="noaa.dateChange()" name="data-end"
        value="2018-01-31" min="1950-01-01" max="2019-06-30">
 <br>
+<input type="radio" value="GSOM" name="frequencyControl" checked> monthly |
+<input type="radio" value="GHCND"  name="frequencyControl"> daily
+<hr>
 <button onclick="noaa.doGet()">get</button>
 <div id="results"></div>
 
-<div id="stationUI" >
+<details>
+    <summary>stations</summary>
+    <div id="stationUI">
+    </div>
+</details>
+<details>
+    <summary>data</summary>
+    <div id="dataTypeUI">
+    </div>
+</details>
 
-</div>
 </body>
 
 <script>

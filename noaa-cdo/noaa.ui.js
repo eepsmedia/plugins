@@ -30,14 +30,13 @@ limitations under the License.
 noaa.ui = {
 
     initialize : function() {
-        document.getElementById("stationUI").innerHTML = this.makeStationBoxes();
+        document.getElementById("stationUI").innerHTML = this.makeBoxes(noaa.stations, noaa.defaultStations);
+        document.getElementById("dataTypeUI").innerHTML = this.makeBoxes(noaa.dataTypes, noaa.defaultDataTypes);
     },
-
-    showStations : false,
 
     getCheckedStations : function() {
         let out = [];
-        for (const theKey in noaaStations) {
+        for (const theKey in noaa.stations) {
             if (document.getElementById(theKey).checked) {
                 out.push(theKey);
             }
@@ -45,24 +44,26 @@ noaa.ui = {
         return out;
     },
 
-    showHideStations : function() {
-        if (this.showStations) {
-
-        } else {
-
+    getCheckedDataTypes : function() {
+        let out = [];
+        for (const theKey in noaa.dataTypes) {
+            if (document.getElementById(theKey).checked) {
+                out.push(theKey);
+            }
         }
-
-        this.showStations = !this.showStations;
+        return out;
     },
 
-    makeStationBoxes : function() {
+    makeBoxes : function(iChoices, iDefaults) {
         let out = "";
 
-        for (const theKey in noaaStations) {
-            const theName = noaaStations[theKey].name;
-            out += "<input type='checkbox' id='" + theKey + "'>" +
+        for (const theKey in iChoices) {
+            const theName = iChoices[theKey].name;
+            const isCheckedClause = (iDefaults.indexOf(theKey) === -1) ? "" : " checked";
+            out += "<input type='checkbox' id='" + theKey + "'" +  isCheckedClause + ">" +
                 "<label for='" + theKey + "'>" + theName + "</label><br>";
         }
         return out;
     },
+
 };

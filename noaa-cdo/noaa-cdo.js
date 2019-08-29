@@ -43,6 +43,7 @@ noaa = {
     state : {
         startDate : null,
         endDate : null,
+        database : null,
     },
 
     stationIDs : [
@@ -50,14 +51,14 @@ noaa = {
         "GHCND:USW00023174",      //  KLAX
     ],
 
-    datatypes : [ "TMAX", "PRCP"],
-
     doGet: async function () {
         let theText = "Default text";
         let nRecords = 0;
-        const tDatasetIDClause = "&datasetid=GHCND";
+        noaa.state.database  = document.querySelector("input[name='frequencyControl']:checked").value;
+
+        const tDatasetIDClause = "&datasetid=" + noaa.state.database;
         const tStationIDClause = "&stationid=" + noaa.ui.getCheckedStations().join("&stationid=");
-        const tDataTypeIDClause = "&datatypeid=" + noaa.datatypes.join("&datatypeid=");
+        const tDataTypeIDClause = "&datatypeid=" + noaa.ui.getCheckedDataTypes().join("&datatypeid=");
         const tDateClause = "&startdate=" + noaa.state.startDate + "&enddate=" + noaa.state.endDate;
 
         let tURL = noaa.constants.noaaBaseURL + "data?limit=" + noaa.constants.recordCountLimit +
@@ -66,37 +67,39 @@ noaa = {
         let tHeaders = new Headers();
         tHeaders.append("token", noaa.constants.noaaToken);
         const tRequest = new Request(tURL, {headers: tHeaders});
-
+        let resultText = "";
+        noaa.dataValues = [];
         try {
             const tResult = await fetch(tRequest);
             if (tResult.ok) {
                 const theJSON = await tResult.json();
-                noaa.dataValues = [];
                 theJSON.results.forEach( (r) => {
                     nRecords++;
                     theText += "<br>" + JSON.stringify(r);
                     const aValue = noaa.convertNOAAtoValue(r);
                     noaa.dataValues.push(aValue);
-                })
+                });
+                noaa.connect.createNOAAItems(noaa.dataValues);
+                resultText =  "Retrieved " + nRecords + " observations";
             } else {
                 console.error("noaa.doGet() error: " + tResult.statusText);
+                resultText = "Error. No records retrieved.";
             }
         } catch (msg) {
             console.log('fetch error: ' + msg);
             theText = msg;
         }
 
-        noaa.connect.createNOAAItems(noaa.dataValues);
-        document.getElementById("results").innerHTML = "Retrieved " + nRecords + " observations";
+        document.getElementById("results").innerHTML = resultText;
     },
 
     convertNOAAtoValue : function( iRecord ) {
         let out = {};
         out.when = iRecord.date;
         out.where = noaa.decodeData("where", iRecord.station);
-        out.what = iRecord.datatype;
+        out.what = noaa.decodeData("what", iRecord.datatype);
         out.value = noaa.decodeData(iRecord.datatype, iRecord.value);
-        out.units = noaa.units[iRecord.datatype];
+        out.units = noaa.dataTypes[iRecord.datatype].units;
         return out;
     },
 
@@ -108,24 +111,24 @@ noaa = {
     decodeData : function( iField, iValue ) {
         switch(iField) {
             case "where":
-                return noaaStations[iValue].name;
+                return noaa.stations[iValue].name;
             case "TMAX":
-                return iValue / 10;
+            case "TMIN":
+            case "TAVG":
+            case "SNOW":
+            case "EVAP":
             case "PRCP":
-                return iValue / 10;
+                const decoder = noaa.dataTypes[iField].decode[noaa.state.database];
+                return decoder(iValue);
+            case "what":
+                return  noaa.dataTypes[iValue].name;
         }
-
         return iValue;
 
     },
 
-    units : {
-        TMAX : "°C",
-        PRCP : "mm",
-    },
-
     constants: {
-        version : "000a",
+        version : "000b",
 
         noaaToken: "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",
         noaaBaseURL: "https://www.ncdc.noaa.gov/cdo-web/api/v2/",

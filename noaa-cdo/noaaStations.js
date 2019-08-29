@@ -26,7 +26,9 @@ limitations under the License.
 
 */
 
-const noaaStations = {
+noaa.defaultStations = ["GHCND:USC00040693", "GHCND:USC00049152"];     //  berkeley, ucla
+
+noaa.stations = {
     "GHCND:USW00023234": {
         name: "SFO"
     },
@@ -69,6 +71,10 @@ const noaaStations = {
 
     "GHCND:USW00026411": {
         name: "Fairbanks AK"
+    },
+
+    "GHCND:GLW00017605": {
+        name: "Thule Greenland"
     },
 
     "GHCND:ASN00066037": {
