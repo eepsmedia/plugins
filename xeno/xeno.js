@@ -27,6 +27,8 @@ limitations under the License.
 */
 
 var xeno = {
+    casesPendingDiagnosis : [],
+
     initialize: function () {
 
         xeno.setLanguageFromURL(  );
@@ -35,7 +37,6 @@ var xeno = {
 
         const finishInit = function () {
             //  set UI values based on restored xeno.state
-
 
             document.getElementById("howManyCases").setAttribute("value", xeno.state.howManyCases.toString());
             document.getElementById("howManyAutoCases").setAttribute("value", xeno.state.howManyAutoCases.toString());
@@ -53,8 +54,6 @@ var xeno = {
                 xeno.state.score = xeno.constants.initialScore;
                 xeno.state.mode = "training";
         */
-
-
     },
 
     /**
@@ -240,13 +239,20 @@ var xeno = {
     autoDiagnose: async function () {
         let tAutoResultDisplay = document.getElementById("autoResultDisplay");
         const tAutoResultText = "Waiting for analysis from the tree.";
-
         tAutoResultDisplay.innerHTML = tAutoResultText;
 
         const theCaseValues = this.getAnArrayOfCaseValues(xeno.state.howManyAutoCases, "auto");
 
         console.log("xeno...AUTODIAGNOSE: We have " + theCaseValues.length + " objects that need diagnosis!");
-        await xenoConnect.createXenoItems(theCaseValues);
+        const createItemsResult = await xenoConnect.createXenoItems(theCaseValues);
+        xeno.casesPendingDiagnosis = createItemsResult.caseIDs;
+
+        /*
+        At this point, we're done.
+        But we are awaiting a notification from CODAP that the data have changed.
+        We registered in xenoConnect.initialize;
+        it's processed in xenoConnect.processUpdateCaseNotification()
+         */
     },
 
     displayCurrentCase: function (iPrefix) {
@@ -297,7 +303,7 @@ var xeno = {
     },
 
     constants: {
-        version: '001h',
+        version: '001i',
         kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',

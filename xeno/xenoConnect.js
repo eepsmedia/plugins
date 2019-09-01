@@ -57,7 +57,7 @@ var xenoConnect = {
                 const tResource = 'dataContextChangeNotice[' + xeno.constants.xenoDataSetName + ']';  //  todo resolve?
                 // const tResource = 'dataContext[' + xeno.constants.xenoDataSetName + '].case';
 
-                    codapInterface.on(
+                codapInterface.on(
                     'notify',
                     tResource,
                     'updateCases',
@@ -95,58 +95,64 @@ var xenoConnect = {
         const theOperation = iCommand.values.operation;
         const theResult = iCommand.values.result;
 
-        //  console.log("xeno ... processUpdateCaseNotification <" + theOperation + ">");
-
         if (theResult.success) {
             // todo: NOTICE the kludge of using case IDs here.
             //  You will NOT get the right result if "analysis" has been promoted.
 
-            //  loop over all cases, constructing the compound request
+            //  loop over all cases. Notice that the cases are already updated (by arbor)
+            //  we're just checking to see how the tree did.
             //  todo: if possible, get items rather than cases, by caseID
 
-            console.log("xeno ... processUpdate... is our result OK?");
             if (typeof theResult.cases !== 'undefined') {
-                theResult.cases.forEach((c) => {
-                    const tValues = c.values;
 
-                    xeno.scoreFromPerformance(tValues.analysis);
-                    xenoConnect.casesToProcess -= 1;
-                    xenoConnect.casesProcessed.push(tValues);
-                    console.log("xeno ... xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "], "
-                        + xenoConnect.casesToProcess + " remain.");
+                theResult.cases.forEach((c) => {
+                    const thisCaseIndex = xeno.casesPendingDiagnosis.indexOf(c.id);
+                    if (thisCaseIndex !== -1) {  // it's in the list
+                        xeno.casesPendingDiagnosis.splice(thisCaseIndex, 1);    //  remove it
+                        const tValues = c.values;
+
+                        xeno.scoreFromPerformance(tValues.analysis);
+                        xenoConnect.casesToProcess -= 1;
+                        xenoConnect.casesProcessed.push(tValues);
+                        console.log("xeno ... xenoConnect <" + theOperation + "> case IDs: [" + theResult.caseIDs + "], "
+                            + xenoConnect.casesToProcess + " remain.");
+                    } else {
+                        console.log("xeno ... xenoConnect. Case " + c.id + " is not in the cases-to-process array.")
+                    }
                 })
+
+            } else {
+                console.log("xeno ... xenoConnect. Hmmm! got a result without cases: " + JSON.stringify(theResult));
             }
         } else {
             console.log(" *** xenoConnect fail on notification read ***");
         }
 
         //  the tree has diagnosed all of our new cases...
+        //  now we assemble the summary text
 
-        if (xenoConnect.casesToProcess === 0) {
-            console.log("xeno ... all updated cases processed.");
-            const nCases = xenoConnect.casesProcessed.length;
-            let tAutoResultText = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
-            let tNumberCorrect = 0;
-            let tNumberUndiagnosed = 0;
+        const nCases = xenoConnect.casesProcessed.length;
+        let tAutoResultText = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
+        let tNumberCorrect = 0;
+        let tNumberUndiagnosed = 0;
 
-            this.casesProcessed.forEach(function (c) {
-                tNumberCorrect += (c.analysis.charAt(0) === "T") ? 1 : 0;
-                tNumberUndiagnosed += (c.analysis.charAt(0) === "?") ? 1 : 0;
-            });
+        this.casesProcessed.forEach(function (c) {
+            tNumberCorrect += (c.analysis.charAt(0) === "T") ? 1 : 0;
+            tNumberUndiagnosed += (c.analysis.charAt(0) === "?") ? 1 : 0;
+        });
 
-            tAutoResultText += tNumberCorrect + "&nbsp;correct. ";
+        tAutoResultText += tNumberCorrect + "&nbsp;correct. ";
 
-            if (tNumberCorrect === xenoConnect.casesProcessed.length) {
-                tAutoResultText += "Great job! ";
-            }
-
-            if (tNumberUndiagnosed > 0) {
-                tAutoResultText += "<br>Your tree left " + tNumberUndiagnosed
-                    + ((tNumberUndiagnosed === 1) ? " case undiagnosed." : " cases undiagnosed.");
-            }
-
-            tAutoResultDisplay.innerHTML = tAutoResultText;
+        if (tNumberCorrect === xenoConnect.casesProcessed.length) {
+            tAutoResultText += "Great job! ";
         }
+
+        if (tNumberUndiagnosed > 0) {
+            tAutoResultText += "<br>Your tree left " + tNumberUndiagnosed
+                + ((tNumberUndiagnosed === 1) ? " case undiagnosed." : " cases undiagnosed.");
+        }
+
+        tAutoResultDisplay.innerHTML = tAutoResultText;
     },
 
 
@@ -162,11 +168,12 @@ var xenoConnect = {
 
         iValues = pluginHelper.arrayify(iValues);
         console.log("Xeno ... createXenoItems with " + iValues.length + " case(s)");
-        await pluginHelper.createItems(
+        const out = await pluginHelper.createItems(
             iValues,
             xeno.constants.xenoDataSetName
         ); // no callback.
 
+        //  make sure the case table is present
         codapInterface.sendRequest({
             "action": "create",
             "resource": "component",
@@ -176,23 +183,24 @@ var xenoConnect = {
             }
         });
 
+        return out;     //  the awaited, resolved promise containing created items
     },
     /**
      * tell CODAP to make the tree.
      * If one exists, we will make a NEW one // todo: maybe check and don't do that.
      */
-    createTree : function() {
+    createTree: function () {
         const theArborRequest = {
             "action": "create",
             "resource": "component",
             "values": {
                 "type": "game",
-                "name" : "name-webview",
-                "title" : "diagnostic tree",
-                "URL" : xeno.constants.arborURL,
-                "dimensions" : {
-                    "width" : 500,
-                    "height" : 555
+                "name": "name-webview",
+                "title": "diagnostic tree",
+                "URL": xeno.constants.arborURL,
+                "dimensions": {
+                    "width": 500,
+                    "height": 555
                 }
             }
         };
@@ -208,6 +216,6 @@ var xenoConnect = {
         preventDataContextReorg: false
     },
 
-    xenoDataContextSetupObject : {},
+    xenoDataContextSetupObject: {},
 
 };
