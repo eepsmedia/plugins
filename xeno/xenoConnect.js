@@ -136,6 +136,15 @@ var xenoConnect = {
         let tNumberCorrect = 0;
         let tNumberUndiagnosed = 0;
 
+        /*
+        This thing gets called for the update on each case. So this code runs many times, changing the
+        text about how an auto-diagnosis has done.
+
+        But it happens quickly, so only the last one sticks. That's dependent on this array,
+        xenoConnect.casesProcessed. It gets set (emptied) in creatXenoItems, (and updated above)
+        so even though this code may run over the ENTIRE
+        set of cases, we only count up the results for the cases in that casesProcessed array.
+         */
         this.casesProcessed.forEach(function (c) {
             tNumberCorrect += (c.analysis.charAt(0) === "T") ? 1 : 0;
             tNumberUndiagnosed += (c.analysis.charAt(0) === "?") ? 1 : 0;
