@@ -86,7 +86,8 @@ fish.CODAPConnector = {
 
         //  const localizedTurn = fish.localize.localizeValuesObject(aTurn);
 
-        console.log("    new turn record: " + JSON.stringify(aTurn));
+        console.log("    fish ... addSingleFishItemInCODAP");
+        console.log("      " + JSON.stringify(aTurn));
         await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
         this.makeCaseTableAppear();
         return aTurn;   //  localizedTurn
@@ -112,7 +113,7 @@ fish.CODAPConnector = {
                 'income' : tTurn.income,
                 'after' : tTurn.balanceAfter    //  note different name
             };
-            console.log("Fish ... updateFishItemInCODAP() for " + iYear + " because: " + iWhy);
+            console.log("    fish ... updateFishItemInCODAP() for " + iYear + " because: " + iWhy);
 
             let theWholeTurn = null;
 

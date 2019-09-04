@@ -60,6 +60,9 @@ fish.phpConnector = {
      */
     sendCommand: async function (iCommands) {
         const theCommand = iCommands.c;
+        if (theCommand === "newCatchRecord") {
+            console.log("php ... " + JSON.stringify(iCommands));
+        }
 
         let theBody = new FormData();
         for (let key in iCommands) {
@@ -78,10 +81,17 @@ fish.phpConnector = {
         try {
             //console.log("    working on " + theCommand);
             const theResult = await fetch(theRequest);
+            let out = null;
             if (theResult.ok) {
-                const theJSON = await theResult.json();
+                const theText = await theResult.text();
+                if (theText) {
+                    out = JSON.parse(theText);
+                } else {
+                    out = {};
+                }
+                //  const theJSON = await theResult.json();
                 //console.log("    " + theCommand + " returns " + JSON.stringify(theJSON));
-                return theJSON;
+                return out;
             } else {
                 console.error("sendCommand error: " + theResult.statusText);
             }
@@ -134,7 +144,8 @@ fish.phpConnector = {
 
     getOneTurn: async function (iYear) {
         try {
-            console.log('   gonna getOneTurn() from DB for ' + iYear);
+            console.log('    fish ... php ... getOneTurn() from DB for '
+                + iYear + ' for ' + fish.state.playerName);
             const theCommands = {
                 "c": "oneTurn",
                 "year": iYear,

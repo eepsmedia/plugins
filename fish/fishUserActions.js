@@ -215,7 +215,7 @@ fish.userActions = {
             fish.state.playerState = fish.constants.kSellingString;     //  set the player state to selling
 
             const tCatchModelResult = await fish.model.catchFish(tSought);
-
+            console.log("    fish ... new catch record for " + fish.state.gameTurn + " (" + fish.state.playerState + ")" );
             await fish.phpConnector.newCatchRecord(tCatchModelResult);  //  record in the MySQL database, resolves to the number caught (which we don't need)
             await fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult);  //  record in the CODAP table, partial record :)
 
