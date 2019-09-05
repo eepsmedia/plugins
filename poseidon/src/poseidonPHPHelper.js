@@ -26,10 +26,34 @@ limitations under the License.
 
 */
 
-let sendRequest = function(iWhence) {
-    console.log('in sendRequest with whence = ' + iWhence);
-    return {"name" : "foo.bar.baz"}
-};
+import poseidon from "./constants.js";
 
+let sendRequest = async function (iRequest) {
+
+    console.log("in sendRequest with " + JSON.stringify(iRequest));
+
+    let theBody = new FormData();
+    for (let key in iRequest) {
+        if (iRequest.hasOwnProperty(key)) {
+            theBody.append(key, JSON.stringify(iRequest[key]))
+        }
+    }
+    const theRequest = new Request(
+        poseidon.constants.kBaseURL[iRequest.whence],
+        {method: 'POST', body: theBody, header: new Headers()}
+    );
+
+    const theResponse = await fetch(theRequest);
+    if (theResponse.ok) {
+        try {
+            const out = await theResponse.json();
+            return out;
+        } catch (msg) {
+            console.log('fetch response decoding error : ' + msg);
+        }
+    } else {
+        alert("problem with database access -- icky respose");
+    }
+};
 
 export default sendRequest;

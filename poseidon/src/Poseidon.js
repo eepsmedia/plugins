@@ -28,6 +28,7 @@ limitations under the License.
 
 import React from 'react';
 import sendRequest from "./poseidonPHPHelper";
+import poseidon from "./constants.js";
 
 class Poseidon extends React.Component {
 
@@ -35,17 +36,18 @@ class Poseidon extends React.Component {
         super(props);
         this.state = {
             whence: 'local',
-            gameName: "",
+            gameCode: "",
+            gameLevel : poseidon.constants.kInitialGameLevelName,
             players: [],
-            now : new Date(),
-        }
-
+            now: new Date(),
+        };
+        console.log("Constructing Poseidon. State: " + JSON.stringify(this.state));
     }
 
     componentDidMount() {
         this.timerID = setInterval(
             () => this.poll(),
-            1000
+            poseidon.constants.kTimerInterval
         );
     }
 
@@ -56,39 +58,71 @@ class Poseidon extends React.Component {
     render() {
         return (
             <div>
-            <NewGameButton
-                gameName={this.state.gameName}
-                nameSetter={this.setNewGame.bind(this)}
-                whence = {this.state.whence}
-            />
-            <div>{this.state.now.toLocaleTimeString()}</div>
+                <LevelsMenu
+                    gameLevelSetter={this.setGame.bind(this)}
+                />
+                <NewGameButton
+                    gameCode={this.state.gameCode}
+                    codeSetter={this.setGameCode.bind(this)}
+                    whence={this.state.whence}
+                    level = {this.state.gameLevel}
+                />
+                <div>{this.state.now.toLocaleTimeString()}</div>
             </div>
 
         )
     }
 
     poll() {
-        this.setState({ now : new Date()});
+        this.setState({now: new Date()});
     }
 
-    setNewGame(iName) {
-        this.setState({gameName: iName});
+    setGame(iLevel) {
+        console.log("Setting game level to " + iLevel);
+        this.setState({gameLevel: iLevel});
+    }
+
+    setGameCode(iCode) {
+        this.setState({gameCode: iCode});
     }
 
 }
 
+function LevelsMenu(props) {
+    async function changeGameLevel(e) {
+        console.log("changing the level using " + e.target.value);
+        props.gameLevelSetter(e.target.value);
+    }
+
+    const menuGuts = Object.keys(poseidon.fishLevels).map(
+        (key) => (<option key={key} value={key}>{key}</option>)
+    );
+
+    return (
+        <select id="gameLevelMenu" onChange={changeGameLevel}>{menuGuts}</select>
+    )
+}
 
 function NewGameButton(props) {
     async function makeNewGame(e) {
         console.log("new game clicked");
-        const theResponse = await sendRequest(props.whence);
-        props.nameSetter(theResponse.name);
+        const gameParameters = poseidon.fishLevels[props.level]
+        const tRequest = {
+            whence: props.whence,
+            action: "create",
+            resource: "game",
+            values: {
+                onTurn: gameParameters.openingTurn,
+            },
+        };
+        const theResponse = await sendRequest(tRequest);
+        props.codeSetter(theResponse.code);
     }
 
     return (
         <div>
             <button name="newGameButton" onClick={makeNewGame}>new game</button>
-            <div>game name: {props.gameName}</div>
+            <div>game code: {props.gameCode}</div>
         </div>
     );
 
