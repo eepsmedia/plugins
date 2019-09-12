@@ -99,21 +99,38 @@ noaa.dataTypes = {
         },
     },
 
-/*
-    "EVAP": {
-        "name": "evap",
-        "units" : "mm",
-        "description": "Evaporation of water from the evaporation pan",
+    /**
+     * Average (daily|monthly) wind speed in 0.1 m/s
+     */
+    "AWND": {
+        "name": "avgWind",
+        "units" : "m/s",
+        "description": "Average windspeed",
         "decode": {
             "GHCND": function (v) {
-                return v;
+                return v/10;
             },
             "GSOM": function (v) {
-                return v;
+                return v/10;
             }
         },
     },
-*/
+
+    /*
+            "EVAP": {
+                "name": "evap",
+                "units" : "mm",
+                "description": "Evaporation of water from the evaporation pan",
+                "decode": {
+                    "GHCND": function (v) {
+                        return v;
+                    },
+                    "GSOM": function (v) {
+                        return v;
+                    }
+                },
+            },
+        */
 
 };
 
