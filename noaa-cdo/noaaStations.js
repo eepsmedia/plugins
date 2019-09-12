@@ -29,59 +29,99 @@ limitations under the License.
 noaa.defaultStations = ["GHCND:USC00040693", "GHCND:USC00049152"];     //  berkeley, ucla
 
 noaa.stations = {
+    "GHCND:USW00014755" : {
+        name: "Mount Washington, NH",
+        group: "New England",
+        lat : 44.27018,
+        lon : -71.3033,
+        elev: 1911.4,
+    },
+
+    "GHCND:USW00014739" : {
+        name: "Boston Logan",
+        group: "New England",
+        lat : 42.3606,
+        lon : -71.0097,
+        elev: 3.7,
+    },
+
     "GHCND:USW00023234": {
-        name: "SFO"
+        name: "SFO",
+        group: "Norcal",
     },
 
     "GHCND:USW00023271": {
-        name: "Sacramento"
+        name: "Sacramento",
+        group: "Norcal",
     },
 
     "GHCND:USC00047339": {
-        name: "Redwood City"
+        name: "Redwood City",
+        group: "Norcal",
     },
 
     "GHCND:USW00023272": {
-        name: "SF downtown"
+        name: "SF downtown",
+        group: "Norcal",
     },
 
     "GHCND:USC00040693": {
-        name: "Berkeley"
+        name: "Berkeley",
+        group: "Norcal",
+        lat : 37.8744,
+        lon : -122.2605,
+        elev: 94.5,
     },
 
     "GHCND:USW00023174": {
-        name: "LAX"
+        name: "LAX",
+        group: "Socal",
     },
 
     "GHCND:USW00093134": {
-        name: "LA downtown"
+        name: "LA downtown",
+        group: "Socal",
     },
 
     "GHCND:USW00003122": {
-        name: "Torrance"
+        name: "Torrance",
+        group: "Socal",
     },
 
     "GHCND:USC00047888": {
-        name: "Santa Ana"
+        name: "Santa Ana",
+        group: "Socal",
     },
 
     "GHCND:USC00049152": {
-        name: "UCLA"
+        name: "UCLA",
+        group: "Socal",
+        lat : 34.0697,
+        lon : -118.4427,
+        elev: 131.1,
     },
 
     "GHCND:USW00026411": {
-        name: "Fairbanks AK"
+        name: "Fairbanks AK",
+        group: "Exotic",
     },
 
     "GHCND:GLW00017605": {
-        name: "Thule Greenland"
+        name: "Thule Greenland",
+        group: "Exotic",
     },
 
     "GHCND:ASN00066037": {
-        name: "Sydney Australia"
+        name: "Sydney Australia",
+        group: "Exotic",
     },
 
     "GHCND:USW00092811": {
-        name: "Miami Beach FL"
+        name: "Miami Beach FL",
+        group: "Exotic",
+        lat : 25.8063,
+        lon : -80.1334,
+        elev: 2.4,
     },
+
 };
