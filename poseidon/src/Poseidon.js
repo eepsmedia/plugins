@@ -103,6 +103,12 @@ function LevelsMenu(props) {
     )
 }
 
+/**
+ *
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
 function NewGameButton(props) {
     async function makeNewGame(e) {
         console.log("new game clicked");
