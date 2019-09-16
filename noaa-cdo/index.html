@@ -63,7 +63,8 @@ simple shared doc: http://localhost:8888/codap/static/dg/en/cert/index.html#shar
 <input type="radio" value="GSOM" name="frequencyControl" checked> monthly |
 <input type="radio" value="GHCND"  name="frequencyControl"> daily
 <hr>
-<button onclick="noaa.doGet()">get</button>
+<button onclick="noaa.doGet()">get data</button>
+<button onclick="noaa.connect.createSpreader()">make spreader</button>
 <div id="results"></div>
 
 <details>
@@ -85,6 +86,7 @@ simple shared doc: http://localhost:8888/codap/static/dg/en/cert/index.html#shar
         doi:10.1175/JTECH-D-11-00103.1.
     </div>
 </details>
+<p>NOAA limits us to 1000 records per request.</p>
 </body>
 
 <script>

@@ -44,6 +44,22 @@ noaa.connect = {
         await codapInterface.sendRequest(tMessage);
     },
 
+    createSpreader: function () {
+        const theSpreaderRequest = {
+            "action": "create",
+            "resource": "component",
+            "values": {
+                "type": "game",
+                "name": "name-webview",
+                "title": "data spreader",
+                "URL": noaa.constants.spreader.URL,
+                "dimensions": noaa.constants.spreader.dimensions,
+            }
+        };
+
+        codapInterface.sendRequest(theSpreaderRequest);
+    },
+
     /**
      * Tell CODAP to make items.
      * @param iValues   An array of objects containing the keys and values
@@ -70,8 +86,8 @@ noaa.connect = {
     },
 
     iFrameDescriptor : {
-        name: noaa.constants.DSname,
-        title: noaa.constants.DSname,
+        name: noaa.constants.DSName,
+        title: noaa.constants.DSTitle,
         version: noaa.constants.version,
         dimensions: noaa.constants.tallDimensions,      //      dimensions,
     },

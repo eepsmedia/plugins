@@ -112,6 +112,7 @@ noaa = {
         switch(iField) {
             case "where":
                 return noaa.stations[iValue].name;
+            case "AWND":
             case "TMAX":
             case "TMIN":
             case "TAVG":
@@ -120,6 +121,7 @@ noaa = {
             case "PRCP":
                 const decoder = noaa.dataTypes[iField].decode[noaa.state.database];
                 return decoder(iValue);
+                break;
             case "what":
                 return  noaa.dataTypes[iValue].name;
         }
@@ -128,18 +130,23 @@ noaa = {
     },
 
     constants: {
-        version : "000b",
+        version : "000c",
 
         noaaToken: "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",
         noaaBaseURL: "https://www.ncdc.noaa.gov/cdo-web/api/v2/",
         defaultStart: "2018-01-01",
         defaultEnd: "2018-01-31",
-        recordCountLimit : 512,
+        recordCountLimit : 1000,
 
         DSName : "noaa",
         DSTitle : "noaa",
         dimensions : {height : 120, width : 333},
         tallDimensions : {height : 444, width : 333},
+
+        spreader : {
+            "URL" :   "https://codap.xyz/plugins/spreader/",      //  "http://localhost:8888/plugins/spreader/",
+            "dimensions": {height: 210, width: 380},
+        }
     },
 
 };

@@ -26,6 +26,11 @@ limitations under the License.
 
 */
 
+/*
+Find station IDs:
+https://www.ncdc.noaa.gov/cdo-web/search
+*/
+
 noaa.defaultStations = ["GHCND:USC00040693", "GHCND:USC00049152"];     //  berkeley, ucla
 
 noaa.stations = {
@@ -43,6 +48,22 @@ noaa.stations = {
         lat : 42.3606,
         lon : -71.0097,
         elev: 3.7,
+    },
+
+    "GHCND:USW00014922" : {
+        name: "MSP",
+        group: "Minnesota",
+        lat : 44.8831,
+        lon : -93.2289,
+        elev: 265.8,
+    },
+
+    "GHCND:USW00014918" : {
+        name: "International Falls, MN",
+        group: "Minnesota",
+        lat : 48.5614,
+        lon : -93.3981,
+        elev: 360.6,
     },
 
     "GHCND:USW00023234": {

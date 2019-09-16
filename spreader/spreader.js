@@ -134,7 +134,7 @@ let spreader = {
             })
         });
 
-        const spreadName = "spreadDS";
+        const spreadName = "spread_" + spreader.state.tidyDataSetName;
         const newDataSetResult =  await spreader.connect.makeSpreadDataset(spreadName, theAttributes);
         const fillDataSetResult = await spreader.connect.fillSpreadDataset(spreadName, tValues);
 
@@ -155,8 +155,8 @@ let spreader = {
     },
 
     constants: {
-        "version": "000a",
+        "version": "001a",
         "DSName": "spreader",
-        "dimensions": {height: 196, width: 444}
+        "dimensions": {height: 210, width: 420}
     }
 };
