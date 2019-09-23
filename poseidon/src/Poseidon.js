@@ -26,112 +26,181 @@ limitations under the License.
 
 */
 
+/*
+Local testing: http://localhost:3000/
+ */
+
 import React from 'react';
-import sendRequest from "./poseidonPHPHelper";
-import poseidon from "./constants.js";
+//  import poseidon from "./constants.js";
+import Model from "./Model.js";
+import PoseidonHeader from "./components/PoseidonHeader.js";
+import './css/poseidon.css';
+
+import refreshIcon from "./art/refresh.png";
 
 class Poseidon extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            whence: 'local',
-            gameCode: "",
-            gameLevel : poseidon.constants.kInitialGameLevelName,
-            players: [],
+            OKtoSell: false,
+            missing: [],
+            dirty: 0,
             now: new Date(),
         };
         console.log("Constructing Poseidon. State: " + JSON.stringify(this.state));
+
+        this.model = new Model();
+
+        //  bindings
+        this.setDirty = this.setDirty.bind(this);
     }
 
     componentDidMount() {
-        this.timerID = setInterval(
-            () => this.poll(),
-            poseidon.constants.kTimerInterval
-        );
+        /*
+                this.timerID = setInterval(
+                    () => this.poll(),
+                    poseidon.constants.kTimerInterval
+                );
+        */
     }
 
     componentWillUnmount() {
         clearInterval(this.timerID);
     }
 
+    async poll() {
+        this.setState({now: new Date()});
+        const theSituationResponse = await this.model.getCurrentSituation();
+
+        this.setState({
+            OKtoSell: theSituationResponse.OK,
+            missing: theSituationResponse.missing,
+        });
+
+        console.log("... poll() ... " + this.sitrep());
+    }
+
+    setDirty() {
+        const newDirty = this.state.dirty + 1;
+        this.setState({dirty: newDirty});
+        console.log("... setDirty() ... " + this.sitrep());
+    }
+
+    sitrep() {
+        const theGame = this.model.theGame;
+
+        return "Poseidon sitrep: " + theGame.config + " game " + theGame.gameCode +
+            " (" + theGame.gameState + ") turn " + theGame.turn +
+            " dirty = " + this.state.dirty;
+    }
+
+
+    async sellFish() {
+        console.log("Selling fish!");
+        await this.model.sellFish();
+        this.setDirty();
+        console.log("Fish sold!");
+    }
+
     render() {
         return (
-            <div>
-                <LevelsMenu
-                    gameLevelSetter={this.setGame.bind(this)}
+            <div id={"poseidon"}>
+                <h1>Poseidon: God of the Sea</h1>
+                <PoseidonHeader
+                    id={"poseidonHeader"}
+                    model={this.model}
+                    setDirty={this.setDirty}
                 />
-                <NewGameButton
-                    gameCode={this.state.gameCode}
-                    codeSetter={this.setGameCode.bind(this)}
-                    whence={this.state.whence}
-                    level = {this.state.gameLevel}
+
+                <RefreshButton
+                    doRefresh={this.poll.bind(this)}
                 />
+
+                <SellButton
+                    OK={this.state.OKtoSell}
+                    sellHandler={this.sellFish.bind(this)}
+                    missingNames={this.state.missing}
+                />
+                <PlayerList
+                    thePlayers={this.model.thePlayers}
+                />
+
                 <div>{this.state.now.toLocaleTimeString()}</div>
             </div>
-
         )
     }
 
-    poll() {
-        this.setState({now: new Date()});
-    }
-
-    setGame(iLevel) {
-        console.log("Setting game level to " + iLevel);
-        this.setState({gameLevel: iLevel});
-    }
-
-    setGameCode(iCode) {
-        this.setState({gameCode: iCode});
-    }
-
 }
 
-function LevelsMenu(props) {
-    async function changeGameLevel(e) {
-        console.log("changing the level using " + e.target.value);
-        props.gameLevelSetter(e.target.value);
-    }
+/*
 
-    const menuGuts = Object.keys(poseidon.fishLevels).map(
-        (key) => (<option key={key} value={key}>{key}</option>)
-    );
+    NOT part of the Poseidon class
 
-    return (
-        <select id="gameLevelMenu" onChange={changeGameLevel}>{menuGuts}</select>
-    )
-}
-
-/**
- *
- * @param props
- * @returns {*}
- * @constructor
  */
-function NewGameButton(props) {
-    async function makeNewGame(e) {
-        console.log("new game clicked");
-        const gameParameters = poseidon.fishLevels[props.level]
-        const tRequest = {
-            whence: props.whence,
-            action: "create",
-            resource: "game",
-            values: {
-                onTurn: gameParameters.openingTurn,
-            },
-        };
-        const theResponse = await sendRequest(tRequest);
-        props.codeSetter(theResponse.code);
+
+function RefreshButton(props) {
+    async function doRefresh(e) {
+        props.doRefresh();
     }
 
     return (
         <div>
-            <button name="newGameButton" onClick={makeNewGame}>new game</button>
-            <div>game code: {props.gameCode}</div>
+            <input id="refreshButton" type="image"
+                   alt="refresh"
+                   height="14" width="16" src={refreshIcon}
+                   onClick={doRefresh}></input>
         </div>
-    );
+    )
 
+}
+
+function PlayerList(props) {
+
+    const listGuts = props.thePlayers.map(
+        (p) => (<tr key={p.playerName}>
+            <td>{p.playerName}</td>
+            <td>{p.onTurn}</td>
+            <td>{p.balance}</td>
+        </tr>)
+    );
+    const headerText = props.thePlayers.length + " player(s)";
+    const tableHeader = (<tr>
+        <th>name</th>
+        <th>turn</th>
+        <th>balance</th>
+    </tr>);
+    const wholeThing = props.thePlayers.length > 0 ?
+        (
+            <div>
+                <h2>{headerText}</h2>
+                <div>
+                    <table id={"playerTable"}>
+                        <thead>{tableHeader}</thead>
+                        <tbody>{listGuts}</tbody>
+                    </table>
+                </div>
+            </div>
+        ) :
+        "No players"
+    return (<div>{wholeThing}</div>)
+}
+
+function SellButton(props) {
+    if (props.OK) {
+        return (
+            <div>
+                <button id="sellFishButton" onClick={props.sellHandler}>sell fish</button>
+            </div>
+        );
+    } else {
+        if (props.missingNames.length > 0) {
+            const missingPlayerList = props.missingNames.join(", ");
+            return (<div>Waiting for {missingPlayerList}</div>)
+        } else {
+            return (<div>No players</div>)
+        }
+    }
 }
 
 export default Poseidon;

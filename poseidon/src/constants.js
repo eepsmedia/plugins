@@ -26,18 +26,21 @@ limitations under the License.
 
 */
 
+//  import model from "./Model.js";
+
 const poseidon = {
 
     constants: {
-        version: "p001a",
+        version: "001a",
+        whence : "local",
 
-        kTimerInterval: 500,       //      milliseconds, ordinarily 1000
+        kTimerInterval: 2500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
         kInitialLanguage: 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
 
         kInitialTurn: 2020,
         kInitialPopulation: 200,
-        kInitialGameLevelName : "albacore",
+        kInitialGameTypeName : "albacore",
 
         //  player states
         kSellingString: "selling",
@@ -62,7 +65,7 @@ const poseidon = {
      *
      * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
      */
-    fishLevels : {
+    fishGameParameters : {
 
         albacore: {
             starter : true,
@@ -82,7 +85,7 @@ const poseidon = {
             binomialProbabilityModel: false,
             boatCapacity: 120,
 
-            calculatePrice : function(n) { return poseidon.state.game.defaultPrice; }
+            calculatePrice : function(n) { return this.defaultPrice; }
         },
 
         bonito: {
@@ -103,7 +106,7 @@ const poseidon = {
             binomialProbabilityModel: true,
             boatCapacity: 120,
 
-            calculatePrice : function(n) { return poseidon.state.game.defaultPrice; }
+            calculatePrice : function(n) { return this.defaultPrice; }
         },
 
         cod: {
@@ -128,7 +131,7 @@ const poseidon = {
             salesMax : 200,
 
             calculatePrice : function(n) {
-                let tPrice = poseidon.state.game.priceMax * ( 1 - n / poseidon.state.game.salesMax);
+                let tPrice = this.priceMax * ( 1 - n / this.salesMax);
                 if (tPrice < 0) tPrice = 0;
                 return tPrice;
             }
@@ -156,7 +159,7 @@ const poseidon = {
             salesMax : 200,
 
             calculatePrice : function(n) {
-                let tPrice = poseidon.state.game.priceMax * ( 1 - n / poseidon.state.game.salesMax);
+                let tPrice = this.priceMax * ( 1 - n / this.salesMax);
                 if (tPrice < 0) tPrice = 0;
                 return tPrice;
             }

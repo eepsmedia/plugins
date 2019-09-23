@@ -37,7 +37,7 @@ fish.CODAPConnector = {
      * @returns {Promise<T | never>}
      */
     initialize: async function ( ) {
-        await codapInterface.init(this.iFrameDescriptor, null)
+        await codapInterface.init(this.iFrameDescriptor, null);
         let thePromises = [];
         thePromises.push(pluginHelper.initDataSet(fish.localize.getHistoricalDataContextSetupObject()));
         thePromises.push(pluginHelper.initDataSet(fish.localize.getFishDataContextSetupObject()));
