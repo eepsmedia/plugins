@@ -217,7 +217,8 @@ var xeno = {
         xeno.state.currentCase.diagnosis = iDiag;
 
         const tTrueOrFalse = (iDiag === xeno.state.currentCase.health) ? xeno.strings.true : xeno.strings.false;
-        var tPositiveOrNegative = (xeno.state.currentCase.health) === xeno.strings.sick ? xeno.strings.positive : xeno.strings.negative;
+        //  var tPositiveOrNegative = (xeno.state.currentCase.health) === xeno.strings.sick ? xeno.strings.positive : xeno.strings.negative;
+        const tPositiveOrNegative = (iDiag === xeno.strings.sick) ? xeno.strings.positive : xeno.strings.negative;
 
         this.state.previousSingleDiagnosisReport = xeno.strings.getSingleDiagnosisReport(iDiag, tTrueOrFalse, tPositiveOrNegative);
 
@@ -303,7 +304,7 @@ var xeno = {
     },
 
     constants: {
-        version: '001i',
+        version: '001j',
         kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',
