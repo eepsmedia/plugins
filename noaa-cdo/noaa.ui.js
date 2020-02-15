@@ -54,6 +54,12 @@ noaa.ui = {
         return out;
     },
 
+    /**
+     * Construct the HTML for a setof checkboxes
+     * @param iChoices  an object, one for each item. Thing.name is to be the label
+     * @param iDefaults an object with corresponding keys; all members are checked by default
+     * @returns {string}
+     */
     makeBoxes : function(iChoices, iDefaults) {
         let out = "";
 

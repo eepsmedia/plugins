@@ -144,7 +144,8 @@ noaa = {
         tallDimensions : {height : 444, width : 333},
 
         spreader : {
-            "URL" :   "https://codap.xyz/plugins/spreader/",      //  "http://localhost:8888/plugins/spreader/",
+            "URL" :  "http://localhost:8888/plugins/spreader/",
+            //"URL" :   "https://codap.xyz/plugins/spreader/",
             "dimensions": {height: 210, width: 380},
         }
     },
