@@ -38,11 +38,12 @@ export default class PoseidonHeader extends React.Component {
         this.state = {
             newOrOldGame: true,
             prospectiveGameType: poseidon.constants.kInitialGameTypeName,
-            dirty : 0,
+            dirty: 0,
         };
 
         //  binding
         this.makeNewGame = this.makeNewGame.bind(this);
+        this.joinOldGame = this.joinOldGame.bind(this);
     }
 
     handleNewOrOldChange = (e) => {
@@ -63,6 +64,15 @@ export default class PoseidonHeader extends React.Component {
         this.props.setDirty();
     }
 
+    async   joinOldGame() {
+        const theOldCode = document.getElementById("oldGameCodeInput").value;
+        const getDataResult = await this.props.model.refreshAllData(theOldCode);
+        if (!getDataResult) {
+            alert("Could not find game " + theOldCode + ". Please try again.");
+        }
+        this.props.setDirty();
+    }
+
     setDirty() {
         const newDirty = this.state.dirty + 1;
         console.log("... setDirty() ... " + this.sitrep());
@@ -79,7 +89,7 @@ export default class PoseidonHeader extends React.Component {
         let wholeThing = (<div>waiting</div>);
 
         const typesMenuGuts = Object.keys(poseidon.fishGameParameters).map(
-            (key) => (<option key={key} value={key} >{key}
+            (key) => (<option key={key} value={key}>{key}
             </option>)
         );
 
@@ -89,23 +99,23 @@ export default class PoseidonHeader extends React.Component {
                     {typesMenuGuts}
                 </select>
             ) : (
-                <input type="text"></input>
+                <input type="text" id={"oldGameCodeInput"}></input>
             )
         );
 
         const createOrJoinButton = (this.state.newOrOldGame ? (
                 <button onClick={this.makeNewGame}>new game ({this.state.prospectiveGameType})</button>
             ) : (
-                <button> join game </button>
+                <button onClick={this.joinOldGame}>join game</button>
             )
         );
 
-        const radioButtons = (<div>
+        const radioButtons = (<div className={"radioButtons"}>
             <label>
                 <input type="radio" name="newOrOldGame" value="new" checked={this.state.newOrOldGame}
                        onChange={this.handleNewOrOldChange}
                 /> new game
-            </label> |
+            </label> <br/>
             <label>
                 <input type="radio" name="newOrOldGame" value="old" checked={!this.state.newOrOldGame}
                        onChange={this.handleNewOrOldChange}
@@ -114,18 +124,20 @@ export default class PoseidonHeader extends React.Component {
         </div>);
 
         if (theGame.gameState === poseidon.constants.kInProgressString) {
-            wholeThing = (<div>
-                game: {theGame.gameCode} | year: {theGame.turn} | type: {theGame.config}
+            wholeThing = (<div  id="poseidonHeader">
+                <strong>{theGame.gameCode}</strong>&nbsp;|&nbsp;
+                <strong>{theGame.turn}</strong>&nbsp;|&nbsp;
+                    <span><strong>{theGame.population}</strong></span> <span>&nbsp;&#x1f41f; &nbsp;</span>|
+                <span>&nbsp;type: {theGame.config}</span>
             </div>)
         } else {
-            wholeThing = (<div>
+            wholeThing = (<div  id="poseidonHeader">
                 {radioButtons}
-                <br/>
-                {gameCodeOrTypeMenu}{createOrJoinButton}
+                {gameCodeOrTypeMenu}&nbsp;{createOrJoinButton}
             </div>)
         }
 
-        return <div id="poseidonHeader">{wholeThing}</div>;
+        return <div>{wholeThing}</div>;
     }
 }
 

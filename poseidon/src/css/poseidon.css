@@ -34,7 +34,15 @@ body {
 
 h1 {
     margin : 12px;
-    color : blue;
+    color : #dde;
+}
+
+h3 {
+    margin: 12px;
+}
+
+h4 {
+    margin:12px;
 }
 
 th {
@@ -45,25 +53,73 @@ th {
 td {
     text-align: right;
     font-family: Menlo, monospace;
+    font-weight: bold;
     font-size : 12px;
     padding-left: 1em;
 }
+
 #poseidon {
     padding : 0px;
 }
 
+#titleBar {
+    display : flex;
+    align-items: center;
+    background-color : lightslategray;
+    color : #ccc;
+    padding-left : 12px;
+    padding-top : 6px;
+    padding-bottom : 6px;
+}
 #poseidonHeader {
-    background-color : yellow;
+    display : flex;
+    align-items: center;
+    /*background-color : lightgray;*/
+    padding-left : 12px;
+    padding-top : 6px;
+    padding-bottom : 6px;
+}
+
+#fishMarket {
+    display : flex;
+    align-items: center;
+    background-color : lightsteelblue;
+    padding-left : 12px;
+    padding-top : 6px;
+    padding-bottom : 6px;
+}
+
+#gameOverDiv {
+    display : flex;
+    align-items: center;
+    background-color : white;
     padding-left : 12px;
     padding-top : 6px;
     padding-bottom : 6px;
 }
 
 #playerTable {
-    background-color: green;
+    background-color: #787;
     color : white;
     padding-right : 12px;
     padding-left : 12px;
     padding-top : 6px;
     padding-bottom : 6px;
+}
+
+#gameRunningStuff {
+    padding-left : 0px;
+    padding-top : 6px;
+    padding-bottom : 6px;
+}
+
+#clock {
+    padding-left : 12px;
+    padding-top : 6px;
+    padding-bottom : 6px;
+
+}
+
+.radioButtons {
+    padding-right: 2em;
 }

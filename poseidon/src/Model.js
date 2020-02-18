@@ -64,12 +64,17 @@ export default class Model extends Object  {
         return this.theGame;
     }
 
-    async refreshAllData() {
+    async refreshAllData(iCode) {
+
+        if (arguments.length === 1) {
+            this.theGame = {gameCode : iCode};
+        }
         //  here is where these values get set.
         this.theGame = await phpConnect.getGame(this.theGame) || {};
+        if (!this.theGame) return false;
         this.thePlayers = await phpConnect.getPlayers(this.theGame) || [];
         this.theTurns = await phpConnect.getTurns(this.theGame) || [];
-
+        return true;
     }
 
     async sellFish() {
@@ -78,14 +83,13 @@ export default class Model extends Object  {
         this.updateTurnsData();  //   update the model. fast. synchronous. Sets game pop and unit price
         this.updatePlayersData();   //  update the players balances based on their turns, unit price, etc.
 
-        const endGameObject = this.checkForEndGame();
         //  must do side effects in checkForEndGame before setting the game, player, and turns
 
         await phpConnect.setGame(this.theGame);
         await phpConnect.setTurns(this.theTurns);
         await phpConnect.setPlayers(this.thePlayers);
 
-        return endGameObject;
+        //  return endGameObject;
     }
 
     updateTurnsData() {
@@ -152,7 +156,11 @@ export default class Model extends Object  {
         return tOut;
     }
 
-    checkForEndGame() {
+    /**
+     * Assumes that the model is current, i.e., theGame, thePlayers, etc. are up to date.
+     * @returns {Promise<{reason: *, end: *}>}
+     */
+    async checkForEndGame() {
 
         let tReasonText = "";
 
@@ -177,7 +185,7 @@ export default class Model extends Object  {
             }
         }
 
-        //  check all turnes to see if anyone went negative
+        //  check all turns to see if anyone went negative
         this.theTurns.forEach((t) => {
             if (t.balanceAfter < 0) {
                 tReasonObject.end = true;
@@ -196,20 +204,30 @@ export default class Model extends Object  {
 
         if (tReasonObject.end) {
             this.theGame.gameState = tEnd;      //  side effect; change the game
+
             tReasonText = strings.constructGameEndMessageFrom(tReasonObject);
         } else {
             tReasonText = "End of year " + this.theGame.turn;
         }
 
-        return {
-            reason : tReasonText,
-            end : tReasonObject.end
-        };
+        this.theGame.reason = tReasonText;
+        await phpConnect.setGame(this.theGame);
+
+        return this.theGame;
     }
 
+    /**
+     * This will return an object that describes the implications of the current game state.
+     * Especially these Booleans:
+     *
+     * OK : is it OK to sell fish? (i.e., has everybody moved?)
+     * gameOver : has the game ended?
+     * @returns {Promise<{missing: [], playing: boolean, OK: boolean, allPlayers: *}|{missing: [], playing: boolean, OK: boolean, allPlayers: []}|{missing: *, playing: boolean, OK: boolean, allPlayers: *}>}
+     */
     async getCurrentSituation() {
 
         await this.refreshAllData();
+        await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
 
         if (this.theGame.gameCode) {
             //  game information
@@ -229,18 +247,27 @@ export default class Model extends Object  {
                 }
             });
 
-            const out = {
-                OK: (this.thePlayers.length === this.theTurns.length),
-                missing: missingPlayers,
-                allPlayers: allPlayers,
-            };
-
-            return out;
+            if (this.theGame.gameState === poseidon.constants.kInProgressString) {
+                return {
+                    OK: (this.thePlayers.length === this.theTurns.length),
+                    missing: missingPlayers,
+                    allPlayers: allPlayers,
+                    playing : true,
+                };
+            } else {        //  game is not in progress, i.e., over
+                return {
+                    OK : false,
+                    missing : [],
+                    allPlayers : allPlayers,
+                    playing : false,
+                };
+            }
         } else {
             return {
                 OK : false,
                 missing : [],
                 allPlayers : [],
+                playing : false,
             };
         }
     }

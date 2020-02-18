@@ -99,27 +99,26 @@ fish.CODAPConnector = {
      * The database has recorded the price for fish (etc) based on everyone's catch.
      * So here, we can fill in what we did not know at the time of fishing: unitPrice, income, and our "after" balance.
      *
-     * @param iYear     the year to be updated
+     * @param iTurn     the data from db to be updated
      * @param iWhy
      * @returns {Promise<void>}
      */
-    updateFishItemInCODAP: async function (iYear, iWhy) {
+    updateFishItemInCODAP: async function (iTurn, iWhy) {
         try {
-            const tTurnArray = await fish.phpConnector.getOneTurn(iYear);
-            const tTurn = tTurnArray[0];
+            const theYear = iTurn.onTurn;
 
             const tValues = {
-                'unitPrice' : tTurn.unitPrice,
-                'income' : tTurn.income,
-                'after' : tTurn.balanceAfter    //  note different name
+                'unitPrice' : iTurn.unitPrice,
+                'income' : iTurn.income,
+                'after' : iTurn.balanceAfter    //  note different name
             };
-            console.log("    fish ... updateFishItemInCODAP() for " + iYear + " because: " + iWhy);
+            console.log("    fish ... updateFishItemInCODAP() for " + theYear + " because: " + iWhy);
 
             let theWholeTurn = null;
 
             //  get the item id of the relevant case:
 
-            let tFilterString = 'year==' + iYear;
+            let tFilterString = 'year==' + theYear;
             let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemSearch[" + tFilterString + "]";
             let tMessage = {action: "get", resource: tResource};
             const tItemSearchResult = await codapInterface.sendRequest(tMessage);
@@ -132,7 +131,7 @@ fish.CODAPConnector = {
                 theWholeTurn = theResult.values;
                 Object.assign(theWholeTurn, tValues);       //  merge the new values into the "turn" data (for return)
             } else {
-                throw("    unsuccessful item search, year " + iYear);
+                throw("    unsuccessful item search, year " + theYear);
             }
 
             //      now do the update
@@ -146,7 +145,7 @@ fish.CODAPConnector = {
 
             if (!tUpdateResult.success) {
                 const errorString = "    unsuccessful update, item " + theItemID +
-                    " | year: " + iYear + " | error: " + tUpdateResult.values.error +
+                    " | year: " + theYear + " | error: " + tUpdateResult.values.error +
                     " | message: " + JSON.stringify(tMessage);
                 console.log(errorString);
             }
@@ -223,7 +222,7 @@ fish.CODAPConnector = {
         version: fish.constants.version,
         name: 'fish',
         title: 'Fishing!',
-        dimensions: {width: 360, height: 344},
+        dimensions: {width: 388, height: 354},
         preventDataContextReorg: false
     },
 

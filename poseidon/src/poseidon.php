@@ -189,7 +189,7 @@ function getAllTurns($DBH, $theValues)
     return $out;     //  all turns in an array
 }
 
-function getGameSituation($DBH, $theValues)
+/*function getGameSituation($DBH, $theValues)
 {
     $game = getGameData($DBH, $theValues);
     $players = getAllPlayers($DBH, $theValues);
@@ -219,7 +219,7 @@ function getGameSituation($DBH, $theValues)
     );
 
     return $out;
-}
+}*/
 
 /*      now, what we actually do    */
 

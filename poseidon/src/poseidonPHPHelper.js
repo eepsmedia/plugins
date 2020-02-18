@@ -32,7 +32,7 @@ const phpConnect = {
 
     sendRequest: async function (iRequest) {
         if (iRequest.action === "update") {
-            console.log("in sendRequest with " + JSON.stringify(iRequest));
+            //  console.log("in sendRequest with " + JSON.stringify(iRequest));
         }
 
         let theBody = new FormData();

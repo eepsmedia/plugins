@@ -9,6 +9,7 @@
 
 //  $theCredentialsFilename = dirname( __FILE__, 4 ) . '/cred/fishCred.php';
 
+global $credentials;
 
 $whence = $_REQUEST['whence'];
 

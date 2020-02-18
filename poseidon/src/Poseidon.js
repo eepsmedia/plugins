@@ -27,7 +27,7 @@ limitations under the License.
 */
 
 /*
-Local testing: http://localhost:3000/
+Local testing: http://localhost:3000/plugins/poseidon
  */
 
 import React from 'react';
@@ -37,6 +37,7 @@ import PoseidonHeader from "./components/PoseidonHeader.js";
 import './css/poseidon.css';
 
 import refreshIcon from "./art/refresh.png";
+import poseidon from "./constants";
 
 class Poseidon extends React.Component {
 
@@ -44,6 +45,7 @@ class Poseidon extends React.Component {
         super(props);
         this.state = {
             OKtoSell: false,
+            autoSell: false,
             missing: [],
             dirty: 0,
             now: new Date(),
@@ -70,21 +72,37 @@ class Poseidon extends React.Component {
     }
 
     async poll() {
-        this.setState({now: new Date()});
         const theSituationResponse = await this.model.getCurrentSituation();
 
         this.setState({
             OKtoSell: theSituationResponse.OK,
             missing: theSituationResponse.missing,
+            now: new Date(),
         });
 
         console.log("... poll() ... " + this.sitrep());
+
+        if (this.state.OKtoSell &&
+            this.state.autoSell &&
+            this.model.thePlayers.length > 0 &&
+            this.playing()) {
+            await this.sellFish();
+            console.log(" *** auto sold *** now it's " + this.model.theGame.turn);
+        }
     }
 
     setDirty() {
+        this.poll();    //  makes sure OK to catch is set properly
         const newDirty = this.state.dirty + 1;
         this.setState({dirty: newDirty});
         console.log("... setDirty() ... " + this.sitrep());
+    }
+
+    playing() {
+        return (
+            this.model.theGame.gameState === poseidon.constants.kInProgressString ||
+            this.model.theGame.gameState === poseidon.constants.kWaitingString
+        )
     }
 
     sitrep() {
@@ -95,42 +113,68 @@ class Poseidon extends React.Component {
             " dirty = " + this.state.dirty;
     }
 
-
     async sellFish() {
+        document.getElementById("sellFishButton").style.visibility = "hidden";
         console.log("Selling fish!");
         await this.model.sellFish();
         this.setDirty();
         console.log("Fish sold!");
+        document.getElementById("sellFishButton").style.visibility = "visible";
+    }
+
+    handleAutoSellBoxChange(e) {
+        const newCheckedState = document.getElementById("autoSellBox").checked;
+        this.setState({autoSell: newCheckedState});
+        console.log("Auto sell checkbox now " + newCheckedState);
+        this.poll();
     }
 
     render() {
+        let gameRunningStuff;
+
+        if (this.model.theGame.gameCode) {
+            gameRunningStuff = (<div id={"gameRunningStuff"}>
+
+                <FishMarket
+                    OK={this.state.OKtoSell}
+                    autoHandler={this.handleAutoSellBoxChange.bind(this)}
+                    sellHandler={this.sellFish.bind(this)}
+                    missingNames={this.state.missing}
+                />
+                <GameOverDiv
+                    game={this.model.theGame}
+                    reason={this.model.theGame.reason}
+                />
+                <PlayerList
+                    thePlayers={this.model.thePlayers}
+                    theTurns={this.model.theTurns}
+                />
+            </div>)
+        } else {
+            gameRunningStuff = <div id={"gameRunningStuff"}><h4>no game yet</h4></div>
+        }
+
         return (
             <div id={"poseidon"}>
-                <h1>Poseidon: God of the Sea</h1>
+                <div id={"titleBar"}>
+                    <h1>Poseidon</h1>
+                    <RefreshButton
+                        doRefresh={this.poll.bind(this)}
+                    />
+                </div>
+
                 <PoseidonHeader
                     id={"poseidonHeader"}
                     model={this.model}
                     setDirty={this.setDirty}
                 />
 
-                <RefreshButton
-                    doRefresh={this.poll.bind(this)}
-                />
+                {gameRunningStuff}
 
-                <SellButton
-                    OK={this.state.OKtoSell}
-                    sellHandler={this.sellFish.bind(this)}
-                    missingNames={this.state.missing}
-                />
-                <PlayerList
-                    thePlayers={this.model.thePlayers}
-                />
-
-                <div>{this.state.now.toLocaleTimeString()}</div>
+                <div id={"clock"}><strong>{this.state.now.toLocaleTimeString()}</strong></div>
             </div>
         )
     }
-
 }
 
 /*
@@ -147,33 +191,67 @@ function RefreshButton(props) {
     return (
         <div>
             <input id="refreshButton" type="image"
-                   alt="refresh"
-                   height="14" width="16" src={refreshIcon}
+                   alt="refresh" height="25%" width="25%"
+                   src={refreshIcon}
                    onClick={doRefresh}></input>
         </div>
     )
+}
 
+function GameOverDiv(props) {
+    const theGame = props.game;
+
+    if (theGame.gameState === poseidon.constants.kInProgressString) {
+        return null;
+    }
+
+    const theGuts = (
+        <div id={"gameOverDiv"}>
+            <h3>Game over! The players {theGame.gameState}!</h3>
+            <p>{props.reason}</p>
+        </div>
+    );
+
+    return <div>{theGuts}</div>
 }
 
 function PlayerList(props) {
 
+    function playerRow(p, theTurns) {
+        let myTurn = null;
+        theTurns.forEach((t) => {
+            if (t.playerName === p.playerName) {
+                myTurn = t;
+            }
+        });
+
+        const tSought = myTurn ? myTurn.sought : "--";
+        return (
+            <tr key={p.playerName}>
+                <td>{p.playerName}</td>
+                <td>{p.onTurn}</td>
+                <td>{tSought}</td>
+                <td>{p.balance}</td>
+            </tr>
+        )
+    }
+
+    const theTurns = props.theTurns;
     const listGuts = props.thePlayers.map(
-        (p) => (<tr key={p.playerName}>
-            <td>{p.playerName}</td>
-            <td>{p.onTurn}</td>
-            <td>{p.balance}</td>
-        </tr>)
+        (p) => playerRow(p, theTurns)
     );
+
     const headerText = props.thePlayers.length + " player(s)";
     const tableHeader = (<tr>
         <th>name</th>
         <th>turn</th>
+        <th>sought</th>
         <th>balance</th>
     </tr>);
     const wholeThing = props.thePlayers.length > 0 ?
         (
             <div>
-                <h2>{headerText}</h2>
+                <h3>{headerText}</h3>
                 <div>
                     <table id={"playerTable"}>
                         <thead>{tableHeader}</thead>
@@ -181,26 +259,54 @@ function PlayerList(props) {
                     </table>
                 </div>
             </div>
-        ) :
-        "No players"
+        ) : (
+            <h4>no players yet</h4>
+        );
+
     return (<div>{wholeThing}</div>)
 }
 
-function SellButton(props) {
+function FishMarket(props) {
     if (props.OK) {
         return (
-            <div>
+            <div id={"fishMarket"}>
+                <h3>Fish market: </h3>
                 <button id="sellFishButton" onClick={props.sellHandler}>sell fish</button>
+                <AutoSellBox
+                    autoHandler={props.autoHandler}
+                />
+
             </div>
         );
     } else {
         if (props.missingNames.length > 0) {
             const missingPlayerList = props.missingNames.join(", ");
-            return (<div>Waiting for {missingPlayerList}</div>)
+            return (
+                <div id={"fishMarket"}>
+                    <h3>Fish market: </h3>
+                    <span>Waiting for {missingPlayerList}</span>
+                    <AutoSellBox
+                        autoHandler={props.autoHandler}
+                    />
+                </div>
+            )
         } else {
-            return (<div>No players</div>)
+            return (<div>no fish to sell</div>)
         }
     }
+}
+
+function AutoSellBox(props) {
+
+    return (
+        <div>
+            <input type={"checkbox"}
+                   id={"autoSellBox"}
+                   onChange={props.autoHandler}
+            />
+            <label htmlFor={"autoSellBox"}>automate market</label>
+        </div>
+    )
 }
 
 export default Poseidon;

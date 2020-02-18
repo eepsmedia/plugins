@@ -44,9 +44,9 @@ let fish = {
      */
     game: null,
 
-    language : null,
+    language: null,
 
-    FS : null,          //  fish strings. One of its elements will become fish.strings, depending on language
+    FS: null,          //  fish strings. One of its elements will become fish.strings, depending on language
 
     /**
      * A copy of fish.state to start with.
@@ -75,7 +75,7 @@ let fish = {
 
         autoCatch: false,       //  automation button checked for catching
         autoChair: false,       //  automation button checked for chairing (fish market)
-        OKtoEndTurnObject: {OK : true},
+        otherPlayersInfo: {OK: true},
         timerCount: 0,
     },
 
@@ -103,7 +103,7 @@ let fish = {
         fish.ui.update();
     },
 
-    setLanguageFromURL : function() {
+    setLanguageFromURL: function () {
         let theLang = fish.constants.kInitialLanguage;
 
         const params = new URLSearchParams(document.location.search.substring(1));
@@ -120,7 +120,7 @@ let fish = {
      * Set the UI language
      * @param iCode     two-letter language code, e.g., en, de, es.
      */
-    setLanguage : function( iCode ) {
+    setLanguage: function (iCode) {
         fish.language = iCode;       //  put the thing in here to choose
         fish.strings = FS[iCode];
         FS.setBasicStrings();           //  replace strings in the UI
@@ -190,7 +190,7 @@ let fish = {
         fish.ui.update();
     },
 
-    mainLoop : async function() {
+    mainLoop: async function () {
         let gameOver = false;
 
         while (!gameOver) {
@@ -226,8 +226,7 @@ let fish = {
             } else {
                 fish.setNotice(fish.strings.waitingToStartText);
             }
-        }
-        catch (msg) {
+        } catch (msg) {
             console.error("fish.doTimer() error (in fish.fishUpdate()) " + msg);
         }
 
@@ -242,7 +241,9 @@ let fish = {
      * @returns {Promise<boolean>}
      */
     fishUpdate: async function () {
+        fish.state.otherPlayersInfo = await this.otherPlayersInfo();
         let done = false;
+        let tUpdatedTurn;
         const tDBgame = await fish.phpConnector.getGameData();
 
         const tNewGameTurn = Number(tDBgame['turn']);
@@ -250,17 +251,28 @@ let fish = {
 
         if (tNewGameTurn > fish.state.turn) {    //  the game just updated; its turn (from the DB) is more advanced.
 
-            //  The DB has updated prices, etc., so we now finish THIS YEAR's case, updating it in CODAP.
-            //  Note that we're using fish.state.turn BEFORE it gets updated to the "game's" turn.
-            const tMostRecentTurn = await fish.CODAPConnector.updateFishItemInCODAP(fish.state.turn, "update (fresh year)");
+            const tTurnArray = await fish.phpConnector.getOneTurn(fish.state.turn);
+            const tMostRecentTurnFromDB = tTurnArray[0];
+            const newBalance = tMostRecentTurnFromDB['balanceAfter'];
 
-            fish.state.gameTurn = Number(tNewGameTurn); //  now update local turn number
-            fish.state.turn = fish.state.gameTurn;      //  here we update the turn (the player turn)
-            fish.state.balance = tMostRecentTurn.after;  //  we only update balance when the turn updates
-            fish.state.playerState = fish.constants.kFishingString; //  now we are fishing again
+            if (newBalance) {
 
-            fish.state.turnReport = fish.strings.makeRecentTurnReport( tMostRecentTurn );
-            fish.setNotice(fish.state.turnReport);
+                //  The DB has updated prices, etc., so we now finish THIS YEAR's case, updating it in CODAP.
+                //  Note that we're using fish.state.turn BEFORE it gets updated to the "game's" turn.
+                tUpdatedTurn = await fish.CODAPConnector.updateFishItemInCODAP(
+                    tMostRecentTurnFromDB,
+                    "update " + fish.state.turn + " to " + tNewGameTurn);
+
+                fish.state.gameTurn = Number(tNewGameTurn); //  now update local turn number
+                fish.state.turn = fish.state.gameTurn;      //  here we update the turn (the player turn)
+                fish.state.balance = newBalance;  //  we only update balance when the turn updates
+                fish.state.playerState = fish.constants.kFishingString; //  now we are fishing again
+
+                fish.state.turnReport = fish.strings.makeRecentTurnReport(tUpdatedTurn);
+                fish.setNotice(fish.state.turnReport);
+            } else {
+                console.log("latest balance not available, wait for another tick...")
+            }
         }
 
         if (fish.state.playerState === fish.constants.kSellingString) {
@@ -282,19 +294,19 @@ let fish = {
         if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
             await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
         }
+        /*
+                //  need to know if everyone is done fishing
+                fish.state.OKtoEndTurnObject = await fish.phpConnector.checkToSeeIfOKtoEndTurn();
 
-        //  need to know if everyone is done fishing
-        fish.state.OKtoEndTurnObject = await fish.phpConnector.checkToSeeIfOKtoEndTurn();
-
-        //  do an auto fish-market if appropriate
-        if (fish.state.isChair) {
-            if (fish.state.OKtoEndTurnObject.OK) {
-                if (fish.state.autoChair) {
-                    await fish.userActions.chairEndsTurn();     //  OK to resolve AND autoChair. Do it!
+                //  do an auto fish-market if appropriate
+                if (fish.state.isChair) {
+                    if (fish.state.OKtoEndTurnObject.OK) {
+                        if (fish.state.autoChair) {
+                            await fish.userActions.chairEndsTurn();     //  OK to resolve AND autoChair. Do it!
+                        }
+                    }
                 }
-            }
-        }
-
+        */
         return done;
     },
 
@@ -317,6 +329,29 @@ let fish = {
         //  return (fish.state.playerState === fish.constants.kFishingString && fish.state.gameState === fish.constants.kInProgressString)
     },
 
+    otherPlayersInfo: async function () {
+        const thePlayers = await fish.phpConnector.getPlayersData();
+        const theTurns = await fish.phpConnector.getTurnsData();
+        let tAllPlayers = [];
+        let tMissing = [];
+
+        thePlayers.forEach(p => {
+            let innit = false;
+            theTurns.forEach(t => {
+                if (p.playerName === t.playerName) innit = true;
+            })
+            if (!innit) tMissing.push(p.playerName);
+            tAllPlayers.push(p.playerName);
+        });
+
+        return {
+            OK: (thePlayers.length === theTurns.length),
+            missing:tMissing,
+            allPlayers: tAllPlayers,
+        }
+
+    },
+
     /**
      * Make the text appear in the UI in the notice section
      * @param iText     the text to appear
@@ -330,7 +365,7 @@ let fish = {
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
-        kInitialLanguage : 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
+        kInitialLanguage: 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
 
         kBaseURL: {
             local: "http://localhost:8888/plugins/fish/fish.php",

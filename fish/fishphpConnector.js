@@ -139,7 +139,6 @@ fish.phpConnector = {
         } catch (msg) {
             console.log('get my turns error: ' + msg);
         }
-
     },
 
     getOneTurn: async function (iYear) {
@@ -250,6 +249,7 @@ fish.phpConnector = {
         }
     },
 
+/*
 
     checkToSeeIfOKtoEndTurn: async function () {
 
@@ -265,6 +265,7 @@ fish.phpConnector = {
 
         return tResult;
     },
+*/
 
     endTurnForAll: async function (iUpdateResult) {
 

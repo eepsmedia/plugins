@@ -182,14 +182,14 @@ let FS = {
         makeAboutPlayersText: function () {
             let out = "";
 
-            let tN = fish.state.OKtoEndTurnObject.allPlayers.length;
+            let tN = fish.state.otherPlayersInfo.allPlayers.length;
 
             out += (tN === 1) ?
                 "You are playing solo. " :
                 ((tN === 2) ? "There is one other player. " : "There are " + (tN - 1) + " other players. ");
 
             out += "<br>";
-            out += this.makeWaitingText(fish.state.OKtoEndTurnObject, fish.state.playerName);
+            out += this.makeWaitingText(fish.state.otherPlayersInfo, fish.state.playerName);
 
 
             return out;
@@ -416,14 +416,14 @@ let FS = {
         makeAboutPlayersText: function () {
             let out = "";
 
-            let tN = fish.state.OKtoEndTurnObject.allPlayers.length;
+            let tN = fish.state.otherPlayersInfo.allPlayers.length;
 
             out += (tN === 1) ?
                 "Está jugando solo. " :
                 ((tN === 2) ? "Hay otro jugador. " : "Hay " + (tN - 1) + " otros jugadores. ");
 
             out += "<br>";
-            out += this.makeWaitingText(fish.state.OKtoEndTurnObject, fish.state.playerName);
+            out += this.makeWaitingText(fish.state.otherPlayersInfo, fish.state.playerName);
 
 
             return out;

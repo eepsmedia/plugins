@@ -239,14 +239,14 @@ fish.userActions = {
 
         [tGame, tTurns, tPlayers] = await Promise.all([gamePromise, turnsPromise, playersPromise]);
 
-        if (fish.state.OKtoEndTurnObject.OK) {           //  everybody OK to move on?
+        if (fish.state.otherPlayersInfo.OK) {           //  everybody OK to move on?
             const tUpdateResult = fish.model.updateTotalPopulation(tGame, tPlayers, tTurns);  //   update the model. fast. synchronous.
 
             //  send the resulting game info to be updated in the DB
             const iData = await fish.phpConnector.endTurnForAll(tUpdateResult);
             fish.setNotice(iData);
         } else {
-            alert('Not ready to move on. Year: ' + tGame.turn + ' Missing: ' + fish.state.OKtoEndTurnObject.missing.join(','));
+            alert('Not ready to move on. Year: ' + tGame.turn + ' Missing: ' + fish.state.otherPlayersInfo.missing.join(','));
             fish.setNotice('Did not advance! Maybe we are still waiting for a player.');
         }
     },
