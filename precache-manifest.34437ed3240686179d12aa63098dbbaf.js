@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "560a9a5514407d2715080e424e6c2d4f",
+    "revision": "ecf5f51dd0129fc773ef8763d6e46cbe",
     "url": "/plugins/poseidon/build/index.html"
   },
   {
-    "revision": "2151b4a910608f1d4685",
-    "url": "/plugins/poseidon/build/static/css/main.c22a211d.chunk.css"
+    "revision": "ba2cc119aa21a17376e9",
+    "url": "/plugins/poseidon/build/static/css/main.90bb3817.chunk.css"
   },
   {
     "revision": "a64ae6cfe39ea20fc870",
     "url": "/plugins/poseidon/build/static/js/2.89897c78.chunk.js"
   },
   {
-    "revision": "2151b4a910608f1d4685",
-    "url": "/plugins/poseidon/build/static/js/main.16d33acc.chunk.js"
+    "revision": "ba2cc119aa21a17376e9",
+    "url": "/plugins/poseidon/build/static/js/main.40613272.chunk.js"
   },
   {
     "revision": "3914e84cd731f9aff61d",

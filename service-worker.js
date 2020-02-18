@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/plugins/poseidon/build/precache-manifest.2437bf9d5efcfb5fb533656d16b23ca1.js"
+  "/plugins/poseidon/build/precache-manifest.34437ed3240686179d12aa63098dbbaf.js"
 );
 
 self.addEventListener('message', (event) => {
