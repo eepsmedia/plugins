@@ -8,7 +8,7 @@
 
 function reportToFile($message)
 {
-    file_put_contents("Jdebug.txt", $message . "\n", FILE_APPEND);
+    file_put_contents("NoS_php_debug.txt", $message . "\n", FILE_APPEND);
 }
 
 function    makeOnePaperHTML($DBH, $p) {
@@ -125,7 +125,7 @@ switch ($command) {
         $params["scen"] = $_REQUEST["scen"];
         $params["state"] = $_REQUEST["state"];
 
-        $query = "INSERT INTO worlds (godID, code, epoch, journalTitle, scenario, state)".
+        $query = "INSERT INTO worlds (godID, code, epoch, journalTitle, scenario, state) ".
             "VALUES (:g, :code, :epoch, :jName, :scen, :state)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
 
@@ -156,7 +156,7 @@ switch ($command) {
         break;
 
     case 'newGod':
-        reportToFile("[$command]......" . date("Y-m-d H:i:s (T)") . " name: " . $_REQUEST['title']);
+        reportToFile("[$command]......" . date("Y-m-d H:i:s (T)") . " name: " . $_REQUEST['u']);
         $params = ['u' => $_REQUEST['u'], 'p' => $_REQUEST['u'], 'f' => $_REQUEST['u']];
         $query = "INSERT INTO gods (username, password, fullname) VALUES (:u, :p, :f )";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
@@ -179,7 +179,7 @@ switch ($command) {
         $params["status"] = $_REQUEST["status"];
 
         $query = "INSERT INTO papers (worldID, title, authors, text, teamID, teamName, packs, `references`, status) ".
-            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :ac, :pkk, :refs, :status)";
+            "VALUES (:worldID, :title, :authors, :text, :teamID, :teamName, :pkk, :refs, :status)";
         $out1 = CODAP_MySQL_getQueryResult($DBH, $query, $params);
         $theID = $DBH->lastInsertId();
         reportToFile("[$command]...... new paper number: " . $theID);
@@ -302,7 +302,7 @@ switch ($command) {
         $toc = "";
         $guts = "";
 
-        reportToFile("The journal has : " . count($papers) . " papers.");
+        reportToFile("The nos2 has : " . count($papers) . " papers.");
 
         foreach ($papers as $p) {
 
@@ -316,7 +316,7 @@ switch ($command) {
 
         $out = count($papers)
             ? "<h2>Contents</h2><ul>$toc</ul><h2>Papers</h2>$guts"
-            : "<p>No papers in the journal yet";
+            : "<p>No papers in the nos2 yet";
 
         break;
 

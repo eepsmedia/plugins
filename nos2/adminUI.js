@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-ui in journal
+ui in nos2
 
 Author:   Tim Erickson
 
@@ -26,20 +26,20 @@ limitations under the License.
 
 */
 
-journal.ui = {
+nos2.ui = {
 
     initialize: function () {
         const tJournalNameDiv = document.getElementById("journalNameBox");
-        tJournalNameDiv.defaultValue = journal.strings.sDefaultJournalName;
+        tJournalNameDiv.defaultValue = nos2.strings.sDefaultJournalName;
     },
 
     update: async function () {
         //  all the data we need to await...
 
 
-        const pMyPapers = nos2.DBconnect.getPapers(journal.state.worldID, journal.state.teamID);
-        const pMyWorlds = nos2.DBconnect.getMyWorlds(journal.myGodID);
-        const pMyTeams = nos2.DBconnect.getMyTeams(journal.state.worldID);
+        const pMyPapers = nos2.DBconnect.getPapers(nos2.state.worldID, nos2.state.teamID);
+        const pMyWorlds = nos2.DBconnect.getMyWorlds(nos2.myGodID);
+        const pMyTeams = nos2.DBconnect.getMyTeams(nos2.state.worldID);
 
         const [tPapers, tWorlds, tTeams] = await Promise.all([pMyPapers, pMyWorlds, pMyTeams]);
 
@@ -47,11 +47,11 @@ journal.ui = {
 
         document.getElementById("adminStatusBarDiv").innerHTML =
             "admin | " +
-            journal.constants.version + " | " +
-            journal.constants.whence +
-            (journal.myGodName ? " | " + journal.myGodName + " (" + journal.myGodID + ")" : "") +
-            (journal.state.worldCode ? " | " + journal.state.worldCode : "")
-            + "&nbsp;&nbsp;&nbsp;&nbsp; <button onclick='journal.logout()'>log out</button>";
+            nos2.constants.version + " | " +
+            nos2.whence +
+            (nos2.myGodName ? " | " + nos2.myGodName + " (" + nos2.myGodID + ")" : "") +
+            (nos2.state.worldCode ? " | " + nos2.state.worldCode : "")
+            + "&nbsp;&nbsp;&nbsp;&nbsp; <button onclick='nos2.logout()'>log out</button>";
 
 
         // main visibility
@@ -60,16 +60,16 @@ journal.ui = {
         const tGodChooseWorldDiv = document.getElementById("godChooseWorldDiv");
         const tTabsDiv = document.getElementById("tabs");
 
-        tGodLoginDiv.style.display = (journal.adminPhase === journal.constants.kAdminPhaseNoGod ? "block" : "none");
-        tGodChooseWorldDiv.style.display = (journal.adminPhase === journal.constants.kAdminPhaseNoWorld ? "block" : "none");
-        tTabsDiv.style.display = (journal.adminPhase === journal.constants.kAdminPhasePlaying ? "block" : "none");
+        tGodLoginDiv.style.display = (nos2.adminPhase === nos2.constants.kAdminPhaseNoGod ? "block" : "none");
+        tGodChooseWorldDiv.style.display = (nos2.adminPhase === nos2.constants.kAdminPhaseNoWorld ? "block" : "none");
+        tTabsDiv.style.display = (nos2.adminPhase === nos2.constants.kAdminPhasePlaying ? "block" : "none");
 
 
         //  editor panel visibility
 
         /*
                 const tEditorTabDiv = document.getElementById("editor");
-                tEditorTabDiv.style.display = (journal.state.editor ? "block" : "none");
+                tEditorTabDiv.style.display = (nos2.state.editor ? "block" : "none");
         */
 
         //  join page text etc
@@ -81,13 +81,13 @@ journal.ui = {
 
         switch (tJoinType) {
             case 'join':
-                tJoinButton.value = journal.strings.sJoinWorldButtonLabel;
-                tJoinHelpSpan.textContent = journal.strings.sJoinJoinTypeHelpString;
+                tJoinButton.value = nos2.strings.sJoinWorldButtonLabel;
+                tJoinHelpSpan.textContent = nos2.strings.sJoinJoinTypeHelpString;
                 tJournalNameDiv.style.display = "none";
                 break;
             case 'new':
-                tJoinButton.value = journal.strings.sNewWorldButtonLabel;
-                tJoinHelpSpan.textContent = journal.strings.sNewJoinTypeHelpString;
+                tJoinButton.value = nos2.strings.sNewWorldButtonLabel;
+                tJoinHelpSpan.textContent = nos2.strings.sNewJoinTypeHelpString;
                 tJournalNameDiv.style.display = "block";
                 break;
         }
@@ -116,7 +116,7 @@ journal.ui = {
             tWorlds.forEach(w => {
                 console.log("World " + w.id + " is called " + w.code + ".");
                 text += "<tr><td>" + w.id + "</td><td>" + w.code + "</td>"
-                    + "<td><button onclick='journal.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
+                    + "<td><button onclick='nos2.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
             });
             text += "</table>";
             tWorldDiv.innerHTML = text;
@@ -134,7 +134,7 @@ journal.ui = {
                 console.log(t.id + ") Team " + t.name + " is called " + t.code + ".");
                 text += "<tr><td>" + t.id + "</td><td>" + t.code + "</td><td>" + t.name + "</td>"
                     + "</tr>";
-                   // + "<td><button onclick='journal.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
+                   // + "<td><button onclick='nos2.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
             });
             text += "</table>";
             tTeamsListDiv.innerHTML = text;

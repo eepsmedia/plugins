@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-teamNameSuggestionList in journal
+teamNameSuggestionList in nos2
 
 Author:   Tim Erickson
 

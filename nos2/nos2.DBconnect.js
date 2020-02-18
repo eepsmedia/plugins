@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-DBconnect in journal
+DBconnect in nos2
 
 Author:   Tim Erickson
 
@@ -35,10 +35,10 @@ nos2.DBconnect = {
                 theBody.append(key, iCommands[key])
             }
         }
-        theBody.append("whence", journal.constants.whence);
+        theBody.append("whence", nos2.whence);
 
         let theRequest = new Request(
-            nos2.kBasePhpURL[journal.constants.whence],
+            nos2.kBasePhpURL[nos2.whence],
             {method: 'POST', body: theBody, headers: new Headers()}
         );
 
@@ -151,7 +151,7 @@ nos2.DBconnect = {
                 theCommands.id = iPaper.dbid;   //  because that's the name of the field in Paper.
             } else {
                 theCommands.c = "newPaper";
-                theCommands.worldID = journal.state.worldID;
+                theCommands.worldID = nos2.state.worldID;
             }
 
             const out = await nos2.DBconnect.sendCommand(theCommands);
@@ -185,13 +185,13 @@ nos2.DBconnect = {
             let tStatus;
             switch (iJudgment) {
                 case 'accept':
-                    tStatus = journal.constants.kPaperStatusPublished;
+                    tStatus = nos2.constants.kPaperStatusPublished;
                     break;
                 case 'reject':
-                    tStatus = journal.constants.kPaperStatusRejected;
+                    tStatus = nos2.constants.kPaperStatusRejected;
                     break;
                 case 'revise':
-                    tStatus = journal.constants.kPaperStatusRevise;
+                    tStatus = nos2.constants.kPaperStatusRevise;
                     break;
                 default:
                     alert("Don't know how to handle a judgment of " + iJudgment);

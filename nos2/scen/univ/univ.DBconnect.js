@@ -5,7 +5,7 @@
 
 
  ==========================================================================
-DBconnect in journal
+DBconnect in nos2
 
 Author:   Tim Erickson
 
@@ -28,35 +28,6 @@ limitations under the License.
 
 univ.DBconnect = {
 
-    sendCommand: async function (iCommands) {
-        let theBody = new FormData();
-        for (let key in iCommands) {
-            if (iCommands.hasOwnProperty(key)) {
-                theBody.append(key, iCommands[key])
-            }
-        }
-        theBody.append("whence", univ.whence);
-
-        let theRequest = new Request(
-            nos2.kBasePhpURL[univ.whence],
-            {method: 'POST', body: theBody, headers: new Headers()}
-        );
-
-        try {
-            const theResult = await fetch(theRequest);
-            if (theResult.ok) {
-
-                const theJSON = theResult.json();
-                return theJSON;
-            } else {
-                console.error("sendCommand bad result error: " + theResult.statusText);
-            }
-        }
-        catch (msg) {
-            console.log('fetch error in DBconnect.sendCommand(): ' + msg);
-        }
-    },
-
     saveNewResult : async function(iResult) {
         try {
             const theCommands = {
@@ -66,7 +37,7 @@ univ.DBconnect = {
                 source : iResult.source,
                 epoch : iResult.epoch
             };
-            const out = await univ.DBconnect.sendCommand(theCommands);   //  "out" should be the last insert ID.
+            const out = await nos2.DBconnect.sendCommand(theCommands);   //  "out" should be the last insert ID.
             return (out === 0 ? null : out);
         } catch (m) {
             console.log('saveNewResult() error: ' + m);
@@ -99,7 +70,7 @@ univ.DBconnect = {
                 "title": univ.currentSnapshot.theTitle,
             })
         };
-        const out = await univ.DBconnect.sendCommand(theCommands);
+        const out = await nos2.DBconnect.sendCommand(theCommands);
         return (out === 0 ? null : out);
     },
 
@@ -109,10 +80,11 @@ univ.DBconnect = {
      * @param iWorldCode    the world code to be tested
      * @returns {Promise<void>}
      */
+/*
     getWorldData: async function (iWorldCode) {
         try {
             const theCommands = {"c": "getWorldData", "code": iWorldCode};
-            const out = await univ.DBconnect.sendCommand(theCommands);
+            const out = await nos2.DBconnect.sendCommand(theCommands);
             return out.length === 0 ? null : out[0];
         }
 
@@ -120,12 +92,14 @@ univ.DBconnect = {
             console.log('getWorldData() error: ' + msg);
         }
     },
+*/
 
+/*
     getTeamsInWorld : async function (iWorldID) {
         if (iWorldID) {
             try {
                 const theCommands = {"c": "getMyTeams", "w": iWorldID};
-                const out = await univ.DBconnect.sendCommand(theCommands);
+                const out = await nos2.DBconnect.sendCommand(theCommands);
                 return out.length === 0 ? null : out;
             } catch (msg) {
                 console.log('getMyTeams() error: ' + msg);
@@ -135,13 +109,14 @@ univ.DBconnect = {
         }
 
     },
+*/
 
     getKnownResults : async function() {
         if (univ.state.worldID && univ.state.teamID) {
             let DBout = null;
             let resultsOut = [];
             try {
-                DBout = await univ.DBconnect.sendCommand({"c": "getKnownResults", "w": univ.state.worldID, "t": univ.state.teamID});
+                DBout = await nos2.DBconnect.sendCommand({"c": "getKnownResults", "w": univ.state.worldID, "t": univ.state.teamID});
 
                 //  convert JSON strings in "data" to be part of the object.
                 DBout.forEach( result => {
@@ -160,11 +135,12 @@ univ.DBconnect = {
 
     },
 
+/*
     getPapers: async function (iWorldID, iTeamID) {
         if (iWorldID && iTeamID) {
             let out = null;
             try {
-                out = await univ.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+                out = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
                 return out.length === 0 ? null : out;
 
             } catch (msg) {
@@ -175,9 +151,10 @@ univ.DBconnect = {
         }
 
     },
+*/
 
     assertKnowledge : async function( iResultID ) {
-        await univ.DBconnect.sendCommand({
+        await nos2.DBconnect.sendCommand({
             c : "assertKnowledge",
             r : iResultID,
             w : univ.state.worldID,

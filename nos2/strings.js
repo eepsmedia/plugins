@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-strings in journal
+strings in nos2
 
 Author:   Tim Erickson
 
@@ -27,7 +27,7 @@ limitations under the License.
 */
 
 
-journal.localizedStrings = {
+nos2.localizedStrings = {
 
     en : {
         sNewJoinTypeHelpString :
@@ -49,4 +49,4 @@ journal.localizedStrings = {
 };
 
 
-journal.strings = journal.localizedStrings['en'];
+nos2.strings = nos2.localizedStrings['en'];

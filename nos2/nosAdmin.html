@@ -8,7 +8,7 @@
  
  
  ==========================================================================
-journalAdmin in journal
+journalAdmin in nos2
 
     Author:   Tim Erickson
 
@@ -30,6 +30,7 @@ limitations under the License.
 
   LOCAL, TESTING:         http://localhost:8888/plugins/nos2/nosAdmin.html
   EEPS:         https://www.eeps.com/codap/nos2/nosAdmin.html
+  XYZ:                  https://codap.xyz/plugins/nos2/nosAdmin.html
 
 -->
 
@@ -43,14 +44,13 @@ limitations under the License.
 
     <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css" language="javascript">
 
-    <link rel='stylesheet' type='text/css' href='journal.css'/>
+    <link rel='stylesheet' type='text/css' href='nos2.css'/>
 
     <script src="../common/TEEUtils.js" language="javascript"></script>
     <script src="../common/jqueryFolder/jquery.min.js" language="javascript"></script>
     <script src="../common/jqueryFolder/jquery-ui.js" language="javascript"></script>
 
     <script src="nos2.js" language="javascript"></script>
-    <script src="journal.js" language="javascript"></script>
     <script src="nos2.DBconnect.js" language="javascript"></script>
     <script src="userAction.js" language="javascript"></script>
     <script src="adminUI.js" language="javascript"></script>
@@ -65,7 +65,7 @@ limitations under the License.
     <script>
         $(function () {
             $("#tabs").tabs();
-            journal.initialize();
+            nos2.initialize();
         });
     </script>
 
@@ -84,7 +84,7 @@ limitations under the License.
 
     <label for="godUsernameBox">Username: </label>
     <input type="text" id="godUsernameBox">
-    <button id="signInButton" onclick="journal.userAction.godSignIn()">sign in</button>
+    <button id="signInButton" onclick="nos2.userAction.godSignIn()">sign in</button>
 </div>
 
 <div id="godChooseWorldDiv" class="startup">
@@ -101,7 +101,7 @@ limitations under the License.
         <select id="worldScenarioMenu">
             <option value="univ" selected>4-color universe</option>
         </select>
-        <button id="newWorld" onclick="journal.userAction.newWorld()">new world</button>
+        <button id="newWorld" onclick="nos2.userAction.newWorld()">new world</button>
         <br>
         <label for = "epochBox">starting year</label>
         <input id="epochBox" type="number" min="1" max="9999" value="2222" size="5" placeholder="year">
@@ -119,7 +119,7 @@ limitations under the License.
     <ul>
         <li><a href="#teams">teams</a></li>
         <li><a href="#papers">papers</a></li>
-        <li><a href="#journal">journal</a></li>
+        <li><a href="#journal">nos2</a></li>
     </ul>
 
     <div id="teams">
@@ -128,10 +128,10 @@ limitations under the License.
             <legend>Choosing new team names and codes</legend>
 
         <input type="radio" name="teamNameType"
-               value="researchCenters" onclick="journal.userAction.suggestTeam()" checked> research center
+               value="researchCenters" onclick="nos2.userAction.suggestTeam()" checked> research center
         <input type="radio" name="teamNameType"
-               value="animals" onclick="journal.userAction.suggestTeam()"	> animal
-        <button id="suggestTeamButton" onclick="journal.userAction.suggestTeam()">suggest team</button>
+               value="animals" onclick="nos2.userAction.suggestTeam()"	> animal
+        <button id="suggestTeamButton" onclick="nos2.userAction.suggestTeam()">suggest team</button>
         <br>
 
         <label for = "newTeamCodeBox">code:</label>
@@ -139,10 +139,10 @@ limitations under the License.
         <label for = "newTeamNameBox">full name:</label>
         <input id="newTeamNameBox" type="text" size="50">
 
-        <button id="newTeamButton" onclick="journal.userAction.newTeam()">make new team</button>
+        <button id="newTeamButton" onclick="nos2.userAction.newTeam()">make new team</button>
         </fieldset>
         <br>
-        <button id="refreshTeamsButton" onclick="journal.ui.update()">refresh team list</button>
+        <button id="refreshTeamsButton" onclick="nos2.ui.update()">refresh team list</button>
         <br>
         <div id="teamsListDiv"></div>
     </div>
@@ -153,7 +153,7 @@ limitations under the License.
     </div>
 
     <div id="journal">
-        <button id="refreshJournalButton" onclick="journal.ui.update()">refresh journal</button>
+        <button id="refreshJournalButton" onclick="nos2.ui.update()">refresh nos2</button>
         <div id="journalDiv"></div>
     </div>
 </div>

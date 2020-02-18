@@ -59,7 +59,7 @@ univ.ui = {
 
         if (univ.playPhase === univ.constants.kPhaseNoTeam) {
             //  get the team list only if we're in this phase.
-            const tTeams = await univ.DBconnect.getTeamsInWorld(univ.state.worldID);
+            const tTeams = await nos2.DBconnect.getMyTeams(univ.state.worldID);
             const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
 
             if (tTeams) {

@@ -76,6 +76,7 @@ let univ = {
     },
 
     initialize : function() {
+        this.currentSnapshot = new DataPack();
         univ.CODAPconnect.initialize(null);
 
         univ.playPhase = univ.constants.kPhaseNoWorld;
@@ -111,7 +112,7 @@ let univ = {
      * @param iWorldCode
      */
     setWorld : async function( iWorldCode ) {
-        const tWorldData = await univ.DBconnect.getWorldData(iWorldCode);
+        const tWorldData = await nos2.DBconnect.getWorldData(iWorldCode);
 
         if (tWorldData) {
             univ.state.worldID = tWorldData.id;

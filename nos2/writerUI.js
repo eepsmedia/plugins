@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-ui in journal
+ui in nos2
 
 Author:   Tim Erickson
 
@@ -27,10 +27,10 @@ limitations under the License.
 */
 
 
-journal.ui = {
+nos2.ui = {
 
-    //  journal.currentPaper is the paper currently being edited/written. Null if none. DEFINED IN journal.js, NOT HERE.
-    //  journal.currentPaper.packs : [],         //  array of database ids (dbid) for packs IN THE PAPER
+    //  nos2.currentPaper is the paper currently being edited/written. Null if none. DEFINED IN nos2.js, NOT HERE.
+    //  nos2.currentPaper.packs : [],         //  array of database ids (dbid) for packs IN THE PAPER
 
     packMenuGuts : "",     //   like it says. Set in displayCurrentPaper() (from update)
     dirty : false,      //  eventually, a flag to show need to save
@@ -38,12 +38,12 @@ journal.ui = {
 
     initialize : async function() {
         //  get all packs from the database
-        this.packs = await nos2.DBconnect.getMyDataPacks( journal.state.worldID, journal.state.teamID);
+        this.packs = await nos2.DBconnect.getMyDataPacks( nos2.state.worldID, nos2.state.teamID);
         //  update() will get called
     },
 
     changeTabTo : async function(iTabName) {
-        await journal.ui.update();
+        await nos2.ui.update();
     },
 
     /**
@@ -54,9 +54,9 @@ journal.ui = {
      * @param iPaperID
      */
     openPaper :  function( iPaperID) {
-        const thePaper = journal.currentPaper = journal.thePapers[iPaperID];    //  thePapers is a keyed object, not an array
+        const thePaper = nos2.currentPaper = nos2.thePapers[iPaperID];    //  thePapers is a keyed object, not an array
 
-        journal.goToTabNumber(1);   //  the second tab; also causes update
+        nos2.goToTabNumber(1);   //  the second tab; also causes update
     },
 
     /**
@@ -65,9 +65,9 @@ journal.ui = {
      * @returns {Promise<void>}
      */
     async displayCurrentPaper(  ) {
-        const thePaper = journal.currentPaper;  //  was set in openPaper(), above
+        const thePaper = nos2.currentPaper;  //  was set in openPaper(), above
 
-        if (journal.currentPaper) {
+        if (nos2.currentPaper) {
             document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.dbid + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
             document.getElementById('paperTitleBox').value = thePaper.title;    //  .value because it's an <input>
             document.getElementById('paperAuthorsBox').value = thePaper.authors;
@@ -76,7 +76,7 @@ journal.ui = {
             document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? thePaper.teamName : "-");
 
         } else {
-            journal.currentPaper = null;
+            nos2.currentPaper = null;
             $('#paperStatusBox').html("no paper selected");
             $('#paperTitleBox').val("");
             //  $('#paperAuthorsBox').val("");    //  leave the authors in
@@ -89,7 +89,7 @@ journal.ui = {
     },
 
     erasePaper: function () {
-        journal.currentPaper = null;
+        nos2.currentPaper = null;
         //  $('#paperAuthorsBox').val("");    //  leave the authors in
         $('#paperStatusBox').html("no paper selected");
         $('#paperTitleBox').val("");
@@ -108,12 +108,12 @@ journal.ui = {
 
 /*
     makeDataPackRadioButtons : async function() {
-        this.packs = await nos2.DBconnect.getMyDataPacks( journal.state.worldID, journal.state.teamID);
+        this.packs = await nos2.DBconnect.getMyDataPacks( nos2.state.worldID, nos2.state.teamID);
 
         let out = "";
         this.packs.forEach( pk => {
             out += "<input type='radio' name='dataPackChoice' value=" + pk.dbid +
-                " onChange='journal.ui.displayOneDataPack(" + pk.dbid + ")'>" + pk.theTitle + "<br>";
+                " onChange='nos2.ui.displayOneDataPack(" + pk.dbid + ")'>" + pk.theTitle + "<br>";
         });
 
         return out;
@@ -160,23 +160,23 @@ journal.ui = {
                 text += "<tr><td>" + p.dbid + "</td><td>" + p.title + "</td>";
                 text += "<td>" + p.status + "</td>";
                 switch (p.status) {
-                    case journal.constants.kPaperStatusInProgress:
-                        text += "<td><button onclick='journal.ui.openPaper(" + p.dbid + ")'>edit</button></td> ";
+                    case nos2.constants.kPaperStatusInProgress:
+                        text += "<td><button onclick='nos2.ui.openPaper(" + p.dbid + ")'>edit</button></td> ";
                         break;
-                    case journal.constants.kPaperStatusRevise:
-                        text += "<td><button onclick='journal.ui.openPaper(" + p.dbid + ")'>edit</button></td> ";
+                    case nos2.constants.kPaperStatusRevise:
+                        text += "<td><button onclick='nos2.ui.openPaper(" + p.dbid + ")'>edit</button></td> ";
                         break;
-                    case journal.constants.kPaperStatusPublished:
+                    case nos2.constants.kPaperStatusPublished:
                         tPaperCount++;
-                        text += "<td><button onclick='journal.ui.viewPaper(" + p.dbid + ", true)'>view</button></td> ";
+                        text += "<td><button onclick='nos2.ui.viewPaper(" + p.dbid + ", true)'>view</button></td> ";
                         break;
-                    case journal.constants.kPaperStatusRejected:
+                    case nos2.constants.kPaperStatusRejected:
                         text += "<td>-</td> ";
                         break;
-                    case journal.constants.kPaperStatusSubmitted:
+                    case nos2.constants.kPaperStatusSubmitted:
                         text += "<td>-</td> ";
                         break;
-                    case journal.constants.kPaperStatusReSubmitted:
+                    case nos2.constants.kPaperStatusReSubmitted:
                         text += "<td>-</td> ";
                         break;
                 }
@@ -196,28 +196,28 @@ journal.ui = {
 
         //  all the data we need to await...
 
-        const pMyPapers = nos2.DBconnect.getPapers(journal.state.worldID, journal.state.teamID);    //  array of class Paper
+        const pMyPapers = nos2.DBconnect.getPapers(nos2.state.worldID, nos2.state.teamID);    //  array of class Paper
         tPapers = await pMyPapers;
 
-        //  assemble the journal.thePapers object by parsing the array from the DB;
+        //  assemble the nos2.thePapers object by parsing the array from the DB;
         //  make it so that we are KEYED by the paperID, for easy access.
 
-        journal.thePapers = {};
+        nos2.thePapers = {};
 
         if (Array.isArray(tPapers)) {
             tPapers.forEach(p => {
-                journal.thePapers[p.dbid] = p;
+                nos2.thePapers[p.dbid] = p;
             });
         }
 
         //  status bar
 
         document.getElementById("writerStatusBarDiv").innerHTML =
-            journal.constants.version + " | " +
-            journal.constants.whence +
-            (journal.state.worldCode ? " | " + journal.state.worldCode  : "") +
-            (journal.state.teamID ? " | " + journal.state.teamName : "") + "&nbsp;&nbsp;&nbsp;&nbsp;" +
-            "<button onclick='journal.logout()'>log out</button>";
+            nos2.constants.version + " | " +
+            nos2.whence +
+            (nos2.state.worldCode ? " | " + nos2.state.worldCode  : "") +
+            (nos2.state.teamID ? " | " + nos2.state.teamName : "") + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+            "<button onclick='nos2.logout()'>log out</button>";
 
 
         // main visibility
@@ -227,19 +227,19 @@ journal.ui = {
         const tTabsDiv = document.getElementById("tabs");
 
 
-        tJoinWorldDiv.style.display = (journal.writerPhase === journal.constants.kWriterPhaseNoWorld ? "block" : "none");
-        tJoinTeamDiv.style.display = (journal.writerPhase === journal.constants.kWriterPhaseNoTeam ? "block" : "none");
-        tTabsDiv.style.display = (journal.writerPhase === journal.constants.kWriterPhasePlaying ? "block" : "none");
+        tJoinWorldDiv.style.display = (nos2.writerPhase === nos2.constants.kWriterPhaseNoWorld ? "block" : "none");
+        tJoinTeamDiv.style.display = (nos2.writerPhase === nos2.constants.kWriterPhaseNoTeam ? "block" : "none");
+        tTabsDiv.style.display = (nos2.writerPhase === nos2.constants.kWriterPhasePlaying ? "block" : "none");
 
         //  team name in edit paper panel
 
-        document.getElementById("paperTeamBox").innerHTML = journal.state.teamName;
+        document.getElementById("paperTeamBox").innerHTML = nos2.state.teamName;
 
         //  choose team from list. ONLY IN THE APPROPRIATE PHASE!
 
-        if (journal.writerPhase === journal.constants.kWriterPhaseNoTeam) {
+        if (nos2.writerPhase === nos2.constants.kWriterPhaseNoTeam) {
             //  get the team list only if we're in this phase.
-            const tTeams = await nos2.DBconnect.getMyTeams(journal.state.worldID);
+            const tTeams = await nos2.DBconnect.getMyTeams(nos2.state.worldID);
             const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
 
             if (tTeams) {
@@ -249,7 +249,7 @@ journal.ui = {
                     const tParenGuts = '(' + t.id + ',"' + t.name + '")';
                     console.log(t.id + ") Team " + t.name + " is called " + t.code + ".");
                     text += "<tr><td>" + t.id + "</td><td>" + t.code + "</td><td>" + t.name + "</td>"
-                        + "<td><button onclick='journal.userAction.joinTeamByID" + tParenGuts + "'>join</button> </td></tr>";
+                        + "<td><button onclick='nos2.userAction.joinTeamByID" + tParenGuts + "'>join</button> </td></tr>";
                 });
                 text += "</table>";
                 tChooseTeamDiv.innerHTML = text;
@@ -265,25 +265,25 @@ journal.ui = {
 
         //  fix text and "pack"-finding stuff in the paper-writing tab
 
-        journal.ui.displayCurrentPaper();       //
+        nos2.ui.displayCurrentPaper();       //
 
 
         //  get all packs from the database. This is an array of DataPacks, most recent first.
         //  we get them here because they might have been changed by another team member.
 
-        this.packs = await nos2.DBconnect.getMyDataPacks( journal.state.worldID, journal.state.teamID);
-        journal.currentPack = journal.getCurrentPack();   //  depends on currentPaper. Null if nonexistent.
+        this.packs = await nos2.DBconnect.getMyDataPacks( nos2.state.worldID, nos2.state.teamID);
+        nos2.currentPack = nos2.getCurrentPack();   //  depends on currentPaper. Null if nonexistent.
 
-        if (journal.currentPack) {
-            this.displayDataPack( journal.currentPack );
+        if (nos2.currentPack) {
+            this.displayDataPack( nos2.currentPack );
         }
 
-        this.packMenuGuts = await journal.ui.makeDataPackMenuOptions( journal.currentPack );
+        this.packMenuGuts = await nos2.ui.makeDataPackMenuOptions( nos2.currentPack );
         document.getElementById("dataPackMenu").innerHTML = this.packMenuGuts;
 
-        //  update the full journal
+        //  update the full nos2
 
-        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(journal.state.worldID);
+        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(nos2.state.worldID);
 
 
     }

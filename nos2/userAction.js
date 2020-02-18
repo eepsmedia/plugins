@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-userAction in journal
+userAction in nos2
 
 Author:   Tim Erickson
 
@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-journal.userAction = {
+nos2.userAction = {
 
     newWorld: async function () {
         const tWorldCode = document.getElementById("worldCodeBox").value;
@@ -37,22 +37,22 @@ journal.userAction = {
         const tTheTruthOfThisScenario = univ.model.getNewStateTemp();
         const tGameState = {truth: tTheTruthOfThisScenario};    //  temp!
 
-        journal.state.worldCode = tWorldCode;
-        const tArrayOfNewWorlds = await nos2.DBconnect.makeNewWorld(journal.myGodID, tWorldCode, tEpoch, tJournalName, tScenario, tGameState);
+        nos2.state.worldCode = tWorldCode;
+        const tArrayOfNewWorlds = await nos2.DBconnect.makeNewWorld(nos2.myGodID, tWorldCode, tEpoch, tJournalName, tScenario, tGameState);
 
-        journal.state.worldID = tArrayOfNewWorlds[0].id;
+        nos2.state.worldID = tArrayOfNewWorlds[0].id;
 
-        journal.adminPhase = journal.constants.kAdminPhasePlaying;
-        await journal.ui.update();
+        nos2.adminPhase = nos2.constants.kAdminPhasePlaying;
+        await nos2.ui.update();
 
     },
 
     newTeam: async function () {
         const tCode = document.getElementById("newTeamCodeBox").value;
         const tName = document.getElementById("newTeamNameBox").value;
-        await nos2.DBconnect.addTeam(journal.state.worldID, tCode, tName);
+        await nos2.DBconnect.addTeam(nos2.state.worldID, tCode, tName);
         this.suggestTeam();
-        await journal.ui.update();
+        await nos2.ui.update();
     },
 
     suggestTeam: function () {
@@ -82,31 +82,31 @@ journal.userAction = {
         console.log("About " + tWorldCode + " ... " + (tWorldData ? " year " + tWorldData.epoch : " it doesn't exist."));
 
         if (tWorldData) {
-            journal.state.worldID = tWorldData.id;
-            journal.writerPhase = journal.constants.kWriterPhaseNoTeam;
-            journal.editorPhase = journal.constants.kEditorPhasePlaying;
-            journal.state.worldCode = tWorldCode;
+            nos2.state.worldID = tWorldData.id;
+            nos2.writerPhase = nos2.constants.kWriterPhaseNoTeam;
+            nos2.editorPhase = nos2.constants.kEditorPhasePlaying;
+            nos2.state.worldCode = tWorldCode;
         } else {
             alert("Sorry, world " + tWorldCode + " doesn't exist (yet).");
         }
 
-        journal.ui.update();
+        nos2.ui.update();
     },
 
     joinWorldByID: function (iWorldID, iCode) {
-        journal.state.worldID = iWorldID;
-        journal.state.worldCode = iCode;
-        journal.adminPhase = journal.constants.kAdminPhasePlaying;
-        journal.ui.update();
+        nos2.state.worldID = iWorldID;
+        nos2.state.worldCode = iCode;
+        nos2.adminPhase = nos2.constants.kAdminPhasePlaying;
+        nos2.ui.update();
     },
 
     joinTeamByID: function (iTeamID, iTeamName) {
-        journal.state.teamID = iTeamID;
-        journal.state.teamName = iTeamName;
-        journal.writerPhase = journal.constants.kWriterPhasePlaying;
-        journal.currentPaper = new Paper();     //  because we have to have a teamID before we make a paper
+        nos2.state.teamID = iTeamID;
+        nos2.state.teamName = iTeamName;
+        nos2.writerPhase = nos2.constants.kWriterPhasePlaying;
+        nos2.currentPaper = new Paper();     //  because we have to have a teamID before we make a paper
 
-        journal.ui.update();
+        nos2.ui.update();
 
     },
 
@@ -119,19 +119,19 @@ journal.userAction = {
      */
     chooseOneDataPack: function (theMenu) {
         const thePackNumber = Number(theMenu.value);
-        journal.currentPack = journal.currentPackByDBID(thePackNumber);   //  currentPack is the actual entire pack
+        nos2.currentPack = nos2.currentPackByDBID(thePackNumber);   //  currentPack is the actual entire pack
 
-        if (journal.currentPaper) {
-            if (journal.currentPaper.isEditable()) {
-                journal.currentPaper.setThisPack(thePackNumber);   //  the value in the Paper is just the number
+        if (nos2.currentPaper) {
+            if (nos2.currentPaper.isEditable()) {
+                nos2.currentPaper.setThisPack(thePackNumber);   //  the value in the Paper is just the number
             }
         }
 
-        journal.ui.update();
+        nos2.ui.update();
     },
 
     assignDataPack: function () {
-        journal.currentPaper.addPack(journal.currentPack);
+        nos2.currentPaper.addPack(nos2.currentPack);
     },
 
     sendMessageFrom: async function (iSender) {
@@ -139,14 +139,14 @@ journal.userAction = {
         let out = (iSender === "author") ? "<tr><td>author</td>" : "<tr><td>editor</td>";
         out += "<td>" + theNewMessage + "</td></tr>";
 
-        nos2.DBconnect.appendMessageToConvo( out, journal.currentPaper.dbid );
+        nos2.DBconnect.appendMessageToConvo( out, nos2.currentPaper.dbid );
     },
 
     makePaperPreview: async function () {
-        const tPaperID = journal.currentPaper.dbid;
+        const tPaperID = nos2.currentPaper.dbid;
 
         let thePreviewHTML = "";
-        if (journal.currentPaper) {
+        if (nos2.currentPaper) {
             thePreviewHTML = await nos2.DBconnect.getPaperPreview(tPaperID);
         } else {
             thePreviewHTML = "No paper specified."
@@ -158,62 +158,62 @@ journal.userAction = {
     },
 
     erasePaper: async function () {
-        journal.currentPaper = new Paper();
-        await journal.ui.update();
+        nos2.currentPaper = new Paper();
+        await nos2.ui.update();
     },
 
     savePaper: async function () {
 
-        journal.currentPaper.authors = $('#paperAuthorsBox').val();
-        journal.currentPaper.title = $('#paperTitleBox').val();
-        journal.currentPaper.text = $('#paperTextBox').val();
-        journal.currentPaper.authorComments = $('#paperAuthorCommentsBox').val();
+        nos2.currentPaper.authors = $('#paperAuthorsBox').val();
+        nos2.currentPaper.title = $('#paperTitleBox').val();
+        nos2.currentPaper.text = $('#paperTextBox').val();
+        nos2.currentPaper.authorComments = $('#paperAuthorCommentsBox').val();
         //  thePaper.packs = [];
         //  thePaper.references = [];
 
-        const tPaperData = await nos2.DBconnect.savePaper(journal.currentPaper);    //  send the Paper
-        journal.currentPaper.dbid = Number(tPaperData["id"]);
+        const tPaperData = await nos2.DBconnect.savePaper(nos2.currentPaper);    //  send the Paper
+        nos2.currentPaper.dbid = Number(tPaperData["id"]);
 
-        await journal.ui.update();
+        await nos2.ui.update();
         return tPaperData
     },
 
     submitPaper: async function () {
-        const thePaper = journal.thePapers[journal.currentPaperID];
-        const tNewStatus = journal.currentPaper.status =
-            journal.constants.kPaperStatusRevise ?
-                journal.constants.kPaperStatusReSubmitted :
-                journal.constants.kPaperStatusSubmitted;
-        const tPaperData = await journal.userAction.savePaper();
-        await nos2.DBconnect.submitPaper(journal.currentPaper.dbid, tNewStatus);
-        journal.ui.erasePaper();
-        journal.goToTabNumber(0);   //  return to the list
-        await journal.ui.update();
+        const thePaper = nos2.thePapers[nos2.currentPaperID];
+        const tNewStatus = nos2.currentPaper.status =
+            nos2.constants.kPaperStatusRevise ?
+                nos2.constants.kPaperStatusReSubmitted :
+                nos2.constants.kPaperStatusSubmitted;
+        const tPaperData = await nos2.userAction.savePaper();
+        await nos2.DBconnect.submitPaper(nos2.currentPaper.dbid, tNewStatus);
+        nos2.ui.erasePaper();
+        nos2.goToTabNumber(0);   //  return to the list
+        await nos2.ui.update();
     },
 
 
     judgePaper: async function (iJudgment) {
         const tEditorComments = document.getElementById("paperEditorCommentsBox").value;
-        const tPaperData = await nos2.DBconnect.judgePaper(journal.currentPaperID, iJudgment, tEditorComments);
-        await journal.ui.update();
-        journal.ui.erasePaper();    //  clean up the boxes
-        journal.goToTabNumber(0);   //  return to the list
+        const tPaperData = await nos2.DBconnect.judgePaper(nos2.currentPaperID, iJudgment, tEditorComments);
+        await nos2.ui.update();
+        nos2.ui.erasePaper();    //  clean up the boxes
+        nos2.goToTabNumber(0);   //  return to the list
     },
 
     godSignIn: async function () {
         const tUsername = $('#godUsernameBox').val();
         const tUserData = await nos2.DBconnect.getGodData(tUsername);
         if (tUserData) {        //  user exists; sign in
-            journal.myGodID = tUserData.id;
-            console.log(tUsername + ' signed in as #' + journal.myGodID);
+            nos2.myGodID = tUserData.id;
+            console.log(tUsername + ' signed in as #' + nos2.myGodID);
         } else {
             const tNewUserData = await nos2.DBconnect.newGod(tUsername);
-            journal.myGodID = tNewUserData.id;
-            console.log(tUsername + ' newly signed in as #' + journal.myGodID);
+            nos2.myGodID = tNewUserData.id;
+            console.log(tUsername + ' newly signed in as #' + nos2.myGodID);
         }
-        journal.myGodName = tUsername;
-        journal.adminPhase = journal.constants.kAdminPhaseNoWorld;
-        journal.ui.update();
+        nos2.myGodName = tUsername;
+        nos2.adminPhase = nos2.constants.kAdminPhaseNoWorld;
+        nos2.ui.update();
     }
 
 };

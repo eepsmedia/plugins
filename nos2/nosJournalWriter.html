@@ -8,7 +8,7 @@
  
  
  ==========================================================================
-journalWriter in journal
+journalWriter in nos2
 
     Author:   Tim Erickson
 
@@ -29,8 +29,7 @@ limitations under the License.
 
 
   LOCAL, TESTING:         http://localhost:8888/plugins/nos2/journalWriter.html
-  EEPS:         https://www.eeps.com/codap/nos2/journalAdmin.html
-
+    XYZ:           https://codap.xyz/plugins/nos2/journalWriter.html
 -->
 
 <head>
@@ -43,7 +42,7 @@ limitations under the License.
 
     <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css" language="javascript">
 
-    <link rel='stylesheet' type='text/css' href='journal.css'/>
+    <link rel='stylesheet' type='text/css' href='nos2.css'/>
 
     <script src="../common/iframe-phone.js" language="javascript"></script>
     <script src="../common/codapInterface.js" language="javascript"></script>
@@ -53,7 +52,6 @@ limitations under the License.
     <script src="../common/jqueryFolder/jquery-ui.min.js" language="javascript"></script>
 
     <script src="nos2.js" language="javascript"></script>
-    <script src="journal.js" language="javascript"></script>
     <script src="nos2.DBconnect.js" language="javascript"></script>
 <!--
     <script src="CODAP_Connect.js" language="javascript"></script>
@@ -69,7 +67,7 @@ limitations under the License.
             $("#tabs").tabs({
                 activate : (event, ui) => {
                     const theNewTabName = ui.newTab[0].innerText;
-                    journal.ui.changeTabTo(theNewTabName);
+                    nos2.ui.changeTabTo(theNewTabName);
                 }
             });
 
@@ -87,7 +85,7 @@ limitations under the License.
 
             });
 
-            journal.initialize();
+            nos2.initialize();
         });
     </script>
 
@@ -111,7 +109,7 @@ limitations under the License.
         <a href = "journalAdmin.html" target="_blank">by following this link</a>.</p>
     <label for="worldCodeBox">World code: </label>
     <input type="text" id="worldCodeBox">
-    <button id="joinButton" onclick="journal.userAction.joinWorld()">join</button>
+    <button id="joinButton" onclick="nos2.userAction.joinWorld()">join</button>
     <br>
 </div>
 
@@ -125,21 +123,21 @@ limitations under the License.
     <ul>
         <li><a href="#list">list</a></li>
         <li><a href="#writing">writing</a></li>
-        <li><a href="#journal">journal</a></li>
+        <li><a href="#journal">nos2</a></li>
     </ul>
 
     <div id="list">
         <h1>Paper Status</h1>
-        <button id="statusRefreshButton" onclick="journal.ui.update()">refresh list</button>
+        <button id="statusRefreshButton" onclick="nos2.ui.update()">refresh list</button>
         <div id="paperTaskTable"></div>
 
     </div>
 
     <div id="writing">
         <h1>Writing Papers</h1>
-        <button id="savePaperButton" onclick="journal.userAction.savePaper()">save</button>
-        <button id="submitPaperButton" onclick="journal.userAction.submitPaper()">save and submit for publication</button>
-        <button id="previewPaperButton" onclick="journal.userAction.makePaperPreview( )">preview</button>
+        <button id="savePaperButton" onclick="nos2.userAction.savePaper()">save</button>
+        <button id="submitPaperButton" onclick="nos2.userAction.submitPaper()">save and submit for publication</button>
+        <button id="previewPaperButton" onclick="nos2.userAction.makePaperPreview( )">preview</button>
         <br>
 
         <table>
@@ -165,12 +163,12 @@ limitations under the License.
             </tr>
             <tr>
                 <td><label for="dataPackMenu">Data:</label></td>
-                <td><select id="dataPackMenu" onchange = "journal.userAction.chooseOneDataPack(this)"></select></td>
+                <td><select id="dataPackMenu" onchange = "nos2.userAction.chooseOneDataPack(this)"></select></td>
             </tr>
         </table>
         <br>
 <!--
-        <button id="erasePaperButton" onclick="journal.userAction.erasePaper()">erase</button>
+        <button id="erasePaperButton" onclick="nos2.userAction.erasePaper()">erase</button>
 -->
 
         <!--    Section about data packs -->
@@ -195,7 +193,7 @@ limitations under the License.
                             <div id="oneDataPackTitle"></div>
                             <svg id="oneDataPackFigure" width="500" height="300"></svg>
                             <div id="oneDataPackCaption"></div>
-                            <button onclick="journal.userAction.assignDataPack()">use this one!</button>
+                            <button onclick="nos2.userAction.assignDataPack()">use this one!</button>
                         </td>
                     </tr>
                 </table>
@@ -208,7 +206,7 @@ limitations under the License.
             <summary>Convo History</summary>
             <div>
                 <td><label for="messageTextBox">message:</label></td>
-                <button id="sendMessageButton" onclick="journal.userAction.sendMessageFrom('author')">send to editor</button>
+                <button id="sendMessageButton" onclick="nos2.userAction.sendMessageFrom('author')">send to editor</button>
                 <td><textarea id="messageTextBox" placeholder="Message to the editor" rows="5", cols="44"></textarea></td>
                 <div>
                     <table id="paperConvoHistory"></table>
@@ -221,7 +219,7 @@ limitations under the License.
 
     <div id="journal">
         <h1 id="readingDivHeading">Journal</h1>
-        <button id="refreshJournalButton" onclick="journal.ui.update()">refresh journal</button>
+        <button id="refreshJournalButton" onclick="nos2.ui.update()">refresh nos2</button>
         <div id="journalDiv"></div>
 
     </div>

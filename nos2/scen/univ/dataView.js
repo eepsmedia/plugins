@@ -85,7 +85,9 @@ univ.dataView = {
             theDisplayedResults = allResults;
         }
 
-        univ.dataView.displaySomeResults(theDisplayedResults);
+        if (theDisplayedResults) {
+            univ.dataView.displaySomeResults(theDisplayedResults);
+        }
     },
 /*
     addResult : function(iResult) {

@@ -34,15 +34,15 @@ class Paper {
         this.authors = "";
         this.text = "";
 
-        this.worldID = journal.state.worldID;
-        this.teamID = journal.state.teamID;
-        this.teamName = journal.state.teamName;
+        this.worldID = nos2.state.worldID;
+        this.teamID = nos2.state.teamID;
+        this.teamName = nos2.state.teamName;
 
         this.convo = "";
 
         this.packs = [];        //  array of dbids of DataPacks for This Papaer
 
-        this.status = journal.constants.kPaperStatusInProgress;
+        this.status = nos2.constants.kPaperStatusInProgress;
         this.pubYear = "";
         this.citation = "";
         this.references = [];
@@ -50,8 +50,8 @@ class Paper {
 
     isEditable() {
         return (
-            this.status === journal.constants.kPaperStatusInProgress ||
-            this.status === journal.constants.kPaperStatusRevise
+            this.status === nos2.constants.kPaperStatusInProgress ||
+            this.status === nos2.constants.kPaperStatusRevise
         );
     }
 

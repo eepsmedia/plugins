@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-ui in journal
+ui in nos2
 
 Author:   Tim Erickson
 
@@ -26,17 +26,17 @@ limitations under the License.
 
 */
 
-journal.ui = {
+nos2.ui = {
 
 
     initialize: function () {
-        journal.ui.update();
+        nos2.ui.update();
     },
 
     openPaper :  function( iPaperID) {
-        const thePaper = journal.currentPaper = journal.thePapers[iPaperID];    //  thePapers is a keyed object, not an array
+        const thePaper = nos2.currentPaper = nos2.thePapers[iPaperID];    //  thePapers is a keyed object, not an array
 
-        journal.goToTabNumber(1);   //  the second tab
+        nos2.goToTabNumber(1);   //  the second tab
 
         document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.dbid + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
         document.getElementById('paperTitleBox').innerHTML = thePaper.title;    //  .value because it's an <input>
@@ -44,9 +44,9 @@ journal.ui = {
         document.getElementById('paperTextBox').innerHTML = thePaper.text;
         document.getElementById('paperEditorCommentsBox').value = thePaper.editorComments;  //  because it's a span
         document.getElementById('paperAuthorCommentsBox').innerHTML = thePaper.authorComments;
-        document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? journal.state.teamName : "-");
+        document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? nos2.state.teamName : "-");
 
-        this.currentPack = journal.getCurrentPack();   //  depends on currentPaper. Null if nonexistent
+        this.currentPack = nos2.getCurrentPack();   //  depends on currentPaper. Null if nonexistent
     },
 
     erasePaper: function () {
@@ -68,18 +68,18 @@ journal.ui = {
     update: async function () {
         //  all the data we need to await...
 
-        const pAllPapers = nos2.DBconnect.getPapers(journal.state.worldID, null);
-        const pAllTeams = nos2.DBconnect.getMyTeams(journal.state.worldID);
+        const pAllPapers = nos2.DBconnect.getPapers(nos2.state.worldID, null);
+        const pAllTeams = nos2.DBconnect.getMyTeams(nos2.state.worldID);
 
         const [theTeams, thePapers] = await Promise.all([pAllTeams, pAllPapers]);
 
         //  status bar
 
         document.getElementById("editorStatusBarDiv").innerHTML =
-            "editor | " + journal.constants.version + " | " +
-            journal.constants.whence +
-            (journal.state.worldCode ? " | " + journal.state.worldCode : " | no world yet") +
-            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='journal.logout()'>log out</button>";
+            "editor | " + nos2.constants.version + " | " +
+            nos2.whence +
+            (nos2.state.worldCode ? " | " + nos2.state.worldCode : " | no world yet") +
+            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='nos2.logout()'>log out</button>";
 
 
         // main visibility
@@ -88,25 +88,25 @@ journal.ui = {
         const tTabsDiv = document.getElementById("tabs");
 
 
-        tJoinWorldDiv.style.display = (journal.editorPhase === journal.constants.kEditorPhaseNoWorld ? "block" : "none");
-        tTabsDiv.style.display = (journal.editorPhase === journal.constants.kEditorPhasePlaying ? "block" : "none");
+        tJoinWorldDiv.style.display = (nos2.editorPhase === nos2.constants.kEditorPhaseNoWorld ? "block" : "none");
+        tTabsDiv.style.display = (nos2.editorPhase === nos2.constants.kEditorPhasePlaying ? "block" : "none");
 
         //  fix the list of teams
 
-        journal.theTeams = {};
+        nos2.theTeams = {};
         if (theTeams) {
             theTeams.forEach(t => {
-                journal.theTeams[t.id] = t;
+                nos2.theTeams[t.id] = t;
             });
         }
 
         //  paper task table
 
-        journal.thePapers = {};
+        nos2.thePapers = {};
 
         if (thePapers) {
             thePapers.forEach(p => {
-                journal.thePapers[p.dbid] = p;
+                nos2.thePapers[p.dbid] = p;
             });
         }
 
@@ -118,12 +118,12 @@ journal.ui = {
 
         if (Array.isArray(thePapers)) {
             thePapers.forEach(p => {
-                if (p.status === journal.constants.kPaperStatusSubmitted || p.status === journal.constants.kPaperStatusReSubmitted) {
+                if (p.status === nos2.constants.kPaperStatusSubmitted || p.status === nos2.constants.kPaperStatusReSubmitted) {
                     tPaperCount++;
                     text += "<tr><td>" + p.dbid + "</td>"
-                    text += "<td><button onclick='journal.ui.openPaper(" + p.dbid + ")'>read</button>&nbsp;" + p.title + "</td>";
+                    text += "<td><button onclick='nos2.ui.openPaper(" + p.dbid + ")'>read</button>&nbsp;" + p.title + "</td>";
                     text += "<td>" + p.status + "</td>";
-                    text += "<td>" + (p.teamID ? journal.theTeams[p.teamID].code : "-") + "</td>";
+                    text += "<td>" + (p.teamID ? nos2.theTeams[p.teamID].code : "-") + "</td>";
                     text += "</tr>";
                 }
             });
@@ -140,9 +140,9 @@ journal.ui = {
 
 
 
-        //  update the full journal
+        //  update the full nos2
 
-        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(journal.state.worldID);
+        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(nos2.state.worldID);
 
     }
 };

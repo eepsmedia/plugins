@@ -12,7 +12,8 @@ $whence  = $_REQUEST['whence'];
 
 $credentialFileNames = [
     "local" => "/Applications/MAMP/cred/nos2Cred.php",
-    "eeps" => "/home1/denofinq/cred/nos2Cred.php"
+    "eeps" => "/home1/denofinq/cred/nos2Cred.php",
+    "xyz" => "/home1/cred/nos2Cred.php"
 ];
 
 $thisFileName = $credentialFileNames[$whence];

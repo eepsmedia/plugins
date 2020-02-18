@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-CODAP_Connect in journal
+CODAP_Connect in nos2
 
 Author:   Tim Erickson
 
@@ -26,6 +26,6 @@ limitations under the License.
 
 */
 
-journal.CODAP_Connect = {
+nos2.CODAP_Connect = {
 
 };

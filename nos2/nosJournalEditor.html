@@ -8,7 +8,7 @@
  
  
  ==========================================================================
-journalAdmin in journal
+journalAdmin in nos2
 
     Author:   Tim Erickson
 
@@ -30,6 +30,7 @@ limitations under the License.
 
   LOCAL, TESTING:         http://localhost:8888/plugins/nos2/journalEditor.html
   EEPS:         https://www.eeps.com/codap/nos2/journalEditor.html
+  XYZ:         https://codap.xyz/plugins/nos2/journalEditor.html
 
 -->
 
@@ -43,14 +44,13 @@ limitations under the License.
 
     <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css" language="javascript">
 
-    <link rel='stylesheet' type='text/css' href='journal.css'/>
+    <link rel='stylesheet' type='text/css' href='nos2.css'/>
 
     <script src="../common/TEEUtils.js" language="javascript"></script>
     <script src="../common/jqueryFolder/jquery.min.js" language="javascript"></script>
     <script src="../common/jqueryFolder/jquery-ui.min.js" language="javascript"></script>
 
     <script src="nos2.js" language="javascript"></script>
-    <script src="journal.js" language="javascript"></script>
     <script src="nos2.DBconnect.js" language="javascript"></script>
 
     <script src="userAction.js" language="javascript"></script>
@@ -76,8 +76,7 @@ limitations under the License.
                 }
 
             });
-            journal.initialize();
-
+            nos2.initialize();
         });
 
     </script>
@@ -101,7 +100,7 @@ limitations under the License.
         <a href="journalAdmin.html" target="_blank">by following this link</a>.</p>
     <label for="worldCodeBox">World code: </label>
     <input type="text" id="worldCodeBox">
-    <button id="joinButton" onclick="journal.userAction.joinWorld()">join</button>
+    <button id="joinButton" onclick="nos2.userAction.joinWorld()">join</button>
     <br>
 </div>
 
@@ -111,13 +110,13 @@ limitations under the License.
         <li><a href="#list">list</a></li>
         <li><a href="#editing">editing</a></li>
         <li><a href="#teams">team info</a></li>
-        <li><a href="#journal">journal</a></li>
+        <li><a href="#journal">nos2</a></li>
     </ul>
 
 
     <div id="list">
         <h1>Editor Task List</h1>
-        <button id="paperListRefreshButton" onclick="journal.ui.update()">refresh list</button>
+        <button id="paperListRefreshButton" onclick="nos2.ui.update()">refresh list</button>
         <div id="paperTaskTable"></div>
     </div>
 
@@ -154,21 +153,21 @@ limitations under the License.
                 <td id="paperAuthorCommentsBox" placeholder="Author comments" rows="1" , cols="44"></td>
             </tr>
         </table>
-        <button id="acceptPaperButton" onclick="journal.userAction.judgePaper('accept')">accept</button>
-        <button id="rejectPaperButton" onclick="journal.userAction.judgePaper('reject')">reject</button>
-        <button id="revisePaperButton" onclick="journal.userAction.judgePaper('revise')">revise</button>
-        <button id="previewPaperButton" onclick="journal.userAction.makePaperPreview( )">preview</button>
+        <button id="acceptPaperButton" onclick="nos2.userAction.judgePaper('accept')">accept</button>
+        <button id="rejectPaperButton" onclick="nos2.userAction.judgePaper('reject')">reject</button>
+        <button id="revisePaperButton" onclick="nos2.userAction.judgePaper('revise')">revise</button>
+        <button id="previewPaperButton" onclick="nos2.userAction.makePaperPreview( )">preview</button>
     </div>
 
     <div id="teams">
         <h1>Team Info</h1>
-        <button id="editorTeamInfoRefreshButton" onclick="journal.ui.update()">refresh teams</button>
+        <button id="editorTeamInfoRefreshButton" onclick="nos2.ui.update()">refresh teams</button>
         <div id="editorTeamInfoDiv"></div>
     </div>
 
 
     <div id="journal">
-        <button id="refreshJournalButton" onclick="journal.ui.update()">refresh journal</button>
+        <button id="refreshJournalButton" onclick="nos2.ui.update()">refresh nos2</button>
         <div id="journalDiv"></div>
 
     </div>

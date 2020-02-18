@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-journal in journal
+nos2 in nos2
 
 Author:   Tim Erickson
 
@@ -112,4 +112,10 @@ summary {
 
 details[open] {
     padding: .5em;
+}
+
+.plaqueText {
+    font-size : 12px;
+    color : red;
+    background-color : black;
 }
