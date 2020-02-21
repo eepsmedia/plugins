@@ -88,6 +88,8 @@ function CODAP_MySQL_getQueryResult($db, $query, $params)
         die();
     }
 
+    //  $sth->closeCursor();    //  stackOverflow: https://stackoverflow.com/questions/2066714/pdo-cannot-execute-queries-while-other-unbuffered-queries-are-active#
+
     $result = $sth->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
