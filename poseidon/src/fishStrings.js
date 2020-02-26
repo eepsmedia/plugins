@@ -46,7 +46,7 @@ fish.localize = {
     attributeNameTranslations: {
         year: {es: "año", de: "Jahr"},
         seen: {es: "visto", de: "gesehen"},
-        want: {es: "querría", de: "Jahr"},
+        want: {es: "querría", de: "möchte"},
         caught: {es: "atrapó", de: "gefangen"},
         before: {es: "antes", de: "vor"},
         expenses: {es: "gastos", de: "Kosten"},

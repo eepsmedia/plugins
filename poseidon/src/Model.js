@@ -27,16 +27,15 @@ limitations under the License.
 
 */
 
-//todo: bring checking the situation from php into this model.
-
-import phpConnect from "./poseidonPHPHelper";
+import fireConnect from "./fireConnect";
 import poseidon from "./constants.js";
 import strings from "./strings.js";
 
 export default class Model extends Object  {
 
-    constructor() {
+    constructor(iPoseidon) {
         super();
+
         this.theGame = {
             gameCode : "",
             gameType : poseidon.constants.kInitialGameTypeName,     //  called 'config' in mySQL
@@ -45,54 +44,47 @@ export default class Model extends Object  {
         this.thePlayers = [];
         this.theTurns = [];
         this.gameParameters = poseidon.fishGameParameters[this.theGame.gameType];
+        this.poseidon = iPoseidon;
+
+        fireConnect.initialize(this);
 
         return this;
     }
 
     /**
-     * Ask php to make a new game, and set the this.theGame variable.
+     * Ask fireStore to make a new game, and set the this.theGame variable.
      *
-     * @param iGameType
+     * @param iGameType     e.g., albacore
      * @returns {Promise<null>}
      */
     async newGame(iGameType) {
         this.gameParameters = poseidon.fishGameParameters[iGameType];
-        this.theGame = await phpConnect.makeNewGame(iGameType);
+        this.theGame = await fireConnect.makeNewGame(iGameType);
         this.thePlayers = [];
         this.theTurns = [];
 
         return this.theGame;
     }
 
-    async refreshAllData(iCode) {
-
-        if (arguments.length === 1) {
-            this.theGame = {gameCode : iCode};
+    async   joinOldGame(iCode) {
+        this.theGame = await fireConnect.joinOldGame(iCode);
+        if (this.theGame) {
+            this.gameParameters = poseidon.fishGameParameters[this.theGame.configuration];
         }
-        //  here is where these values get set.
-        this.theGame = await phpConnect.getGame(this.theGame) || {};
-        if (!this.theGame) return false;
-        this.thePlayers = await phpConnect.getPlayers(this.theGame) || [];
-        this.theTurns = await phpConnect.getTurns(this.theGame) || [];
-        return true;
+        return this.theGame;
+    }
+
+    updatePlayersFromDB(iPlayers) {
+        this.thePlayers = iPlayers;
+        this.poseidon.poll();
+    }
+
+    updateTurnsFromDB(iTurns) {
+        this.theTurns = iTurns;
+        this.poseidon.poll();
     }
 
     async sellFish() {
-        await this.refreshAllData();
-
-        this.updateTurnsData();  //   update the model. fast. synchronous. Sets game pop and unit price
-        this.updatePlayersData();   //  update the players balances based on their turns, unit price, etc.
-
-        //  must do side effects in checkForEndGame before setting the game, player, and turns
-
-        await phpConnect.setGame(this.theGame);
-        await phpConnect.setTurns(this.theTurns);
-        await phpConnect.setPlayers(this.thePlayers);
-
-        //  return endGameObject;
-    }
-
-    updateTurnsData() {
         const tN0 = Number(this.theGame['population']);
         const nPlayers = this.theTurns.length;
 
@@ -100,34 +92,52 @@ export default class Model extends Object  {
             return {caught: a.caught + Number(v.caught)}
         }, {caught: 0});     //  count up how many fish got caught...
 
+        //  fish ecology
+
         const tBirths = this.births();
-
-        //  update the population in model.theGame, the local copy
-        this.theGame["population"] = tN0 + tBirths -
-            (nPlayers > 0 ? (tTotalCaughtFish.caught / nPlayers) : 0);
-        this.theGame['turn']++;
-
+        const newPopulation = Math.round(tN0 +
+            tBirths -
+            (nPlayers > 0 ? (tTotalCaughtFish.caught / nPlayers) : 0));
+        this.theGame["population"] = newPopulation;
 
         const tUnitPrice = this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers);
         console.log("... total caught: " + tTotalCaughtFish.caught +
             ", new population: " + this.theGame["population"] + " ... Unit price is " + tUnitPrice);
 
+
+        const ended = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
+
+        if (!ended) {this.theGame['turn']++}         //  if the game is over, we don't bump the year.
+
+        let thePromises = [fireConnect.uploadGameToDB(this.theGame)];    //  update the game in the DB
+
         //  update all of the turns from all of the players to show ending balance
-        //  not yet uploaded to DB
+        //  while we're there, update player records for balance and playerState
 
         this.theTurns.forEach(
             (t) => {
                 t.unitPrice = tUnitPrice;
                 t.income = tUnitPrice * Number(t.caught);
-                t.balanceAfter = Number(t.balanceBefore) + t.income - Number(t.expenses);
+                t.after = Number(t.before) + t.income - Number(t.expenses);
+                thePromises.push(fireConnect.uploadTurnToDB(t));
+
+                const playerStuff = {
+                    balance : t.after,
+                    playerState : poseidon.constants.kFishingString,
+                };
+                thePromises.push(fireConnect.updatePlayerOnDB( t.playerName, playerStuff));
             }
         );
+        await Promise.all(thePromises);     //  updates all the collections in the DB
+
+        this.poseidon.forceUpdate();    // todo:  need this??
     }
 
-    /**
+/*
+    /!**
      * update the player records to reflect the ending balance and the year in the corresponding turns record.
      * The trick is to get the names right... :P
-     */
+     *!/
     updatePlayersData() {
         this.thePlayers.forEach( (p) => {
             this.theTurns.forEach( (t) => {
@@ -138,6 +148,7 @@ export default class Model extends Object  {
             })
         });
     }
+*/
 
     births() {
         let tPop = this.theGame.population;
@@ -153,7 +164,7 @@ export default class Model extends Object  {
                 }
             }
         }
-        return tOut;
+        return Math.round(tOut);
     }
 
     /**
@@ -186,10 +197,10 @@ export default class Model extends Object  {
         }
 
         //  check all turns to see if anyone went negative
-        this.theTurns.forEach((t) => {
-            if (t.balanceAfter < 0) {
+        this.theTurns.forEach((aTurn) => {
+            if (aTurn.after < 0) {
                 tReasonObject.end = true;
-                tReasonObject.broke.push(t.playerName);
+                tReasonObject.broke.push(aTurn.playerName);
                 tEnd = poseidon.constants.kLostString;
             }
         });
@@ -204,16 +215,13 @@ export default class Model extends Object  {
 
         if (tReasonObject.end) {
             this.theGame.gameState = tEnd;      //  side effect; change the game
-
             tReasonText = strings.constructGameEndMessageFrom(tReasonObject);
         } else {
             tReasonText = "End of year " + this.theGame.turn;
         }
 
         this.theGame.reason = tReasonText;
-        await phpConnect.setGame(this.theGame);
-
-        return this.theGame;
+        return tEnd;
     }
 
     /**
@@ -226,23 +234,14 @@ export default class Model extends Object  {
      */
     async getCurrentSituation() {
 
-        await this.refreshAllData();
-        await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
-
         if (this.theGame.gameCode) {
             //  game information
             let missingPlayers = [];
             let allPlayers = [];
 
             this.thePlayers.forEach((p) => {
-                let innit = false;
-                this.theTurns.forEach((t) => {
-                    if (t.playerName === p.playerName) {
-                        innit = true;
-                    }
-                });
                 allPlayers.push(p.playerName);
-                if (!innit) {
+                if (p.playerState !== poseidon.constants.kSellingString) {
                     missingPlayers.push(p.playerName);
                 }
             });

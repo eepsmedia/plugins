@@ -47,15 +47,13 @@ class Poseidon extends React.Component {
             OKtoSell: false,
             autoSell: false,
             missing: [],
-            dirty: 0,
             now: new Date(),
         };
         console.log("Constructing Poseidon. State: " + JSON.stringify(this.state));
 
-        this.model = new Model();
+        this.model = new Model(this);   //  singleton
 
         //  bindings
-        this.setDirty = this.setDirty.bind(this);
     }
 
     componentDidMount() {
@@ -91,12 +89,6 @@ class Poseidon extends React.Component {
         }
     }
 
-    setDirty() {
-        this.poll();    //  makes sure OK to catch is set properly
-        const newDirty = this.state.dirty + 1;
-        this.setState({dirty: newDirty});
-        console.log("... setDirty() ... " + this.sitrep());
-    }
 
     playing() {
         return (
@@ -108,16 +100,16 @@ class Poseidon extends React.Component {
     sitrep() {
         const theGame = this.model.theGame;
 
-        return "Poseidon sitrep: " + theGame.config + " game " + theGame.gameCode +
-            " (" + theGame.gameState + ") turn " + theGame.turn +
-            " dirty = " + this.state.dirty;
+        return "Poseidon sitrep: " +  theGame.gameCode + " (" + theGame.gameState + ") turn " + theGame.turn +
+            " -- " + this.model.thePlayers.length + " players " +
+            " -- " + this.model.theTurns.length + " turns "
+            ;
     }
 
     async sellFish() {
         document.getElementById("sellFishButton").style.visibility = "hidden";
         console.log("Selling fish!");
         await this.model.sellFish();
-        this.setDirty();
         console.log("Fish sold!");
         document.getElementById("sellFishButton").style.visibility = "visible";
     }
@@ -136,7 +128,7 @@ class Poseidon extends React.Component {
             gameRunningStuff = (<div id={"gameRunningStuff"}>
 
                 <FishMarket
-                    OK={this.state.OKtoSell}
+                    OK={(this.state.missing.length === 0)}
                     autoHandler={this.handleAutoSellBoxChange.bind(this)}
                     sellHandler={this.sellFish.bind(this)}
                     missingNames={this.state.missing}
@@ -166,7 +158,6 @@ class Poseidon extends React.Component {
                 <PoseidonHeader
                     id={"poseidonHeader"}
                     model={this.model}
-                    setDirty={this.setDirty}
                 />
 
                 {gameRunningStuff}
@@ -217,9 +208,9 @@ function GameOverDiv(props) {
 
 function PlayerList(props) {
 
-    function playerRow(p, theTurns) {
+    function playerRow(p, iTurns) {
         let myTurn = null;
-        theTurns.forEach((t) => {
+        iTurns.forEach((t) => {
             if (t.playerName === p.playerName) {
                 myTurn = t;
             }
@@ -229,9 +220,9 @@ function PlayerList(props) {
         return (
             <tr key={p.playerName}>
                 <td>{p.playerName}</td>
-                <td>{p.onTurn}</td>
                 <td>{tSought}</td>
                 <td>{p.balance}</td>
+                <td>{p.playerState}</td>
             </tr>
         )
     }
@@ -244,9 +235,9 @@ function PlayerList(props) {
     const headerText = props.thePlayers.length + " player(s)";
     const tableHeader = (<tr>
         <th>name</th>
-        <th>turn</th>
         <th>sought</th>
         <th>balance</th>
+        <th>status</th>
     </tr>);
     const wholeThing = props.thePlayers.length > 0 ?
         (
@@ -291,7 +282,7 @@ function FishMarket(props) {
                 </div>
             )
         } else {
-            return (<div>no fish to sell</div>)
+            return (<div id={"fishMarket"}>no fish to sell</div>)
         }
     }
 }

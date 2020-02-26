@@ -66,76 +66,45 @@ fish.ui = {
         */
 
         fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
-        fish.state.autoChair = document.getElementById("automateChairCheckbox").checked;
 
         //  Visibility of the main panels
 
-        let needPlayerNameElement = document.getElementById("needPlayerName");
-        let havePlayerNameElement = document.getElementById("havePlayerName");
-        let joinGameElement = document.getElementById("joinGame");
-        let gameInProgressElement = document.getElementById("gameInProgress");
-        let winLoseElement = document.getElementById("winLoseDialog");
-        let chairElement = document.getElementById("chairControls");
+        const needPlayerNameElement = document.getElementById("needPlayerName");
+        const joinGameElement = document.getElementById("joinGame");
+        const winLoseElement = document.getElementById("winLoseDialog");
+        const catchFishDIV = document.getElementById("catchFishDIV");
+        const catchButton = document.getElementById("catchButton");
 
-        havePlayerNameElement.style.display = (fish.state.playerName) ? "block" : "none";
-        needPlayerNameElement.style.display = (fish.state.playerName) ? "none" : "block";
-        joinGameElement.style.display = (fish.state.playerName && (fish.state.gameState === fish.constants.kWaitingString)) ? "block" : "none";
-        //gameInProgressElement.style.display = (fish.state.gameState === fish.constants.kInProgressString) ? "block" : "none";
+        joinGameElement.style.display = (fish.state.gameCode ? "none" : "block");
+
+        needPlayerNameElement.style.display = (fish.state.gameCode && !fish.state.playerName) ? "block" : "none";
+
         winLoseElement.style.display
             = (fish.state.gameState === fish.constants.kWonString || fish.state.gameState === fish.constants.kLostString)
             ? "block" : "none";
-        chairElement.style.display
-            = (fish.state.isChair && fish.state.gameState === fish.constants.kInProgressString)
-            ? "block" : "none";
-
-        //  visibility and contents of what kind of start game thing we're seeing
-
-        if (fish.state.playerName && (fish.state.gameState === fish.constants.kWaitingString)) {
-            joinGameElement.style.display = "block";
-            let tStartingType = $('input[name=newGameOrJoinExisting]:checked').val();
-
-            if (tStartingType === 'join') {
-                $('#joinExistingDIV').show();
-                $('#makeNewGameDIV').hide();
-            } else if (tStartingType === 'new') {
-                $('#makeNewGameDIV').show();
-                $('#joinExistingDIV').hide();
-            }
-        } else {
-            joinGameElement.style.display = "none";
-        }
 
         //  visibility of catch fish DIV
 
+        catchFishDIV.style.display = (fish.state.playerState === fish.constants.kFishingString) ? "block" : "none";
+        catchButton.style.display
+            = (fish.state.autoCatch || fish.state.playerState !== fish.constants.kFishingString) ? "none" : "block";
+/*
         if (fish.state.gameState === fish.constants.kInProgressString) {
             $("#catchFishDIV").show();
         } else {
             $("#catchFishDIV").hide();
         }
+*/
 
         //  visibility of catch button (invisible if automated)
 
+/*
         if (fish.state.autoCatch || fish.state.playerState !== fish.constants.kFishingString) {
             $("#catchButton").hide();
         } else {
             $("#catchButton").show();
         }
-
-        //  visibility of chair elements
-
-        if (fish.state.isChair) {
-
-            //  iRes = await fish.phpConnector.checkToSeeIfOKtoEndTurn();
-            if (fish.state.OKtoEndTurnObject.OK) {
-                if (fish.state.autoChair) {
-                    $(".chairOnly").hide();
-                } else {
-                    $(".chairOnly").show();
-                }
-            } else {
-                $(".chairOnly").hide();
-            }
-        }
+*/
 
         //  update text to reflect current fish.state
 
@@ -164,9 +133,13 @@ fish.ui = {
                 break;
 
             case fish.constants.kInProgressString:
-
-                $("#aboutPlayersText").html(fish.strings.makeAboutPlayersText());
+                const theText = fish.strings.sitrep();
+                $("#aboutPlayersText").html(theText);
                 //  the "missing" text
+
+                const noticeText = (fish.state.playerState === fish.constants.kFishingString) ?
+                    fish.strings.youAreFishingTest : fish.strings.fishAtMarketText;
+                fish.setNotice(noticeText);
 
                 break;
 
@@ -175,7 +148,7 @@ fish.ui = {
         //  debugging
 
         fish.debugThing.html(
-            fish.state.config + " | " + fish.whence + " | " + fish.language + " -- "
+            fish.state.config + " | "  + fish.language + " -- "
             + fish.state.gameTurn + '/' + fish.state.turn
             + ", t = " + fish.state.timerCount
         );

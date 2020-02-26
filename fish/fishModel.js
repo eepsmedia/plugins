@@ -31,7 +31,7 @@ fish.model = {
 
     catchFish: async function (iSought) {
 
-        const tGame = await fish.phpConnector.getGameData();
+        const tGame = await fireConnect.getGameData(fish.state.gameCode);
 
         try {
 
@@ -42,14 +42,14 @@ fish.model = {
             let tVisible = 0;
             let tPop = Number(tGame['population']);
 
-            if (fish.game.binomialProbabilityModel) {
+            if (fish.gameParameters.binomialProbabilityModel) {
                 for (let i = 0; i < tPop; i++) {
-                    if (Math.random() < fish.game.visibleProbability) {
+                    if (Math.random() < fish.gameParameters.visibleProbability) {
                         tVisible++;
                     }
                 }
             } else {
-                tVisible = Math.round(fish.game.visibleProbability * tPop);
+                tVisible = Math.round(fish.gameParameters.visibleProbability * tPop);
             }
 
             if (tMaxPossibleCatch > tVisible) {
@@ -60,22 +60,23 @@ fish.model = {
 
             let tCaught = 0;
 
-            if (fish.game.binomialProbabilityModel) {
+            if (fish.gameParameters.binomialProbabilityModel) {
                 for (let i = 0; i < tVisible; i++) {
-                    if (Math.random() < fish.game.catchProbability) {
+                    if (Math.random() < fish.gameParameters.catchProbability) {
                         tCaught++;
                     }
                 }
             } else {
-                tCaught = Math.round(fish.game.catchProbability * tVisible);
+                tCaught = Math.round(fish.gameParameters.catchProbability * tVisible);
             }
 
             //  just in case...
             if (tCaught > tMaxPossibleCatch) { tCaught = tMaxPossibleCatch; }
 
-            let tExpenses = fish.game.overhead;
+            let tExpenses = fish.gameParameters.overhead;
 
             return {
+                turn : fish.state.turn,
                 sought: iSought,
                 visible: tVisible,
                 caught: tCaught,
@@ -88,10 +89,10 @@ fish.model = {
     },
 
     births: function (iPop) {
-        let tAdjustedProbability = fish.game.birthProbability * (1 - (iPop / fish.game.carryingCapacity));
+        let tAdjustedProbability = fish.gameParameters.birthProbability * (1 - (iPop / fish.gameParameters.carryingCapacity));
         let tOut = tAdjustedProbability * iPop;
 
-        if (fish.game.binomialProbabilityModel) {
+        if (fish.gameParameters.binomialProbabilityModel) {
             tOut = 0;
             for (let i = 0; i < iPop; i++) {
                 if (Math.random() < tAdjustedProbability) {
@@ -122,7 +123,7 @@ fish.model = {
         const tBirths = this.births(tN0);
         const tNewPop = tN0 + tBirths - (tTotalCaughtFish.caught / nPlayers);
 
-        const tUnitPrice = fish.game.calculatePrice(tTotalCaughtFish.caught / nPlayers);
+        const tUnitPrice = fish.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers);
 
         //  update all of the turns from all of the players to show ending balance
 
@@ -156,10 +157,10 @@ fish.model = {
             pop : ""        //  high | low
         };
 
-        if (iYear >= fish.game.endingTurn) {
+        if (iYear >= fish.gameParameters.endingTurn) {
             tReasonObject.end = true;
             tReasonObject.time = true;
-            if (iPop > fish.game.winningPopulation) {
+            if (iPop > fish.gameParameters.winningPopulation) {
                 tReasonObject.pop = "high";
                 tEnd = fish.constants.kWonString;
             } else {
@@ -169,7 +170,7 @@ fish.model = {
         }
 
 /*
-        if (iPop > fish.game.winningPopulation) {
+        if (iPop > fish.gameParameters.winningPopulation) {
             tReasonObject.end = true;
             tReasonObject.pop = "high";
             tEnd = fish.constants.kWonString;
@@ -184,7 +185,7 @@ fish.model = {
             }
         });
 
-        if (iPop < fish.game.losingPopulation) {
+        if (iPop < fish.gameParameters.losingPopulation) {
             tReasonObject.end = true;
             tReasonObject.pop = "low";
             tEnd = fish.constants.kLostString;

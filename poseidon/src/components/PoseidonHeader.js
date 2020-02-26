@@ -38,7 +38,6 @@ export default class PoseidonHeader extends React.Component {
         this.state = {
             newOrOldGame: true,
             prospectiveGameType: poseidon.constants.kInitialGameTypeName,
-            dirty: 0,
         };
 
         //  binding
@@ -60,27 +59,20 @@ export default class PoseidonHeader extends React.Component {
         const theChosenType = document.getElementById("gameTypesMenu").value;
         const newGame = await this.props.model.newGame(theChosenType);
         console.log("... PoseidonHeader, new game " + newGame.gameCode);
-        this.setDirty();
-        this.props.setDirty();
     }
 
-    async   joinOldGame() {
-        const theOldCode = document.getElementById("oldGameCodeInput").value;
-        const getDataResult = await this.props.model.refreshAllData(theOldCode);
+    async joinOldGame() {
+        const oldValueBox = document.getElementById("oldGameCodeInput")
+        const theOldCode = oldValueBox.value;
+        const getDataResult = await this.props.model.joinOldGame(theOldCode);
         if (!getDataResult) {
             alert("Could not find game " + theOldCode + ". Please try again.");
+            oldValueBox.value = "";
         }
-        this.props.setDirty();
-    }
-
-    setDirty() {
-        const newDirty = this.state.dirty + 1;
-        console.log("... setDirty() ... " + this.sitrep());
-        this.setState({dirty: newDirty});
     }
 
     sitrep() {
-        console.log("... PoseidonHeader, sitrep " + this.state.dirty);
+        console.log("... PoseidonHeader, sitrep ");
     }
 
     render() {
@@ -124,14 +116,17 @@ export default class PoseidonHeader extends React.Component {
         </div>);
 
         if (theGame.gameState === poseidon.constants.kInProgressString) {
-            wholeThing = (<div  id="poseidonHeader">
-                <strong>{theGame.gameCode}</strong>&nbsp;|&nbsp;
-                <strong>{theGame.turn}</strong>&nbsp;|&nbsp;
-                    <span><strong>{theGame.population}</strong></span> <span>&nbsp;&#x1f41f; &nbsp;</span>|
-                <span>&nbsp;type: {theGame.config}</span>
-            </div>)
+            wholeThing = (
+                <div id="poseidonHeader">
+                    <strong>{theGame.gameCode}</strong>&nbsp;|&nbsp;
+                    <strong>{theGame.turn}</strong>&nbsp;|&nbsp;
+                    <span><strong>{theGame.population}</strong></span>
+                    <span role={"img"} aria-label={"fish"}>&nbsp;&#x1f41f; &nbsp;</span>|
+                    <span>&nbsp;type: {theGame.config}</span>
+                </div>
+            )
         } else {
-            wholeThing = (<div  id="poseidonHeader">
+            wholeThing = (<div id="poseidonHeader">
                 {radioButtons}
                 {gameCodeOrTypeMenu}&nbsp;{createOrJoinButton}
             </div>)

@@ -38,7 +38,7 @@ fish.historicalData = {
         fish.state.gameCodeList.forEach(
             (gc) => {
                 console.log("getHistoricalData for " + gc);
-                promises.push(fish.phpConnector.getTurnsFromGame(gc));  //  make one promise for each game we've been in
+                promises.push(fish.fireConnect.getTurnsFromGame(gc));  //  make one promise for each game we've been in
             }
         );
 

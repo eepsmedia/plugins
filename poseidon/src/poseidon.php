@@ -10,7 +10,7 @@ $theAction = json_decode($_REQUEST["action"]);
 $theResource = json_decode($_REQUEST["resource"]);
 $theValues = json_decode($_REQUEST["values"]);
 
-include 'words.php';
+include 'words.js';
 
 include './poseidonEstablishCredentials.php';   //  sets $user, etc
 include '../../common/TE_DBCommon.php';

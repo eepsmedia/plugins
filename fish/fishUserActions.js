@@ -33,168 +33,73 @@ limitations under the License.
  */
 fish.userActions = {
 
-    /**
-     * User pressed the button to submit their name.
-     *
-     * @param iSituation
-     */
-    pressNameButton: function (iSituation) {
-        //  could check for duplicates?
-        let tPlayerNameBox = document.getElementById("playerName");
-
-        switch (iSituation) {
-
-            case 'have':    //  used to be used for logout.
-                fish.state.playerName = null;
-                tPlayerNameBox.innerHTML = "";
-                break;
-
-            case 'need':
-                let tName = tPlayerNameBox.value;     //  from the UI
-                if (tName && tName.length > 0) {
-                    fish.state.playerName = tName;
-                } else {
-                    alert('You need a player name');
-                }
-                $("#weHaveName").html("Player: <b>" + fish.state.playerName + "</b>");
-                break;
-        }
-
-        fish.ui.update();
-    },
 
     /**
      * User clicked to button to join a game.
+     * Proposed username is in fish.state.playerName.
      *
      * @param iJoinOrNew
      * @returns {Promise<void>}
      */
     clickJoinButton: async function (iJoinOrNew) {
-        //  set the level of any new game
-        let tLevel = $('#gameLevelMenu').find('option:selected').text();
-        fish.setLevel(tLevel);
-
-        try {
-            if (iJoinOrNew === 'join') {
-                const theText = $("#gameCodeTextField").val();
-                console.log('new game name text = ' + theText);
-                await fish.userActions.joinGame(theText);
-            } else {
-                //  we are making a new game and then joining it.
-                const iGameCode = await fish.userActions.startNewGame();    //  make new game, get its code.
-                fish.setNotice("The new game is named <b>" + iGameCode + "</b>");
-                await fish.userActions.joinGame(fish.state.gameCode);       //  join it!
-            }
-
-            //  start actually playing NOW
-            fish.mainLoop();
+        const codeTextField = document.getElementById("gameCodeTextField");
+        const theCode = codeTextField.value;
+        const gameData = await fireConnect.tryGameCode(theCode);  //  null if not exist
+        if (gameData) {
+            fish.state.gameCode = theCode;
+            fish.state.turn = gameData.turn;
+            fish.state.gameState = gameData.gameState;
+            fish.gameParameters = fish.fishLevels[gameData.configuration]
+            fish.setNotice("You joined <b>" + theCode + "</b>");
+        } else {
+            fish.state.gameCode = null;
+            codeTextField.value = "";
+            fish.setNotice("<b>" + theCode + "</b> doesn't exist.");
+            alert("game " + theCode + " doesn't exist.");
         }
-        catch (msg) {
-            console.log('clickJoinButton() error: ' + msg);
-        }
+        fish.ui.update();
+
     },
 
     /**
-     * User has decided to start a brand new game, clicked new game button
+     * User pressed the button to submit their name.
      *
-     * @returns {Promise<any>}
+     * @param iSituation
      */
-    startNewGame: async function () {
+    pressNameButton: async function (iSituation) {
+        const nameTextField = document.getElementById("playerName");
+        const theName = nameTextField.value;
+        const newPlayerData = {
+            playerName : theName,
+            gameCode : fish.state.gameCode,
+            balance : fish.gameParameters.openingBalance,
+            playerState : fish.constants.kFishingString,
+        };
+        const   playerData = await fireConnect.tryPlayerName(fish.state.gameCode, newPlayerData);
 
-        try {
-            const tGameData = {
-                "onTurn": fish.game.openingTurn,
-                "population": fish.game.openingPopulation,
-                "gameState": fish.constants.kInProgressString,
-                "config": fish.state.config
-            };
-            const tNewGame = await fish.phpConnector.startNewGame(tGameData);
-
-            if (tNewGame.gameCode) {
-                fish.state.gameCode = tNewGame.gameCode;    //  not joined, but the game exists.
-                $('#gameCodeTextField').val(fish.state.gameCode);      //  put the code into the box as a default
-                console.log("The new game is named " + fish.state.gameCode);
-                //  we are still waiting (because we have not joined), but we know the date:
-                fish.state.turn = Number(tNewGame.turn);
-                fish.state.gameTurn = Number(tNewGame.turn);
-                return (fish.state.gameCode);
-            } else {
-                console.log('NO GAME CODE!');
-                return null;
-            }
-        } catch (msg) {
-            console.log('user action startNewGame() error: ' + msg);
-        }
-    },
-
-    /**
-     * User is joining a new game, either because of clicking Join or New.
-     *
-     * @param iGameCode
-     * @returns {Promise<void>}
-     */
-    joinGame: async function (iGameCode) {
-        try {
-            const iGame = await fish.phpConnector.validateGameCode(iGameCode);
-            if (iGame) {
-                if (iGame.gameState !== fish.constants.kInProgressString) {
-                    alert('You cannot join ' + iGameCode);
-                    throw('You cannot join ' + iGameCode);
-                }
-            } else {
-                fish.state.gameCode = null;
-                $('#gameCode').val("");      //  put blank into the box
-                alert('You need a valid game code');
-                throw('You need a valid game code');
-            }
-
-            const iJoinResult = await fish.phpConnector.joinGame(iGame);
-            await fish.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
-
-            console.log("In joinGame(), connector.joinGame resolved with " + JSON.stringify(iJoinResult));
-
-            fish.setLevel(iJoinResult.config);
-            fish.state.gameCode = iJoinResult.gameCode;
-            fish.state.gameState = iJoinResult.gameState;
-            fish.state.gameTurn = iJoinResult.turn;
-            fish.state.turn = fish.state.gameTurn;
-            fish.state.playerState = fish.constants.kFishingString;
-            fish.state.balance = fish.game.openingBalance;
-
-            fish.state.gameCodeList.push(fish.state.gameCode);
-
-            if (iJoinResult.newPlayer) {
-                fish.setNotice(fish.strings.successfullyJoinedText + "<b>" + fish.state.gameCode
-                    + "</b>!<br>" + fish.strings.enterAndPressCatchText);
-            } else {
-                fish.setNotice("Rejoined <b>" + fish.state.gameCode
-                    + "</b>!<br>" + fish.strings.enterAndPressCatchText);
-            }
-
-            //  start polling when you join!
-            if (fish.constants.kUsingTimer) {
-
-                //  setTimeout(fish.doTimer, fish.constants.kTimerInterval);
-            }
-
-            fish.fishUpdate();
-            $('#gameCodeTextField').val("");      //  empty the box for the game code.
-
-            return (iJoinResult);       //  return the valid game (with a newPlayer field)
+        if (playerData) {
+            fish.state.playerState = playerData.playerState;
+            fish.state.playerName = playerData.playerName;
+            fish.state.balance = playerData.balance;
+            fish.state.gameCodeList.push(fish.state.gameCode);      //  not sure what this does!
+        } else {
+            fish.state.playerName = null;
+            fish.state.balance = 0;
+            fish.state.playerState = null;
+            nameTextField.value = "";
+            alert("You need to choose a different name");
         }
 
-        catch (msg) {
-            console.log('joinGame() error: ' + msg);
-        }
+        fish.ui.update();
     },
 
     catchFish: async function () {
 
         let tSought = Number($("#howManyFish").val());
 
-        if (tSought > fish.game.boatCapacity) {
-            alert("Your boat will only carry " + fish.game.boatCapacity + ". ");
-            $("#howManyFish").val(fish.game.boatCapacity);
+        if (tSought > fish.gameParameters.boatCapacity) {
+            alert("Your boat will only carry " + fish.gameParameters.boatCapacity + ". ");
+            $("#howManyFish").val(fish.gameParameters.boatCapacity);
             return;
         }
 
@@ -214,10 +119,15 @@ fish.userActions = {
         if (fish.readyToCatch()) {
             fish.state.playerState = fish.constants.kSellingString;     //  set the player state to selling
 
-            const tCatchModelResult = await fish.model.catchFish(tSought);
-            console.log("    fish ... new catch record for " + fish.state.gameTurn + " (" + fish.state.playerState + ")" );
-            await fish.phpConnector.newCatchRecord(tCatchModelResult);  //  record in the MySQL database, resolves to the number caught (which we don't need)
-            await fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult);  //  record in the CODAP table, partial record :)
+            const tCatchModelResult =  fish.catchFish(tSought);
+            console.log("    fish ... " + tCatchModelResult.caught + " in " + tCatchModelResult.turn
+                + " (" + fish.state.playerState + ")" );
+            let thePromises = [];
+            thePromises.push(fireConnect.newCatchRecord(tCatchModelResult));  //  record in the database, resolves to the number caught (which we don't need)
+            thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState}));  //  record in the database, resolves to the number caught (which we don't need)
+            thePromises.push(fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult));  //  record in the CODAP table, partial record :)
+
+            await Promise.all(thePromises);
 
             fish.state.currentTurnResult = tCatchModelResult;
             //  await fish.CODAPConnector.updateFishItemInCODAP("from catch");    //  record in the CODAP table
@@ -225,31 +135,67 @@ fish.userActions = {
         } else {
             fish.debugThing.html('Gotta wait for everybody else!');
         }
+
+        fish.ui.update();
     },
 
-    chairEndsTurn: async function () {
-        console.log("---- chairEndsTurn ---------");
-        let tGame, tTurns, tPlayers;
 
-        let gamePromise = fish.phpConnector.getGameData();
-        let turnsPromise = fish.phpConnector.getTurnsData();        //  just for this turn
-        let playersPromise = fish.phpConnector.getPlayersData();
+    /**
+     * User is joining a new game, either because of clicking Join or New.
+     *
+     * @param iGameCode
+     * @returns {Promise<void>}
+     */
+    joinGame: async function (iGameCode) {
+        try {
+            const iGame = await fish.fireConnect.validateGameCode(iGameCode);
+            if (iGame) {
+                if (iGame.gameState !== fish.constants.kInProgressString) {
+                    alert('You cannot join ' + iGameCode);
+                    throw('You cannot join ' + iGameCode);
+                }
+            } else {
+                fish.state.gameCode = null;
+                $('#gameCode').val("");      //  put blank into the box
+                alert('You need a valid game code');
+                throw('You need a valid game code');
+            }
 
-        $("#chairEndsTurnButton").hide();
+            const iJoinResult = await fish.fireConnect.joinGame(iGame);
+            await fish.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
 
-        [tGame, tTurns, tPlayers] = await Promise.all([gamePromise, turnsPromise, playersPromise]);
+            console.log("In joinGame(), connector.joinGame resolved with " + JSON.stringify(iJoinResult));
 
-        if (fish.state.otherPlayersInfo.OK) {           //  everybody OK to move on?
-            const tUpdateResult = fish.model.updateTotalPopulation(tGame, tPlayers, tTurns);  //   update the model. fast. synchronous.
+            fish.setLevel(iJoinResult.config);
+            fish.state.gameCode = iJoinResult.gameCode;
+            fish.state.gameState = iJoinResult.gameState;
+            fish.state.gameTurn = iJoinResult.turn;
+            fish.state.turn = fish.state.gameTurn;
+            fish.state.playerState = fish.constants.kFishingString;     //  set us to be fishing
+            fish.state.balance = fish.gameParameters.openingBalance;
 
-            //  send the resulting game info to be updated in the DB
-            const iData = await fish.phpConnector.endTurnForAll(tUpdateResult);
-            fish.setNotice(iData);
-        } else {
-            alert('Not ready to move on. Year: ' + tGame.turn + ' Missing: ' + fish.state.otherPlayersInfo.missing.join(','));
-            fish.setNotice('Did not advance! Maybe we are still waiting for a player.');
+            fish.state.gameCodeList.push(fish.state.gameCode);
+
+            if (iJoinResult.newPlayer) {
+                fish.setNotice(fish.strings.successfullyJoinedText + "<b>" + fish.state.gameCode
+                    + "</b>!<br>" + fish.strings.enterAndPressCatchText);
+            } else {
+                fish.setNotice("Rejoined <b>" + fish.state.gameCode
+                    + "</b>!<br>" + fish.strings.enterAndPressCatchText);
+            }
+
+            fish.fishUpdate();
+            $('#gameCodeTextField').val("");      //  empty the box for the game code.
+
+            return (iJoinResult);       //  return the valid game (with a newPlayer field)
+        }
+
+        catch (msg) {
+            console.log('joinGame() error: ' + msg);
         }
     },
+
+
 
     foo: function () {
 
