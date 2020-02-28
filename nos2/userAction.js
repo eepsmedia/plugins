@@ -37,10 +37,11 @@ nos2.userAction = {
         const tTheTruthOfThisScenario = univ.model.getNewStateTemp();
         const tGameState = {truth: tTheTruthOfThisScenario};    //  temp!
 
-        nos2.state.worldCode = tWorldCode;
-        const tArrayOfNewWorlds = await nos2.DBconnect.makeNewWorld(nos2.myGodID, tWorldCode, tEpoch, tJournalName, tScenario, tGameState);
+        const theWorldCode = await fireConnect.makeNewWorld(
+            nos2.myGodName, tWorldCode, tEpoch, tJournalName, tScenario, tGameState
+        );
 
-        nos2.state.worldID = tArrayOfNewWorlds[0].id;
+        nos2.state.worldCode = theWorldCode;
 
         nos2.adminPhase = nos2.constants.kAdminPhasePlaying;
         await nos2.ui.update();
@@ -50,7 +51,8 @@ nos2.userAction = {
     newTeam: async function () {
         const tCode = document.getElementById("newTeamCodeBox").value;
         const tName = document.getElementById("newTeamNameBox").value;
-        await nos2.DBconnect.addTeam(nos2.state.worldID, tCode, tName);
+        const tBalance = univ.constants.kInitialBalance;
+        await fireConnect.addTeam(tCode, tName, tBalance);
         this.suggestTeam();
         await nos2.ui.update();
     },
@@ -77,12 +79,11 @@ nos2.userAction = {
     joinWorld: async function () {
         let tWorldCode = document.getElementById("worldCodeBox").value;
 
-        let tWorldData = await nos2.DBconnect.getWorldData(tWorldCode);
+        let tWorldData = await fireConnect.joinWorld(tWorldCode);
 
         console.log("About " + tWorldCode + " ... " + (tWorldData ? " year " + tWorldData.epoch : " it doesn't exist."));
 
         if (tWorldData) {
-            nos2.state.worldID = tWorldData.id;
             nos2.writerPhase = nos2.constants.kWriterPhaseNoTeam;
             nos2.editorPhase = nos2.constants.kEditorPhasePlaying;
             nos2.state.worldCode = tWorldCode;
@@ -93,21 +94,24 @@ nos2.userAction = {
         nos2.ui.update();
     },
 
-    joinWorldByID: function (iWorldID, iCode) {
-        nos2.state.worldID = iWorldID;
+    /**
+     * Called by administrators only?
+     * @param iCode
+     */
+    joinWorldByCode: function (iCode) {
+        fireConnect.joinWorld(iCode);
         nos2.state.worldCode = iCode;
         nos2.adminPhase = nos2.constants.kAdminPhasePlaying;
         nos2.ui.update();
     },
 
-    joinTeamByID: function (iTeamID, iTeamName) {
-        nos2.state.teamID = iTeamID;
+    joinTeamByID: function (iTeamCode, iTeamName) {
+        nos2.state.teamCode = iTeamCode;
         nos2.state.teamName = iTeamName;
         nos2.writerPhase = nos2.constants.kWriterPhasePlaying;
         nos2.currentPaper = new Paper();     //  because we have to have a teamID before we make a paper
 
         nos2.ui.update();
-
     },
 
     /**
@@ -139,7 +143,7 @@ nos2.userAction = {
         let out = (iSender === "author") ? "<tr><td>author</td>" : "<tr><td>editor</td>";
         out += "<td>" + theNewMessage + "</td></tr>";
 
-        nos2.DBconnect.appendMessageToConvo( out, nos2.currentPaper.dbid );
+        fireConnect.appendMessageToConvo( out, nos2.currentPaper.dbid );
     },
 
     makePaperPreview: async function () {
@@ -147,7 +151,7 @@ nos2.userAction = {
 
         let thePreviewHTML = "";
         if (nos2.currentPaper) {
-            thePreviewHTML = await nos2.DBconnect.getPaperPreview(tPaperID);
+            thePreviewHTML = await fireConnect.getPaperPreview(tPaperID);
         } else {
             thePreviewHTML = "No paper specified."
         }
@@ -171,7 +175,7 @@ nos2.userAction = {
         //  thePaper.packs = [];
         //  thePaper.references = [];
 
-        const tPaperData = await nos2.DBconnect.savePaper(nos2.currentPaper);    //  send the Paper
+        const tPaperData = await fireConnect.savePaper(nos2.currentPaper);    //  send the Paper
         nos2.currentPaper.dbid = Number(tPaperData["id"]);
 
         await nos2.ui.update();
@@ -185,7 +189,7 @@ nos2.userAction = {
                 nos2.constants.kPaperStatusReSubmitted :
                 nos2.constants.kPaperStatusSubmitted;
         const tPaperData = await nos2.userAction.savePaper();
-        await nos2.DBconnect.submitPaper(nos2.currentPaper.dbid, tNewStatus);
+        await fireConnect.submitPaper(nos2.currentPaper.dbid, tNewStatus);
         nos2.ui.erasePaper();
         nos2.goToTabNumber(0);   //  return to the list
         await nos2.ui.update();
@@ -194,7 +198,7 @@ nos2.userAction = {
 
     judgePaper: async function (iJudgment) {
         const tEditorComments = document.getElementById("paperEditorCommentsBox").value;
-        const tPaperData = await nos2.DBconnect.judgePaper(nos2.currentPaperID, iJudgment, tEditorComments);
+        const tPaperData = await fireConnect.judgePaper(nos2.currentPaperID, iJudgment, tEditorComments);
         await nos2.ui.update();
         nos2.ui.erasePaper();    //  clean up the boxes
         nos2.goToTabNumber(0);   //  return to the list
@@ -202,16 +206,9 @@ nos2.userAction = {
 
     godSignIn: async function () {
         const tUsername = $('#godUsernameBox').val();
-        const tUserData = await nos2.DBconnect.getGodData(tUsername);
-        if (tUserData) {        //  user exists; sign in
-            nos2.myGodID = tUserData.id;
-            console.log(tUsername + ' signed in as #' + nos2.myGodID);
-        } else {
-            const tNewUserData = await nos2.DBconnect.newGod(tUsername);
-            nos2.myGodID = tNewUserData.id;
-            console.log(tUsername + ' newly signed in as #' + nos2.myGodID);
-        }
-        nos2.myGodName = tUsername;
+        const tGodData = await fireConnect.getGodData(tUsername);
+        nos2.myGodID = tGodData.godName;
+        nos2.myGodName = tGodData.godName;
         nos2.adminPhase = nos2.constants.kAdminPhaseNoWorld;
         nos2.ui.update();
     }

@@ -36,10 +36,9 @@ nos2.ui = {
     update: async function () {
         //  all the data we need to await...
 
-
-        const pMyPapers = nos2.DBconnect.getPapers(nos2.state.worldID, nos2.state.teamID);
-        const pMyWorlds = nos2.DBconnect.getMyWorlds(nos2.myGodID);
-        const pMyTeams = nos2.DBconnect.getMyTeams(nos2.state.worldID);
+        const pMyPapers = fireConnect.getPapers(nos2.state.worldCode, nos2.state.teamCode);
+        const pMyWorlds = fireConnect.getMyWorlds(nos2.myGodID);
+        const pMyTeams = fireConnect.getMyTeams(nos2.state.worldCode);
 
         const [tPapers, tWorlds, tTeams] = await Promise.all([pMyPapers, pMyWorlds, pMyTeams]);
 
@@ -112,11 +111,11 @@ nos2.ui = {
         const tWorldDiv = document.getElementById("godChooseWorldTable");
 
         if (tWorlds) {
-            let text = "<table><tr><th>id</th><th>code</th></tr>";
+            let text = "<table><tr><th>code</th></tr>";
             tWorlds.forEach(w => {
-                console.log("World " + w.id + " is called " + w.code + ".");
-                text += "<tr><td>" + w.id + "</td><td>" + w.code + "</td>"
-                    + "<td><button onclick='nos2.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
+                console.log("World " + w.code + ".");
+                text += "<tr><td>" + w.code + "</td>"
+                    + "<td><button onclick='nos2.userAction.joinWorldByCode(\"" + w.code + "\")'>join</button> </td></tr>";
             });
             text += "</table>";
             tWorldDiv.innerHTML = text;
@@ -129,10 +128,10 @@ nos2.ui = {
         const tTeamsListDiv = document.getElementById("teamsListDiv");
 
         if (tTeams) {
-            let text = "<table><tr><th>id</th><th>code</th><th>name</th></tr>";
+            let text = "<table><tr><th>code</th><th>name</th><th>balance</th></tr>";
             tTeams.forEach(t => {
                 console.log(t.id + ") Team " + t.name + " is called " + t.code + ".");
-                text += "<tr><td>" + t.id + "</td><td>" + t.code + "</td><td>" + t.name + "</td>"
+                text += "<tr><td>" + t.teamCode + "</td><td>" + t.teamName + "</td><td>" + t.balance + "</td>"
                     + "</tr>";
                    // + "<td><button onclick='nos2.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
             });

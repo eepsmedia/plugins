@@ -51,26 +51,25 @@ univ.ui = {
             "&nbsp;&nbsp;&nbsp;&nbsp;" +
             "<button onclick='univ.logout()'>log out</button>" +
             "&nbsp;&nbsp;&nbsp;&nbsp;" +
-            univ.constants.version + " | " +
-            univ.whence ;
+            univ.constants.version;
 
 
         //  choose team list. ONLY IN THE APPROPRIATE PHASE!
 
         if (univ.playPhase === univ.constants.kPhaseNoTeam) {
             //  get the team list only if we're in this phase.
-            const tTeams = await nos2.DBconnect.getMyTeams(univ.state.worldID);
+            const tTeams = await fireConnect.getMyTeams(univ.state.worldCode);
             const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
 
             if (tTeams) {
 
-                let text = "<table><tr><th>id</th><th>code</th><th>name</th></tr>";
+                let text = "<table><tr><th>code</th><th>name</th></tr>";
                 tTeams.forEach(t => {
-                    const tParenGuts = '(' + t.id + ',"' + t.name + '")';       //  the arguments for the onclick handler below
-                    const callbackGuts = "univ.userAction.joinTeamByID" + tParenGuts;
+                    //  the arguments for the onclick handler below
+                    const callbackGuts = `univ.userAction.joinTeamByTeamCode("${t.teamCode}", "${t.teamName}")`;
 
-                    console.log(t.id + ") Team " + t.name + " is called " + t.code + ".");
-                    text += "<tr><td>" + t.id + "</td><td>" + t.code + "</td><td>" + t.name + "</td>"
+                    console.log("Team " + t.teamName + " is called " + t.teamCode + ".");
+                    text += "<tr><td>" + t.teamCode + "</td><td>" + t.teamName + "</td>"
                         + "<td><button onclick='" + callbackGuts + "'>join</button> </td></tr>";
                 });
                 text += "</table>";

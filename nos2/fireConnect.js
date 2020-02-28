@@ -26,7 +26,41 @@ limitations under the License.
 
 */
 
-nos2.DBconnect = {
+fireConnect = {
+
+    db: null,
+    worldsCR: null,
+    godsCR: null,
+    teamsCR: null,         //  teams SUBcollection within this world.
+    resultsCR : null,
+    dataPacksCR : null,
+    thisWorldDR: null,     //  THIS world's document reference
+
+    firebaseConfig: {
+        apiKey: "AIzaSyAQAxZ9e0NmweiaF7lHS65bIIE-Lq1e3BU",
+        authDomain: "nature-of-science.firebaseapp.com",
+        databaseURL: "https://nature-of-science.firebaseio.com",
+        projectId: "nature-of-science",
+        storageBucket: "nature-of-science.appspot.com",
+        messagingSenderId: "199387340471",
+        appId: "1:199387340471:web:049ece476099a1f34db732"
+    },
+
+    initialize: function () {
+        firebase.initializeApp(this.firebaseConfig);
+        this.db = firebase.firestore();
+        this.worldsCR = this.db.collection("worlds");     //  worlds collection reference
+        this.godsCR = this.db.collection("gods");
+
+        //  testing firestore syntax...
+
+        this.db.collection("tests").doc("aTest").set(
+            {foo: 42, bar: [13, 43], baz : {foo : 12, bar : 45}}
+        );
+        const newDoc = this.db.collection("tests").add(
+            {foo: 42, bar: [13, 43], baz : {foo : 12, bar : 45}}
+        );
+    },
 
     sendCommand: async function (iCommands) {
         let theBody = new FormData();
@@ -51,40 +85,56 @@ nos2.DBconnect = {
             } else {
                 console.error("sendCommand bad result error: " + theResult.statusText);
             }
-        }
-        catch (msg) {
+        } catch (msg) {
             console.log('fetch error in DBconnect.sendCommand(): ' + msg);
         }
     },
 
     makeNewWorld: async function (iGodID, iWorldCode, iEpoch, iJournalName, iScenario, iGameState) {
         try {
-            const theCommands = {
-                "c": "newWorld",
-                "g": iGodID,
-                "code": iWorldCode,
-                "epoch": iEpoch,
+            let theWorldCode = iWorldCode;  //  in case we have to change it
+
+            const theData = {
+                "god": iGodID,
+                "code": theWorldCode,
+                "epoch": Number(iEpoch),
                 'jName': iJournalName,
                 'scen': iScenario,
-                'state': JSON.stringify(iGameState)
+                'state': JSON.stringify(iGameState),
             };
-            const iData = await nos2.DBconnect.sendCommand(theCommands);
-            return iData;       //  an array with the new world in it?
-        }
+            this.thisWorldDR = this.worldsCR.doc(iWorldCode);
+            await this.thisWorldDR.set(theData);
+            this.joinWorld(theWorldCode);
 
-        catch (msg) {
+            return theWorldCode;
+        } catch (msg) {
             console.log('makeNewWorld() error: ' + msg);
         }
 
     },
 
-    addTeam: async function (iWorld, iCode, iName) {
-        try {
-            const theCommands = {"c" : "addTeam", "w": iWorld, "code": iCode, "name": iName};
-            const iData = await nos2.DBconnect.sendCommand(theCommands);
-        }
+    joinWorld: async function (iWorldCode) {
+        this.thisWorldDR = this.worldsCR.doc(iWorldCode);
 
-        catch (msg) {
+        const snap = await this.thisWorldDR.get();
+        if (snap.exists) {
+            this.teamsCR = this.thisWorldDR.collection("teams");
+            this.resultsCR = this.thisWorldDR.collection("results");
+            this.dataPacksCR = this.thisWorldDR.collection("dataPacks");
+            return snap.data();
+        }
+        return null;
+    },
+
+    addTeam: async function (iCode, iName, iBalance) {
+        try {
+            await this.teamsCR.doc(iCode).set({
+                teamCode: iCode,
+                teamName: iName,
+                balance: iBalance,
+            });
+            const iData = await fireConnect.sendCommand(theCommands);
+        } catch (msg) {
             console.log('addTeam() error: ' + msg);
         }
     },
@@ -97,52 +147,51 @@ nos2.DBconnect = {
      */
     getWorldData: async function (iWorldCode) {
         try {
-            const theCommands = {"c": "getWorldData", "code": iWorldCode};
-            const out = await nos2.DBconnect.sendCommand(theCommands);
-            return out.length == 0 ? null : out[0];
-        }
-
-        catch (msg) {
+            const docSnap = await this.worldsCR.doc(iWorldCode).get();
+            if (docSnap.exists) {
+                return docSnap.data();
+            }
+            return null;
+        } catch (msg) {
             console.log('getWorldData() error: ' + msg);
         }
     },
 
     getMyWorlds: async function (iGod) {
+        let theWorlds = [];
         if (iGod) {
-            try {
-                const theCommands = {"c": "getMyWorlds", "g": iGod};
-                const out = await nos2.DBconnect.sendCommand(theCommands);
-                return out.length == 0 ? null : out;
-            } catch (msg) {
-                console.log('getMyWorlds() error: ' + msg);
-            }
-        } else {
-            return null;
+            const iterableDocSnap = await this.worldsCR.where("god", "==", iGod).get();
+            iterableDocSnap.forEach((ds) => {
+                theWorlds.push(ds.data())
+            });
         }
+        return theWorlds;
     },
 
-    getMyTeams: async function (iWorldID) {
-        if (iWorldID) {
+    getMyTeams: async function (iworldCode) {
+        let theTeams = [];
+        if (iworldCode) {
             try {
-                const theCommands = {"c": "getMyTeams", "w": iWorldID};
-                const out = await nos2.DBconnect.sendCommand(theCommands);
-                return out.length == 0 ? null : out;
+                const iterableDocSnap = await this.teamsCR.get();
+                iterableDocSnap.forEach((ds) => {
+                    theTeams.push(ds.data())
+                });
+
             } catch (msg) {
                 console.log('getMyTeams() error: ' + msg);
             }
-        } else {
-            return null;
         }
+        return theTeams;
     },
 
     savePaper: async function (iPaper) {
 
         let theCommands = {
-            "teamID": iPaper.teamID, "teamName" : iPaper.teamName,
+            "teamID": iPaper.teamID, "teamName": iPaper.teamName,
             "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
-            "packs" : JSON.stringify(iPaper.packs),     //  because it's an array, we'll store it as a string
-            "references" : JSON.stringify(iPaper.references),
-            "status" : iPaper.status,
+            "packs": JSON.stringify(iPaper.packs),     //  because it's an array, we'll store it as a string
+            "references": JSON.stringify(iPaper.references),
+            "status": iPaper.status,
         };
 
         try {
@@ -151,15 +200,13 @@ nos2.DBconnect = {
                 theCommands.id = iPaper.dbid;   //  because that's the name of the field in Paper.
             } else {
                 theCommands.c = "newPaper";
-                theCommands.worldID = nos2.state.worldID;
+                theCommands.worldCode = nos2.state.worldCode;
             }
 
-            const out = await nos2.DBconnect.sendCommand(theCommands);
+            const out = await fireConnect.sendCommand(theCommands);
 
             return out;
-        }
-
-        catch (msg) {
+        } catch (msg) {
             console.log('savePaper() error: ' + msg);
         }
     },
@@ -168,14 +215,12 @@ nos2.DBconnect = {
         try {
             if (iPaperID) {
                 theCommands = {"c": "submitPaper", "id": iPaperID, "s": iNewStatus};
-                const iData = await nos2.DBconnect.sendCommand(theCommands);
+                const iData = await fireConnect.sendCommand(theCommands);
                 return iData;
             } else {
                 alert("There is no 'current' paper to submit.");
             }
-        }
-
-        catch (msg) {
+        } catch (msg) {
             console.log('submitPaper() error: ' + msg);
         }
     },
@@ -202,14 +247,12 @@ nos2.DBconnect = {
 
             if (iPaperID) {
                 theCommands = {"c": "judgePaper", "p": iPaperID, "s": tStatus, 'ec': iEdComments};
-                const iData = await nos2.DBconnect.sendCommand(theCommands);
+                const iData = await fireConnect.sendCommand(theCommands);
                 return iData;
             } else {
                 alert("There is no paper to submit.");
             }
-        }
-
-        catch (msg) {
+        } catch (msg) {
             console.log('submitPaper() error: ' + msg);
         }
 
@@ -217,13 +260,18 @@ nos2.DBconnect = {
 
     getGodData: async function (iUsername) {
         try {
-            const out = await nos2.DBconnect.sendCommand({"c": "getGodData", "u": iUsername});
-            if (out.length == 0) {
-                return null;
-            } else if (out.length == 1) {
-                return out[0];
+            const docSnap = await this.godsCR.doc(iUsername).get();
+            if (docSnap.exists) {
+                return docSnap.data();
             } else {
-                throw ("Too many people with the same username!");
+                console.log("Making a new God: " + iUsername);
+                const newGodRef = await this.godsCR.doc(iUsername);
+                newGodRef.set({
+                    godName: iUsername,
+                    godPassword: "foo"
+                });
+                const newGodSnap = await newGodRef.get();
+                return newGodSnap.data();
             }
         } catch (e) {
             console.log('getGodData() error: ' + e);
@@ -232,18 +280,18 @@ nos2.DBconnect = {
 
     newGod: async function (iUsername) {
         try {
-            const out = await nos2.DBconnect.sendCommand({"c": "newGod", "u": iUsername});
+            const out = await fireConnect.sendCommand({"c": "newGod", "u": iUsername});
             return out;
         } catch (e) {
             console.log('newGod() error: ' + e);
         }
     },
 
-    getPaperPreview : async  function( iPaperID ) {
+    getPaperPreview: async function (iPaperID) {
         let out = null;
         if (iPaperID) {
             try {
-                out = await nos2.DBconnect.sendCommand({"c": "getPaperPreview", "paperID": iPaperID});
+                out = await fireConnect.sendCommand({"c": "getPaperPreview", "paperID": iPaperID});
             } catch (e) {
                 console.log('getPaperPreview() error: ' + e);
             }
@@ -251,11 +299,11 @@ nos2.DBconnect = {
         return out;
     },
 
-    getPublishedJournal: async function (iWorldID) {
+    getPublishedJournal: async function (iworldCode) {
         let out = null;
-        if (iWorldID) {
+        if (iworldCode) {
             try {
-                out = await nos2.DBconnect.sendCommand({"c": "getJournal", "w": iWorldID});
+                out = await fireConnect.sendCommand({"c": "getJournal", "w": iworldCode});
             } catch (e) {
                 console.log('getPublishedJournal() error: ' + e);
             }
@@ -263,13 +311,13 @@ nos2.DBconnect = {
         return out;
     },
 
-    getPapers: async function (iWorldID, iTeamID = null) {
-        if (iWorldID) {     //  if iTeamID is null, the getPapers command will get them for all teams
+    getPapers: async function (iworldCode, iTeamID = null) {
+        if (iworldCode) {     //  if iTeamID is null, the getPapers command will get them for all teams
             let out = [];
             try {
-                const dbout = await nos2.DBconnect.sendCommand({"c": "getPapers", "w": iWorldID, "t": iTeamID});
+                const dbout = await fireConnect.sendCommand({"c": "getPapers", "w": iworldCode, "t": iTeamID});
 
-                dbout.forEach( dbp => {
+                dbout.forEach(dbp => {
                     out.push(Paper.paperFromDBArray(dbp));  //  convert to Papers
                 });
                 return out.length == 0 ? null : out;
@@ -283,11 +331,11 @@ nos2.DBconnect = {
 
     },
 
-    getMyDataPacks : async function(iWorld, iTeam) {
+    getMyDataPacks: async function (iWorld, iTeam) {
         if (iWorld && iTeam) {
             let dataPacksOut = [];
             try {
-                const theDBPacks = await nos2.DBconnect.sendCommand({
+                const theDBPacks = await fireConnect.sendCommand({
                     c: "getMyDataPacks",
                     w: iWorld,
                     t: iTeam
@@ -310,9 +358,9 @@ nos2.DBconnect = {
      * @param iText
      * @param iPaper
      */
-    appendMessageToConvo :  function(iText, iPaper) {
-        const theCommand = {c : "appendToConvo", t : iText, p : iPaper};
-        nos2.DBconnect.sendCommand(theCommand);
+    appendMessageToConvo: function (iText, iPaper) {
+        const theCommand = {c: "appendToConvo", t: iText, p: iPaper};
+        fireConnect.sendCommand(theCommand);
     }
 
 };

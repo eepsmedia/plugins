@@ -49,7 +49,7 @@ let nos2 = {
     thePapers : {},     //  keys will be paper IDs
 
     constants : {
-        version : "000a",
+        version : "000b",
 
         kAdminPhaseNoGod : 1,
         kAdminPhaseNoWorld : 2,

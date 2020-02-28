@@ -37,8 +37,20 @@ univ.userAction = {
         let tWorldCode = document.getElementById("worldCodeBox").value;
 
         if (tWorldCode) {
-            univ.playPhase = univ.constants.kPhaseNoTeam;
-            await univ.setWorld( tWorldCode );
+            const tWorldData = await fireConnect.joinWorld(tWorldCode);
+
+            if (tWorldData) {
+                univ.state.worldCode = tWorldData.code;
+                univ.state.epoch = tWorldData.epoch;
+                const tState = JSON.parse(tWorldData.state);
+
+                univ.state.truth = tState.truth;
+
+                univ.playPhase = univ.constants.kPhaseNoTeam;
+
+            } else {
+                console.log("About " + iWorldCode + " ...  it doesn't exist.");
+            }
         } else {
             alert("You need to enter a code into the box!");
         }
@@ -46,31 +58,33 @@ univ.userAction = {
         univ.ui.update();
     },
 
-    joinTeamByID : async function( iTeamID, iTeamName ) {
-        univ.state.teamID = iTeamID;
+    joinTeamByTeamCode: async function (iTeamCode, iTeamName) {
+        univ.state.teamCode = iTeamCode;
         univ.state.teamName = iTeamName;
         univ.playPhase = univ.constants.kPhasePlaying;
 
-        const theDBResults = await univ.DBconnect.getKnownResults();
+        fireConnect.univ.rememberTeamDocumentReference(univ.state.teamCode);
+
+        const theKnownResults = await fireConnect.univ.getKnownResults();
 
         //  this need not be awaited.
-        univ.CODAPconnect.saveResultsToCODAP( theDBResults );     //  add our known-from-before results to CODAP
+        univ.CODAPconnect.saveResultsToCODAP(theKnownResults);     //  add our known-from-before results to CODAP
 
         univ.ui.update();
     },
 
-    observe : async function() {
+    observe: async function () {
         if (univ.telescopeView.selectedPoint) {
             await univ.doObservation(univ.telescopeView.selectedPoint);
             univ.ui.update();
         }
     },
 
-    snap : async function() {
+    snap: async function () {
         await univ.makeSnapshot();
     },
 
-    saveSnapshot : async function() {
-        univ.DBconnect.saveCurrentSnapshot();
+    saveSnapshot: async function () {
+        fireConnect.univ.saveCurrentSnapshot();
     }
 };

@@ -30,6 +30,7 @@ limitations under the License.
  * This is a class to hold the result of one observation, locally to this app
  * DO NOT CONFUSE THIS with a record in the `results` table of the nos2 database,
  * even though the two things have  1-1 correspondence!
+ *
  */
 class Result {
 
@@ -38,14 +39,14 @@ class Result {
 
         if (iExtras) {
             this.epoch = iExtras.epoch;
-            this.teamID = iExtras.teamID;
+            this.teamCode = iExtras.teamCode;     //  short name of the original team
             this.source = iExtras.source;
             this.dbid = iExtras.dbid;
             this.selected = iExtras.selected;
             this.caseID = iExtras.caseID;       //  the ID from CODAP
         } else {
             this.epoch = univ.state.epoch;
-            this.teamID = univ.state.teamID;
+            this.teamCode = univ.state.teamCode;
             this.source = univ.constants.kLocalSourceString;
             this.dbid = 0;
             this.selected = false;
@@ -58,11 +59,23 @@ class Result {
         let out = this.data;
         out.dbid = this.dbid;
         out.epoch = this.epoch;
-        out.teamID = this.teamID;
+        out.teamCode = this.teamCode;
         out.source = this.source;
 
         return out;
     }
+
+    toFireStoreObject() {
+        let out = {data : this.data};
+        out.dbid = this.dbid;
+        out.epoch = this.epoch;
+        out.teamCode = this.teamCode;
+        out.source = this.source;
+
+        return out;
+
+    }
+
 
     toString() {
         return (this.data.O + "O " + this.data.R + "R " + this.data.G + "G " + this.data.B + "B");
@@ -111,7 +124,7 @@ Result.resultFromCODAPValues = function(iValues) {
     out = new Result(theData, {
         dbid : iValues.dbid,
         epoch : iValues.epoch,
-        teamID : iValues.teamID,
+        teamCode : iValues.teamID,
         source : iValues.source,
         selected : iValues.selected,
         caseID : iValues.caseID,

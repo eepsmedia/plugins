@@ -38,7 +38,7 @@ nos2.ui = {
 
     initialize : async function() {
         //  get all packs from the database
-        this.packs = await nos2.DBconnect.getMyDataPacks( nos2.state.worldID, nos2.state.teamID);
+        this.packs = await fireConnect.getMyDataPacks( nos2.state.worldCode, nos2.state.teamCode);
         //  update() will get called
     },
 
@@ -73,7 +73,7 @@ nos2.ui = {
             document.getElementById('paperAuthorsBox').value = thePaper.authors;
             document.getElementById('paperTextBox').value = thePaper.text;
             document.getElementById('paperConvoHistory').innerHTML = thePaper.convo;
-            document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? thePaper.teamName : "-");
+            document.getElementById('paperTeamBox').innerHTML = (thePaper.teamCode ? thePaper.teamName : "-");
 
         } else {
             nos2.currentPaper = null;
@@ -105,20 +105,6 @@ nos2.ui = {
 
         }
     },
-
-/*
-    makeDataPackRadioButtons : async function() {
-        this.packs = await nos2.DBconnect.getMyDataPacks( nos2.state.worldID, nos2.state.teamID);
-
-        let out = "";
-        this.packs.forEach( pk => {
-            out += "<input type='radio' name='dataPackChoice' value=" + pk.dbid +
-                " onChange='nos2.ui.displayOneDataPack(" + pk.dbid + ")'>" + pk.theTitle + "<br>";
-        });
-
-        return out;
-    },
-*/
 
 
     makeDataPackMenuOptions : async function( iCurrentPack ) {
@@ -196,7 +182,7 @@ nos2.ui = {
 
         //  all the data we need to await...
 
-        const pMyPapers = nos2.DBconnect.getPapers(nos2.state.worldID, nos2.state.teamID);    //  array of class Paper
+        const pMyPapers = fireConnect.getPapers(nos2.state.worldCode, nos2.state.teamCode);    //  array of class Paper
         tPapers = await pMyPapers;
 
         //  assemble the nos2.thePapers object by parsing the array from the DB;
@@ -216,7 +202,7 @@ nos2.ui = {
             nos2.constants.version + " | " +
             nos2.whence +
             (nos2.state.worldCode ? " | " + nos2.state.worldCode  : "") +
-            (nos2.state.teamID ? " | " + nos2.state.teamName : "") + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+            (nos2.state.teamCode ? " | " + nos2.state.teamName : "") + "&nbsp;&nbsp;&nbsp;&nbsp;" +
             "<button onclick='nos2.logout()'>log out</button>";
 
 
@@ -239,7 +225,7 @@ nos2.ui = {
 
         if (nos2.writerPhase === nos2.constants.kWriterPhaseNoTeam) {
             //  get the team list only if we're in this phase.
-            const tTeams = await nos2.DBconnect.getMyTeams(nos2.state.worldID);
+            const tTeams = await fireConnect.getMyTeams(nos2.state.worldCode);
             const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
 
             if (tTeams) {
@@ -271,7 +257,7 @@ nos2.ui = {
         //  get all packs from the database. This is an array of DataPacks, most recent first.
         //  we get them here because they might have been changed by another team member.
 
-        this.packs = await nos2.DBconnect.getMyDataPacks( nos2.state.worldID, nos2.state.teamID);
+        this.packs = await fireConnect.getMyDataPacks( nos2.state.worldCode, nos2.state.teamCode);
         nos2.currentPack = nos2.getCurrentPack();   //  depends on currentPaper. Null if nonexistent.
 
         if (nos2.currentPack) {
@@ -283,7 +269,8 @@ nos2.ui = {
 
         //  update the full nos2
 
-        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(nos2.state.worldID);
+        document.getElementById("journalDiv").innerHTML =
+            await fireConnect.getPublishedJournal(nos2.state.worldCode);
 
 
     }

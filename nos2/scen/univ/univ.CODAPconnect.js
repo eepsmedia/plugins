@@ -88,6 +88,15 @@ univ.CODAPconnect = {
 
         const createItemsResult = await codapInterface.sendRequest(makeItemsMessage);
 
+        codapInterface.sendRequest({
+            "action": "create",
+            "resource": "component",
+            "values": {
+                "type": "caseTable",
+                "dataContext": univ.constants.kUnivDataSetName,
+            }
+        })
+
     },
 
     selectTheseCases : async function( iDataContextName, iCaseIDList )  {
@@ -228,8 +237,8 @@ univ.CODAPconnect = {
 
                 attrs: [ // note how this is an array of objects.
                     {name: "dbid", type: 'numeric', precision : 0, description: "database ID"},
-                    {name: "O", type: 'numeric', precision : 0, description: "# orange"},
                     {name: "R", type: 'numeric', precision : 0, description: "# red"},
+                    {name: "O", type: 'numeric', precision : 0, description: "# orange"},
                     {name: "G", type: 'numeric', precision : 0, description: "# blue"},
                     {name: "B", type: 'numeric', precision : 0, description: "# green"},
                     {name: "col", type: 'numeric', precision : 0, description: "column of upper left corner"},
@@ -237,7 +246,7 @@ univ.CODAPconnect = {
                     {name: "epoch", type: 'numeric', precision : 0, description: "when was this observation made?"},
 
                     {name: "dim", type: 'categorical', description: "size of the observation"},
-                    {name: "teamID", type: 'numeric', precision : 0, description: "which team (ID) found this"},
+                    {name: "teamCode", type: 'numeric', precision : 0, description: "which team found this"},
                     {name: "source", type: 'categorical', description: "publication, if any"},
                 ]
             }

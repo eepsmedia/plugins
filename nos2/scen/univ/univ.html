@@ -41,6 +41,13 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <meta charset="UTF-8">
     <title>Four-Color Universe</title>
 
+    <!--firebase setup-->
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-firestore.js"></script>
+
+    <script src="../../fireConnect.js" language="javascript"></script>
+
+
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
 
@@ -60,11 +67,11 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <script src="../../../common/TEEUtils.js"></script>
 
     <script src="../../nos2.js"></script>
-    <script src="../../nos2.DBconnect.js"></script>
+    <script src="../../fireConnect.js"></script>
     <script src="univ.js"></script>
     <script src="univ.model.js"></script>
     <script src="univ.ui.js"></script>
-    <script src="univ.DBconnect.js"></script>
+    <script src="fireConnect.univ.js"></script>
     <script src="univ.userAction.js"></script>
     <script src="univ.CODAPconnect.js"></script>
     <script src="univ.selectionManager.js"></script>
@@ -84,7 +91,8 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     </script>
 
 </head>
-<body>
+
+<body onload="fireConnect.initialize()">
 
 <div id="univStatusBarDiv"></div>
 

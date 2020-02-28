@@ -27,8 +27,6 @@ limitations under the License.
 */
 
 nos2.ui = {
-
-
     initialize: function () {
         nos2.ui.update();
     },
@@ -44,7 +42,7 @@ nos2.ui = {
         document.getElementById('paperTextBox').innerHTML = thePaper.text;
         document.getElementById('paperEditorCommentsBox').value = thePaper.editorComments;  //  because it's a span
         document.getElementById('paperAuthorCommentsBox').innerHTML = thePaper.authorComments;
-        document.getElementById('paperTeamBox').innerHTML = (thePaper.teamID ? nos2.state.teamName : "-");
+        document.getElementById('paperTeamBox').innerHTML = (thePaper.teamCode ? nos2.state.teamName : "-");
 
         this.currentPack = nos2.getCurrentPack();   //  depends on currentPaper. Null if nonexistent
     },
@@ -68,8 +66,8 @@ nos2.ui = {
     update: async function () {
         //  all the data we need to await...
 
-        const pAllPapers = nos2.DBconnect.getPapers(nos2.state.worldID, null);
-        const pAllTeams = nos2.DBconnect.getMyTeams(nos2.state.worldID);
+        const pAllPapers = fireConnect.getPapers(nos2.state.worldCode, null);
+        const pAllTeams = fireConnect.getMyTeams(nos2.state.worldCode);
 
         const [theTeams, thePapers] = await Promise.all([pAllTeams, pAllPapers]);
 
@@ -123,7 +121,7 @@ nos2.ui = {
                     text += "<tr><td>" + p.dbid + "</td>"
                     text += "<td><button onclick='nos2.ui.openPaper(" + p.dbid + ")'>read</button>&nbsp;" + p.title + "</td>";
                     text += "<td>" + p.status + "</td>";
-                    text += "<td>" + (p.teamID ? nos2.theTeams[p.teamID].code : "-") + "</td>";
+                    text += "<td>" + (p.teamCode ? nos2.theTeams[p.teamCode].code : "-") + "</td>";
                     text += "</tr>";
                 }
             });
@@ -138,11 +136,10 @@ nos2.ui = {
             tPapersDiv.innerHTML = "<p>Hooray! All caught up!</p>";
         }
 
-
-
         //  update the full nos2
 
-        document.getElementById("journalDiv").innerHTML = await nos2.DBconnect.getPublishedJournal(nos2.state.worldID);
+        document.getElementById("journalDiv").innerHTML =
+            await fireConnect.getPublishedJournal(nos2.state.worldCode);
 
     }
 };

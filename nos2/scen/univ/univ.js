@@ -53,17 +53,17 @@ let univ = {
     currentSnapshot : null,
 
 
+
     freshState : {
         size : 12,
         when : 1954,
-        worldID : null,
         worldCode : null,
-        teamID : null,
+        teamCode : null,
         teamName : null
     },
 
     constants : {
-        version : "000a",
+        version : "000b",
 
         kPhaseNoWorld : 20,
         kPhaseNoTeam : 30,
@@ -73,6 +73,8 @@ let univ = {
         kUnivDataSetTitle : "four-color universe",
         kUnivCollectionName : "univ",
         kLocalSourceString : "local",
+
+        kInitialBalance : 10000,
     },
 
     initialize : function() {
@@ -107,15 +109,13 @@ let univ = {
 
     /**
      * Typically called from userAction, when we join a world.
-     * Note: the worldID is the unique integer in the db;
-     * worldCode is the memorable text ID for that world in the DB
+     * Note: worldCode is the memorable text ID for that world in the DB
      * @param iWorldCode
      */
     setWorld : async function( iWorldCode ) {
-        const tWorldData = await nos2.DBconnect.getWorldData(iWorldCode);
+        const tWorldData = await fireConnect.joinWorld(iWorldCode);
 
         if (tWorldData) {
-            univ.state.worldID = tWorldData.id;
             univ.state.worldCode = tWorldData.code;
             univ.state.epoch = tWorldData.epoch;
             const tState = JSON.parse( tWorldData.state);
@@ -152,12 +152,10 @@ let univ = {
 
         const tNewResult = new Result(data);      //  encapsulate all this information
         univ.telescopeView.latestResult = tNewResult;       //  make sure the telescope knows for its display
-        const theNewID = await univ.DBconnect.saveNewResult(tNewResult);     //  save to DB, get the db ID
+        const theNewID = await fireConnect.univ.saveNewResult(tNewResult);     //  save to DB, get the db ID
         tNewResult.dbid = theNewID;      //  make sure that's in the values
 
         console.log("New result " + tNewResult.toString() + " added and got dbid = " + theNewID);
-
-        univ.DBconnect.assertKnowledge(theNewID);
 
         univ.CODAPconnect.saveResultsToCODAP(tNewResult);  //  store it in CODAP. This has the dbid field.
     },
@@ -167,6 +165,8 @@ let univ = {
      */
     makeSnapshot : function() {
         this.currentSnapshot = new DataPack();
+
+        //  dataView.thePaper is the SVG paper, not a journal article!
         this.currentSnapshot.theFigure = univ.dataView.thePaper.innerSVG();
         this.currentSnapshot.figureWidth = univ.dataView.thePaper.attr("width");
         this.currentSnapshot.figureHeight = univ.dataView.thePaper.attr("height");
