@@ -40,27 +40,14 @@ To make this work, we do several things:
 * Whenever we join a game -- enter a fresh CODAP doc -- we retrieve all KNOWN data from the database
   and add it to CODAP.
 
-So see that in `univ.ui.update`, when we update `dataView`, we go out to CODAP every time and get
+So see that in `nos2.ui.update`, when we update `dataView`, we go out to CODAP every time and get
 the data.
 
  */
 
 let univ = {
 
-    whence : "local",
     playPhase : null,
-    state : {},
-    currentSnapshot : null,
-
-
-
-    freshState : {
-        size : 12,
-        when : 1954,
-        worldCode : null,
-        teamCode : null,
-        teamName : null
-    },
 
     constants : {
         version : "000b",
@@ -72,20 +59,21 @@ let univ = {
         kUnivDataSetName : "univ",
         kUnivDataSetTitle : "four-color universe",
         kUnivCollectionName : "univ",
-        kLocalSourceString : "local",
 
         kInitialBalance : 10000,
-    },
 
-    initialize : function() {
-        this.currentSnapshot = new DataPack();
-        univ.CODAPconnect.initialize(null);
+},
 
+    initialize : async function(iApp) {
+        nos2.app = iApp;
+        await univ.CODAPconnect.initialize(null);
+
+        fireConnect.initialize();
         univ.playPhase = univ.constants.kPhaseNoWorld;
-        univ.state.size = 12;
+
+        nos2.currentFigure = new Figure();      //  not in nos2.state...
 
         //  univ.model.initialize();
-        univ.universeView.initialize( document.getElementById("universe") );
         univ.telescopeView.initialize( document.getElementById("telescope") );
         univ.dataView.initialize( document.getElementById("dataView") );
 
@@ -98,13 +86,17 @@ let univ = {
             univ.selectionManager.codapSelectsCases
         );
 
-        univ.ui.update();
+        nos2.ui.update();
+    },
+
+    observationCosts :  function (size) {
+        if (size === 3) return 3000;
+        return 5000;
     },
 
     logout : function() {
-        this.state = univ.freshState;
         univ.playPhase = univ.constants.kPhaseNoWorld;
-        univ.ui.update();
+        nos2.ui.update();
     },
 
     /**
@@ -116,11 +108,11 @@ let univ = {
         const tWorldData = await fireConnect.joinWorld(iWorldCode);
 
         if (tWorldData) {
-            univ.state.worldCode = tWorldData.code;
-            univ.state.epoch = tWorldData.epoch;
+            nos2.state.worldCode = tWorldData.code;
+            nos2.epoch = tWorldData.epoch;
             const tState = JSON.parse( tWorldData.state);
 
-            this.state.truth = tState.truth;
+            univ.model.truth = tState.truth;
 
         } else {
             console.log("About " + iWorldCode + " ...  it doesn't exist.");
@@ -134,10 +126,21 @@ let univ = {
      * @returns {Promise<void>}
      */
     doObservation : async function(iPoint) {
+
+        const theCost = this.observationCosts(univ.telescopeView.experimentSize);
+        const theBalance = nos2.theTeams[nos2.state.teamCode].balance;
+
+        if (theCost > theBalance) {
+            alert(`You dont have the $${theCost} you need for that observation. Oops!`);
+            return;
+        }
+
+        fireConnect.adjustBalance(nos2.state.teamCode, -theCost);
+
         const [ULCc, ULCr] = iPoint;
 
         //  the specific data appropriate to this scenario.
-        //  epoch, team, and source are added when we make a Result object.
+        //  epoch, team, and paper are added when we make a Result object.
         let data = {
             O : 0, R : 0, G : 0, B : 0,
             col : ULCc, row : ULCr,
@@ -145,49 +148,20 @@ let univ = {
         };
         for ( let c = 0; c < univ.telescopeView.experimentSize; c++ ) {
             for (let r = 0; r < univ.telescopeView.experimentSize; r++) {
-                let letter = univ.state.truth[ULCc + c][ULCr + r];
+                let letter = univ.model.truth[ULCc + c][ULCr + r];
                 data[letter]++;
             }
         }
 
         const tNewResult = new Result(data);      //  encapsulate all this information
         univ.telescopeView.latestResult = tNewResult;       //  make sure the telescope knows for its display
-        const theNewID = await fireConnect.univ.saveNewResult(tNewResult);     //  save to DB, get the db ID
-        tNewResult.dbid = theNewID;      //  make sure that's in the values
 
-        console.log("New result " + tNewResult.toString() + " added and got dbid = " + theNewID);
-
+        const tDBID = fireConnect.saveResultToDB(tNewResult);
+        tNewResult.dbid = tDBID;
+        nos2.theResults[tDBID] = tNewResult;
         univ.CODAPconnect.saveResultsToCODAP(tNewResult);  //  store it in CODAP. This has the dbid field.
     },
 
-    /**
-     * Called from userActions
-     */
-    makeSnapshot : function() {
-        this.currentSnapshot = new DataPack();
-
-        //  dataView.thePaper is the SVG paper, not a journal article!
-        this.currentSnapshot.theFigure = univ.dataView.thePaper.innerSVG();
-        this.currentSnapshot.figureWidth = univ.dataView.thePaper.attr("width");
-        this.currentSnapshot.figureHeight = univ.dataView.thePaper.attr("height");
-
-        this.currentSnapshot.theResults = univ.dataView.results;
-        document.getElementById("snapshotCaption").value = this.currentSnapshot.theCaption;
-        document.getElementById("snapshotTitle").value = this.currentSnapshot.theTitle;
-        document.getElementById("snapshotNotes").value = this.currentSnapshot.theNotes;
-
-        //  change to the thumbnail tab
-
-        this.goToTabNumber(2);
-
-        //  The thumbnail is for DISPLAY.
-
-        const theThumbnail = document.getElementById("thumbnail");
-        theThumbnail.innerHTML = this.currentSnapshot.theFigure;
-        const theViewBoxString = "0 0 " + this.currentSnapshot.figureWidth + " " + this.currentSnapshot.figureHeight;
-        theThumbnail.setAttribute("viewBox", theViewBoxString);
-
-    },
 
     convertCODAPValuesToResults : function( iValues, iSelected) {
         let out = [];
@@ -230,6 +204,7 @@ let univ = {
     },
 
     goToTabNumber : function(iTab) {
+        nos2.ui.update();
         $( "#tabs" ).tabs(  "option", "active", iTab );
     },
 

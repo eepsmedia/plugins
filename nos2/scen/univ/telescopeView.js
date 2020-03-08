@@ -51,19 +51,18 @@ univ.telescopeView = {
     makeUniformArray: function (iFill) {
         let out = [];
 
-        for (let r = 0; r < univ.state.size; r++) {
+        for (let r = 0; r < univ.model.size; r++) {
             out[r] = [];
-            for (let c = 0; c < univ.state.size; c++) {
+            for (let c = 0; c < univ.model.size; c++) {
                 out[r][c] = iFill;
             }
         }
-
         return out;
     },
 
     pinColRow: function (iPoint, iSize) {
-        if (iPoint[1] >= univ.state.size - iSize) iPoint[1] = univ.state.size - iSize;
-        if (iPoint[0] >= univ.state.size - iSize) iPoint[0] = univ.state.size - iSize;
+        if (iPoint[1] >= univ.model.size - iSize) iPoint[1] = univ.model.size - iSize;
+        if (iPoint[0] >= univ.model.size - iSize) iPoint[0] = univ.model.size - iSize;
 
         return iPoint;
     },
@@ -77,7 +76,6 @@ univ.telescopeView = {
         }
         return iArray;
     },
-
 
     prepareArray: function () {
         let tArray = this.makeUniformArray("K");
@@ -94,10 +92,10 @@ univ.telescopeView = {
         const w = this.thePaper.attr("width");
         const h = this.thePaper.attr("height");
         const wh = w < h ? w : h;   //  smaller of the two, so everything fits
-        const box = wh / univ.state.size;
+        const box = wh / univ.model.size;
 
-        for (let row = 0; row < univ.state.size; row++) {
-            for (let col = 0; col < univ.state.size; col++) {
+        for (let row = 0; row < univ.model.size; row++) {
+            for (let col = 0; col < univ.model.size; col++) {
                 const tx = col * box + 1;
                 const ty = row * box + 1;
                 const theLetter = iArray[col][row];
@@ -118,7 +116,7 @@ univ.telescopeView = {
 
                     //  when pointing changes, blank the latest result display
                     this.latestResult = null;
-                    univ.ui.update();
+                    nos2.ui.update();
 
                 });
             }
@@ -138,7 +136,7 @@ univ.telescopeView = {
     displayLatestResult: function () {
         const tLatestResultText = document.getElementById("latestResultText");
         if (this.latestResult) {
-            tLatestResultText.innerHTML = JSON.stringify(this.latestResult.data);
+            tLatestResultText.innerHTML = this.latestResult.toString();
         } else {
             tLatestResultText.innerHTML = "click <b>collect data</b> to get a new result";
         }

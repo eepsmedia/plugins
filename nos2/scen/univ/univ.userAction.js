@@ -29,62 +29,94 @@ limitations under the License.
 univ.userAction = {
 
     /**
-     * Try to join the world whose code is in the "worldCodeBox" box.
-     * If that world doesn't exist, alertthe user and return null
+     * Do all the things that can't be done in the "general" world-joining routine,
+     * e.g., getting the scenario-specific "truth"
      * @returns {Promise<void>}
      */
-    joinWorld: async function () {
-        let tWorldCode = document.getElementById("worldCodeBox").value;
+    postJoinWorldCallback: async function (iWorldData) {
 
-        if (tWorldCode) {
-            const tWorldData = await fireConnect.joinWorld(tWorldCode);
+        if (iWorldData) {
+            const tState = JSON.parse(iWorldData.state);
+            univ.model.truth = tState.truth;
+            univ.playPhase = univ.constants.kPhaseNoTeam;
 
-            if (tWorldData) {
-                univ.state.worldCode = tWorldData.code;
-                univ.state.epoch = tWorldData.epoch;
-                const tState = JSON.parse(tWorldData.state);
-
-                univ.state.truth = tState.truth;
-
-                univ.playPhase = univ.constants.kPhaseNoTeam;
-
-            } else {
-                console.log("About " + iWorldCode + " ...  it doesn't exist.");
-            }
         } else {
-            alert("You need to enter a code into the box!");
+            alert("(univ) About " + iWorldData.worldCode + " ...  it doesn't exist.");
         }
 
-        univ.ui.update();
+        nos2.ui.update();
     },
 
     joinTeamByTeamCode: async function (iTeamCode, iTeamName) {
-        univ.state.teamCode = iTeamCode;
-        univ.state.teamName = iTeamName;
+        nos2.state.teamCode = iTeamCode;
+        nos2.state.teamName = iTeamName;
         univ.playPhase = univ.constants.kPhasePlaying;
 
-        fireConnect.univ.rememberTeamDocumentReference(univ.state.teamCode);
+        fireConnect.rememberTeamDocumentReference(nos2.state.teamCode);
 
-        const theKnownResults = await fireConnect.univ.getKnownResults();
+        const theKnownResults = await nos2.getKnownResults();
 
         //  this need not be awaited.
         univ.CODAPconnect.saveResultsToCODAP(theKnownResults);     //  add our known-from-before results to CODAP
 
-        univ.ui.update();
+        nos2.ui.update();
+    },
+
+    changeSize : function() {
+        const sizeString = document.querySelector("input[name='chooseObservationSize']:checked").value;
+        univ.telescopeView.experimentSize = Number(sizeString);
+        univ.telescopeView.selectedPoint = null;
+        nos2.ui.update();
     },
 
     observe: async function () {
         if (univ.telescopeView.selectedPoint) {
             await univ.doObservation(univ.telescopeView.selectedPoint);
-            univ.ui.update();
+            nos2.ui.update();
         }
     },
 
-    snap: async function () {
-        await univ.makeSnapshot();
+    makeFigure : function() {
+        nos2.currentFigure = new Figure();  //  loads default text
+
+        //  dataView.thePaper is the SVG paper, not a journal article!
+        //  this loads image information fron the dataView into the figure's .guts.image members
+
+        nos2.currentFigure.guts.image.contents = univ.dataView.thePaper.innerSVG();
+        nos2.currentFigure.guts.image.width = univ.dataView.thePaper.attr("width");
+        nos2.currentFigure.guts.image.height = univ.dataView.thePaper.attr("height");
+
+        nos2.currentFigure.guts.results = univ.dataView.resultIDArray();
+
+        //  change to the edit Figure tab
+        univ.goToTabNumber(2);
     },
 
-    saveSnapshot: async function () {
-        fireConnect.univ.saveCurrentSnapshot();
+    saveFigure: async function () {
+        nos2.currentFigure.guts.text.caption = document.getElementById("snapshotCaption").value;
+        nos2.currentFigure.guts.text.title = document.getElementById("snapshotTitle").value;
+        nos2.currentFigure.guts.text.notes = document.getElementById("snapshotNotes").value;
+
+        fireConnect.saveFigureToDB(nos2.currentFigure);         //  not in univ, but rather in nos2
+        nos2.theFigures[(nos2.currentFigure.dbid)] = nos2.currentFigure;        //  save in the local array
+        //  nos2.currentFigure = new Figure();      //   maybe they want to keep working on it?
+
+        nos2.ui.update();
+    },
+
+    makeFigureCurrentByDBID: function (iDBID) {
+        console.log(`Setting current figure to ${iDBID}`);
+
+        nos2.currentFigure = nos2.theFigures[iDBID];
+
+        //  change to the edit Figure tab
+        univ.goToTabNumber(2);
+    },
+
+    deleteFigureByDBID: async function (iDBID) {
+        delete nos2.theFigures[iDBID];
+        fireConnect.deleteFigureByDBID(iDBID);  //  no need to await, I think
+        nos2.ui.update();
     }
+
 };

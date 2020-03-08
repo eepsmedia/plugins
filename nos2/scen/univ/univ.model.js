@@ -29,7 +29,6 @@ limitations under the License.
 univ.model = {
 
     size : 12,
-
     truth : [],
 
     initialize : function() {

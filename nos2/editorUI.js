@@ -33,28 +33,10 @@ nos2.ui = {
 
     openPaper :  function( iPaperID) {
         const thePaper = nos2.currentPaper = nos2.thePapers[iPaperID];    //  thePapers is a keyed object, not an array
+        nos2.currentFigure = (thePaper.guts.figures.length > 0) ? nos2.theFigures[thePaper.guts.figures[0]] : null;
 
         nos2.goToTabNumber(1);   //  the second tab
 
-        document.getElementById('paperStatusBox').innerHTML = "paper " + thePaper.dbid + " (" + thePaper.status + ")";    //  .innerHTML because it's a <td>
-        document.getElementById('paperTitleBox').innerHTML = thePaper.title;    //  .value because it's an <input>
-        document.getElementById('paperAuthorsBox').innerHTML = thePaper.authors;
-        document.getElementById('paperTextBox').innerHTML = thePaper.text;
-        document.getElementById('paperEditorCommentsBox').value = thePaper.editorComments;  //  because it's a span
-        document.getElementById('paperAuthorCommentsBox').innerHTML = thePaper.authorComments;
-        document.getElementById('paperTeamBox').innerHTML = (thePaper.teamCode ? nos2.state.teamName : "-");
-
-        this.currentPack = nos2.getCurrentPack();   //  depends on currentPaper. Null if nonexistent
-    },
-
-    erasePaper: function () {
-        $('#paperStatusBox').html("no paper selected");
-        $('#paperAuthorsBox').html("");    //  leave the authors in
-        $('#paperTitleBox').html("");
-        $('#paperTextBox').html("");
-        $('#paperTeamBox').html("");
-        $('#paperAuthorCommentsBox').html("");
-        $('#paperEditorCommentsBox').val("");
     },
 
     viewPaper : function(iPaperID, iInJournal) {
@@ -64,50 +46,60 @@ nos2.ui = {
     },
 
     update: async function () {
-        //  all the data we need to await...
-
-        const pAllPapers = fireConnect.getPapers(nos2.state.worldCode, null);
-        const pAllTeams = fireConnect.getMyTeams(nos2.state.worldCode);
-
-        const [theTeams, thePapers] = await Promise.all([pAllTeams, pAllPapers]);
+        //  nos2.thePapers already set when we entered the world.
 
         //  status bar
 
         document.getElementById("editorStatusBarDiv").innerHTML =
-            "editor | " + nos2.constants.version + " | " +
-            nos2.whence +
-            (nos2.state.worldCode ? " | " + nos2.state.worldCode : " | no world yet") +
-            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='nos2.logout()'>log out</button>";
-
+            `editor | ${nos2.state.worldCode ? nos2.state.worldCode : "no world yet"} | ${nos2.epoch}` +
+            "&emsp;&emsp;<button onclick='nos2.logout()'>log out</button>" + `&emsp;version ${nos2.constants.version} `;
 
         // main visibility
 
         const tJoinWorldDiv = document.getElementById("editorJoinWorldDiv");
         const tTabsDiv = document.getElementById("tabs");
-
+        const tReviewPaperDiv = document.getElementById("yesPaperToReview");
+        const tNoReviewPaperDiv = document.getElementById("noPaperToReview");
 
         tJoinWorldDiv.style.display = (nos2.editorPhase === nos2.constants.kEditorPhaseNoWorld ? "block" : "none");
         tTabsDiv.style.display = (nos2.editorPhase === nos2.constants.kEditorPhasePlaying ? "block" : "none");
 
-        //  fix the list of teams
+        tReviewPaperDiv.style.display = (nos2.currentPaper ? "block" : "none");
+        tNoReviewPaperDiv.style.display = (nos2.currentPaper ? "none" : "block");
 
-        nos2.theTeams = {};
-        if (theTeams) {
-            theTeams.forEach(t => {
-                nos2.theTeams[t.id] = t;
-            });
+
+        if (nos2.editorPhase === nos2.constants.kEditorPhasePlaying) {
+            //      papers list div
+
+            this.makeAndInstallPapersList();
+
+            //      ------      REVIEWING tab       -----------
+
+            if (nos2.currentPaper) {
+                console.log("display paper for reviewer");
+                document.getElementById("reviewPaperGuts").innerHTML = nos2.currentPaper.asHTML();  //  display the draft
+                document.getElementById("paperConvoHistory").innerHTML = nos2.constructConvoHTML(nos2.currentPaper);
+            }
+
+
+            //      -------     team info tab       -----------
+            this.makeAndInstallTeamsList();
+
+
+            //  update the full Journal
+            document.getElementById("journalDiv").innerHTML = await nos2.journal.constructJournalHTML();
         }
 
-        //  paper task table
+    },
 
-        nos2.thePapers = {};
+    makeAndInstallPapersList : function() {
+        //  first, make an array of papers (easier to sort)
 
-        if (thePapers) {
-            thePapers.forEach(p => {
-                nos2.thePapers[p.dbid] = p;
-            });
-        }
+        let thePapers = [];
 
+        Object.keys(nos2.thePapers).forEach( p => {
+            thePapers.push(nos2.thePapers[p]);
+        });
 
         const tPapersDiv = document.getElementById("paperTaskTable");
 
@@ -116,12 +108,12 @@ nos2.ui = {
 
         if (Array.isArray(thePapers)) {
             thePapers.forEach(p => {
-                if (p.status === nos2.constants.kPaperStatusSubmitted || p.status === nos2.constants.kPaperStatusReSubmitted) {
+                if (p.guts.status === nos2.constants.kPaperStatusSubmitted || p.guts.status === nos2.constants.kPaperStatusReSubmitted) {
                     tPaperCount++;
-                    text += "<tr><td>" + p.dbid + "</td>"
-                    text += "<td><button onclick='nos2.ui.openPaper(" + p.dbid + ")'>read</button>&nbsp;" + p.title + "</td>";
-                    text += "<td>" + p.status + "</td>";
-                    text += "<td>" + (p.teamCode ? nos2.theTeams[p.teamCode].code : "-") + "</td>";
+                    text += "<tr><td>" + p.guts.dbid + "</td>";
+                    text += `<td><button onclick='nos2.ui.openPaper("${p.guts.dbid}")'>read</button>&nbsp;${p.guts.title}</td>`;
+                    text += "<td>" + p.guts.status + "</td>";
+                    text += "<td>" + (p.guts.teamCode ? nos2.theTeams[p.guts.teamCode].teamCode : "-") + "</td>";
                     text += "</tr>";
                 }
             });
@@ -135,11 +127,25 @@ nos2.ui = {
         } else {
             tPapersDiv.innerHTML = "<p>Hooray! All caught up!</p>";
         }
+    },
 
-        //  update the full nos2
+    makeAndInstallTeamsList : function() {
+        //  convert the nos2.theTeams object into an array for display
+        let tTeams = [];
+        Object.keys(nos2.theTeams).forEach( tk => {
+            tTeams.push(nos2.theTeams[tk]);
+        });
 
-        document.getElementById("journalDiv").innerHTML =
-            await fireConnect.getPublishedJournal(nos2.state.worldCode);
+        const teamInfoDiv = document.getElementById("editorTeamInfoDiv");
 
-    }
+        let teamInfoGuts = "<table><tr><th>code</th><th>name</th><th>balance</th></tr>";
+
+        tTeams.forEach( t => {
+            teamInfoGuts += `<tr><td>${t.teamCode}</td><td>${t.teamName}</td><td>${t.balance}</td></tr>`;
+        });
+        teamInfoGuts += "</table>";
+
+        teamInfoDiv.innerHTML = teamInfoGuts;
+
+    },
 };

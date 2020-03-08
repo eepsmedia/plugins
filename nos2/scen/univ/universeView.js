@@ -59,7 +59,7 @@ univ.universeView = {
         const w = this.thePaper.attr("width");
         const h = this.thePaper.attr("height");
         const wh = w < h ? w : h;   //  smaller of the two, so everything fits
-        const box = wh/univ.state.size;
+        const box = wh/univ.model.size;
 
         for (let row=0; row < univ.model.size; row++) {
             for (let col=0; col < univ.model.size; col++) {

@@ -28,40 +28,45 @@ limitations under the License.
 ==========================================================================
 
 
-  LOCAL, TESTING:         http://localhost:8888/plugins/nos2/journalEditor.html
-  EEPS:         https://www.eeps.com/codap/nos2/journalEditor.html
-  XYZ:         https://codap.xyz/plugins/nos2/journalEditor.html
+  LOCAL, TESTING:         http://localhost:8888/plugins/nos2/nosJournalEditor.html
+  XYZ:         https://codap.xyz/plugins/nos2/nosJournalEditor.html
 
 -->
 
 <head>
     <meta charset="UTF-8">
-    <title>Journal Editor</title>
+    <title>Reviewer</title>
 
     <!--firebase setup-->
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-firestore.js"></script>
+
+    <script src="fireConnect.js"></script>
 
 
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
 
-    <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css" language="javascript">
+    <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css">
 
     <link rel='stylesheet' type='text/css' href='nos2.css'/>
 
-    <script src="../common/TEEUtils.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/jquery.min.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/jquery-ui.min.js" language="javascript"></script>
+    <script src="../common/TEEUtils.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
 
-    <script src="nos2.js" language="javascript"></script>
-    <script src="fireConnect.js" language="javascript"></script>
+    <script src="nos2.js"></script>
+    <script src="fireConnect.js"></script>
 
-    <script src="userAction.js" language="javascript"></script>
-    <script src="editorUI.js" language="javascript"></script>
-    <script src="strings.js" language="javascript"></script>
+    <script src="Journal.js"></script>
+    <script src="userAction.js"></script>
+    <script src="editorUI.js"></script>
+    <script src="strings.js"></script>
 
-    <script src="DataPack.js" language="javascript"></script>
-    <script src="Paper.js" language="javascript"></script>
+    <script src="Paper.js"></script>
+    <script src="Figure.js"></script>
+
+    <script src="scen/univ/Result.js"></script>
 
     <script>
         $(function () {
@@ -84,8 +89,21 @@ limitations under the License.
 
     </script>
 
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQAxZ9e0NmweiaF7lHS65bIIE-Lq1e3BU",
+            authDomain: "nature-of-science.firebaseapp.com",
+            databaseURL: "https://nature-of-science.firebaseio.com",
+            projectId: "nature-of-science",
+            storageBucket: "nature-of-science.appspot.com",
+            messagingSenderId: "199387340471",
+            appId: "1:199387340471:web:dfa5ad1aec4cfb484db732"
+        };
+
+    </script>
+
 </head>
-<body>
+<body onload=`nos2.initialize(6)`>
 
 <div id="paperPreview">
 
@@ -103,7 +121,10 @@ limitations under the License.
         <a href="journalAdmin.html" target="_blank">by following this link</a>.</p>
     <label for="worldCodeBox">World code: </label>
     <input type="text" id="worldCodeBox">
-    <button id="joinButton" onclick="nos2.userAction.joinWorld()">join</button>
+    <button id="joinButton"
+            onclick="nos2.userAction.makeOrJoinWorld(false, document.getElementById('worldCodeBox').value)">
+        join
+    </button>
     <br>
 </div>
 
@@ -111,9 +132,9 @@ limitations under the License.
 <div id="tabs">
     <ul>
         <li><a href="#list">list</a></li>
-        <li><a href="#editing">editing</a></li>
+        <li><a href="#reviewing">reviewing</a></li>
         <li><a href="#teams">team info</a></li>
-        <li><a href="#journal">nos2</a></li>
+        <li><a href="#journal">journal</a></li>
     </ul>
 
 
@@ -123,44 +144,40 @@ limitations under the License.
         <div id="paperTaskTable"></div>
     </div>
 
-    <div id="editing">
-        <h1>Editing</h1>
-        <table>
-            <tr>
-                <td><label for="paperStatusBox">status:</label></td>
-                <td id="paperStatusBox"></td>
-            </tr>
-            <tr>
-                <td><label for="paperTitleBox" size="50">title:</label></td>
-                <td id="paperTitleBox">title</td>
-            </tr>
-            <tr>
-                <td><label for="paperAuthorsBox" size="50">authors:</label></td>
-                <td id="paperAuthorsBox">authors</td>
-            </tr>
-            <tr>
-                <td><label for="paperTeamBox" size="50">team:</label></td>
-                <td id="paperTeamBox">team</td>
-            </tr>
-            <tr>
-                <td><label for="paperTextBox">text:</label></td>
-                <td id="paperTextBox">text</td>
-            </tr>
-            <tr>
-                <td><label for="paperEditorCommentsBox">editor:</label></td>
-                <td><textarea id="paperEditorCommentsBox" placeholder="Editor comments" rows="1" , cols="44"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="paperAuthorCommentsBox">author:</label></td>
-                <td id="paperAuthorCommentsBox" placeholder="Author comments" rows="1" , cols="44"></td>
-            </tr>
-        </table>
-        <button id="acceptPaperButton" onclick="nos2.userAction.judgePaper('accept')">accept</button>
-        <button id="rejectPaperButton" onclick="nos2.userAction.judgePaper('reject')">reject</button>
-        <button id="revisePaperButton" onclick="nos2.userAction.judgePaper('revise')">revise</button>
-        <button id="previewPaperButton" onclick="nos2.userAction.makePaperPreview( )">preview</button>
+    <!--    REVIEWING tab  -->
+
+    <div id="reviewing">
+        <h1>Reviewing Papers</h1>
+
+        <div id="yesPaperToReview">
+            <div id="reviewPaperGuts"></div>        <!--  displays the paper -->
+
+            <button id="acceptPaperButton" onclick="nos2.userAction.judgePaper(nos2.constants.kPaperStatusPublished)">accept</button>
+            <button id="rejectPaperButton" onclick="nos2.userAction.judgePaper(nos2.constants.kPaperStatusRejected)">reject</button>
+            <button id="revisePaperButton" onclick="nos2.userAction.judgePaper(nos2.constants.kPaperStatusRevise)">revise</button>
+            <button id="previewPaperButton" onclick="nos2.userAction.makePaperPreview( )">preview</button>
+
+            <!--        conversation section    -->
+            <details>
+                <summary>Messages with the Authors</summary>
+                <div>
+                    <div id="paperConvoHistory"></div>
+                    <label for="messageTextBox">message:</label>
+                    <button id="sendMessageButton" onclick="nos2.userAction.sendMessageFrom('editor')">
+                        send to authors
+                    </button>
+                    <br>
+                    <textarea id="messageTextBox" placeholder="Message to the authors" rows="5", cols="44"></textarea>
+                </div>
+
+            </details>
+        </div>
+
+        <div id="noPaperToReview">
+            <p>You have not selected a paper to review. Check the list!</p>
+        </div>
     </div>
+
 
     <div id="teams">
         <h1>Team Info</h1>
@@ -170,9 +187,7 @@ limitations under the License.
 
 
     <div id="journal">
-        <button id="refreshJournalButton" onclick="nos2.ui.update()">refresh nos2</button>
         <div id="journalDiv"></div>
-
     </div>
 </div>
 

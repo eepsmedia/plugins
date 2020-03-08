@@ -34,13 +34,13 @@ univ.CODAPconnect = {
 
         //  restore the state if possible
 
-        univ.state = await codapInterface.getInteractiveState();
+        nos2.state = await codapInterface.getInteractiveState();
 
-        if (jQuery.isEmptyObject(univ.state)) {
-            await codapInterface.updateInteractiveState(univ.freshState);
-            console.log("univ: getting a fresh state");
+        if (jQuery.isEmptyObject(nos2.state)) {
+            await codapInterface.updateInteractiveState(nos2.constants.freshState);
+            console.log("univ/nos2: getting a fresh state");
         }
-        console.log("univ.state is " + JSON.stringify(univ.state));   //  .length + " chars");
+        console.log("nos2.state is " + JSON.stringify(nos2.state));   //  .length + " chars");
 
         //  now update the iframe to be mutable...
 
@@ -69,6 +69,11 @@ univ.CODAPconnect = {
 
     },
 
+    /**
+     *
+     * @param iResult       a single Result or an array of Results
+     * @returns {Promise<void>}
+     */
     saveResultsToCODAP: async function (iResult) {
 
         if (!Array.isArray(iResult)) {
@@ -107,7 +112,7 @@ univ.CODAPconnect = {
         };
 
         const tSelectionResult = await codapInterface.sendRequest( tMessage );
-        univ.ui.update();
+        nos2.ui.update();
     },
 
     deselectTheseCases : async function( iDataContextName, iCaseIDList )  {
@@ -127,7 +132,7 @@ univ.CODAPconnect = {
         }
 
         await codapInterface.sendRequest( tMessage );
-        univ.ui.update();
+        nos2.ui.update();
     },
 
     getListOfSelectedCaseIDs : async function( iDataContextName ) {
@@ -236,7 +241,7 @@ univ.CODAPconnect = {
                 },
 
                 attrs: [ // note how this is an array of objects.
-                    {name: "dbid", type: 'numeric', precision : 0, description: "database ID"},
+                    {name: "dbid", type: 'categorical', description: "database ID"},
                     {name: "R", type: 'numeric', precision : 0, description: "# red"},
                     {name: "O", type: 'numeric', precision : 0, description: "# orange"},
                     {name: "G", type: 'numeric', precision : 0, description: "# blue"},
@@ -246,8 +251,8 @@ univ.CODAPconnect = {
                     {name: "epoch", type: 'numeric', precision : 0, description: "when was this observation made?"},
 
                     {name: "dim", type: 'categorical', description: "size of the observation"},
-                    {name: "teamCode", type: 'numeric', precision : 0, description: "which team found this"},
-                    {name: "source", type: 'categorical', description: "publication, if any"},
+                    {name: "teamCode", type: 'categorical', description: "which team found this"},
+                    {name: "citation", type: 'categorical', description: "publication, if any"},
                 ]
             }
         ]

@@ -38,6 +38,6 @@ univ.selectionManager = {
 
         }
 
-        univ.ui.update();   //  because we might change what we display
+        nos2.ui.update();   //  because we might change what we display
     }
 };

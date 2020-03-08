@@ -31,27 +31,19 @@ nos2.ui = {
     initialize: function () {
         const tJournalNameDiv = document.getElementById("journalNameBox");
         tJournalNameDiv.defaultValue = nos2.strings.sDefaultJournalName;
+        univ.universeView.initialize( document.getElementById("universe") );
+
     },
 
     update: async function () {
-        //  all the data we need to await...
-
-        const pMyPapers = fireConnect.getPapers(nos2.state.worldCode, nos2.state.teamCode);
-        const pMyWorlds = fireConnect.getMyWorlds(nos2.myGodID);
-        const pMyTeams = fireConnect.getMyTeams(nos2.state.worldCode);
-
-        const [tPapers, tWorlds, tTeams] = await Promise.all([pMyPapers, pMyWorlds, pMyTeams]);
+        console.log("Admin update begins");
 
         //  status bar
 
         document.getElementById("adminStatusBarDiv").innerHTML =
-            "admin | " +
-            nos2.constants.version + " | " +
-            nos2.whence +
-            (nos2.myGodName ? " | " + nos2.myGodName + " (" + nos2.myGodID + ")" : "") +
-            (nos2.state.worldCode ? " | " + nos2.state.worldCode : "")
-            + "&nbsp;&nbsp;&nbsp;&nbsp; <button onclick='nos2.logout()'>log out</button>";
-
+            `admin | ${nos2.myGodName} | ${nos2.state.worldCode} | ${nos2.epoch}` +
+            "&nbsp;&nbsp;&nbsp;&nbsp; <button onclick='nos2.userAction.newYear()'>new year</button>" +
+            "&emsp;&emsp;<button onclick='nos2.logout()'>log out</button>" + `&emsp;version ${nos2.constants.version} `;
 
         // main visibility
 
@@ -91,49 +83,68 @@ nos2.ui = {
                 break;
         }
 
-        //  paper task table
-        const tPaperDiv = document.getElementById("papersListDiv");
-
-        if (Array.isArray(tPapers)) {
-            let text = "<table><tr><th>id</th><th>title</th></tr>";
-            tPapers.forEach(p => {
-                console.log(p.id + ": " + p.title);
-                text += "<tr><td>" + p.id + "</td><td>" + p.title + "</td></tr>";
-            });
-            text += "</table>";
-            tPaperDiv.innerHTML = text;
-        } else {
-            tPaperDiv.innerHTML = "<p>Sorry, no papers to display</p>";
-        }
 
         //  world list table
-
-        const tWorldDiv = document.getElementById("godChooseWorldTable");
-
-        if (tWorlds) {
-            let text = "<table><tr><th>code</th></tr>";
-            tWorlds.forEach(w => {
-                console.log("World " + w.code + ".");
-                text += "<tr><td>" + w.code + "</td>"
-                    + "<td><button onclick='nos2.userAction.joinWorldByCode(\"" + w.code + "\")'>join</button> </td></tr>";
+        if (nos2.adminPhase === nos2.constants.kAdminPhaseNoWorld) {
+            const worldsSnap = await fireConnect.worldsCR.get();
+            let tWorlds = [];
+            worldsSnap.forEach(ws => {
+                tWorlds.push(ws.data())
             });
-            text += "</table>";
-            tWorldDiv.innerHTML = text;
-        } else {
-            tWorldDiv.innerHTML = "<p>Sorry, no worlds to display</p>";
+
+            const tWorldDiv = document.getElementById("godChooseWorldTable");
+
+            if (tWorlds) {
+                let text = "<table><tr><th>code</th><th>nickname</th></tr>";
+                tWorlds.forEach(w => {
+                    console.log(`Admin lists world ${w.code}`);
+                    text += "<tr><td>" + w.code + "</td>"
+                        + `<td>${w.nickname}</td>`
+                        + `<td><button onclick="nos2.userAction.makeOrJoinWorld(false,'${w.code}')">join</button> </td></tr>`;
+                });
+                text += "</table>";
+                tWorldDiv.innerHTML = text;
+            } else {
+                tWorldDiv.innerHTML = "<p>Sorry, no worlds to display</p>";
+            }
         }
 
-        //  teams list table
+        //  update everything in tabs
+
+        if (nos2.adminPhase === nos2.constants.kAdminPhasePlaying) {
+            //  teams list table
+            this.makeAndInstallTeamsList();
+
+            //  paper table
+            this.makeAndInstallPapersList()
+
+            //  update the full Journal
+            document.getElementById("journalDiv").innerHTML = await nos2.journal.constructJournalHTML();
+
+            //      truth
+
+            if (nos2.theWorld) {
+                const worldState = JSON.parse(nos2.theWorld.state);
+                univ.universeView.drawArray(worldState.truth);
+            }
+        }
+    },
+
+    makeAndInstallTeamsList : function () {
+        let tTeams = [];
+        Object.keys(nos2.theTeams).forEach(tk => {
+            tTeams.push(nos2.theTeams[tk])
+        });
 
         const tTeamsListDiv = document.getElementById("teamsListDiv");
 
-        if (tTeams) {
+        if (tTeams.length > 0) {
             let text = "<table><tr><th>code</th><th>name</th><th>balance</th></tr>";
             tTeams.forEach(t => {
-                console.log(t.id + ") Team " + t.name + " is called " + t.code + ".");
                 text += "<tr><td>" + t.teamCode + "</td><td>" + t.teamName + "</td><td>" + t.balance + "</td>"
+                    + `<td><span class="spanButton" onclick="nos2.userAction.giveGrant('${t.teamCode}')">💰</span></td>`
                     + "</tr>";
-                   // + "<td><button onclick='nos2.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
+                // + "<td><button onclick='nos2.userAction.joinWorldByID(" + w.id + ", \"" + w.code + "\")'>join</button> </td></tr>";
             });
             text += "</table>";
             tTeamsListDiv.innerHTML = text;
@@ -141,5 +152,28 @@ nos2.ui = {
             tTeamsListDiv.innerHTML = "<p>Sorry, no teams to display</p>";
         }
 
-    }
+    },
+
+    makeAndInstallPapersList : function () {
+        const tPaperDiv = document.getElementById("papersListDiv");
+
+        let tPapers = [];
+        Object.keys(nos2.thePapers).forEach(k => {
+            tPapers.push(nos2.thePapers[k])
+        });
+
+        if (tPapers.length > 0) {
+            let text = "<table><tr><th>id</th><th>title</th><th>team</th><th>status</th><th>year</th></tr>";
+            tPapers.forEach(p => {
+                text += `<tr><td>${p.guts.dbid}</td><td>${p.guts.title}</td>
+                        <td>${p.guts.teamCode}</td><td>${p.guts.status}</td><td>${p.guts.pubYear}</td></tr>`;
+            });
+            text += "</table>";
+            tPaperDiv.innerHTML = text;
+        } else {
+            tPaperDiv.innerHTML = "<p>Sorry, no papers to display</p>";
+        }
+
+    },
+
 };

@@ -29,6 +29,7 @@ limitations under the License.
 
 LOCAL:      http://localhost:8888/plugins/nos2/scen/univ/univ.html
 or
+http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/nos2/scen/univ/univ.html
 https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/nos2/scen/univ/univ.html
 
 XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
@@ -45,7 +46,7 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-firestore.js"></script>
 
-    <script src="../../fireConnect.js" language="javascript"></script>
+    <script src="../../fireConnect.js"></script>
 
 
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
@@ -60,28 +61,33 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <!-- Snap -->
     <script src="../../../common/snap.svg-min.js"></script>
 
-    <script src="../../../common/iframe-phone.js" language="javascript"></script>
-    <script src="../../../common/codapInterface.js" language="javascript"></script>
-    <script src="../../../common/pluginHelper.js" language="javascript"></script>
+    <script src="../../../common/iframe-phone.js"></script>
+    <script src="../../../common/codapInterface.js"></script>
+    <script src="../../../common/pluginHelper.js"></script>
 
     <script src="../../../common/TEEUtils.js"></script>
 
     <script src="../../nos2.js"></script>
+    <script src="../../userAction.js"></script>
     <script src="../../fireConnect.js"></script>
+
+
     <script src="univ.js"></script>
     <script src="univ.model.js"></script>
     <script src="univ.ui.js"></script>
-    <script src="fireConnect.univ.js"></script>
     <script src="univ.userAction.js"></script>
     <script src="univ.CODAPconnect.js"></script>
     <script src="univ.selectionManager.js"></script>
     <script src="telescopeView.js"></script>
     <script src="universeView.js"></script>
     <script src="dataView.js"></script>
+    <script src="../../Journal.js"></script>
+
+
+    <script src="../../Figure.js"></script>
+    <script src="../../Paper.js"></script>
 
     <script src="Result.js"></script>
-    <script src="../../DataPack.js"></script>
-
 
     <script>
         $(function () {
@@ -90,21 +96,38 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
         });
     </script>
 
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQAxZ9e0NmweiaF7lHS65bIIE-Lq1e3BU",
+            authDomain: "nature-of-science.firebaseapp.com",
+            databaseURL: "https://nature-of-science.firebaseio.com",
+            projectId: "nature-of-science",
+            storageBucket: "nature-of-science.appspot.com",
+            messagingSenderId: "199387340471",
+            appId: "1:199387340471:web:19dd310e0ba69db24db732"
+        };
+
+    </script>
+
 </head>
 
-<body onload="fireConnect.initialize()">
+<body onload=`univ.initialize("scientist")`>
 
 <div id="univStatusBarDiv"></div>
 
 <div id="joinWorldDiv" class="startup">
     <h1>Join a World</h1>
 
-    <p>You need to get a world code from someone who has created a world.
-        If that person is you, create a world
-        <a href = "../../nosAdmin.html" target="_blank">by following this link</a>.</p>
+    <p>You need to get a world code from someone who has created a world.</p>
     <label for="worldCodeBox">World code: </label>
     <input type="text" id="worldCodeBox">
-    <button id="joinButton" onclick="univ.userAction.joinWorld()">join</button>
+    <button id="joinButton"
+            onclick="nos2.userAction.makeOrJoinWorld(
+                false,
+                document.getElementById('worldCodeBox').value,
+                univ.userAction.postJoinWorldCallback)">
+        join
+    </button>
     <br>
 </div>
 
@@ -119,12 +142,16 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <ul>
         <li><a href="#observationsTab">Observations</a></li>
         <li><a href="#dataTab">Data</a></li>
-        <li><a href="#snapshotTab">Data snapshot</a></li>
-        <li><a href="#truthTab">Truth</a></li>
+        <li><a href="#makeFigureTab">Edit Figure</a></li>
+        <li><a href="#figuresArchiveTab">Figures Storage</a></li>
         <li><a href="#optionsTab">Options</a></li>
     </ul>
 
     <div id="observationsTab">
+        Choose size
+        <input type="radio" name="chooseObservationSize" value=3 onchange="univ.userAction.changeSize()" checked>3x3&nbsp;|
+        <input type="radio" name="chooseObservationSize" value=2 onchange="univ.userAction.changeSize()">2x2
+        <br>
         <svg id="telescope" width="300" height="300"></svg>
         <div>
             <span id="latestResultText"></span><br>
@@ -136,27 +163,31 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <div id="dataTab">
         <svg id="dataView" width="500" height="300"></svg>
         <br>
-        <input type="radio" name="dataDisplayChoice" value="selection" onclick="univ.ui.update()"> selection
-        <input type="radio" name="dataDisplayChoice" value="all"  onclick="univ.ui.update()" checked> all
-        <button onclick="univ.userAction.snap()">snap</button>
+        <input type="radio" name="dataDisplayChoice" value="selection" onclick="nos2.ui.update()"> selection
+        <input type="radio" name="dataDisplayChoice" value="all" onclick="nos2.ui.update()" checked> all
+        <button onclick="univ.userAction.makeFigure()">make a figure</button>
     </div>
 
-    <div id="snapshotTab">
-        <label for="snapshotTitle">Title: </label>
-        <input type="text" size="30"  id="snapshotTitle" onblur="univ.currentSnapshot.setText()">
-        <button onclick="univ.userAction.saveSnapshot()">Save this snapshot</button>
-        <br>
-        <svg id="thumbnail" width="250" height="150"></svg>
-        <br>
-        <label for="snapshotCaption">caption</label><br>
-        <textarea id="snapshotCaption" rows="4" cols="40" onblur="univ.currentSnapshot.setText()"></textarea>
-        <br>
-        <label for="snapshotNotes">notes</label><br>
-        <textarea id="snapshotNotes" rows="2" cols="40" onblur="univ.currentSnapshot.setText()"></textarea>
+    <div id="makeFigureTab">
+        <div id="noCurrentFigureMessage"><h2>You have not chosen a Figure to work on</h2></div>
+        <div id="makeFigureTabGuts">
+            <label for="snapshotTitle">Title: </label>
+            <input type="text" size="30" id="snapshotTitle" onblur="nos2.currentFigure.setText()">
+            <button onclick="univ.userAction.saveFigure()">Save this figure</button>
+            <br>
+            <svg id="thumbnail" width="250" height="150"></svg>
+            <br>
+            <label for="snapshotCaption">caption</label><br>
+            <textarea id="snapshotCaption" rows="4" cols="40" onblur="nos2.currentFigure.setText()"></textarea>
+            <br>
+            <label for="snapshotNotes">notes</label><br>
+            <textarea id="snapshotNotes" rows="2" cols="40" onblur="nos2.currentFigure.setText()"></textarea>
+        </div>
     </div>
 
-    <div id="truthTab">
-        <svg id="universe" width="300" height="300"></svg>
+    <div id="figuresArchiveTab">
+        <h2>Figures you have made</h2>
+        <div id="figuresList"></div>
     </div>
 
     <div id="optionsTab">

@@ -32,87 +32,106 @@ fireConnect = {
     worldsCR: null,
     godsCR: null,
     teamsCR: null,         //  teams SUBcollection within this world.
-    resultsCR : null,
-    dataPacksCR : null,
+    resultsCR: null,
+    figuresCR: null,
+    papersCR: null,
     thisWorldDR: null,     //  THIS world's document reference
+    myTeamDR: null,
 
-    firebaseConfig: {
-        apiKey: "AIzaSyAQAxZ9e0NmweiaF7lHS65bIIE-Lq1e3BU",
-        authDomain: "nature-of-science.firebaseapp.com",
-        databaseURL: "https://nature-of-science.firebaseio.com",
-        projectId: "nature-of-science",
-        storageBucket: "nature-of-science.appspot.com",
-        messagingSenderId: "199387340471",
-        appId: "1:199387340471:web:049ece476099a1f34db732"
-    },
+    unsubscribeFromPapers: null,
+    unsubscribeFromFigures: null,
+    unsubscribeFromTeams: null,
 
     initialize: function () {
-        firebase.initializeApp(this.firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         this.db = firebase.firestore();
         this.worldsCR = this.db.collection("worlds");     //  worlds collection reference
         this.godsCR = this.db.collection("gods");
 
+
         //  testing firestore syntax...
 
-        this.db.collection("tests").doc("aTest").set(
-            {foo: 42, bar: [13, 43], baz : {foo : 12, bar : 45}}
-        );
-        const newDoc = this.db.collection("tests").add(
-            {foo: 42, bar: [13, 43], baz : {foo : 12, bar : 45}}
-        );
+        /*
+                        const newDoc = this.db.collection("tests").add(
+                            {foo: 42, bar: [13, 43], baz: {foo: 12, bar: 45}}
+                        );
+        */
+
+        /*
+                let testContents = {foo: 42, bar: [13, 43], baz: {alpha: 12, beta: 45}};
+                this.db.collection("tests").doc("aTest").set(testContents);
+        */
+
+        /*
+                        testContents["now"] = new Date();
+
+                        const newDocRef = this.db.collection("tests").doc();
+                        this.db.collection("tests").doc(newDocRef.id).set(testContents);
+        */
+
+        /*
+                this.db.collection("tests").doc("aTest").update(
+                    {
+                        bar: firebase.firestore.FieldValue.arrayUnion(...[13, 14, 15]),
+                    }
+                )
+        */
+
     },
 
-    sendCommand: async function (iCommands) {
-        let theBody = new FormData();
-        for (let key in iCommands) {
-            if (iCommands.hasOwnProperty(key)) {
-                theBody.append(key, iCommands[key])
-            }
-        }
-        theBody.append("whence", nos2.whence);
-
-        let theRequest = new Request(
-            nos2.kBasePhpURL[nos2.whence],
-            {method: 'POST', body: theBody, headers: new Headers()}
-        );
-
-        try {
-            const theResult = await fetch(theRequest);
-            if (theResult.ok) {
-
-                const theJSON = theResult.json();
-                return theJSON;
-            } else {
-                console.error("sendCommand bad result error: " + theResult.statusText);
-            }
-        } catch (msg) {
-            console.log('fetch error in DBconnect.sendCommand(): ' + msg);
-        }
+    rememberTeamDocumentReference(iTeamCode) {
+        this.myTeamDR = fireConnect.thisWorldDR.collection("teams").doc(iTeamCode);
     },
 
-    makeNewWorld: async function (iGodID, iWorldCode, iEpoch, iJournalName, iScenario, iGameState) {
+    adjustBalance(iTeamCode, iAmount) {
+        nos2.theTeams[iTeamCode].balance += iAmount;
+        fireConnect.teamsCR.doc(iTeamCode).update({balance : nos2.theTeams[iTeamCode].balance});
+    },
+
+    async assertKnownResult(iID) {
+        //  save in the known array of the TEAM
+        const thisTeam = nos2.theTeams[nos2.state.teamCode];
+
+        if (!Array.isArray(iID)) {
+            iID = [iID]
+        }
+
+        //  add to array, avoiding duplicates (Array Union)
+        iID.forEach(id => {
+            if (!thisTeam.known.includes(id)) {
+                thisTeam.known.push(id);
+            }
+        });
+
+        await this.myTeamDR.update({
+            known: thisTeam.known
+        });
+
+        console.log(`Team ${thisTeam.teamCode} knows results ${thisTeam.known.toString()}`);
+    },
+
+    getWorldCount: async function() {
+        const gamesQuerySnapshot = await this.worldsCR.get();
+        return gamesQuerySnapshot.size;
+    },
+
+    makeNewWorld: async function (iNewWorldObject) {
         try {
-            let theWorldCode = iWorldCode;  //  in case we have to change it
-
-            const theData = {
-                "god": iGodID,
-                "code": theWorldCode,
-                "epoch": Number(iEpoch),
-                'jName': iJournalName,
-                'scen': iScenario,
-                'state': JSON.stringify(iGameState),
-            };
-            this.thisWorldDR = this.worldsCR.doc(iWorldCode);
-            await this.thisWorldDR.set(theData);
-            this.joinWorld(theWorldCode);
-
-            return theWorldCode;
+           await this.worldsCR.doc(iNewWorldObject.code).set(iNewWorldObject);
+            return iNewWorldObject;
         } catch (msg) {
             console.log('makeNewWorld() error: ' + msg);
         }
 
     },
 
+    /**
+     * We think the world code exists;
+     * set up the various collection references (CR)
+     * and launch the listeners
+     * @param iWorldCode
+     * @returns {Promise<null|*>}
+     */
     joinWorld: async function (iWorldCode) {
         this.thisWorldDR = this.worldsCR.doc(iWorldCode);
 
@@ -120,20 +139,24 @@ fireConnect = {
         if (snap.exists) {
             this.teamsCR = this.thisWorldDR.collection("teams");
             this.resultsCR = this.thisWorldDR.collection("results");
-            this.dataPacksCR = this.thisWorldDR.collection("dataPacks");
-            return snap.data();
+            this.figuresCR = this.thisWorldDR.collection("figures");
+            this.papersCR = this.thisWorldDR.collection("papers");
+
+            await nos2.restoreTeamsFiguresPapersResults(iWorldCode);
+
+            fireConnect.unsubscribeFromWorld = this.setWorldListener();
+            fireConnect.unsubscribeFromPapers = this.setPapersListener();
+            fireConnect.unsubscribeFromFigures = this.setFiguresListener();
+            fireConnect.unsubscribeFromTeams = this.setTeamsListener();
+            fireConnect.unsubscribeFromResults = this.setResultsListener();
+            return snap.data();     //  world data
         }
         return null;
     },
 
-    addTeam: async function (iCode, iName, iBalance) {
+    addTeam: async function (iTeam) {
         try {
-            await this.teamsCR.doc(iCode).set({
-                teamCode: iCode,
-                teamName: iName,
-                balance: iBalance,
-            });
-            const iData = await fireConnect.sendCommand(theCommands);
+            await this.teamsCR.doc(iTeam.teamCode).set(iTeam);
         } catch (msg) {
             console.log('addTeam() error: ' + msg);
         }
@@ -168,107 +191,41 @@ fireConnect = {
         return theWorlds;
     },
 
-    getMyTeams: async function (iworldCode) {
-        let theTeams = [];
-        if (iworldCode) {
+    getAllTeams: async function (iWorldCode) {
+        let theTeams = {};
+        if (iWorldCode) {
             try {
                 const iterableDocSnap = await this.teamsCR.get();
                 iterableDocSnap.forEach((ds) => {
-                    theTeams.push(ds.data())
+                    const aTeam = ds.data();
+                    theTeams[aTeam.teamCode] = aTeam;
                 });
 
             } catch (msg) {
-                console.log('getMyTeams() error: ' + msg);
+                console.log('getAllTeams() error: ' + msg);
             }
         }
         return theTeams;
     },
 
-    savePaper: async function (iPaper) {
-
-        let theCommands = {
-            "teamID": iPaper.teamID, "teamName": iPaper.teamName,
-            "title": iPaper.title, "authors": iPaper.authors, "text": iPaper.text,
-            "packs": JSON.stringify(iPaper.packs),     //  because it's an array, we'll store it as a string
-            "references": JSON.stringify(iPaper.references),
-            "status": iPaper.status,
-        };
-
-        try {
-            if (iPaper.dbid) {
-                theCommands.c = "updatePaper";
-                theCommands.id = iPaper.dbid;   //  because that's the name of the field in Paper.
-            } else {
-                theCommands.c = "newPaper";
-                theCommands.worldCode = nos2.state.worldCode;
-            }
-
-            const out = await fireConnect.sendCommand(theCommands);
-
-            return out;
-        } catch (msg) {
-            console.log('savePaper() error: ' + msg);
-        }
-    },
-
-    submitPaper: async function (iPaperID, iNewStatus) {
-        try {
-            if (iPaperID) {
-                theCommands = {"c": "submitPaper", "id": iPaperID, "s": iNewStatus};
-                const iData = await fireConnect.sendCommand(theCommands);
-                return iData;
-            } else {
-                alert("There is no 'current' paper to submit.");
-            }
-        } catch (msg) {
-            console.log('submitPaper() error: ' + msg);
-        }
-    },
-
-    judgePaper: async function (iPaperID, iJudgment, iEdComments) {
-        try {
-            let tStatus;
-            switch (iJudgment) {
-                case 'accept':
-                    tStatus = nos2.constants.kPaperStatusPublished;
-                    break;
-                case 'reject':
-                    tStatus = nos2.constants.kPaperStatusRejected;
-                    break;
-                case 'revise':
-                    tStatus = nos2.constants.kPaperStatusRevise;
-                    break;
-                default:
-                    alert("Don't know how to handle a judgment of " + iJudgment);
-                    break;
-            }
-            tSubmitted = 0;
-            tPublished = (iJudgment == 'accept' ? 1 : 0);
-
-            if (iPaperID) {
-                theCommands = {"c": "judgePaper", "p": iPaperID, "s": tStatus, 'ec': iEdComments};
-                const iData = await fireConnect.sendCommand(theCommands);
-                return iData;
-            } else {
-                alert("There is no paper to submit.");
-            }
-        } catch (msg) {
-            console.log('submitPaper() error: ' + msg);
-        }
-
-    },
-
-    getGodData: async function (iUsername) {
+    getGodData: async function (iUsername, iPassword) {
         try {
             const docSnap = await this.godsCR.doc(iUsername).get();
             if (docSnap.exists) {
-                return docSnap.data();
+                const theGodData = docSnap.data();
+
+                if (theGodData.godPassword === iPassword) {
+                    return theGodData;
+                } else {
+                    alert("Password does not match");
+                    return null;
+                }
             } else {
                 console.log("Making a new God: " + iUsername);
-                const newGodRef = await this.godsCR.doc(iUsername);
-                newGodRef.set({
+                const newGodDR = await this.godsCR.doc(iUsername);
+                newGodDR.set({
                     godName: iUsername,
-                    godPassword: "foo"
+                    godPassword: iPassword,
                 });
                 const newGodSnap = await newGodRef.get();
                 return newGodSnap.data();
@@ -299,68 +256,260 @@ fireConnect = {
         return out;
     },
 
-    getPublishedJournal: async function (iworldCode) {
-        let out = null;
-        if (iworldCode) {
-            try {
-                out = await fireConnect.sendCommand({"c": "getJournal", "w": iworldCode});
-            } catch (e) {
-                console.log('getPublishedJournal() error: ' + e);
-            }
+    saveMessage: async function (iPaper, iWho, iText) {
+        const paperDR = this.papersCR.doc(iPaper.guts.dbid);
+        iPaper.guts.convo.push({
+            sender: iWho,
+            message: iText,
+            when: Date.now(),
+            subject: "paper " + iPaper.guts.text.title,
+            team: iPaper.guts.teamCode,
+        });
+
+        try {
+            await paperDR.update({convo: iPaper.guts.convo});
+        } catch (msg) {
+            console.log('saveMessage() error: ' + msg);
+            return null;
         }
-        return out;
     },
 
-    getPapers: async function (iworldCode, iTeamID = null) {
-        if (iworldCode) {     //  if iTeamID is null, the getPapers command will get them for all teams
-            let out = [];
-            try {
-                const dbout = await fireConnect.sendCommand({"c": "getPapers", "w": iworldCode, "t": iTeamID});
+    /**
+     * Save a result ON THE DATABASE
+     * called from ... univ.doObservation()
+     */
+    saveResultToDB: async function (iResult) {
 
-                dbout.forEach(dbp => {
-                    out.push(Paper.paperFromDBArray(dbp));  //  convert to Papers
-                });
-                return out.length == 0 ? null : out;
+        //  in case this result has never been saved, get a (new) dbid.
+        //  if it has been saved, we'll simply save over it.
 
-            } catch (msg) {
-                console.log('getPapers() error: ' + msg);
-            }
+        let resultDR = null;
+
+        if (!iResult.dbid) {
+            resultDR = this.resultsCR.doc();
+            iResult.dbid = resultDR.id;
         } else {
+            resultDR = this.resultsCR.doc(iResult.dbid);
+        }
+
+        const tDBID = resultDR.id;
+
+        //  do the write
+        try {
+            await this.resultsCR
+                .doc(tDBID)
+                .withConverter(resultConverter)
+                .set(iResult);
+            console.log(`Saved result "${iResult.toString()}" as ${tDBID}`);
+
+            //      and, by the way,
+            await fireConnect.assertKnownResult(tDBID);
+
+            return (tDBID);       //  just the dbid
+        } catch (msg) {
+            console.log('saveResultToDB() error: ' + msg);
             return null;
         }
 
     },
 
-    getMyDataPacks: async function (iWorld, iTeam) {
-        if (iWorld && iTeam) {
-            let dataPacksOut = [];
-            try {
-                const theDBPacks = await fireConnect.sendCommand({
-                    c: "getMyDataPacks",
-                    w: iWorld,
-                    t: iTeam
-                });
+    /**
+     * Save a paper ON THE DATABASE
+     * called from nos2.userAction.savePaper
+     */
+    savePaperToDB: async function (iPaper) {
 
-                theDBPacks.forEach(pk => {
-                    dataPacksOut.push(DataPack.dataPackFromDBArray(pk));    //  convert to DataPacks
-                });
-                return dataPacksOut;
-            } catch (e) {
-                console.log('Trouble retrieving in getMyDataPacks(): ' + e)
-            }
+        //  in case this paper has never been saved, get a (new) dbid.
+        //  if it has been saved, we'll simply save over it.
+
+        let paperDR = null;
+
+        if (!iPaper.guts.dbid) {
+            paperDR = this.papersCR.doc();
+            iPaper.guts.dbid = paperDR.id;
         } else {
-            return [];
+            paperDR = this.papersCR.doc(iPaper.guts.dbid);
+        }
+
+        const tDBID = paperDR.id;
+
+        //  do the write
+        try {
+            await this.papersCR
+                .doc(paperDR.id)
+                .withConverter(paperConverter)
+                .set(iPaper);
+            console.log(`Saved paper "${iPaper.guts.title}" as ${tDBID}`);
+            return (tDBID);
+        } catch (msg) {
+            console.log('savePaperToDB() error: ' + msg);
+            return null;
         }
     },
 
+
     /**
-     * Note: not asynchronous. We can wait for this to come through.
-     * @param iText
-     * @param iPaper
+     * Save a Figure ON THE DATABASE
+     * called from univ.userAction.saveFigure
      */
-    appendMessageToConvo: function (iText, iPaper) {
-        const theCommand = {c: "appendToConvo", t: iText, p: iPaper};
-        fireConnect.sendCommand(theCommand);
-    }
+    saveFigureToDB: async function (iFigure) {
+
+        let tDoc;       //  temp document reference
+
+        if (iFigure.guts.dbid) {
+            tDoc = this.figuresCR.doc(iFigure.guts.dbid);
+        } else {
+            //  get a new dbid
+            tDoc = this.figuresCR.doc();
+            iFigure.guts.dbid = tDoc.id;        //  put it in the object
+        }
+
+        //  do the write
+        try {
+            const out = await this.figuresCR
+                .doc(tDoc.id)
+                .withConverter(figureConverter)
+                .set(iFigure);
+
+            console.log(`Saved figure "${iFigure.guts.text.title}" as ${tDoc.id}`);
+            return (tDoc.id);
+        } catch (msg) {
+            console.log('saveFigureToDB() error: ' + msg);
+            return null;
+        }
+    },
+
+    deleteFigureByDBID: async function (iDBID) {
+        const theDR = this.figuresCR.doc(iDBID);
+        theDR.delete();
+    },
+
+    getAllResults: async function () {
+        let out = {};
+        if (this.resultsCR) {
+            try {
+                const tResSnaps = await this.resultsCR.get();
+                tResSnaps.forEach(rs => {
+                    const aResult = resultConverter.fromFirestore(rs, null);
+                    out[aResult.dbid] = aResult;
+                });
+
+            } catch (msg) {
+                console.log("*** firestore error in getAllResults(): " + msg);
+                return null;
+            }
+
+        } else {
+            console.log("The resultsCR has not been set");
+            return null;
+        }
+        return out;
+    },
+
+    getAllFigures: async function () {
+        let out = {};
+        const tFiguresSnaps = await this.figuresCR.get();    //  iterable of document snapshots
+
+        tFiguresSnaps.forEach((figSnap) => {
+
+            try {
+                const aFigure = figureConverter.fromFirestore(figSnap, null);
+                out[aFigure.guts.dbid] = aFigure;
+            } catch (msg) {
+                console.log("*** Error inside loop in getAllFigures(): " + msg);
+                return null;
+            }
+        });
+
+        return out;
+    },
+
+    getAllPapers: async function () {
+        let out = {};
+        if (this.papersCR) {
+            try {
+                const tPapersSnaps = await this.papersCR.get();
+                tPapersSnaps.forEach(ps => {
+                    const aPaper = paperConverter.fromFirestore(ps, null);
+                    out[aPaper.guts.dbid] = aPaper;
+                });
+
+            } catch (msg) {
+                console.log("*** firestore error in getAllPapers(): " + msg);
+                return null;
+            }
+
+        } else {
+            console.log("The papersCR has not been set");
+            return null;
+        }
+        return out;
+    },
+
+
+    setWorldListener : function() {
+        return this.thisWorldDR.onSnapshot( Ws => {
+            nos2.theWorld = Ws.data();
+            const newYear = nos2.theWorld.epoch;
+
+            if (newYear !== nos2.epoch) {
+                nos2.epoch = nos2.theWorld.epoch;
+                alert(`Happy New Year! It is now ${nos2.epoch} in ${nos2.state.worldCode}`);
+                nos2.ui.update();
+            }
+
+        })
+    },
+
+    setPapersListener: function () {
+        return this.papersCR.onSnapshot((iPapers) => {
+            nos2.thePapers = {};    //  fresh start!
+            iPapers.forEach((pSnap) => {
+                const aPaper = paperConverter.fromFirestore(pSnap, null);
+                const dbid = aPaper.guts.dbid;
+                nos2.thePapers[dbid] = aPaper;
+            });
+            nos2.ui.update();
+            console.log(`   Listener gets ${iPapers.size} papers`);
+        });
+    },
+
+    setFiguresListener: function () {
+        return this.figuresCR.onSnapshot((iFigs) => {
+            nos2.theFigures = {};    //  fresh start!
+            iFigs.forEach((fSnap) => {
+                const aFigure = figureConverter.fromFirestore(fSnap, null);
+                const dbid = aFigure.guts.dbid;
+                nos2.theFigures[dbid] = aFigure;
+            });
+            nos2.ui.update();
+            console.log(`   Listener gets ${iFigs.size} figures`);
+        });
+    },
+
+    setTeamsListener: function () {
+        return this.teamsCR.onSnapshot((iTeams) => {
+            nos2.theTeams = {};    //  fresh start!
+            iTeams.forEach((tSnap) => {
+                const aTeam = tSnap.data();     //  no converter for teams; just an object
+                nos2.theTeams[aTeam.teamCode] = aTeam;
+            });
+            console.log(`   Listener gets ${iTeams.size} teams`);
+            nos2.ui.update();
+        });
+    },
+
+    setResultsListener: function () {
+        return this.resultsCR.onSnapshot((iResults) => {
+            nos2.theResults = {};    //  fresh start!
+            iResults.forEach((rSnap) => {
+                const aResult = resultConverter.fromFirestore(rSnap, null);
+                nos2.theResults[rSnap.id] = aResult;
+            });
+            console.log(`   Listener gets ${iResults.size} results`);
+            nos2.ui.update();
+        });
+    },
+
 
 };

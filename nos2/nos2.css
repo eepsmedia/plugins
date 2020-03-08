@@ -42,7 +42,7 @@ div.startup {
     padding-left: 1em;
 }
 
-h1 {
+h1, .bigHeadline {
     font-family: 'Rokkitt',sans-serif;font-size: 22px;
     font-weight: 700;
     color : #44a;
@@ -71,10 +71,20 @@ h2 {
 }
 
 #editorStatusBarDiv {
-     background-color: #55b;
-     color : white;
-     padding : 1em;
- }
+    background-color: #55b;
+    color : white;
+    padding : 1em;
+}
+
+#univStatusBarDiv {
+    background-color: #72bfca; /* CODAP blue    */
+    color : white;
+    padding : 1em;
+}
+
+#annualIncomeThou, #grantAmountThou {
+    width : 3em;
+}
 
 p, li {
     font-family: 'IBM Plex Sans Condensed', sans-serif; font-size: 14px;
@@ -118,4 +128,25 @@ details[open] {
     font-size : 12px;
     color : red;
     background-color : black;
+}
+
+.figureInList {
+    font-size : 12px;
+    background-color: lightgray;
+    margin : 2px;
+    padding : 4px;
+    cursor : pointer;
+}
+
+.spanButton {
+    cursor : pointer;
+}
+
+/*
+    displaying papers in the journal
+ */
+
+div.paper {
+    background-color: antiquewhite;
+    padding : 1em;
 }

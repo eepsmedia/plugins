@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-univ.ui in nos2
+nos2.ui in nos2
 
 Author:   Tim Erickson
 
@@ -26,9 +26,36 @@ limitations under the License.
 
 */
 
-univ.ui = {
+nos2.ui = {
 
-    update : async function() {
+    initialize: function () {
+        console.log("Stub univ.ui initialization");
+    },
+
+    updateEditFigureSection: function () {
+        const theMakeEditFigureTabGutsElement = document.getElementById("makeFigureTabGuts");
+        const theNoCurrentFigureMessageElement = document.getElementById("noCurrentFigureMessage");
+
+        if (nos2.currentFigure && nos2.currentFigure.guts.image.contents) {
+            theNoCurrentFigureMessageElement.style.display = "none"
+            theMakeEditFigureTabGutsElement.style.display = "block";
+
+            //  load text fields with data from nos2.currentFigure
+            document.getElementById("snapshotCaption").value = nos2.currentFigure.guts.text.caption;
+            document.getElementById("snapshotTitle").value = nos2.currentFigure.guts.text.title;
+            document.getElementById("snapshotNotes").value = nos2.currentFigure.guts.text.notes;
+
+            //  The thumbnail is for DISPLAY. (display the image contents)
+            nos2.currentFigure.displayImageIn("thumbnail");
+
+        } else {
+            //  what to do if there is no figure
+            theNoCurrentFigureMessageElement.style.display = "block"
+            theMakeEditFigureTabGutsElement.style.display = "none";
+        }
+    },
+
+    update: async function () {
 
         //  visibility
 
@@ -36,39 +63,42 @@ univ.ui = {
         const tJoinTeamDiv = document.getElementById("joinTeamDiv");
         const tTabsDiv = document.getElementById("tabs");
 
-
         tJoinWorldDiv.style.display = (univ.playPhase === univ.constants.kPhaseNoWorld ? "block" : "none");
         tJoinTeamDiv.style.display = (univ.playPhase === univ.constants.kPhaseNoTeam ? "block" : "none");
         tTabsDiv.style.display = (univ.playPhase === univ.constants.kPhasePlaying ? "block" : "none");
 
-
         //  status bar
 
+        const theBalance = nos2.state.teamCode ?  nos2.theTeams[nos2.state.teamCode].balance : 0;
+
         document.getElementById("univStatusBarDiv").innerHTML =
-            (univ.state.epoch ?  univ.state.epoch + " | " : "") +
-            (univ.state.teamName ? univ.state.teamName + " | " : "")  +
-            (univ.state.worldCode ? univ.state.worldCode  : "") +
+            (nos2.state.worldCode ? `${nos2.state.worldCode} | ` : "") +
+            (nos2.epoch ? `${nos2.epoch} | ` : "") +
+            (nos2.state.teamName ? `${nos2.state.teamName} | ` : "") +
+            `$${theBalance} | ` +
             "&nbsp;&nbsp;&nbsp;&nbsp;" +
             "<button onclick='univ.logout()'>log out</button>" +
             "&nbsp;&nbsp;&nbsp;&nbsp;" +
             univ.constants.version;
 
-
         //  choose team list. ONLY IN THE APPROPRIATE PHASE!
 
         if (univ.playPhase === univ.constants.kPhaseNoTeam) {
             //  get the team list only if we're in this phase.
-            const tTeams = await fireConnect.getMyTeams(univ.state.worldCode);
-            const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
+            //  nos2.theTeams is set in univ.userActions.joinWorld()
 
-            if (tTeams) {
+            const tChooseTeamDiv = document.getElementById("chooseTeamFromListDiv");
+            const teamKeys = Object.keys(nos2.theTeams);
+
+            if (teamKeys.length > 0) {
 
                 let text = "<table><tr><th>code</th><th>name</th></tr>";
-                tTeams.forEach(t => {
+                teamKeys.forEach(tk => {
+                    const t = nos2.theTeams[tk];
+
                     //  the arguments for the onclick handler below
                     const callbackGuts = `univ.userAction.joinTeamByTeamCode("${t.teamCode}", "${t.teamName}")`;
 
-                    console.log("Team " + t.teamName + " is called " + t.teamCode + ".");
                     text += "<tr><td>" + t.teamCode + "</td><td>" + t.teamName + "</td>"
                         + "<td><button onclick='" + callbackGuts + "'>join</button> </td></tr>";
                 });
@@ -88,16 +118,40 @@ univ.ui = {
 
         univ.dataView.redraw();
 
-        //  in snapshot view
+        //  in Make (/Edit) Figure view
 
+        this.updateEditFigureSection();
 
+        //  Figure archive
 
-        //  display entire grid in "truth". Just for now.
+        const theFiguresListElement = document.getElementById("figuresList");
+        let figureListGuts = "";
+        let figuresListCount = 0;
 
-        if (univ.playPhase === univ.constants.kPhasePlaying) {
-            univ.universeView.drawArray( univ.state.truth );
+        Object.keys(nos2.theFigures).forEach(dbid => {
+            const theClass = "figureInList";
+            const fig = nos2.theFigures[dbid];
+            if (fig.guts.creator === nos2.state.teamCode && !fig.guts.citation) {
+                figuresListCount++;
+                let thisDiv;
+                if (fig.guts.citation) {
+                    thisDiv =
+                        `<div class='${theClass}' > 
+                        ${fig.guts.text.title} (${fig.guts.source})
+                     </div>`;
+                } else {
+                    thisDiv =
+                        `<div class='${theClass}' > 
+                        <button onclick="univ.userAction.makeFigureCurrentByDBID('${dbid}')">edit</button>
+                        ${fig.guts.text.title} 
+                        <span class="spanButton" onclick="univ.userAction.deleteFigureByDBID('${dbid}')">${nos2.constants.kTrashCan}</span>
+                     </div>`;
+                }
+                figureListGuts += thisDiv;
+            }
+        });
 
-        }
+        theFiguresListElement.innerHTML = `${figureListGuts}`;
 
     }
 };

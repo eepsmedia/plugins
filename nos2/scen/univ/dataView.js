@@ -26,12 +26,16 @@ limitations under the License.
 
 */
 
-
+/**
+ * Displays, on a grid, where the observations are, and has "plaques" showing the results
+ *
+ * @type {{gridRight: number, drawArray: univ.dataView.drawArray, thePaper: null, makeUniformArray: (function(*): []), box: number, selectionOnly: boolean, colors: {R: string, B: string, G: string, Y: string, K: string, O: string}, redraw: univ.dataView.redraw, clearResults: univ.dataView.clearResults, displaySomeResults: univ.dataView.displaySomeResults, plaqueGridGap: number, theArray: [], initialize: univ.dataView.initialize, gridLeft: number, resultIDArray: (function(): []), results: []}}
+ */
 univ.dataView = {
 
-    thePaper : null,
-    results : [],
-    theArray : [],
+    thePaper : null,    //  the SVG paper on which we draw
+    results : [],       //  array of Results we are displaying. Contains whole Results, not just DBIDs.
+    theArray : [],      //  12x12 array of colors for display (as single characters)
     gridLeft : 0,       //  left edge of the 12 x 12 grid
     gridRight : 100,    //  the right edge of the 12 x 12 grid
     box : 10,           //  size of one cell.
@@ -62,6 +66,13 @@ univ.dataView = {
         this.results = [];
     },
 
+    resultIDArray : function() {
+        let out = [];
+
+        this.results.forEach( (r) => {out.push(r.data.dbid)});
+        return out;
+    },
+
     redraw : async function() {
         let theDisplayedResults = [];   //  array of Result objects
 
@@ -75,17 +86,12 @@ univ.dataView = {
                     theDisplayedResults.push(r)
                 }
             });
-
-            //  const selectedData = await univ.CODAPconnect.getSelectedCases(univ.constants.kUnivDataSetName);
-            //  theDisplayedResults = univ.convertSelectedCasesToResults(selectedData);
         } else {
-            //  const allData = await univ.CODAPconnect.getAllCases(univ.constants.kUnivDataSetName);
-            //  theDisplayedResults = univ.convertAllCasesToResults(allData);
-
             theDisplayedResults = allResults;
         }
 
         if (theDisplayedResults) {
+            univ.dataView.results = theDisplayedResults;
             univ.dataView.displaySomeResults(theDisplayedResults);
         }
     },
@@ -93,8 +99,8 @@ univ.dataView = {
     addResult : function(iResult) {
         this.results.push(iResult);
     },
-
 */
+
     displaySomeResults : function( iResults ) {
 
         iResults.sort( (a,b) => { return a.data.row - b.data.row}); //  sort results by row
@@ -119,7 +125,7 @@ univ.dataView = {
                 lineStartY = plaqueY + pq.attr("height")/2;
             } else {
                 plaqueX = univ.dataView.gridRight + univ.dataView.plaqueGridGap;
-                plaqueY = plaqueLevels.right
+                plaqueY = plaqueLevels.right;
                 plaqueLevels.right += this.box;
                 lineStartX = univ.dataView.gridRight + univ.dataView.plaqueGridGap;
                 lineStartY = plaqueY + pq.attr("height")/2;
@@ -148,9 +154,9 @@ univ.dataView = {
     makeUniformArray: function (iFill) {
         let out = [];
 
-        for (let r = 0; r < univ.state.size; r++) {
+        for (let r = 0; r < univ.model.size; r++) {
             out[r] = [];
-            for (let c = 0; c < univ.state.size; c++) {
+            for (let c = 0; c < univ.model.size; c++) {
                 out[r][c] = iFill;
             }
         }
@@ -162,15 +168,15 @@ univ.dataView = {
         const w = Number(this.thePaper.attr("width"));
         const h = Number(this.thePaper.attr("height"));
         const wh = w < h ? w : h;   //  smaller of the two, so everything fits
-        this.box = wh/univ.state.size;
+        this.box = wh/univ.model.size;
 
         //  assume w > h for this view.
 
         this.gridLeft = (w - h) / 2;
         this.gridRight = this.gridLeft + h;
 
-        for (let row=0; row < univ.state.size; row++) {
-            for (let col=0; col < univ.state.size; col++) {
+        for (let row=0; row < univ.model.size; row++) {
+            for (let col=0; col < univ.model.size; col++) {
                 const tx = col * this.box + 1;
                 const ty = row * this.box + 1;
                 const theLetter = iArray[col][row];
@@ -179,7 +185,7 @@ univ.dataView = {
                 let tr = this.thePaper.rect(this.gridLeft + tx, ty, this.box - 2, this.box - 2).attr({"fill" : tColor});
                 tr.mouseup( e => {
                     console.log("Mouse up in " + JSON.stringify([col, row]));
-                    univ.ui.update();
+                    nos2.ui.update();
 
                 });
             }

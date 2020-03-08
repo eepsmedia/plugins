@@ -34,43 +34,39 @@ limitations under the License.
  */
 class Result {
 
-    constructor( iData, iExtras = null ) {
+    /**
+     * structure is
+     * @param iData
+     * @param iExtras
+     */
+    constructor(iData) {
         this.data = iData;    //  the colors, plus col, row, dim
-
-        if (iExtras) {
-            this.epoch = iExtras.epoch;
-            this.teamCode = iExtras.teamCode;     //  short name of the original team
-            this.source = iExtras.source;
-            this.dbid = iExtras.dbid;
-            this.selected = iExtras.selected;
-            this.caseID = iExtras.caseID;       //  the ID from CODAP
-        } else {
-            this.epoch = univ.state.epoch;
-            this.teamCode = univ.state.teamCode;
-            this.source = univ.constants.kLocalSourceString;
-            this.dbid = 0;
-            this.selected = false;
-            this.caseID = 0;       //  the ID from CODAP
-        }
-
+        this.epoch = nos2.epoch;
+        this.teamCode = nos2.state.teamCode;
+        this.citation = null;       //      dbid of the first published paper
+        this.dbid = null;
+        this.selected = false;
+        this.caseID = 0;       //  the ID from CODAP
     }
 
     toCODAPValuesObject() {
+        //  flattened
+
         let out = this.data;
         out.dbid = this.dbid;
         out.epoch = this.epoch;
         out.teamCode = this.teamCode;
-        out.source = this.source;
+        out.citation = this.citation ? nos2.thePapers[this.citation].guts.citation : "local";
 
         return out;
     }
 
     toFireStoreObject() {
-        let out = {data : this.data};
+        let out = {data: this.data};
         out.dbid = this.dbid;
         out.epoch = this.epoch;
         out.teamCode = this.teamCode;
-        out.source = this.source;
+        out.paper = this.paper;
 
         return out;
 
@@ -78,7 +74,7 @@ class Result {
 
 
     toString() {
-        return (this.data.O + "O " + this.data.R + "R " + this.data.G + "G " + this.data.B + "B");
+        return (this.data.R + "R." + this.data.O + "O." + this.data.G + "G." + this.data.B + "B");
     }
 
     plaque() {
@@ -88,16 +84,16 @@ class Result {
             paper.attr("width"),
             paper.attr("height")).attr({
             fill: theColor,
-            stroke: "#567" ,
+            stroke: "#567",
             "stroke-width": "3"
         });
 
         //  capture clicks on the plaque
 
         //  bgRect.click( e => {
-        paper.click( e => {
-           console.log("Click in plaque");
-           this.toggleSelection( );
+        paper.click(e => {
+            console.log("Click in plaque");
+            this.toggleSelection();
         });
 
         //  draw the text
@@ -112,24 +108,38 @@ class Result {
         console.log("toggling result caseID = " + this.caseID);
         const theCaseID = this.caseID;
         if (this.selected) {
-            univ.CODAPconnect.deselectTheseCases( univ.constants.kUnivDataSetName, [theCaseID] );
+            univ.CODAPconnect.deselectTheseCases(univ.constants.kUnivDataSetName, [theCaseID]);
         } else {
-            univ.CODAPconnect.selectTheseCases( univ.constants.kUnivDataSetName, [theCaseID] );
+            univ.CODAPconnect.selectTheseCases(univ.constants.kUnivDataSetName, [theCaseID]);
         }
     }
 }
 
-Result.resultFromCODAPValues = function(iValues) {
+Result.resultFromCODAPValues = function (iValues) {
     let theData = iValues;
     out = new Result(theData, {
-        dbid : iValues.dbid,
-        epoch : iValues.epoch,
-        teamCode : iValues.teamID,
-        source : iValues.source,
-        selected : iValues.selected,
-        caseID : iValues.caseID,
+        dbid: iValues.dbid,
+        epoch: iValues.epoch,
+        teamCode: iValues.teamID,
+        paper: iValues.paper,
+        selected: iValues.selected,
+        caseID: iValues.caseID,
     });
 
     return out;
 };
 
+
+resultConverter = {
+    toFirestore: function (iResult) {
+        const target = {};
+        Object.assign(target, iResult);
+        return target;
+    },
+    fromFirestore: function (iSnap, options) {
+        const theData = iSnap.data();
+        const target = new Result();
+        Object.assign(target, theData);
+        return target;
+    }
+};
