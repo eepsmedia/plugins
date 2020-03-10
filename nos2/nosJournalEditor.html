@@ -71,7 +71,7 @@ limitations under the License.
     <script>
         $(function () {
             $("#tabs").tabs();
-            $("#paperPreview").dialog({
+            $("#figurePreview").dialog({
                 autoOpen: false,
 
                 show: {
@@ -105,11 +105,11 @@ limitations under the License.
 </head>
 <body onload=`nos2.initialize(6)`>
 
-<div id="paperPreview">
+<div id="figurePreview">
 
 </div>
 
-<div id="editorStatusBarDiv">
+<div id="editorStatusBarDiv" class="nosStatusBar">
 
 </div>
 
@@ -140,7 +140,7 @@ limitations under the License.
 
     <div id="list">
         <h1>Editor Task List</h1>
-        <button id="paperListRefreshButton" onclick="nos2.ui.update()">refresh list</button>
+<!--        <button id="paperListRefreshButton" onclick="nos2.ui.update()">refresh list</button>-->
         <div id="paperTaskTable"></div>
     </div>
 
@@ -155,7 +155,7 @@ limitations under the License.
             <button id="acceptPaperButton" onclick="nos2.userAction.judgePaper(nos2.constants.kPaperStatusPublished)">accept</button>
             <button id="rejectPaperButton" onclick="nos2.userAction.judgePaper(nos2.constants.kPaperStatusRejected)">reject</button>
             <button id="revisePaperButton" onclick="nos2.userAction.judgePaper(nos2.constants.kPaperStatusRevise)">revise</button>
-            <button id="previewPaperButton" onclick="nos2.userAction.makePaperPreview( )">preview</button>
+            <button id="previewFigureButton" onclick="nos2.userAction.makeFigurePreview( )">figure preview</button>
 
             <!--        conversation section    -->
             <details>
@@ -181,7 +181,7 @@ limitations under the License.
 
     <div id="teams">
         <h1>Team Info</h1>
-        <button id="editorTeamInfoRefreshButton" onclick="nos2.ui.update()">refresh teams</button>
+<!--        <button id="editorTeamInfoRefreshButton" onclick="nos2.ui.update()">refresh teams</button>-->
         <div id="editorTeamInfoDiv"></div>
     </div>
 

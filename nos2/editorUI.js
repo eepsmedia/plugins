@@ -52,7 +52,13 @@ nos2.ui = {
 
         document.getElementById("editorStatusBarDiv").innerHTML =
             `editor | ${nos2.state.worldCode ? nos2.state.worldCode : "no world yet"} | ${nos2.epoch}` +
-            "&emsp;&emsp;<button onclick='nos2.logout()'>log out</button>" + `&emsp;version ${nos2.constants.version} `;
+            "&emsp;&emsp;<button onclick='nos2.logout()'>log out</button>" +
+            `&emsp;version ${nos2.constants.version} ` +
+            `&emsp;<img class="refreshButton" type="image"
+                alt="refresh" title="refresh"
+                src="../common/art/refresh_32.png"
+                onClick="nos2.ui.update()">`
+        ;
 
         // main visibility
 

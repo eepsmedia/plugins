@@ -103,9 +103,7 @@ limitations under the License.
 
 <body onload="nos2.initialize('admin')">
 
-<div id="adminStatusBarDiv">
-
-</div>
+<div id="adminStatusBarDiv" class="nosStatusBar"></div>
 
 <div id="godLoginDiv" class="startup">
     <h1>Login </h1>
@@ -164,7 +162,7 @@ limitations under the License.
     </ul>
 
     <div id="teams">
-        <h1>Teams</h1>
+        <h1 id="teamsHed">Teams</h1>
         <div id="teamsListDiv"></div>
 
         <label for="annualIncomeThou">Annual income (thousands)</label>
@@ -193,12 +191,12 @@ limitations under the License.
                 <button id="newTeamButton" onclick="nos2.userAction.newTeam()">make new team</button>
             </fieldset>
             <br>
-            <button id="refreshTeamsButton" onclick="nos2.ui.update()">refresh team list</button>
+<!--            <button id="refreshTeamsButton" onclick="nos2.ui.update()">refresh team list</button>-->
         </details>
     </div>
 
     <div id="papers">
-        <h1>Papers</h1>
+        <h1 id="papersHed">Papers</h1>
         <div id="papersListDiv"></div>
     </div>
 

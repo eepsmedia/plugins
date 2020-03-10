@@ -32,12 +32,27 @@ univ.selectionManager = {
     codapSelectsCases : function( iCommand ) {
         console.log("Got selection in univ! ... " );
 
+        let theDBIDs = [];
+
         if (iCommand.values.operation === "selectCases" && iCommand.values.result.success) {
             const theCases = iCommand.values.result.cases;
-            console.log("   selected cases:  " + JSON.stringify(theCases) );
+            const selectedDBIDs = [];
 
+            //  make an array of the selected dbids. Relies on the dbids in CODAP to be correct
+            theCases.forEach((c) => {
+                const thedbid = c.values.dbid;
+                if (thedbid) {
+                    selectedDBIDs.push(thedbid);
+                }
+            });
+            console.log("   selected dbids:  " + JSON.stringify(selectedDBIDs) );
+
+            //  update the Results in dataView (not ALL Results) to relflect the selection
+            univ.dataView.results.forEach( res => {
+                res.selected = (selectedDBIDs.includes(res.dbid));
+            })
         }
 
-        nos2.ui.update();   //  because we might change what we display
+        univ.dataView.redraw();   //  because we might change what we display
     }
 };

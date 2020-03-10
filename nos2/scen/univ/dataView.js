@@ -69,7 +69,7 @@ univ.dataView = {
     resultIDArray : function() {
         let out = [];
 
-        this.results.forEach( (r) => {out.push(r.data.dbid)});
+        this.results.forEach( (r) => {out.push(r.dbid)});   //  Results dbid is at top level
         return out;
     },
 
@@ -78,7 +78,7 @@ univ.dataView = {
 
         let tDataDisplayChoice = $('input[name=dataDisplayChoice]:checked').val();
 
-        const allResults = await univ.CODAPconnect.getAllCasesAsResultsWithSelection(univ.constants.kUnivDataSetName);
+        const allResults = await nos2.getKnownResults();  //  array
 
         if (tDataDisplayChoice === "selection") {
             allResults.forEach( r => {
@@ -93,6 +93,11 @@ univ.dataView = {
         if (theDisplayedResults) {
             univ.dataView.results = theDisplayedResults;
             univ.dataView.displaySomeResults(theDisplayedResults);
+
+            //  see what might have to be added to CODAP (e.g., we learned something by reading)
+            const theNewResults = fireStoreToCODAPMaps.findUnmappedResults(theDisplayedResults);
+            await univ.CODAPconnect.saveResultsToCODAP(theNewResults);     //  add our known-from-before results to CODAP
+
         }
     },
 /*
@@ -187,6 +192,12 @@ univ.dataView = {
                     console.log("Mouse up in " + JSON.stringify([col, row]));
                     nos2.ui.update();
 
+                }).mouseover(e => {
+                    this.possiblePoint = [col, row];
+/*
+                    const tA = this.prepareArray();
+                    this.drawArray(tA);
+*/
                 });
             }
         }

@@ -36,14 +36,14 @@ class Figure {
             this.guts = {
                 image: {
                     contents: "",
-                    width: 100,
-                    height: 100,
+                    width: 500,
+                    height: 300,
                     format: "svg",
                 },
                 text: {
-                    title: "a title for this figure",
-                    caption: "figure caption",
-                    notes: "some notes",
+                    title: "",
+                    caption: "",
+                    notes: "",
                 },
                 creator: nos2.state.teamCode,
                 epoch: nos2.epoch,

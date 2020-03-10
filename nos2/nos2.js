@@ -110,19 +110,29 @@ let nos2 = {
 
         nos2.state = nos2.constants.freshState;     //  teamCode, teamName, worldCode
 
+        nos2.theWorld = {};
         nos2.theTeams = {};
         nos2.thePapers = {};
         nos2.theFigures = {};
         nos2.theResults = {};
 
+        nos2.currentPaper = null;
+        nos2.currentFigure = null;
+
+        const theWorldCodeBox = document.getElementById("worldCodeBox");
+        if (theWorldCodeBox) theWorldCodeBox.value = "";
     },
 
     logout: function () {
         this.clearVariableValues();
-        nos2.ui.update();
 
-        //  fireConnect.unsubscribeFromFigures();
-        //  fireConnect.unsubscribeFromPapers();
+        fireConnect.unsubscribeFromFigures();
+        fireConnect.unsubscribeFromPapers();
+        fireConnect.unsubscribeFromResults();
+        fireConnect.unsubscribeFromTeams();
+        fireConnect.unsubscribeFromWorld();
+        
+        nos2.ui.update();
     },
 
     goToTabNumber: function (iTab) {
@@ -132,6 +142,7 @@ let nos2 = {
 
 
     restoreTeamsFiguresPapersResults: async function (iWorldCode) {
+        nos2.theWorld = await fireConnect.getWorldData(iWorldCode);
         nos2.theTeams = await fireConnect.getAllTeams(iWorldCode);
         nos2.thePapers = await fireConnect.getAllPapers();
         nos2.theFigures = await fireConnect.getAllFigures();
@@ -168,7 +179,7 @@ let nos2 = {
 
             return resultsOut;      //   and array of Results
         } else {
-            return null;
+            return [];
         }
     },
 

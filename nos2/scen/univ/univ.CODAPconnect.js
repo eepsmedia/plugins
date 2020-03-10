@@ -29,7 +29,7 @@ limitations under the License.
 univ.CODAPconnect = {
 
     initialize: async function (iCallback) {
-        await codapInterface.init(this.iFrameDescriptor, null)
+        await codapInterface.init(this.iFrameDescriptor, null);
         await pluginHelper.initDataSet(this.univDataContextSetupObject);
 
         //  restore the state if possible
@@ -54,9 +54,9 @@ univ.CODAPconnect = {
         };
 
         const updateResult = await codapInterface.sendRequest(tMessage);
-
     },
 
+/*
     saveItemsToCODAP: async function (iValues) {
 
         const makeItemsMessage = {
@@ -68,6 +68,7 @@ univ.CODAPconnect = {
         const createItemsResult = await codapInterface.sendRequest(makeItemsMessage);
 
     },
+*/
 
     /**
      *
@@ -80,19 +81,23 @@ univ.CODAPconnect = {
             iResult = [ iResult ];
         }
 
-        let iValues = [];
+        let codapValues = [];
         iResult.forEach( r => {
-            iValues.push(r.toCODAPValuesObject());
+            codapValues.push(r.toCODAPValuesObject());
         });
 
-        const makeItemsMessage = {
+        const createItemsMessage = {
             action : "create",
             resource : "dataContext[" + univ.constants.kUnivDataSetName + "].item",
-            values : iValues
+            values : codapValues
         };
 
-        const createItemsResult = await codapInterface.sendRequest(makeItemsMessage);
+        //  actually create the items
+        const createItemsResult = await codapInterface.sendRequest(createItemsMessage);
 
+        fireStoreToCODAPMaps.addResultsAndResponses(iResult, createItemsResult);    //  update ID maps
+
+        //  make the case table in case it's not present
         codapInterface.sendRequest({
             "action": "create",
             "resource": "component",
@@ -129,7 +134,7 @@ univ.CODAPconnect = {
             "action": "create",
             "resource": "dataContext[" + iDataContextName + "].selectionList",
             "values": theNewList
-        }
+        };
 
         await codapInterface.sendRequest( tMessage );
         nos2.ui.update();
@@ -194,39 +199,16 @@ univ.CODAPconnect = {
 
     },
 
-/*
-    getAllCases: async function(iDataContextName) {
-        const theMessage = {
-            "action": "get",
-            "resource": "dataContext[" + iDataContextName + "].itemSearch[epoch!=-1]"
+    deleteAllCases : async function ( ) {
+
+        const deleteAllCasesMessage = {
+            "action": "delete",
+            "resource": `dataContext[${univ.constants.kUnivDataSetName}].collection[${univ.constants.kUnivCollectionName}].allCases`
         };
 
-        const getAllCasesResult = await codapInterface.sendRequest(theMessage);
-        return getAllCasesResult;
+        const deleteAllCasesResult = await codapInterface.sendRequest(deleteAllCasesMessage);
     },
 
-    getSelectedCases: async function(iDataContextName) {
-        const theMessage = {
-            "action": "get",
-            "resource": "dataContext[" + iDataContextName + "].selectionList"
-        };
-
-        const getSelectedCasesListResult = await codapInterface.sendRequest(theMessage);
-
-        let allSelectedCases = [];
-        let theCasePromises = [];
-        if (getSelectedCasesListResult.success) {
-            getSelectedCasesListResult.values.forEach( obj => {     //  obj is of form {caseid : 17, collectionName : "univ" ...}
-                const resource = "collection[" + obj.collectionName + "].caseByID[" + obj.caseID + "]";
-                theCasePromises.push( codapInterface.sendRequest({action : "get", resource : resource}));
-            });
-            allSelectedCases = await Promise.all(theCasePromises);
-        } else {
-
-        }
-        return allSelectedCases;
-    },
-*/
     univDataContextSetupObject: {
         name: univ.constants.kUnivDataSetName,
         title: univ.constants.kUnivDataSetTitle,

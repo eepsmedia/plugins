@@ -77,6 +77,7 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
     <script src="univ.ui.js"></script>
     <script src="univ.userAction.js"></script>
     <script src="univ.CODAPconnect.js"></script>
+    <script src="fireStoreToCODAPMaps.js"></script>
     <script src="univ.selectionManager.js"></script>
     <script src="telescopeView.js"></script>
     <script src="universeView.js"></script>
@@ -113,7 +114,7 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
 
 <body onload=`univ.initialize("scientist")`>
 
-<div id="univStatusBarDiv"></div>
+<div id="univStatusBarDiv" class="nosStatusBar"></div>
 
 <div id="joinWorldDiv" class="startup">
     <h1>Join a World</h1>
@@ -172,16 +173,19 @@ XYZ:      https://codap.xyz/plugins/nos2/scen/univ/univ.html
         <div id="noCurrentFigureMessage"><h2>You have not chosen a Figure to work on</h2></div>
         <div id="makeFigureTabGuts">
             <label for="snapshotTitle">Title: </label>
-            <input type="text" size="30" id="snapshotTitle" onblur="nos2.currentFigure.setText()">
+            <input type="text" id="snapshotTitle" placeholder="give the figure a title"
+                   size="30" onblur="nos2.currentFigure.setText()">
             <button onclick="univ.userAction.saveFigure()">Save this figure</button>
             <br>
             <svg id="thumbnail" width="250" height="150"></svg>
             <br>
             <label for="snapshotCaption">caption</label><br>
-            <textarea id="snapshotCaption" rows="4" cols="40" onblur="nos2.currentFigure.setText()"></textarea>
+            <textarea id="snapshotCaption" placeholder="this caption appears below the figure"
+                      rows="4" cols="40" onblur="nos2.currentFigure.setText()"></textarea>
             <br>
             <label for="snapshotNotes">notes</label><br>
-            <textarea id="snapshotNotes" rows="2" cols="40" onblur="nos2.currentFigure.setText()"></textarea>
+            <textarea id="snapshotNotes" placeholder="any notes?"
+                      rows="2" cols="40" onblur="nos2.currentFigure.setText()"></textarea>
         </div>
     </div>
 

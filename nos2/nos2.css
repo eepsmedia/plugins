@@ -61,29 +61,33 @@ h2 {
 #adminStatusBarDiv {
     background-color: cadetblue;
     color : white;
-    padding : 1em;
+    padding-left: 1em;
 }
 
 #writerStatusBarDiv {
-    background-color: #44a;
-    color : white;
-    padding : 1em;
+    background-color: palegoldenrod;
+    color : brown;
+    padding-left: 1em;
 }
 
 #editorStatusBarDiv {
-    background-color: #55b;
+    background-color: #88f;
     color : white;
-    padding : 1em;
+    padding-left: 1em;
 }
 
 #univStatusBarDiv {
     background-color: #72bfca; /* CODAP blue    */
     color : white;
-    padding : 1em;
+    padding-left: 1em;
 }
 
 #annualIncomeThou, #grantAmountThou {
     width : 3em;
+}
+
+#figurePreview {
+    width : 500px;
 }
 
 p, li {
@@ -142,6 +146,20 @@ details[open] {
     cursor : pointer;
 }
 
+.refreshSpan, .refreshButton{
+    cursor : pointer;
+    /*
+    width : 18px;
+    height : 16px;
+    */
+}
+
+.nosStatusBar {
+    height : 48px;
+    width : 100%;
+    display: flex;
+    align-items: center;
+}
 /*
     displaying papers in the journal
  */

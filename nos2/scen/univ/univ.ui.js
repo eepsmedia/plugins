@@ -32,28 +32,6 @@ nos2.ui = {
         console.log("Stub univ.ui initialization");
     },
 
-    updateEditFigureSection: function () {
-        const theMakeEditFigureTabGutsElement = document.getElementById("makeFigureTabGuts");
-        const theNoCurrentFigureMessageElement = document.getElementById("noCurrentFigureMessage");
-
-        if (nos2.currentFigure && nos2.currentFigure.guts.image.contents) {
-            theNoCurrentFigureMessageElement.style.display = "none"
-            theMakeEditFigureTabGutsElement.style.display = "block";
-
-            //  load text fields with data from nos2.currentFigure
-            document.getElementById("snapshotCaption").value = nos2.currentFigure.guts.text.caption;
-            document.getElementById("snapshotTitle").value = nos2.currentFigure.guts.text.title;
-            document.getElementById("snapshotNotes").value = nos2.currentFigure.guts.text.notes;
-
-            //  The thumbnail is for DISPLAY. (display the image contents)
-            nos2.currentFigure.displayImageIn("thumbnail");
-
-        } else {
-            //  what to do if there is no figure
-            theNoCurrentFigureMessageElement.style.display = "block"
-            theMakeEditFigureTabGutsElement.style.display = "none";
-        }
-    },
 
     update: async function () {
 
@@ -79,7 +57,18 @@ nos2.ui = {
             "&nbsp;&nbsp;&nbsp;&nbsp;" +
             "<button onclick='univ.logout()'>log out</button>" +
             "&nbsp;&nbsp;&nbsp;&nbsp;" +
-            univ.constants.version;
+            univ.constants.version +
+            `&emsp;<img class="refreshButton" type="image"
+                alt="refresh" title="refresh"
+                src="../../../common/art/refresh_32.png"
+                onClick="nos2.ui.update()">`
+        ;
+
+/*
+    <span class="refreshSpan" onclick="nos2.ui.update()">🔄</span>
+*/
+
+
 
         //  choose team list. ONLY IN THE APPROPRIATE PHASE!
 
@@ -153,5 +142,30 @@ nos2.ui = {
 
         theFiguresListElement.innerHTML = `${figureListGuts}`;
 
-    }
+    },
+
+
+    updateEditFigureSection: function () {
+        const theMakeEditFigureTabGutsElement = document.getElementById("makeFigureTabGuts");
+        const theNoCurrentFigureMessageElement = document.getElementById("noCurrentFigureMessage");
+
+        if (nos2.currentFigure && nos2.currentFigure.guts.image.contents) {
+            theNoCurrentFigureMessageElement.style.display = "none"
+            theMakeEditFigureTabGutsElement.style.display = "block";
+
+            //  load text fields with data from nos2.currentFigure
+            document.getElementById("snapshotCaption").value = nos2.currentFigure.guts.text.caption;
+            document.getElementById("snapshotTitle").value = nos2.currentFigure.guts.text.title;
+            document.getElementById("snapshotNotes").value = nos2.currentFigure.guts.text.notes;
+
+            //  The thumbnail is for DISPLAY. (display the image contents)
+            nos2.currentFigure.displayImageIn("thumbnail");
+
+        } else {
+            //  what to do if there is no figure
+            theNoCurrentFigureMessageElement.style.display = "block"
+            theMakeEditFigureTabGutsElement.style.display = "none";
+        }
+    },
+
 };

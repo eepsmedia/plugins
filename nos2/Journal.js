@@ -94,8 +94,7 @@ nos2.journal = {
     },
 
     constructJournalHTML : async function () {
-        out = `<span class="bigHeadline">${this.name}</span>&emsp;&emsp;&emsp;
-                <button id="refreshJournalButton" onclick="nos2.ui.update()">refresh journal</button>`;
+        out = `<span class="bigHeadline">${this.name}</span>`;
 
         const arrayOfPapers = nos2.journal.assemblePublishedPapers( );
 

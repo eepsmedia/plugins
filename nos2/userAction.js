@@ -53,6 +53,8 @@ nos2.userAction = {
                     //  new name, OK to make a world
                     await this.newWorld(tWorldCode, document.getElementById("worldNicknameBox").value);
                     await this.joinWorldByCode(tWorldCode, iCallback);
+                    alert(`Success! The code for your new game is "${tWorldCode}". 
+                                Players will need that code to log in.`);
                 }
             } else {
                 //      we are joining an exisiting world
@@ -209,19 +211,20 @@ nos2.userAction = {
         nos2.ui.update();
     },
 
-    makePaperPreview: async function () {
-        const tPaperID = nos2.currentPaper.dbid;
+    makeFigurePreview: async function () {
+        const tFigureID = nos2.currentFigure.guts.dbid;
 
-        let thePreviewHTML = "";
-        if (nos2.currentPaper) {
-            thePreviewHTML = await fireConnect.getPaperPreview(tPaperID);
+        let thePreviewHTML = "<svg>";
+        if (nos2.currentFigure) {
+            thePreviewHTML = `<svg>${nos2.currentFigure.guts.image.contents}</svg>`;
         } else {
-            thePreviewHTML = "No paper specified."
+            thePreviewHTML = "<p>No figure specified.</p>";
         }
 
-        document.getElementById("paperPreview").innerHTML = thePreviewHTML;
+        document.getElementById("figurePreview").innerHTML = thePreviewHTML;
 
-        $("#paperPreview").dialog("open");
+        //  nos2.currentFigure.displayImageIn("figurePreview");
+        $("#figurePreview").dialog("open");
     },
 
     erasePaper: async function () {

@@ -56,8 +56,8 @@ univ.userAction = {
 
         const theKnownResults = await nos2.getKnownResults();
 
-        //  this need not be awaited.
-        univ.CODAPconnect.saveResultsToCODAP(theKnownResults);     //  add our known-from-before results to CODAP
+        //  this needs to be awaited because if we don't it might come around again on a redraw and add n more cases
+        await univ.CODAPconnect.saveResultsToCODAP(theKnownResults);     //  add our known-from-before results to CODAP
 
         nos2.ui.update();
     },

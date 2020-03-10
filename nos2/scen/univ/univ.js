@@ -96,7 +96,8 @@ let univ = {
 
     logout : function() {
         univ.playPhase = univ.constants.kPhaseNoWorld;
-        nos2.ui.update();
+        univ.CODAPconnect.deleteAllCases();
+        nos2.logout();
     },
 
     /**
@@ -153,13 +154,10 @@ let univ = {
             }
         }
 
-        const tNewResult = new Result(data);      //  encapsulate all this information
+        const tNewResult = await fireConnect.saveResultToDB(new Result(data));
         univ.telescopeView.latestResult = tNewResult;       //  make sure the telescope knows for its display
-
-        const tDBID = fireConnect.saveResultToDB(tNewResult);
-        tNewResult.dbid = tDBID;
-        nos2.theResults[tDBID] = tNewResult;
-        univ.CODAPconnect.saveResultsToCODAP(tNewResult);  //  store it in CODAP. This has the dbid field.
+        nos2.theResults[tNewResult.dbid] = tNewResult;
+        await univ.CODAPconnect.saveResultsToCODAP(tNewResult);  //  store it in CODAP. This has the dbid field.
     },
 
 

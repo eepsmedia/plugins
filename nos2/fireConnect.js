@@ -143,15 +143,21 @@ fireConnect = {
             this.papersCR = this.thisWorldDR.collection("papers");
 
             await nos2.restoreTeamsFiguresPapersResults(iWorldCode);
+            this.subscribeToListeners();
 
-            fireConnect.unsubscribeFromWorld = this.setWorldListener();
-            fireConnect.unsubscribeFromPapers = this.setPapersListener();
-            fireConnect.unsubscribeFromFigures = this.setFiguresListener();
-            fireConnect.unsubscribeFromTeams = this.setTeamsListener();
-            fireConnect.unsubscribeFromResults = this.setResultsListener();
             return snap.data();     //  world data
         }
         return null;
+    },
+
+    subscribeToListeners : function() {
+        console.log(`   *** in fireConnect.subscribeToListeners, app is ${nos2.app}`);
+        fireConnect.unsubscribeFromWorld = this.setWorldListener();
+        fireConnect.unsubscribeFromPapers = this.setPapersListener();
+        fireConnect.unsubscribeFromFigures = this.setFiguresListener();
+        fireConnect.unsubscribeFromTeams = this.setTeamsListener();
+        fireConnect.unsubscribeFromResults = this.setResultsListener();
+
     },
 
     addTeam: async function (iTeam) {
@@ -244,17 +250,19 @@ fireConnect = {
         }
     },
 
-    getPaperPreview: async function (iPaperID) {
+/*
+    getFigurePreview: async function (iFigureID) {
         let out = null;
-        if (iPaperID) {
+        if (iFigureID) {
             try {
-                out = await fireConnect.sendCommand({"c": "getPaperPreview", "paperID": iPaperID});
+                const theFigure = nos2.theFigures[iFigureID]
             } catch (e) {
-                console.log('getPaperPreview() error: ' + e);
+                console.log('getFigurePreview() error: ' + e);
             }
         }
         return out;
     },
+*/
 
     saveMessage: async function (iPaper, iWho, iText) {
         const paperDR = this.papersCR.doc(iPaper.guts.dbid);
@@ -305,7 +313,7 @@ fireConnect = {
             //      and, by the way,
             await fireConnect.assertKnownResult(tDBID);
 
-            return (tDBID);       //  just the dbid
+            return (iResult);       //  just the dbid
         } catch (msg) {
             console.log('saveResultToDB() error: ' + msg);
             return null;
@@ -449,10 +457,10 @@ fireConnect = {
 
     setWorldListener : function() {
         return this.thisWorldDR.onSnapshot( Ws => {
-            nos2.theWorld = Ws.data();
+            nos2.theWorld = Ws.data();      //  update nos2.theWorld on change (e.g., epoch)
             const newYear = nos2.theWorld.epoch;
 
-            if (newYear !== nos2.epoch) {
+            if (newYear !== nos2.epoch) {   //  nos2.epoch was set earlier, old year number.
                 nos2.epoch = nos2.theWorld.epoch;
                 alert(`Happy New Year! It is now ${nos2.epoch} in ${nos2.state.worldCode}`);
                 nos2.ui.update();

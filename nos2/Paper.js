@@ -108,7 +108,7 @@ class Paper {
 
         if (this.guts.figures.length > 0) {
             const theFigure = nos2.theFigures[this.guts.figures[0]];
-            figureHTML = `<svg width="250" viewBox="${theFigure.viewBoxString()}">${theFigure.guts.image.contents}</svg>
+            figureHTML = `<svg width="333" viewBox="${theFigure.viewBoxString()}">${theFigure.guts.image.contents}</svg>
                     <p>${theFigure.guts.text.caption}</p>`;
 
         } else {

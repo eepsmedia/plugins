@@ -80,9 +80,10 @@ limitations under the License.
                 }
             });
 
-            $("#paperPreview").dialog({
+            $("#figurePreview").dialog({
                 autoOpen: false,
-
+                width : 500,
+                height : 300,
                 show: {
                     effect: "blind",
                     duration: 200
@@ -116,9 +117,9 @@ limitations under the License.
 <body onload=`nos2.initialize("writer")`>
 
 <!-- for floating window! -->
-<div id="paperPreview"></div>
+<div id="figurePreview"></div>
 
-<div id="writerStatusBarDiv"></div>
+<div id="writerStatusBarDiv" class="nosStatusBar"></div>
 
 <div id="joinWorldDiv" class="startup">
     <h1>Join a World</h1>
@@ -148,7 +149,7 @@ limitations under the License.
 
     <div id="list">
         <h1>Paper Status</h1>
-        <button id="statusRefreshButton" onclick="nos2.ui.update()">refresh list</button>
+<!--        <button id="statusRefreshButton" onclick="nos2.ui.update()">refresh list</button>-->
         <div id="paperTaskTable"></div>
 
     </div>
@@ -158,9 +159,9 @@ limitations under the License.
         <button id="savePaperButton" onclick="nos2.userAction.savePaper()">save as draft</button>
         <button id="submitPaperButton" onclick="nos2.userAction.submitPaper()">save and submit for publication</button>
         <button id="newPaperButton" onclick="nos2.userAction.newPaper()">new paper</button>
-        <!--
-                <button id="previewPaperButton" onclick="nos2.userAction.makePaperPreview( )">preview</button>
-        -->
+        <button id="previewFigureButton" onclick="nos2.userAction.makeFigurePreview( )">preview Figure</button>
+
+
         <br>
 
         <table>

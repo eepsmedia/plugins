@@ -61,18 +61,6 @@ class Result {
         return out;
     }
 
-    toFireStoreObject() {
-        let out = {data: this.data};
-        out.dbid = this.dbid;
-        out.epoch = this.epoch;
-        out.teamCode = this.teamCode;
-        out.paper = this.paper;
-
-        return out;
-
-    }
-
-
     toString() {
         return (this.data.R + "R." + this.data.O + "O." + this.data.G + "G." + this.data.B + "B");
     }
@@ -105,13 +93,14 @@ class Result {
     }
 
     toggleSelection() {
-        console.log("toggling result caseID = " + this.caseID);
-        const theCaseID = this.caseID;
+        const theCaseID = fireStoreToCODAPMaps.caseIDMap[this.dbid];
+        console.log("toggling result caseID = " + theCaseID);
         if (this.selected) {
             univ.CODAPconnect.deselectTheseCases(univ.constants.kUnivDataSetName, [theCaseID]);
         } else {
             univ.CODAPconnect.selectTheseCases(univ.constants.kUnivDataSetName, [theCaseID]);
         }
+        this.selected = !this.selected;
     }
 }
 

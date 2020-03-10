@@ -43,7 +43,13 @@ nos2.ui = {
         document.getElementById("adminStatusBarDiv").innerHTML =
             `admin | ${nos2.myGodName} | ${nos2.state.worldCode} | ${nos2.epoch}` +
             "&nbsp;&nbsp;&nbsp;&nbsp; <button onclick='nos2.userAction.newYear()'>new year</button>" +
-            "&emsp;&emsp;<button onclick='nos2.logout()'>log out</button>" + `&emsp;version ${nos2.constants.version} `;
+            "&emsp;&emsp;<button onclick='nos2.logout()'>log out</button>" +
+            `&emsp;version ${nos2.constants.version} ` +
+            `&emsp;<img class="refreshButton" type="image"
+                alt="refresh" title="refresh"
+                src="../common/art/refresh_32.png"
+                onClick="nos2.ui.update()">`
+        ;
 
         // main visibility
 
@@ -55,13 +61,6 @@ nos2.ui = {
         tGodChooseWorldDiv.style.display = (nos2.adminPhase === nos2.constants.kAdminPhaseNoWorld ? "block" : "none");
         tTabsDiv.style.display = (nos2.adminPhase === nos2.constants.kAdminPhasePlaying ? "block" : "none");
 
-
-        //  editor panel visibility
-
-        /*
-                const tEditorTabDiv = document.getElementById("editor");
-                tEditorTabDiv.style.display = (nos2.state.editor ? "block" : "none");
-        */
 
         //  join page text etc
 
@@ -89,7 +88,10 @@ nos2.ui = {
             const worldsSnap = await fireConnect.worldsCR.get();
             let tWorlds = [];
             worldsSnap.forEach(ws => {
-                tWorlds.push(ws.data())
+                const aWorld = ws.data();
+                if (aWorld.god === nos2.myGodID) {
+                    tWorlds.push(aWorld)
+                }
             });
 
             const tWorldDiv = document.getElementById("godChooseWorldTable");
@@ -113,9 +115,11 @@ nos2.ui = {
 
         if (nos2.adminPhase === nos2.constants.kAdminPhasePlaying) {
             //  teams list table
+            document.getElementById("teamsHed").textContent = `Teams in ${nos2.state.worldCode}`;
             this.makeAndInstallTeamsList();
 
             //  paper table
+            document.getElementById("papersHed").textContent = `Papers in ${nos2.state.worldCode}`;
             this.makeAndInstallPapersList()
 
             //  update the full Journal
@@ -123,7 +127,7 @@ nos2.ui = {
 
             //      truth
 
-            if (nos2.theWorld) {
+            if (nos2.theWorld.state) {
                 const worldState = JSON.parse(nos2.theWorld.state);
                 univ.universeView.drawArray(worldState.truth);
             }
