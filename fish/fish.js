@@ -43,7 +43,8 @@ let fish = {
      * Set in setLevel() below.
      */
     gameFromDB: null,         //  the game in the DB, updated when it changes
-    gameParameters : null,      //  a copy from fishGameConfiguration corresponding to level, e.g., "albacore"
+    gameConfig : null,
+    gameParameters : null,      //  a copy from fishGameConfiguration corresponding to config, e.g., "albacore"
     players: [],
 
     language: null,
@@ -72,7 +73,6 @@ let fish = {
         currentTurnResult: null,
 
         autoCatch: false,       //  automation button checked for catching
-        autoChair: false,       //  automation button checked for chairing (fish market)
         otherPlayersInfo: {OK: true},
         timerCount: 0,
     },
@@ -106,53 +106,54 @@ let fish = {
         fish.ui.update();
     },
 
-    catchFish: function (iSought) {
+    calculateVisible : function() {
+        let tVisible = 0;
+        let tPop = Number(fish.gameFromDB['population']);
+
+        if (fish.gameParameters.binomialProbabilityModel) {
+            for (let i = 0; i < tPop; i++) {
+                if (Math.random() < fish.gameParameters.visibleProbability) {
+                    tVisible++;
+                }
+            }
+        } else {
+            tVisible = Math.round(fish.gameParameters.visibleProbability * tPop);
+        }
+
+        console.log(`${fish.state.turn}: ${tVisible} seen of ${tPop}`);
+        return tVisible;
+    },
+
+    calculateCaught : function(iWanted, iVisible) {
+        //  now calculate how many we caught
+
+        let tCatchable = 0;
+
+        if (fish.gameParameters.binomialProbabilityModel) {
+            for (let i = 0; i < iVisible; i++) {
+                if (Math.random() < fish.gameParameters.catchProbability) {
+                    tCatchable++;
+                }
+            }
+        } else {
+            tCatchable = Math.round(fish.gameParameters.catchProbability * iVisible);
+        }
+
+        return tCatchable > iWanted ? iWanted : tCatchable;
+    },
+
+    catchFish: function (iWanted) {
 
         try {
-            let tMaxPossibleCatch = iSought;
-
-            let tVisible = 0;
-            let tPop = Number(fish.gameFromDB['population']);
-
-            if (fish.gameParameters.binomialProbabilityModel) {
-                for (let i = 0; i < tPop; i++) {
-                    if (Math.random() < fish.gameParameters.visibleProbability) {
-                        tVisible++;
-                    }
-                }
-            } else {
-                tVisible = Math.round(fish.gameParameters.visibleProbability * tPop);
-            }
-
-            //  limit the max catch to what we can see
-
-            if (tMaxPossibleCatch > tVisible) {
-                tMaxPossibleCatch = tVisible;
-            }
-
-            //  now calculate how many we caught
-
-            let tCaught = 0;
-
-            if (fish.gameParameters.binomialProbabilityModel) {
-                for (let i = 0; i < tVisible; i++) {
-                    if (Math.random() < fish.gameParameters.catchProbability) {
-                        tCaught++;
-                    }
-                }
-            } else {
-                tCaught = Math.round(fish.gameParameters.catchProbability * tVisible);
-            }
-
-            //  just in case...
-            if (tCaught > tMaxPossibleCatch) { tCaught = tMaxPossibleCatch; }
+            const tVisible = this.calculateVisible();
+            tCaught = this.calculateCaught(iWanted, tVisible);
 
             let tExpenses = fish.gameParameters.overhead;
 
             return {
                 playerName : fish.state.playerName,
                 turn : fish.state.turn,
-                sought: iSought,
+                want: iWanted,
                 visible: tVisible,
                 caught: tCaught,
                 expenses: tExpenses
@@ -168,46 +169,48 @@ let fish = {
      * Typically, because poseidon has updated the game year.
      * @param iGame
      */
-    updateGame: function(iGame) {
-        if (this.state.turn !== iGame.turn) {
+    updateGame: async function(iGame) {
+        this.gameFromDB = iGame;
+        this.state.gameState = this.gameFromDB.gameState; //      maybe we won or lost!
+        this.gameConfig = this.gameFromDB.configuration;
+        fish.state.gameEndMessage = this.gameFromDB.reason;
+
+        if (this.state.turn !== this.gameFromDB.turn) {
             //  change of turn! Fish got sold!
-            this.state.turn = iGame.turn;
-            this.state.gameState = iGame.gameState;
-            this.state.playerState = fish.constants.kFishingString;        //  we are back to fishing
-            console.log("    Poseidon says: year is now " + this.state.turn);
+            this.updateTurnFromOldYearInCODAP(this.state.turn); //  gets the turn data and pushes it
+            this.state.turn = this.gameFromDB.turn;
+
+            const myData = await fireConnect.getMyData();
+
+            this.state.playerState = fish.constants.kFishingString;     //  myData.playerState;        //  we are back to fishing
+            this.state.balance = myData.balance;
+
+            console.log(`\nfish.updateGame() Year is now ${this.state.turn} (now ${this.state.playerState})`);
+            if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
+                await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
+            }
         }
-        this.gameFromDB = iGame;      //  the whole thing
+
+        if (this.state.gameState === fish.constants.kWonString || this.state.gameState === fish.constants.kLostString) {
+            this.endGame(this.state.gameState);
+        }
+
         this.ui.update();
+    },
+
+    updateTurnFromOldYearInCODAP : async function( iTurn ) {
+        const theTurn = await fireConnect.getOneTurn( this.state.playerName, iTurn );
+        fish.CODAPConnector.updateFishItemInCODAP(theTurn);
     },
 
     /**
      * Called on receiving a notification that the players have changed in the DB.
-     * Common. Typically, a player has chaged status from fishing to selling, so
-     * the message about who we;re waiting for will change.
-     *
-     * Also, at the end of a turn, Poseidon has upcdated our cash balance,
-     * so we have to refelct that.
+     * Common. Typically, a player has changed status from fishing to selling, so
+     * the message about who we're waiting for will change.
      * @param iPlayers
      */
     updatePlayers: function(iPlayers) {
         this.players = iPlayers;
-        //  find which of these is me....
-        let me = null;
-        this.players.forEach( (p) => {
-            if (p.playerName === this.state.playerName) {
-                me = p;
-            }
-        });
-        //  in order to update stuff we need...
-
-        if (me) {
-            this.state.playerState = me.playerState;        //  might have been changed by Poseidon (redundant w/updateGame(), above)
-            const oldBalance = this.state.balance;
-            this.state.balance = me ? me.balance : 0;
-            if (me.balance !== oldBalance) {
-                console.log("Balance updated from " + oldBalance + " to " + this.state.balance)
-            }
-        }
         this.ui.update();
     },
 
@@ -235,48 +238,17 @@ let fish = {
 
     },
 
-    /**
-     * Set the game's level, a.k.a. scenario.
-     * This is stored in fish.state.config.
-     *
-     * @param iLevelName        the name of the level, e.g., albacore
-     */
-/*
-    setLevel: function (iLevelName) {
-        if (iLevelName) {
-            fish.state.config = iLevelName;
-        } else {
-            let theKey = null;
-            for (var key in fish.fishLevels) {
-                if (fish.fishLevels.hasOwnProperty(key)) {
-                    if (fish.fishLevels[key].starter) {
-                        theKey = key;
-                    }
-                }
-            }
-            fish.state.config = theKey;
-        }
-        fish.game = fish.fishLevels[fish.state.config];
-    },
-*/
 
     /**
-     * Called when the game has ended (called from fish.fishUpdate(), below).
+     * Called when the game has ended
      * Makes the historical data appear.
      *
      * @param iTheState     'won' or 'lost'
      * @returns {Promise<void>}
      */
     endGame: async function (iTheState) {
-
-        switch (iTheState) {
-            case 'won':
-                console.log('you won!');
-                break;
-            case 'lost':
-                console.log('you lost!');
-                break;
-        }
+        console.log(`in fish.endGame("${iTheState}")`);
+        fish.state.gameCodeList.push(this.state.gameCode);
         await fish.historicalData.getHistoricalData();
         //  fish.ui.update();
     },
@@ -286,72 +258,29 @@ let fish = {
      * Sets quantities so that we are not playing a game, no one is chair, etc.
      */
     startWaitingForNewGame: function () {
+        console.log(`\nNow waiting for a new game\n`);
         document.getElementById("automateCatchCheckbox").checked = false;   //  de-automate "catch"
 
         fish.state.gameState = fish.constants.kWaitingString;
         fish.state.playerState = fish.constants.kBetweenString;     //  not in a game until join
         fish.state.gameCode = null;
-        fish.state.gameTurn = 0;
-        fish.state.isChair = false;
+        fish.state.autoCatch = false;
+        fish.state.currentTurnResult = null;
         fish.state.turn = 0;
         fish.state.balance = 0;
 
-        $("#gameCode").val("");         //  empty the code!
+        $("#gameCodeTextField").val("");         //  empty the code!
+        $("#howManyFish").val("");         //  empty the code!
         fish.ui.update();
     },
 
-/*
-    mainLoop: async function () {
-        let gameOver = false;
-
-        while (!gameOver) {
-            fish.state.timerCount++;
-            await new Promise(resolve => setTimeout(resolve, fish.constants.kTimerInterval)); // 3 sec
-
-            try {
-                if (fish.state.gameCode && fish.state.playerName) {
-                    gameOver = await fish.fishUpdate();     //  update the model
-                    await fish.ui.update();             //  update the view
-                } else {
-                    fish.setNotice(fish.strings.waitingToStartText);
-                }
-            } catch (msg) {
-                console.error("fish.mainLoop() error (in fish.mainLoop()) " + msg);
-            }
-        }
-    },
-*/
-
-    /**
-     * Called periodically (fish.constants.kTimerInterval)
-     * If a game is in progress, updates model and view.
-     * @returns {Promise<void>}
-     */
-    doTimer: async function () {
-        fish.state.timerCount++;
-        let done = false;
-
-        try {
-            if (fish.state.gameCode && fish.state.playerName) {
-                done = await fish.fishUpdate();     //  update the model
-                await fish.ui.update();             //  update the view
-            } else {
-                fish.setNotice(fish.strings.waitingToStartText);
-            }
-        } catch (msg) {
-            console.error("fish.doTimer() error (in fish.fishUpdate()) " + msg);
-        }
-
-        if (!done) {
-            setTimeout(fish.doTimer, fish.constants.kTimerInterval);
-        }
-    },
 
     /**
      * At the top level, update the model
      *
      * @returns {Promise<boolean>}
      */
+/*
     fishUpdate: async function () {
         fish.state.otherPlayersInfo = await this.otherPlayersInfo();
         let done = false;
@@ -406,7 +335,7 @@ let fish = {
         if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
             await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
         }
-        /*
+        /!*
                 //  need to know if everyone is done fishing
                 fish.state.OKtoEndTurnObject = await fish.phpConnector.checkToSeeIfOKtoEndTurn();
 
@@ -418,9 +347,10 @@ let fish = {
                         }
                     }
                 }
-        */
+        *!/
         return done;
     },
+*/
 
     /**
      * Check to see if the player is ready to catch fish (game is in progress, player is tagged as "fishing"
@@ -431,8 +361,7 @@ let fish = {
     readyToCatch: function () {
         if (fish.state.playerState === fish.constants.kFishingString) {
             if (fish.state.gameState !== fish.constants.kInProgressString) {
-                console.warn("fish.js readyToCatch(), game state is " + fish.state.gameState);
-                // alert("(fish.readyToCatch()) Hmmm. Somehow, we're ready to catch but the game is now " + fish.constants.kInProgressString);
+                console.warn("fish.js readyToCatch(), but game state is " + fish.state.gameState);
             }
             return true;
         } else {

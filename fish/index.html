@@ -84,11 +84,9 @@ todo: fix bug: at end of game, historical records don't include the very last on
     <script src="fishCODAPConnector.js"></script>
     <script src="fishUI.js"></script>
     <script src="fishUserActions.js"></script>
-    <script src="fishModel.js"></script>
+
     <script src="fishHistoricalData.js"></script>
-<!--
-    <script src="whence.js"></script>
--->
+
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
@@ -106,27 +104,13 @@ todo: fix bug: at end of game, historical records don't include the very last on
     </div>
 
     <div id="clock">
-        <div class="info" id="statusYear">
+        <div class="info" id="statusYear" title="the game year">
 
         </div>
     </div>
 </div>
 
 <br>
-
-<div id="joinGame" class="fishUIblock">
-
-    <label id="gameCodeTextFieldLabel" for="gameCodeTextField">xxx GAME CODE xxx</label>
-    <input type="text" id="gameCodeTextField" onchange="fish.ui.gameCodeTextFieldChange()">
-    <button id="joinGameButton" onclick="fish.userActions.clickJoinButton('join')" value="start new game">
-        xxx JOIN xxx
-    </button>
-    <br>
-    <hr>
-    <div class="notice">
-
-    </div>
-</div>
 
 <div id="needPlayerName" class="fishUIblock">
     <label class="noNameYet" id="playerNameLabel" for="playerName">xxx NAME xxx?</label>
@@ -135,17 +119,25 @@ todo: fix bug: at end of game, historical records don't include the very last on
     </button>
 </div>
 
+<div id="joinGame" class="fishUIblock">
+
+    <label id="gameCodeTextFieldLabel" for="gameCodeTextField">xxx GAME CODE xxx</label>
+    <input type="text" id="gameCodeTextField" onchange="fish.ui.gameCodeTextFieldChange()">
+    <button id="joinGameButton" onclick="fish.userActions.clickJoinButton()" value="start new game">
+        xxx JOIN xxx
+    </button>
+    <br>
+</div>
+
+
 
 <div id="catchFishDIV" class="fishUIblock">
-    <span id="catchManualSpan">
         <label id="fishQuantityLabel" for="howManyFish">xxx HOW MANY xxx</label>
         <input type="number" id="howManyFish">
-        <button id="catchButton" onclick="fish.userActions.catchFish()"> xxx CATCH xxx</button>
-    </span>
-    <span id="catchAutoSpan">
+    <button id="catchButton" onclick="fish.userActions.catchFish()"> xxx CATCH xxx</button>
+    <br>
         <label id="automateCatchLabel" for="automateCatchCheckbox"> xxx AUTOMATE xxx</label>
-        <input type="checkbox" id="automateCatchCheckbox" onchange="fish.ui.update()">
-    </span>
+        <input type="checkbox" id="automateCatchCheckbox" onchange="fish.userActions.changeAutomation()">
 </div>
 
 
@@ -156,6 +148,7 @@ todo: fix bug: at end of game, historical records don't include the very last on
     </div>
 </div>
 
+<hr>
 <div id="notice" class="fishUIblock"></div>
 
 <div id="aboutPlayersText" class="fishUIblock"></div>

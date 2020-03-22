@@ -32,7 +32,7 @@ limitations under the License.
  */
 const fireConnect = {
 
-    fish: null,
+    fish: null,     //  the global fish parent object
 
     db: null,
     gamesCR: null,     //  collection reference for all games
@@ -69,8 +69,14 @@ const fireConnect = {
 
         if (docSnap.exists) {
             console.log(iCode + " exists!");
+
+            //  join this game
+
             this.gameDR = docRef;
+            this.playersCR = this.gameDR.collection("players");
+            this.turnsCR = this.gameDR.collection("turns");
             this.setNotifications();
+
             return docSnap.data();      //  all fields
         } else {
             console.log(iCode + " doesn't exist!");
@@ -88,14 +94,14 @@ const fireConnect = {
      * @returns {Promise<null|*>}   the player data (or null)
      */
     tryPlayerName: async function (iGameCode, iPlayerData) {
-        this.playersCR = this.gamesCR.doc(iGameCode).collection("players");
         const playerDocRef = this.playersCR.doc(iPlayerData.playerName);
         const playerDocSnap = await playerDocRef.get();
 
         //  todo: make it possible to rejoin a game with your name
         if (playerDocSnap.exists) {
-            console.log(iPlayerData.playerName + " is already in this game");
-            return null;
+            console.log(iPlayerData.playerName + " is rejoining this game");
+            this.meDR = playerDocRef;
+            return playerDocSnap.data();
         } else {
             console.log(iPlayerData.playerName + " is a new player!");
             this.meDR = playerDocRef;
@@ -108,33 +114,25 @@ const fireConnect = {
 
         this.unsubscribeFromGame = this.gameDR
             .onSnapshot((iDocSnap) => {
-                const theGame = iDocSnap.data();       //  don't need await??
-                console.log("DB sends player doc of game. Turn: " + theGame.turn);
+                const theGame = iDocSnap.data();
+                console.log(`    Got game ${theGame.gameCode} turn ${theGame.turn} from listener`);
                 this.fish.updateGame(theGame);
             });
 
+
+        /**
+         * Let's be careful here.
+         * This is ONLY in order to tell, locally, who has moved and who as not.
+         */
         this.unsubscribeFromPlayers = this.gameDR.collection("players")
             .onSnapshot((iPlayers) => {
                 let tPlayers = [];
                 iPlayers.forEach((pSnap) => {
                     tPlayers.push(pSnap.data())     //  don't need await??
                 });
-                console.log("DB sends player all " + tPlayers.length + " player(s)");
+                console.log("    listener sends player all " + tPlayers.length + " player(s)");
                 this.fish.updatePlayers(tPlayers);
             });
-
-        /*
-                this.gameDR.collection("turns")
-                    .onSnapshot((iTurns) => {
-                            let tTurns = [];
-                            iTurns.forEach((pSnap) => {
-                                tTurns.push(pSnap.data())
-                            });
-                            console.log("turns event! (anonymous function in fireConnect)");
-                            this.model.theTurns = tTurns;
-                        }
-                    );
-        */
     },
 
 
@@ -159,149 +157,53 @@ const fireConnect = {
         }
     },
 
+    getMyData : async  function() {
+        try {
+            const mySnap = await this.meDR.get();
+            const myData = mySnap.data();
+            return myData;
+        } catch(msg) {
+            console.log(`Problem getting data for ${fish.state.playerName}: ${msg}`);
+        }
+        return null;
+    },
+
+    getOneTurn : async function(iPlayerName, iTurn) {
+        try {
+            const theDocName = iTurn + "_" + iPlayerName;
+            const turnDR = this.turnsCR.doc(theDocName);
+            const turnSnap = await turnDR.get();
+            const  weGot = turnSnap.data()
+            return weGot;
+        } catch(msg) {
+            console.log(`problem in getOneTurn() for ${iPlayerName} in ${iTurn}: ${msg}`);
+            return null;
+        }
+    },
+
+    getAllTurnsFromGame : async function(iGameCode) {
+        let theTurns = [];
+        const thisGamesTurnsCR = this.gamesCR.doc(iGameCode).collection("turns");
+        const turnSnapsPromise = await thisGamesTurnsCR.get();
+        turnSnapsPromise.forEach( p => {
+            theTurns.push(p.data());
+        });
+        return theTurns;
+    },
+
     updatePlayerDocument : async  function(theData) {
         this.meDR.update(theData);
     },
 
-    /**
-     * Get the mySQL data for ALL of the players in this game
-     *
-     * @returns {Promise<any>}
-     */
-    getPlayersData: async function () {
-
+    newTurnRecord: async function (iModelResult) {
         try {
-            const theCommands = {"c": "playersData", "gameCode": fish.state.gameCode};
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            return iData;
-        } catch (msg) {
-            console.log('get players data error: ' + msg);
-        }
-    },
-
-    getMyTurns: async function () {
-        try {
-            const theCommands = {"c": "myTurns", "gameCode": fish.state.gameCode, "playerName": fish.state.playerName};
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            return iData;
-
-        } catch (msg) {
-            console.log('get my turns error: ' + msg);
-        }
-    },
-
-    getOneTurn: async function (iYear) {
-        try {
-            console.log('    fish ... php ... getOneTurn() from DB for '
-                + iYear + ' for ' + fish.state.playerName);
-            const theCommands = {
-                "c": "oneTurn",
-                "year": iYear,
-                "gameCode": fish.state.gameCode,
-                "playerName": fish.state.playerName
-            };
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            return iData;
-        } catch (msg) {
-            console.log('get my turns error: ' + msg);
-        }
-
-    },
-
-    getMyData: async function () {
-        try {
-            const theCommands = {"c": "myData", "gameCode": fish.state.gameCode, "playerName": fish.state.playerName};
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            return iData[0];
-        } catch (msg) {
-            console.log('get my data error: ' + msg);
-        }
-    },
-
-    getTurnsData: async function () {
-
-        try {
-            const theCommands = {"c": "turnsData", "gameCode": fish.state.gameCode, "onTurn": fish.state.gameTurn};
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            return iData;
-        } catch (msg) {
-            console.log('get turns error: ' + msg);
-        }
-    },
-
-    getTurnsFromGame: async function (iGameCode) {
-
-        console.log("in getTurnsFromGame(" + iGameCode + ")");
-        try {
-            const theCommands = {"c": "historicalTurnsData", "gameCode": iGameCode};
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            return iData;
-        } catch (msg) {
-            console.log('getTurnsFromGame  error: ' + msg);
-        }
-    },
-
-    startNewGame: async function (iGameData) {
-
-        try {
-            const theCommands = iGameData;
-            theCommands.chair = fish.state.playerName;
-            theCommands.c = "newGame";
-            const iData = await
-                fish.fireConnect.sendCommand(theCommands);
-            fish.state.isChair = true;        //  YOU are the isChair of this game
-            console.log("New game code: " + iData.gameCode);
-            return iData;
-        } catch (msg) {
-            console.log('startNewGame error: ' + msg);
-        }
-    },
-
-    /**
-     * The game is valid, so all we have to do is add the player record.
-     * @param iValidGame
-     * @returns {Promise}
-     */
-    joinGame: async function (iValidGame) {
-        try {
-            const theCommands = {
-                "c": "joinGame",
-                "gameCode": iValidGame.gameCode,
-                "onTurn": iValidGame.turn,
-                "playerName": fish.state.playerName,
-                "balance": fish.game.openingBalance
-            };
-
-            const iData = await fish.fireConnect.sendCommand(theCommands);
-            iValidGame['newPlayer'] = iData.newPlayer;
-            return (iValidGame);
-        } catch (msg) {
-            console.log('connector.joinGame error: ' + msg);
-        }
-    },
-
-    newCatchRecord: async function (iModelResult) {
-        try {
-            const theValues = {
-                gameCode: fish.state.gameCode,
-                playerName: fish.state.playerName,
-                turn: iModelResult.turn,
-                visible: iModelResult.visible,
-                sought: iModelResult.sought,
-                caught: iModelResult.caught,
-                before: fish.state.balance,
-                expenses: iModelResult.expenses,
-                //  income: iModelResult.income,
-                //  balanceAfter: iModelResult.after
-            };
-
             const theRecordName = iModelResult.turn + "_" + iModelResult.playerName;
-            this.turnDR = this.gameDR.collection("turns").doc(theRecordName);
-            const turnDocRef = this.turnDR.set(theValues);
+            this.turnDR = this.turnsCR.doc(theRecordName);
+            const turnDocRef = await this.turnDR.set(iModelResult);   //      formerly, theValues
 
             return iModelResult.caught;
         } catch (msg) {
-            console.log('fireConnect catch fish error: ' + msg);
+            console.log('fireConnect newTurnRecord() error: ' + msg);
         }
 
     },

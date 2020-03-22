@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-poseidon in poseidon
+mazu in mazu
 
 Author:   Tim Erickson
 
@@ -27,19 +27,19 @@ limitations under the License.
 */
 
 /*
-Local testing: http://localhost:3000/plugins/poseidon
+Local testing: http://localhost:3000/plugins/mazu
  */
 
 import React from 'react';
-//  import poseidon from "./constants.js";
+//  import mazu from "./constants.js";
 import Model from "./Model.js";
-import PoseidonHeader from "./components/PoseidonHeader.js";
-import './css/poseidon.css';
+import MazuHeader from "./components/MazuHeader.js";
+import './css/mazu.css';
 
 import refreshIcon from "./art/refresh.png";
-import poseidon from "./constants";
+import mazu from "./constants";
 
-class Poseidon extends React.Component {
+class Mazu extends React.Component {
 
     constructor(props) {
         super(props);
@@ -49,7 +49,7 @@ class Poseidon extends React.Component {
             missing: [],
             now: new Date(),
         };
-        console.log("Constructing Poseidon. State: " + JSON.stringify(this.state));
+        console.log("Constructing Mazu. State: " + JSON.stringify(this.state));
 
         this.model = new Model(this);   //  singleton
 
@@ -60,7 +60,7 @@ class Poseidon extends React.Component {
         /*
                 this.timerID = setInterval(
                     () => this.poll(),
-                    poseidon.constants.kTimerInterval
+                    mazu.constants.kTimerInterval
                 );
         */
     }
@@ -72,6 +72,7 @@ class Poseidon extends React.Component {
     async poll() {
         const theSituationResponse = await this.model.getCurrentSituation();
 
+        //  this is the REACT state...
         this.setState({
             OKtoSell: theSituationResponse.OK,
             missing: theSituationResponse.missing,
@@ -92,15 +93,15 @@ class Poseidon extends React.Component {
 
     playing() {
         return (
-            this.model.theGame.gameState === poseidon.constants.kInProgressString ||
-            this.model.theGame.gameState === poseidon.constants.kWaitingString
+            this.model.theGame.gameState === mazu.constants.kInProgressString ||
+            this.model.theGame.gameState === mazu.constants.kWaitingString
         )
     }
 
     sitrep() {
         const theGame = this.model.theGame;
 
-        return "Poseidon sitrep: " +  theGame.gameCode + " (" + theGame.gameState + ") turn " + theGame.turn +
+        return "Mazu sitrep: " +  theGame.gameCode + " (" + theGame.gameState + ") turn " + theGame.turn +
             " -- " + this.model.thePlayers.length + " players " +
             " -- " + this.model.theTurns.length + " turns "
             ;
@@ -147,16 +148,16 @@ class Poseidon extends React.Component {
         }
 
         return (
-            <div id={"poseidon"}>
+            <div id={"mazu"}>
                 <div id={"titleBar"}>
-                    <h1>Poseidon</h1>
+                    <h1>Mazu</h1>
                     <RefreshButton
                         doRefresh={this.poll.bind(this)}
                     />
                 </div>
 
-                <PoseidonHeader
-                    id={"poseidonHeader"}
+                <MazuHeader
+                    id={"mazuHeader"}
                     model={this.model}
                 />
 
@@ -170,7 +171,7 @@ class Poseidon extends React.Component {
 
 /*
 
-    NOT part of the Poseidon class
+    NOT part of the Mazu class
 
  */
 
@@ -192,7 +193,7 @@ function RefreshButton(props) {
 function GameOverDiv(props) {
     const theGame = props.game;
 
-    if (theGame.gameState === poseidon.constants.kInProgressString) {
+    if (theGame.gameState === mazu.constants.kInProgressString) {
         return null;
     }
 
@@ -211,16 +212,17 @@ function PlayerList(props) {
     function playerRow(p, iTurns) {
         let myTurn = null;
         iTurns.forEach((t) => {
+            console.log(`turn: ${JSON.stringify(t)}`);
             if (t.playerName === p.playerName) {
                 myTurn = t;
             }
         });
 
-        const tSought = myTurn ? myTurn.sought : "--";
+        const tWanted = myTurn ? myTurn.want : "--";
         return (
             <tr key={p.playerName}>
                 <td>{p.playerName}</td>
-                <td>{tSought}</td>
+                <td>{tWanted}</td>
                 <td>{p.balance}</td>
                 <td>{p.playerState}</td>
             </tr>
@@ -235,7 +237,7 @@ function PlayerList(props) {
     const headerText = props.thePlayers.length + " player(s)";
     const tableHeader = (<tr>
         <th>name</th>
-        <th>sought</th>
+        <th>wants</th>
         <th>balance</th>
         <th>status</th>
     </tr>);
@@ -300,4 +302,4 @@ function AutoSellBox(props) {
     )
 }
 
-export default Poseidon;
+export default Mazu;

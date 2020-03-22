@@ -160,8 +160,7 @@ let FS = {
         gameLevelMenuLabelText: "Game level: ",
         youAreChairText: 'You are in charge of the fish market.',
 
-        youAreFishingTest: 'You are fishing. Catch fish!<br>Enter a number and press <b>catch</b>.',
-        fishAtMarketText : 'Your fish are at the fish market. <br>Wait for them to be sold.',
+        youAreFishingText: 'You are fishing. Catch fish!<br>Enter a number and press <b>catch</b>.',
 
         waitingToStartText: "Waiting to start a game!",
         successfullyJoinedText: "Successfully joined ",
@@ -181,6 +180,18 @@ let FS = {
         youLostGame: "You lost game",
         because: "because",
 
+        fishAtMarketText: function () {
+            const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";
+            if (!fish.state.playerName) {
+                return `Waiting for you to log in`;
+            } else {
+                if (number) {
+                    return `You have ${number} fish at the fish market. <br>Wait for them to be sold`
+                } else {
+                    return `You have no fish at the fish market. <br>Wait for the turn to end`
+                }
+            }
+        },
 
         howManyPlayersString: function () {
             let out = "";
@@ -204,7 +215,7 @@ let FS = {
         },
 
 
-        sitrep:  function () {
+        sitrep: function () {
             let out = this.howManyPlayersString();
             out += "<br>";
             out += this.makeWaitingText();
@@ -215,7 +226,7 @@ let FS = {
          * Called only from this file.
          * text telling who we're waiting for.
          */
-        makeWaitingText : function() {
+        makeWaitingText: function () {
             const playerReport = fish.otherPlayersInfo();
             if (playerReport.allPlayers.length <= 0) {
                 return "No players yet!";
@@ -238,7 +249,8 @@ let FS = {
             } else {
                 switch (waitingFor.length) {
                     case 0:
-                        out += "Could be the end of a turn... :) ";
+                        out += "Everyone has fished.";
+                        break;
                     case 1:
                         out += "Waiting for " + waitingFor[0] + ".";
                         break;
@@ -349,11 +361,11 @@ let FS = {
         makeCurrentTurnReport: function (iTurnResult) {
             let out = "This year, you saw " + iTurnResult.visible + " fish.";
 
-            if (iTurnResult.sought === iTurnResult.caught) {
+            if (iTurnResult.want === iTurnResult.caught) {
                 out += "<br>You caught the " + iTurnResult.caught
                     + " fish you wanted. ";
             } else {
-                out += "<br>You wanted " + iTurnResult.sought
+                out += "<br>You wanted " + iTurnResult.want
                     + " fish, but caught only " + iTurnResult.caught + ". ";
             }
 
@@ -407,9 +419,7 @@ let FS = {
         gameLevelMenuLabelText: "nivel del juego: ",
         youAreChairText: 'Ud es jefe del mercado de pescado',
 
-        youAreFishingTest: 'Esta pescando. <br>Entre un número y presione <b>pescar</b>.',
-        fishAtMarketText : 'Sus peces están en el mercado. <br>Espere hast que ellos se venden.',
-
+        youAreFishingText: 'Esta pescando. <br>Entre un número y presione <b>pescar</b>.',
 
         waitingToStartText: "¡Esperando para comenzar un juego!",
         successfullyJoinedText: "Se unió con éxito ",
@@ -428,6 +438,21 @@ let FS = {
         youWonGame: "Ganó juego",
         youLostGame: "Perdió juego",
         because: "porque",
+
+        fishAtMarketText: function () {
+            const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";
+            if (!fish.state.playerName) {
+                return `Esperando: Ud necesita entrar.`;
+            } else {
+                if (number) {
+                    return `Tiene ${number} peces en el mercado. <br>Espere hasta que ellos se venden.`;
+                } else {
+                    return `No tiene pescado en el mercado. <br>Espere hasta el final del turno.`;
+                }
+            }
+
+        },
+
 
         makeAboutPlayersText: function () {
             let out = "";
@@ -476,6 +501,8 @@ let FS = {
                     out += " ¡Pesque!";
                 } else {
                     switch (waitingFor.length) {
+                        case 0:
+                            out += "Todos han pescado.";
                         case 1:
                             out += "Esperando a " + waitingFor[0] + ".";
                             break;
@@ -652,11 +679,11 @@ let FS = {
         makeCurrentTurnReport: function (iTurnResult) {
             let out = "Este año, vio " + iTurnResult.visible + " peces.";
 
-            if (iTurnResult.sought === iTurnResult.caught) {
+            if (iTurnResult.want === iTurnResult.caught) {
                 out += "<br>Atrapó los " + iTurnResult.caught
                     + " peces que quería. ";
             } else {
-                out += "<br>Quería " + iTurnResult.sought
+                out += "<br>Quería " + iTurnResult.want
                     + " peces, pero atrapó solamente " + iTurnResult.caught + ". ";
             }
 

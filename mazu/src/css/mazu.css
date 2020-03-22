@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-poseidon in poseidon
+mazu in mazu
 
 Author:   Tim Erickson
 
@@ -58,7 +58,7 @@ td {
     padding-left: 1em;
 }
 
-#poseidon {
+#mazu {
     padding : 0px;
 }
 
@@ -71,7 +71,7 @@ td {
     padding-top : 6px;
     padding-bottom : 6px;
 }
-#poseidonHeader {
+#mazuHeader {
     display : flex;
     align-items: center;
     /*background-color : lightgray;*/

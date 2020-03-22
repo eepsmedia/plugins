@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-PoseidonHeader in poseidon
+MazuHeader in mazu
 
 Author:   Tim Erickson
 
@@ -28,16 +28,16 @@ limitations under the License.
 
 import React from 'react';
 //  import model from "../model";
-import poseidon from "../constants";
+import mazu from "../constants";
 
-export default class PoseidonHeader extends React.Component {
+export default class MazuHeader extends React.Component {
 
     constructor(props) {
-        console.log("Constructing PoseidonHeader");
+        console.log("Constructing MazuHeader");
         super(props);
         this.state = {
             newOrOldGame: true,
-            prospectiveGameType: poseidon.constants.kInitialGameTypeName,
+            prospectiveGameType: mazu.constants.kInitialGameTypeName,
         };
 
         //  binding
@@ -58,7 +58,7 @@ export default class PoseidonHeader extends React.Component {
     async makeNewGame() {
         const theChosenType = document.getElementById("gameTypesMenu").value;
         const newGame = await this.props.model.newGame(theChosenType);
-        console.log("... PoseidonHeader, new game " + newGame.gameCode);
+        console.log("... MazuHeader, new game " + newGame.gameCode);
     }
 
     async joinOldGame() {
@@ -72,7 +72,7 @@ export default class PoseidonHeader extends React.Component {
     }
 
     sitrep() {
-        console.log("... PoseidonHeader, sitrep ");
+        console.log("... MazuHeader, sitrep ");
     }
 
     render() {
@@ -80,7 +80,7 @@ export default class PoseidonHeader extends React.Component {
 
         let wholeThing = (<div>waiting</div>);
 
-        const typesMenuGuts = Object.keys(poseidon.fishGameParameters).map(
+        const typesMenuGuts = Object.keys(mazu.fishGameParameters).map(
             (key) => (<option key={key} value={key}>{key}
             </option>)
         );
@@ -115,9 +115,9 @@ export default class PoseidonHeader extends React.Component {
             </label>
         </div>);
 
-        if (theGame.gameState === poseidon.constants.kInProgressString) {
+        if (theGame.gameState === mazu.constants.kInProgressString) {
             wholeThing = (
-                <div id="poseidonHeader">
+                <div id="MazuHeader">
                     <strong>{theGame.gameCode}</strong>&nbsp;|&nbsp;
                     <strong>{theGame.turn}</strong>&nbsp;|&nbsp;
                     <span><strong>{theGame.population}</strong></span>
@@ -126,7 +126,7 @@ export default class PoseidonHeader extends React.Component {
                 </div>
             )
         } else {
-            wholeThing = (<div id="poseidonHeader">
+            wholeThing = (<div id="MazuHeader">
                 {radioButtons}
                 {gameCodeOrTypeMenu}&nbsp;{createOrJoinButton}
             </div>)

@@ -32,42 +32,19 @@ limitations under the License.
 fish.ui = {
 
     initialize: function () {
-        const tLevelsList = this.makeLevelsList();
-
-        $("#gameLevelMenu").empty().append(tLevelsList.optionsText);
-        $("#gameLevelMenu").val(tLevelsList.list[0]); //  select the first item by default
 
     },
-
-    makeLevelsList: function () {
-        let tList = [];
-        let optionsClauses = "";
-
-        for (let key in fish.fishLevels) {
-            tList.push(key);
-            optionsClauses += "<option value='" + key + "'>" +
-                key + "</option>";
-        }
-        return {list: tList, optionsText: optionsClauses};
-    },
-
 
     gameCodeTextFieldChange: function (e) {
-        let theText = $("#gameCodeTextField").val();
-        console.log('new text = ' + theText);
+        let theText = document.getElementById("gameCodeTextField").value;
+        console.log('new text in code field = ' + theText);
     },
 
     update: async function () {
 
-        //  set the level of any new game
-        /*
-                let tLevel = $('input[name=newGameOrJoinExisting]:checked').val();
-                fish.setLevel( tLevel );
-        */
+        //  fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
 
-        fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
-
-        //  Visibility of the main panels
+        //  names of main UI elements
 
         const needPlayerNameElement = document.getElementById("needPlayerName");
         const joinGameElement = document.getElementById("joinGame");
@@ -75,9 +52,11 @@ fish.ui = {
         const catchFishDIV = document.getElementById("catchFishDIV");
         const catchButton = document.getElementById("catchButton");
 
-        joinGameElement.style.display = (fish.state.gameCode ? "none" : "block");
+        //  Visibility of the main panels
 
         needPlayerNameElement.style.display = (fish.state.gameCode && !fish.state.playerName) ? "block" : "none";
+
+        joinGameElement.style.display = (fish.state.gameCode ? "none" : "block");
 
         winLoseElement.style.display
             = (fish.state.gameState === fish.constants.kWonString || fish.state.gameState === fish.constants.kLostString)
@@ -85,26 +64,10 @@ fish.ui = {
 
         //  visibility of catch fish DIV
 
-        catchFishDIV.style.display = (fish.state.playerState === fish.constants.kFishingString) ? "block" : "none";
+        catchFishDIV.style.display
+            = ((fish.state.gameState === fish.constants.kInProgressString) && fish.state.playerName) ? "block" : "none";   //  was : "none"
         catchButton.style.display
-            = (fish.state.autoCatch || fish.state.playerState !== fish.constants.kFishingString) ? "none" : "block";
-/*
-        if (fish.state.gameState === fish.constants.kInProgressString) {
-            $("#catchFishDIV").show();
-        } else {
-            $("#catchFishDIV").hide();
-        }
-*/
-
-        //  visibility of catch button (invisible if automated)
-
-/*
-        if (fish.state.autoCatch || fish.state.playerState !== fish.constants.kFishingString) {
-            $("#catchButton").hide();
-        } else {
-            $("#catchButton").show();
-        }
-*/
+            = (fish.state.playerState === fish.constants.kFishingString) ? "block" : "none";
 
         //  update text to reflect current fish.state
 
@@ -134,11 +97,11 @@ fish.ui = {
 
             case fish.constants.kInProgressString:
                 const theText = fish.strings.sitrep();
-                $("#aboutPlayersText").html(theText);
-                //  the "missing" text
+                $("#aboutPlayersText").html(theText);   //  the "missing" text
+
 
                 const noticeText = (fish.state.playerState === fish.constants.kFishingString) ?
-                    fish.strings.youAreFishingTest : fish.strings.fishAtMarketText;
+                    fish.strings.youAreFishingText : fish.strings.fishAtMarketText();
                 fish.setNotice(noticeText);
 
                 break;
@@ -148,9 +111,7 @@ fish.ui = {
         //  debugging
 
         fish.debugThing.html(
-            fish.state.config + " | "  + fish.language + " -- "
-            + fish.state.gameTurn + '/' + fish.state.turn
-            + ", t = " + fish.state.timerCount
+            `${fish.gameConfig} (${fish.language}) ${fish.state.turn} `
         );
 
     },

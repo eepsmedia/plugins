@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-constants.js in poseidon
+constants.js in mazu
 
 Author:   Tim Erickson
 
@@ -28,7 +28,7 @@ limitations under the License.
 
 //  import model from "./Model.js";
 
-const poseidon = {
+const mazu = {
 
     constants: {
         version: "001b",
@@ -53,10 +53,6 @@ const poseidon = {
         kLostString: "lost",
         kWaitingString: "waiting",      //
 
-        kBaseURL: {
-            local: "http://localhost:8888/plugins/poseidon/src/poseidon.php",
-            xyz: "https://codap.xyz/projects/poseidon/src/poseidon.php",
-        },
     },
 
     /**
@@ -76,7 +72,7 @@ const poseidon = {
             losingPopulation: 100,
             openingBalance: 5000,
             openingTurn: 2020,
-            endingTurn: 2060,          //          2060
+            endingTurn: 2025,          //          2060
             defaultPrice: 100,
             overhead: 2000,
             visibleProbability: 0.50,
@@ -171,4 +167,4 @@ const poseidon = {
     }
 };
 
-export default poseidon;
+export default mazu;

@@ -308,11 +308,11 @@ let FS = {
         makeCurrentTurnReport: function (iTurnResult) {
             let out = "This year, you saw " + iTurnResult.visible + " fish.";
 
-            if (iTurnResult.sought === iTurnResult.caught) {
+            if (iTurnResult.want === iTurnResult.caught) {
                 out += "<br>You caught the " + iTurnResult.caught
                     + " fish you wanted. ";
             } else {
-                out += "<br>You wanted " + iTurnResult.sought
+                out += "<br>You wanted " + iTurnResult.want
                     + " fish, but caught only " + iTurnResult.caught + ". ";
             }
 
@@ -547,11 +547,11 @@ let FS = {
         makeCurrentTurnReport: function (iTurnResult) {
             let out = "Este año, vio " + iTurnResult.visible + " peces.";
 
-            if (iTurnResult.sought === iTurnResult.caught) {
+            if (iTurnResult.want === iTurnResult.caught) {
                 out += "<br>Atrapó los " + iTurnResult.caught
                     + " peces que quería. ";
             } else {
-                out += "<br>Quería " + iTurnResult.sought
+                out += "<br>Quería " + iTurnResult.want
                     + " peces, pero atrapó solamente " + iTurnResult.caught + ". ";
             }
 

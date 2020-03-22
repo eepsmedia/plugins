@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-Firestore in poseidon
+Firestore in mazu
 
 Author:   Tim Erickson
 
@@ -29,7 +29,7 @@ limitations under the License.
 
 import firebase from 'firebase';
 
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAMkheBMSdVmMyUi76UGyeMX3pJpBGS0Hw",
     authDomain: "eeps-fish-commons.firebaseapp.com",
     databaseURL: "https://eeps-fish-commons.firebaseio.com",
@@ -42,5 +42,6 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+
 
 export default firebase;

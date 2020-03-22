@@ -31,16 +31,16 @@ fish.historicalData = {
 
     getHistoricalData: async function () {
 
+        console.log(`getting historical data`);
+
         let turns = [];     //  we will collect all turns....
         let promises = [];
 
         await fish.CODAPConnector.deleteAllHistoricalRecords();
-        fish.state.gameCodeList.forEach(
-            (gc) => {
+        fish.state.gameCodeList.forEach((gc) => {
                 console.log("getHistoricalData for " + gc);
-                promises.push(fish.fireConnect.getTurnsFromGame(gc));  //  make one promise for each game we've been in
-            }
-        );
+                promises.push(fireConnect.getAllTurnsFromGame(gc));  //  make one promise for each game we've been in
+            });
 
         const res = await Promise.all(promises);
         if (res) {
@@ -50,17 +50,19 @@ fish.historicalData = {
                     gameR.forEach(
                         (turnR) => {
                             turns.push({
-                                year: turnR.onTurn,
-                                seen: turnR.visible,
-                                want: turnR.sought,
+                                player: turnR.playerName,
+                                year: turnR.turn,
+
+                                seen: turnR.seen,
+                                want: turnR.want,
                                 caught: turnR.caught,
-                                before: turnR.balanceBefore,
+                                before: turnR.before,
                                 expenses: turnR.expenses,
                                 unitPrice: turnR.unitPrice,
                                 income: turnR.income,
-                                after: turnR.balanceAfter,
-                                player: turnR.playerName,
-                                game: turnR.gameCode,
+                                after: turnR.after,
+                                game: turnR.game,
+
                                 result: turnR.gameState,     //  because CODAP's name for the attribute is result
                                 level: turnR.config
                             })
@@ -74,6 +76,7 @@ fish.historicalData = {
             throw("No turn records to add to historical records!");
         }
         await fish.CODAPConnector.createHistoricalFishItems(turns);
+        fish.CODAPConnector.makeHistoricalTableAppear();
 
         console.log("getHistoricalData() -- Historical fish items created.");
     }

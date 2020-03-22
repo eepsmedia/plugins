@@ -33,29 +33,31 @@ limitations under the License.
  */
 fish.userActions = {
 
-
     /**
      * User clicked to button to join a game.
      * Proposed username is in fish.state.playerName.
      *
-     * @param iJoinOrNew
      * @returns {Promise<void>}
      */
-    clickJoinButton: async function (iJoinOrNew) {
+    clickJoinButton: async function ( ) {
         const codeTextField = document.getElementById("gameCodeTextField");
         const theCode = codeTextField.value;
         const gameData = await fireConnect.tryGameCode(theCode);  //  null if not exist
         if (gameData) {
             fish.state.gameCode = theCode;
+
             fish.state.turn = gameData.turn;
             fish.state.gameState = gameData.gameState;
-            fish.gameParameters = fish.fishLevels[gameData.configuration]
+            fish.gameParameters = fish.fishLevels[gameData.configuration];
+            fish.state.playerName = "";
+
             fish.setNotice("You joined <b>" + theCode + "</b>");
+            await fish.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
         } else {
             fish.state.gameCode = null;
             codeTextField.value = "";
-            fish.setNotice("<b>" + theCode + "</b> doesn't exist.");
-            alert("game " + theCode + " doesn't exist.");
+            fish.setNotice(`<b>${theCode}</b> doesn't exist.`);
+            alert(`game ${theCode} doesn't exist.`);
         }
         fish.ui.update();
 
@@ -81,7 +83,6 @@ fish.userActions = {
             fish.state.playerState = playerData.playerState;
             fish.state.playerName = playerData.playerName;
             fish.state.balance = playerData.balance;
-            fish.state.gameCodeList.push(fish.state.gameCode);      //  not sure what this does!
         } else {
             fish.state.playerName = null;
             fish.state.balance = 0;
@@ -95,15 +96,15 @@ fish.userActions = {
 
     catchFish: async function () {
 
-        let tSought = Number($("#howManyFish").val());
+        let tFishWanted = Number(document.getElementById("howManyFish").value);
 
-        if (tSought > fish.gameParameters.boatCapacity) {
+        if (tFishWanted > fish.gameParameters.boatCapacity) {
             alert("Your boat will only carry " + fish.gameParameters.boatCapacity + ". ");
             $("#howManyFish").val(fish.gameParameters.boatCapacity);
             return;
         }
 
-        if (tSought < 0) {
+        if (tFishWanted < 0) {
             alert("You can't catch negative fish! ");
             $("#howManyFish").val(0);
             return;
@@ -116,21 +117,28 @@ fish.userActions = {
             alert("Your turn number was somehow too low. Let Tim know. We'll catch you up for now.");
         }
 
-        if (fish.readyToCatch()) {
+        if (fish.readyToCatch()) {      //  check to see if it's OK to catch fish
             fish.state.playerState = fish.constants.kSellingString;     //  set the player state to selling
 
-            const tCatchModelResult =  fish.catchFish(tSought);
+            const tCatchModelResult =  fish.catchFish(tFishWanted);
+
             console.log("    fish ... " + tCatchModelResult.caught + " in " + tCatchModelResult.turn
                 + " (" + fish.state.playerState + ")" );
+
+            const theNewTurn = await (fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult));  //  record in the CODAP table, partial record :)
+            //  theNewTurn now has caseIDs, year, balance before, player name, game code
+
             let thePromises = [];
-            thePromises.push(fireConnect.newCatchRecord(tCatchModelResult));  //  record in the database, resolves to the number caught (which we don't need)
-            thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState}));  //  record in the database, resolves to the number caught (which we don't need)
-            thePromises.push(fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult));  //  record in the CODAP table, partial record :)
+
+            //  record the (updated, complete) turn in the database, resolves to the number caught (which we don't need)
+            thePromises.push(fireConnect.newTurnRecord(theNewTurn));
+
+            //  update the player in the database
+            thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState}));
 
             await Promise.all(thePromises);
 
             fish.state.currentTurnResult = tCatchModelResult;
-            //  await fish.CODAPConnector.updateFishItemInCODAP("from catch");    //  record in the CODAP table
 
         } else {
             fish.debugThing.html('Gotta wait for everybody else!');
@@ -139,6 +147,14 @@ fish.userActions = {
         fish.ui.update();
     },
 
+    changeAutomation : async function() {
+        fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
+        if (fish.state.autoCatch) {
+            await this.catchFish();
+        } else {
+            fish.ui.update();   //  if we go to no auto, refresh so we can see the Catch Fish button
+        }
+    },
 
     /**
      * User is joining a new game, either because of clicking Join or New.
@@ -146,6 +162,7 @@ fish.userActions = {
      * @param iGameCode
      * @returns {Promise<void>}
      */
+/*
     joinGame: async function (iGameCode) {
         try {
             const iGame = await fish.fireConnect.validateGameCode(iGameCode);
@@ -194,6 +211,7 @@ fish.userActions = {
             console.log('joinGame() error: ' + msg);
         }
     },
+*/
 
 
 
