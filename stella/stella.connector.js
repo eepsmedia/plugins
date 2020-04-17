@@ -172,6 +172,20 @@ stella.connector = {
 
     },
 
+    getSelectionListFromCODAP : async function(iDataSetName) {
+        const tMessage = {
+            action : "get",
+            resource : `dataContext[${iDataSetName}].selectionList`,
+        };
+
+        const selectionResult = await codapInterface.sendRequest(tMessage);
+        if (selectionResult.success) {
+            return selectionResult.values;
+        } else {
+            return null;
+        }
+    },
+
     /**
      * constant to initialize the frame structure
      */

@@ -98,6 +98,7 @@ fieldset {
 }
 .buttonText {
     background-color: tomato;
+    cursor: pointer;
     margin: 2px;
     padding: 2px;
     font-family: sans-serif;

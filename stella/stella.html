@@ -36,6 +36,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 limitations under the License.
 ==========================================================================
 
+local testing
+http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/stella/stella.html
 -->
 
 
@@ -109,10 +111,10 @@ limitations under the License.
 
     </div>
     <div id="timeAndPointingControlBanner">
-<!--
-        <span id="shortStatus"></span>
-        &nbsp;| &nbsp;
--->
+        <!--
+                <span id="shortStatus"></span>
+                &nbsp;| &nbsp;
+        -->
         <label for="pointAtStar">point at </label>
         <input id="pointAtStar" class="textIO" width="40px"
                onblur="stella.ui.keypressInStarPointingBox(event)"
@@ -190,10 +192,13 @@ limitations under the License.
             </div>
         </div>
         <br>
-        <button id="photoButton" onclick="stella.photometryManager.expose(1)">1 sec</button>
-        <button id="photoButton" onclick="stella.photometryManager.expose(10)">10 sec</button>
-        <button id="photoButton" onclick="stella.photometryManager.expose(60)">60 sec</button>
-        <button id="photoButton" onclick="stella.photometryManager.expose(600)">10 min</button>
+        <div>
+            <span>exposure: </span>
+            <span class="buttonText" onclick="stella.photometryManager.expose(1)">1 sec</span>
+            <span class="buttonText" onclick="stella.photometryManager.expose(10)">10 sec</span>
+            <span class="buttonText" onclick="stella.photometryManager.expose(60)">60 sec</span>
+            <span class="buttonText" onclick="stella.photometryManager.expose(600)">10 min</span>
+        </div>
         <br>
         Filter:
         <select name="source" id="filterMenu" onchange="stella.manager.filterChanged();">

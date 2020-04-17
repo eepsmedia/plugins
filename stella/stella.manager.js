@@ -153,20 +153,43 @@ stella.manager = {
 
     /**
      * When CODAP tells us there's one selection in the Catalog, point the telescope there.
-     * @param iCasesFromCODAP   An array. Each one's .id is the case ID.
+     * @param iCasesFromCODAP   An array. Each one's .id is the star text ID (e.g., "S123").
      */
     //  todo: make this a lookup rather than caseID
     processSelectionFromCODAP: function (iCasesFromCODAP) {
-        if (iCasesFromCODAP.length > 0) {
-            if (iCasesFromCODAP.length === 1) {
-                var tSysID = iCasesFromCODAP[0].values.id;
-                var tStar = stella.model.systemFromTextID(tSysID);
+        if (iCasesFromCODAP !== undefined) {
+            if (iCasesFromCODAP.length > 0) {
+                console.log(`    selecting ${iCasesFromCODAP.length} cases`);
+                if (iCasesFromCODAP.length === 1) {
+                    var tSysID = iCasesFromCODAP[0].values.id;
+                    var tStar = stella.model.systemFromTextID(tSysID);
+                    stella.manager.pointAtSystem(tStar);
+                    stella.manager.updateStella();
+                }
+            } else {
+                console.log('Failed to retrieve selected system IDs.');
+            }
+        } else {
+            console.log(`    undefined selection`);
+        }
+    },
+
+    focusOnStarByCODAPCaseID : function(iCaseID) {
+        console.log(`due to selection in CODAP, focusing on case ID ${iCaseID}`);
+        const tMessage = {
+            action : "get",
+            resource : `dataContext[${stella.connector.catalogDataSetName}].itemByCaseID[${iCaseID}]`,
+        };
+
+        codapInterface.sendRequest(tMessage).then( (res) => {
+            if (res.success) {
+                const tStarTextID = res.values.values.id;
+                var tStar = stella.model.systemFromTextID(tStarTextID);
                 stella.manager.pointAtSystem(tStar);
                 stella.manager.updateStella();
             }
-        } else {
-            console.log('Failed to retrieve selected system IDs.');
-        }
+        });
+
     },
 
 
@@ -310,7 +333,17 @@ stella.manager = {
                      */
                     case "selectCases":
                         // todo: Note that this is set up to work only with the star catalog data set. Expand!
+/*
                         stella.manager.processSelectionFromCODAP(tValues[0].result.cases);   //  array of cases, case.id is the caseID.
+*/
+                        const theSelectedCases
+                            =  stella.connector.getSelectionListFromCODAP(stella.connector.catalogDataSetName)
+                            .then( (values) => {
+                                if (values && values.length === 1) {
+                                    const aValue = values[0];
+                                    stella.manager.focusOnStarByCODAPCaseID(aValue.caseID);
+                                }
+                            });
                         break;
 
                     default:
