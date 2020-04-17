@@ -71,10 +71,11 @@ td {
     padding-top : 6px;
     padding-bottom : 6px;
 }
+
 #mazuHeader {
     display : flex;
     align-items: center;
-    /*background-color : lightgray;*/
+    /*background-color : yellow;*/
     padding-left : 12px;
     padding-top : 6px;
     padding-bottom : 6px;

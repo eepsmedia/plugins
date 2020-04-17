@@ -154,6 +154,8 @@ class Mazu extends React.Component {
                     <RefreshButton
                         doRefresh={this.poll.bind(this)}
                     />
+
+                    <i>Queen of Heaven, Lady of Numinous Grace, protector of fisherfolk</i>
                 </div>
 
                 <MazuHeader

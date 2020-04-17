@@ -29,11 +29,13 @@ limitations under the License.
 import React from 'react';
 //  import model from "../model";
 import mazu from "../constants";
+import '../css/mazu.css';
+
 
 export default class MazuHeader extends React.Component {
 
     constructor(props) {
-        console.log("Constructing MazuHeader");
+        console.log(`Constructing MazuHeader with id=${props.id}`);
         super(props);
         this.state = {
             newOrOldGame: true,
@@ -117,7 +119,7 @@ export default class MazuHeader extends React.Component {
 
         if (theGame.gameState === mazu.constants.kInProgressString) {
             wholeThing = (
-                <div id="MazuHeader">
+                <div>
                     <strong>{theGame.gameCode}</strong>&nbsp;|&nbsp;
                     <strong>{theGame.turn}</strong>&nbsp;|&nbsp;
                     <span><strong>{theGame.population}</strong></span>
@@ -126,13 +128,13 @@ export default class MazuHeader extends React.Component {
                 </div>
             )
         } else {
-            wholeThing = (<div id="MazuHeader">
+            wholeThing = (<div>
                 {radioButtons}
                 {gameCodeOrTypeMenu}&nbsp;{createOrJoinButton}
             </div>)
         }
 
-        return <div>{wholeThing}</div>;
+        return <div id={this.props.id}>{wholeThing}</div>;
     }
 }
 
