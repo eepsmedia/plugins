@@ -75,18 +75,41 @@ spreader.ui = {
         }
 
         const nCollections = tHierarchicalListOfAttributeNames.length;
+        let leafAttributes = [];
 
-        if (nCollections > 0) {
+        if (nCollections > 1) {
+            leafAttributes = tHierarchicalListOfAttributeNames[nCollections - 1];
             menuGuts = "<option> -- pick an attribute -- </option>";
-            tHierarchicalListOfAttributeNames[nCollections - 1].forEach((attrName) => {
+            leafAttributes.forEach((attrName) => {
                 menuGuts += ("<option value='" + attrName + "'>" + attrName + "</option>");
             })
+        } else if (nCollections == 1) {
+            alert("Group your table! Drag non-spreading attributes left. " +
+            "The right side should have only the type of data, the value, and the units.");
+            menuGuts = "<option>Must organize table first</option>";
         } else {
             menuGuts = "<option>No attributes found</option>";
         }
         this.typeMenu.innerHTML = menuGuts;
         this.valueMenu.innerHTML = menuGuts;
         this.unitsMenu.innerHTML = menuGuts;
+
+        const whatIndex = leafAttributes.indexOf("what");
+        const valueIndex  = leafAttributes.indexOf("value");
+        const unitsIndex  = leafAttributes.indexOf("units");
+
+        if (whatIndex != -1) {
+            this.typeMenu.selectedIndex = whatIndex + 1;
+            this.processAttributeMenuChoice("type");
+        }
+        if (valueIndex != -1) {
+            this.valueMenu.selectedIndex = valueIndex + 1;
+            this.processAttributeMenuChoice("value");
+        }
+        if (unitsIndex != -1) {
+            this.unitsMenu.selectedIndex = unitsIndex + 1;
+            this.processAttributeMenuChoice("units");
+        }
     },
 
     /**
@@ -95,16 +118,16 @@ spreader.ui = {
      * @param iTag      which attribute is it? "value", "units", "type"
      * @param theMenu   the actual menu in the DOM, needed to get its value.
      */
-    processAttributeMenuChoice: function (iTag, theMenu) {
+    processAttributeMenuChoice: function (iTag) {
         switch (iTag) {
             case "type":
-                spreader.state.typeAttribute = theMenu.value;
+                spreader.state.typeAttribute = this.typeMenu.value;
                 break;
             case "value":
-                spreader.state.valueAttribute = theMenu.value;
+                spreader.state.valueAttribute = this.valueMenu.value;
                 break;
             case "units":
-                spreader.state.unitsAttribute = theMenu.value;
+                spreader.state.unitsAttribute = this.unitsMenu.value;
                 break;
         }
     },

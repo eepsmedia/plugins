@@ -30,25 +30,16 @@ limitations under the License.
 
 <!--
 Global: IMPORT THIS:
-https://codap.xyz/baum/baum.html
-https://www.eeps.com/codap/arbor/arbor.html
 
-or locally as a plugin only: (for dragging into local CODAP, http://localhost/~tim/codap/
+Local MAMP/concord version: http://localhost:8888/codap-data-interactives/data-science-worlds/arbor/arbor.html
+Local MAMP/local version: http://localhost:8888/plugins/arbor/arbor.html
 
-MAMP version:       http://localhost:8888/plugins/arbor/arbor.html
-
-
-https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=25898  //  breast cancer, not local
-
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=25898  //  breast cancer, not loca
 https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=24691  //  problem data set with cars
-
 https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=24624  //  small NHANES with missings, but LOCAL tree
-
 https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22505       //  local soccer
 https://localhost/~tim/codap/static/dg/en/cert/index.html#file=googleDrive:0B7REdgmgslRzS0RiOTdSREJwTGs   //     same data, original.
-
 https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=22505  //  has red card data
-
 https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS used for developing save state
 -->
 
@@ -59,20 +50,21 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <title>Arbor</title>
 
     <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.min.css">
-    <link rel='stylesheet' type='text/css' href='arbor.css'/>
+    <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
+    <link rel='stylesheet' type='text/css' href='css/confusion-matrix.css'/>
 
     <!-- These two scripts take care of the communication with CODAP  -->
-    <script src="../common/iframe-phone.js" language="javascript"></script>
-    <script src="../common/codap_helper_newAPI.js" language="javascript"></script>
-    <script src="../common/codapInterface.js" language="javascript"></script>
-    <script src="../common/pluginHelper.js" language="javascript"></script>
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codap_helper_newAPI.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
 
     <!--    other common files          -->
-    <script src="../common/snap.svg-min.js" language="javascript"></script>
-    <script src="../common/events.js" language="javascript"></script>
-    <script src="../common/TEEUtils.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/jquery.min.js" language="javascript"></script>
-    <script src="../common/jqueryFolder/jquery-ui.min.js" language="javascript"></script>
+    <script src="../common/snap.svg-min.js"></script>
+    <script src="../common/events.js"></script>
+    <script src="../common/TEEUtils.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
 
     <!--
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -82,27 +74,29 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <!--
         Models and Controllers
     -->
-    <script src="arbor.js" language="javascript"></script>
-    <script src="arborCODAPConnector.js" language="javascript"></script>
-    <script src="arbor.selectionManager.js" language="javascript"></script>
-    <script src="focusSplitMgr.js" language="javascript"></script>
-    <script src="arbor.newCases.js" language="javascript"></script>
-    <script src="AttInTree.js" language="javascript"></script>
-    <script src="Analysis.js" language="javascript"></script>
-    <script src="ArborTree.js" language="javascript"></script>
-    <script src="ArborNode.js" language="javascript"></script>
-    <script src="AttributeSplit.js" language="javascript"></script>
-    <script src="Stripe.js" language="javascript"></script>
-    <script src="Leaf.js" language="javascript"></script>
+    <script src="arbor.js" ></script>
+    <script src="arbor-ui.js" ></script>
+    <script src="arborCODAPConnector.js" ></script>
+    <script src="arbor.selectionManager.js" ></script>
+    <script src="focusSplitMgr.js" ></script>
+    <script src="arbor.newCases.js" ></script>
+    <script src="AttInTree.js" ></script>
+    <script src="Analysis.js" ></script>
+    <script src="ArborTree.js" ></script>
+    <script src="ArborNode.js" ></script>
+    <script src="AttributeSplit.js" ></script>
 
     <!--
         Views
     -->
-    <script src="TreePanelView.js" language="javascript"></script>
-    <script src="NodeZoneView.js" language="javascript"></script>
-    <script src="NodeBoxView.js" language="javascript"></script>
-    <script src="CorralAttView.js" language="javascript"></script>
-    <script src="DiagnosisView.js" language="javascript"></script>
+    <script src="views/Stripe.js" ></script>
+    <script src="views/Leaf.js" ></script>
+    <script src="views/CorralView.js" ></script>
+    <script src="views/TreePanelView.js" ></script>
+    <script src="views/NodeZoneView.js" ></script>
+    <script src="views/NodeBoxView.js" ></script>
+    <script src="views/CorralAttView.js" ></script>
+    <script src="views/DiagnosisView.js" ></script>
 
     <!--
         Set up JQUERY-UI stuff
@@ -118,44 +112,67 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 <div id="tabs">
     <ul>
         <li><a href="#tree">tree</a></li>
+        <li><a href="#table">table</a></li>
         <li><a href="#settings">settings</a></li>
         <li><a href="#help">help</a></li>
     </ul>
 
+    <div id="table">
+        <div id="confusion-matrix">
+            <div id="table-head" class="box">bar</div>
+            <div id="truth-head" class="box">truth</div>
+            <div id="truth-positive-head" class="box">sick</div>
+            <div id="truth-negative-head" class="box">well</div>
+            <div id="pred-head" class="box">prediction</div>
+            <div id="pred-positive-head" class="box">sick</div>
+            <div id="pred-negative-head" class="box">well</div>
+            <div id="TP" class="cell">30</div>
+            <div id="TN" class="cell">40</div>
+            <div id="FP" class="cell">10</div>
+            <div id="FN" class="cell">20</div>
+
+            <div id="no-pred-head" class="no-pred">no prediction</div>
+            <div id="PU" class="no-pred">44</div>
+            <div id="NU" class="no-pred">66</div>
+        </div>
+        <div class="hBox" style = "padding-top : 2em;">
+            <div>
+                <button onclick="arbor.refreshBaum('all')">refresh everything</button>
+                <button onclick="arbor.refreshBaum('data')">refresh data</button>
+            </div>
+            &nbsp;&nbsp;&nbsp;
+            <div>
+                <button onclick="arbor.emitTreeData()">emit data</button>
+            </div>
+        </div>
+
+    </div>
+
     <div id="tree">
-<!--
-        <div draggable="true" ondragstart="console.log('...drag start in html...')" )>Drag me!</div>
-        <svg draggable="true" ondragstart="console.log('...drag start in svg...')" width="100" height="20" )>
-            <rect x="0" y="0" width="100" height="20" fill="dodgerblue"></rect>
-        </svg>
--->
 
         <div>
             <input id="showDiagnosisLeaves" type="checkbox" onchange="arbor.refreshBaum('views')">
-            <label for="showDiagnosisLeaves">show diagnosis "leaves"</label>
+            <label for="showDiagnosisLeaves">show prediction "leaves"</label>
         </div>
 
-        <svg id="treePaper" class="noselect" width="100%" height="500">
+        <svg id="treePaper" class="noselect" width="100%" height="300">
+            <rect height="100%" width="100%" fill="dodgerblue"></rect>
         </svg>
+        <svg id="corral" class="noselect" width="100%" height="40"></svg>
 
         <div class="vBox">
             <div id="statusDiv">
                 <span id="resultsText">No results yet</span>
             </div>
             <div class="hBox">
-                <div align="left">
+                <div>
                     <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
                     <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
                 </div>
                 &nbsp;&nbsp;&nbsp;
-                <div align="right">
+                <div>
                     <button onclick="arbor.emitTreeData()">emit data</button>
                 </div>
-                <!-- To get this back, also un-comment arborr.js about line 506, where tButton's text gets set.
-                                <div>
-                                    <button id="configureButton" onclick="showHideAttributeConfigurationSection()">configure</button>
-                                </div>
-                -->
             </div>
         </div>
 
@@ -228,7 +245,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                 </select>
                 &nbsp;&nbsp;
                 <label for="swapImage">Swap left and right: </label>
-                <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="18"></img>
+                <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="18" />
             </div>
 
         </div>
@@ -237,14 +254,14 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
 
     <div id="settings">
-        <div class="baumControlGroup">
-            <p>Laura Martignon probably doesn't want you to use this. But Frieda Reichsman does.</p>
+         <div class="baumControlGroup">
+           <!-- <p>Laura Martignon probably doesn't want you to use this. But Frieda Reichsman does.</p> -->
             <input id="usePercentOption" type="checkbox" checked>
             <label for="usePercentOption">use percentages in node boxes</label>
 
         </div>
         <div class="baumControlGroup">
-            <p>If you are Joachim Engel, you might want to change this to "regression."</p>
+           <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
             <label for="treeTypeMenu">Tree type</label>
             <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
                 <option value="classification" selected>classification</option>
@@ -256,27 +273,33 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
             <label for="dataContextMenu">Dataset: </label>
             <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
+<!--
             <label for="collectionMenu">Collection: </label>
             <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
+-->
         </div>
         <div class="baumControlGroup">
             Credits! Gear icon made by <a href="https://www.flaticon.com/authors/tutsplus" title="TutsPlus">TutsPlus</a>
             from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
             is licensed (<a href="http://creativecommons.org/licenses/by/3.0/"
                               title="Creative Commons BY 3.0" target="_blank">CC 3.0</a>) by eeps media
+            <br><br>
+            Thanks to many people, including Joachim Engel, Laura Martignon, Bill Finzer, Joan Heller, Frieda Reichsman,
+            Suzanne Podworny, Thomas Wassong, and
+            Michael Schlichtig.
         </div>
     </div>
 
 
     <div id="help">
-        <h1>Instructions!</h1>
+        <h1>Instructions!!</h1>
         <p>This CODAP plug-in lets you make decision or prediction trees based on the data in the document. Here are the
             basics:</p>
         <ul>
             <li>Drag a variable from the bottom "variable palette" to a node to make a branch. YOU WILL NOT SEE IT DRAG.
                 That's OK.
             </li>
-            <li>Click the <b>Show diagnosis leaves</b> box to assign diagnoses to your tree.</li>
+            <li>Click the <b>Show prediction leaves</b> box to assign predictions to your tree.</li>
             <li>Click a node to select it and all its cases (it turns yellow).</li>
             <li>Click <img height="14" width="14" src="art/configure.png"> to configure the selected node.</li>
             <li>Stats about your current tree appear below the tree.</li>
@@ -303,7 +326,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             each depending on the answers to the previous ones.
         </p>
         <p>
-            After any question, we can decide to stop and choose a diagnosis (or <i>prediction</i>).
+            After any question, we can decide to stop and choose a prediction (or <i>diagnosis</i>).
             We will say that our diagnosis is positive (that we think you have Fbola) or negative.
             The positive and negative diagnoses have black and green blocks.
         </p>
@@ -322,17 +345,19 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <h3>Variables (or Attributes) and Tree Nodes</h3>
         <p>
             The names of all the variables --- the column headings in your data table --- appear
-            in a row below the tree, at the bottom of the window.
+            in a row below the tree, towards the bottom of the window.
         </p>
         <p>
             To make the tree branch according to a variable
             (which represents <i>asking a question</i> in our example),
             drag the variable into the tree and drop it on the node you want to branch.
-            <i>At the moment, you cannot see the drag!</i> Don't worry, it's dragging nevertheless.
+            <i>At the moment, you may not see the drag!</i> Don't worry, it's dragging nevertheless.
+            And if it doesn't seem to "take," try again.
+            It may be that dropping it on text doesn't work.
         </p>
         <p>
             As you will see, every node is either a "branching" node (where you ask a question) or
-            a "terminal" node (where you give a diagnosis). You can think of the terminal nodes as leaves on the tree.
+            a "terminal" node (where you give a diagnosis or prediction). You can think of the terminal nodes as leaves on the tree.
             They are labeled + or –. (At the beginning, they start out labeled (?).)
         </p>
         <p>
@@ -346,7 +371,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             and you want to study what affects income, make <b>income</b> the dependent variable.
         </p>
         <p>
-            To make a variable dependent, double-click it in the list above the tree.
+            To make a variable dependent, double-click it in the list below the tree.
         </p>
         <p>
             The dependent variable also appears at the top of the tree,
@@ -394,11 +419,11 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                 click the buttons to move them from left to right or vice versa.
             </li>
         </ul>
-        <p>
-            (currently a lie:) Don't forget that you can also configure your dependent variable!
+       <!-- <p>
+            Don't forget that you can also configure your dependent variable!
             To configure the dependent variable, click one of the "terminal" nodes ---
             they do not have variables assigned.
-        </p>
+        </p> -->
         <h3>Two Tree Types</h3>
         <p>
             In the <b>settings</b> tab, you will find a menu that lets you select between

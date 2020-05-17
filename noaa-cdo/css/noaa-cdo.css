@@ -26,13 +26,18 @@ limitations under the License.
 
 */
 
+body {
+    margin : 0;
+    padding : 0;
+}
+
 details {
     /*border: 1px solid #aaa;*/
     border-radius: 4px;
     padding-left : 0.5em;
     padding-top : 0.5em;
     /*padding: .5em .5em 0;*/
-    background-color: #eef;
+    background-color: #def;
 }
 
 summary {
@@ -50,8 +55,44 @@ details[open] summary {
     margin-bottom: .5em;
 }
 
-p, label {
+p, label, #dataFrequency {
     margin: 0;
     font-family: Verdana, sans-serif;
     font-size : x-small;
+}
+
+/* the status bar */
+#results {
+    background-color: #def;
+    padding : 6px;
+}
+
+#actionButtons {
+    background-color: #acf;
+}
+.controlSection {
+    padding: 6px;
+}
+
+.summaryButton, #makeSpreaderButton {
+    float: right;
+    margin-right: 1em;
+}
+/* Make this a container */
+#stationUI {
+    display : flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.choiceDiv {
+    display : inline-block;
+    position: relative;
+    padding: 1px;
+    margin: 2px;
+    padding-right: .5em;
+    padding-bottom: 0;
+    margin-right: .75em;
+    background-color: white;
+    border-radius: 2px;
 }

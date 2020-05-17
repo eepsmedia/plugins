@@ -44,6 +44,14 @@ noaa.ui = {
         return out;
     },
 
+    clearStations : function() {
+        for (const theKey in noaa.stations) {
+            const theBox = document.getElementById(theKey);
+            theBox.checked = false;
+        }
+
+    },
+
     getCheckedDataTypes : function() {
         let out = [];
         for (const theKey in noaa.dataTypes) {
@@ -55,7 +63,7 @@ noaa.ui = {
     },
 
     /**
-     * Construct the HTML for a setof checkboxes
+     * Construct the HTML for a set of checkboxes
      * @param iChoices  an object, one for each item. Thing.name is to be the label
      * @param iDefaults an object with corresponding keys; all members are checked by default
      * @returns {string}
@@ -66,8 +74,10 @@ noaa.ui = {
         for (const theKey in iChoices) {
             const theName = iChoices[theKey].name;
             const isCheckedClause = (iDefaults.indexOf(theKey) === -1) ? "" : " checked";
-            out += "<input type='checkbox' id='" + theKey + "'" +  isCheckedClause + ">" +
-                "<label for='" + theKey + "'>" + theName + "</label><br>";
+            const choiceGuts = "<input type='checkbox' id='"
+                + theKey + "'" +  isCheckedClause + ">" +
+                "<label for='" + theKey + "'>" + theName + "</label>";
+            out += "<div class='choiceDiv'>" + choiceGuts + "</div>";
         }
         return out;
     },

@@ -46,20 +46,22 @@
  * * incorporate confusion matrix / double tree
  */
 
+/* global codapInterface */
 /**
  *
- * @type {{analysis: null, treePanelView: null, attsInBaum: Array, focusNode: null, focusSplit: null, windowWidth: null, state: {}, dependentVariableBoolean: [string], informalDVBoolean: string, informalDVBooleanReversed: string, dependentVariableSplit: null, iFrameDescription: {version: string, name: string, title: string, dimensions: {width: number, height: number}, preventDataContextReorg: boolean}, initialize: arbor.initialize, refreshBaum: arbor.refreshBaum, emitTreeData: arbor.emitTreeData, handleTreeChange: arbor.handleTreeChange, freshState: arbor.freshState, getAndRestoreModel: arbor.getAndRestoreModel, doBaumRestoration: arbor.doBaumRestoration, parseState: arbor.parseState, restoreTree: arbor.restoreTree, restoreNode: arbor.restoreNode, restoreSplit: arbor.restoreSplit, resizeWindow: arbor.resizeWindow, repopulate: arbor.repopulate, redisplay: arbor.redisplay, setDependentVariableByName: arbor.setDependentVariableByName, changeToNewDependentVariable: arbor.changeToNewDependentVariable, changeCurrentSplitTypeUsingMenu: arbor.changeCurrentSplitTypeUsingMenu, setFocusNode: arbor.setFocusNode, setFocusSplit: arbor.setFocusSplit, changeFocusSplitValues: arbor.changeFocusSplitValues, swapFocusSplit: arbor.swapFocusSplit, changeAttributeConfiguration: arbor.changeAttributeConfiguration, displayAttributeConfiguration: arbor.displayAttributeConfiguration, fixDependentVariableMechanisms: arbor.fixDependentVariableMechanisms, gotDataContextList: arbor.gotDataContextList, gotCollectionList: arbor.gotCollectionList, gotAttributeList: arbor.gotAttributeList, getAttributeByName: arbor.getAttributeByName, changeDataContext: arbor.changeDataContext, changeCollection: arbor.changeCollection, changeTreeTypeUsingMenu: arbor.changeTreeTypeUsingMenu, setTreeTypeByString: arbor.setTreeTypeByString, forceChangeFocusAttribute: arbor.forceChangeFocusAttribute, displayStatus: arbor.displayStatus, displayResults: arbor.displayResults, assembleAttributeAndCategoryNames: arbor.assembleAttributeAndCategoryNames, dispatchTreeEvent: arbor.dispatchTreeEvent}}
+ * @type {{analysis: null, treePanelView: null, attsInBaum: Array, focusNode: null, focusSplit: null, panelWidthInView: null, state: {}, dependentVariableBoolean: [string], informalDVBoolean: string, informalDVBooleanReversed: string, dependentVariableSplit: null, iFrameDescription: {version: string, name: string, title: string, dimensions: {width: number, height: number}, preventDataContextReorg: boolean}, initialize: arbor.initialize, refreshBaum: arbor.refreshBaum, emitTreeData: arbor.emitTreeData, handleTreeChange: arbor.handleTreeChange, freshState: arbor.freshState, getAndRestoreModel: arbor.getAndRestoreModel, doBaumRestoration: arbor.doBaumRestoration, parseState: arbor.parseState, restoreTree: arbor.restoreTree, restoreNode: arbor.restoreNode, restoreSplit: arbor.restoreSplit, resizeWindow: arbor.resizeWindow, repopulate: arbor.repopulate, redisplay: arbor.redisplay, setDependentVariableByName: arbor.setDependentVariableByName, changeToNewDependentVariable: arbor.changeToNewDependentVariable, changeCurrentSplitTypeUsingMenu: arbor.changeCurrentSplitTypeUsingMenu, setFocusNode: arbor.setFocusNode, setFocusSplit: arbor.setFocusSplit, changeFocusSplitValues: arbor.changeFocusSplitValues, swapFocusSplit: arbor.swapFocusSplit, changeAttributeConfiguration: arbor.changeAttributeConfiguration, displayAttributeConfiguration: arbor.displayAttributeConfiguration, fixDependentVariableMechanisms: arbor.fixDependentVariableMechanisms, gotDataContextList: arbor.gotDataContextList, gotCollectionList: arbor.gotCollectionList, gotAttributeList: arbor.gotAttributeList, getAttributeByName: arbor.getAttributeByName, changeDataContext: arbor.changeDataContext, changeCollection: arbor.changeCollection, changeTreeTypeUsingMenu: arbor.changeTreeTypeUsingMenu, setTreeTypeByString: arbor.setTreeTypeByString, forceChangeFocusAttribute: arbor.forceChangeFocusAttribute, displayStatus: arbor.displayStatus, displayResults: arbor.displayResults, assembleAttributeAndCategoryNames: arbor.assembleAttributeAndCategoryNames, dispatchTreeEvent: arbor.dispatchTreeEvent}}
  */
 
 var arbor = {
 
     analysis: null,        //      connects to CODAP
     treePanelView: null,
+    corralView: null,
     attsInBaum: [],         //  the array of all the attributes in the tree
 
     focusNode: null,       //  currently-selected node
 
-    windowWidth: null,
+    panelWidth: null,
 
     state: {},             //  for save and restore
 
@@ -69,17 +71,17 @@ var arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version : '001x',
-        name : 'arbor',
-        title : 'diagnostic tree',
-        dimensions : {width: 500, height: 555},
-        preventDataContextReorg : false
+        version: '002b',
+        name: 'arbor',
+        title: 'diagnostic tree',
+        dimensions: {width: 500, height: 555},
+        preventDataContextReorg: false
     },
 
     /**
      * Start up. Called from HTML.
      */
-    initialize: function () {
+    initialize: async function () {
 
         focusSplitMgr.showHideAttributeConfigurationSection("hide");
 
@@ -90,7 +92,7 @@ var arbor = {
             this
         );
 
-        //  register to receive notifications about selection
+        //  register to receive notifications about selection in the tree result datasets
         codapInterface.on(
             'notify',
             'dataContextChangeNotice[' + arbor.constants.kClassTreeDataSetName + ']',
@@ -106,37 +108,39 @@ var arbor = {
         );
 
 
-        codapInterface.init(this.iFrameDescription, null)
-            .then(this.getAndRestoreModel.bind(this))   //  includes getInteractiveState
-            .then(this.getAndRestoreViews.bind(this))   //
-            .then(function () {
+        await codapInterface.init(this.iFrameDescription, null);
+        await arbor.getAndRestoreModel();   //  includes getInteractiveState
+        await arbor.getAndRestoreViews();   //
 
-                //  now initialize the "output" data context(s)
+        //  now initialize the "output" data context(s)
 
-                var tInitDatasetPromises = [
-                    pluginHelper.initDataSet(arbor.codapConnector.regressionTreesDataContextSetupString),
-                    pluginHelper.initDataSet(arbor.codapConnector.classificationTreesDataContextSetupString)
-                ];
+        const tInitDatasetPromises = [
+            pluginHelper.initDataSet(arbor.codapConnector.regressionTreesDataContextSetupString),
+            pluginHelper.initDataSet(arbor.codapConnector.classificationTreesDataContextSetupString)
+        ];
 
-                Promise.all(tInitDatasetPromises)
-                    .then(function () {
-                        //  other post-dataset initialization goes here
-                    });
+        await Promise.all(tInitDatasetPromises)
+        //  other post-dataset initialization goes here
 
+        //  make the tables reorg-able
+        const tMessage = {
+            "action": "update",
+            "resource": "interactiveFrame",
+            "values": {
+                "preventBringToFront": false,
+                "preventDataContextReorg": false
+            }
+        };
 
-            }.bind(this));
+        const updateResult = await codapInterface.sendRequest(tMessage);
+
+        arbor.repopulate();
+        arbor.redisplay();
     },
 
-    getAndRestoreViews: function () {
-        return new Promise(function (resolve, reject) {
-            this.windowWidth = window.innerWidth;
-            window.addEventListener("resize", this.resizeWindow);
-            this.treePanelView = new TreePanelView("treePaper");  //  the main view.
-            this.treePanelView.freshTreeView();
-
-            arbor.redisplay();
-            resolve();
-        }.bind(arbor));
+    getAndRestoreViews: async function () {
+        window.addEventListener("resize", this.resizeWindow);
+        await arbor.redisplay();
     },
 
     /**
@@ -175,7 +179,7 @@ var arbor = {
         var tRes = arbor.state.tree.rootNode.getResultCounts();
         var tSumSSD = tRes.sumOfSquaresOfDeviationsOfLeaves;
 
-        var N = tRes.FP + tRes.TP + tRes.FN + tRes.TN;
+        var N = tRes.sampleSize;        //  tRes.FP + tRes.TP + tRes.FN + tRes.TN;
         var tNodes = arbor.state.tree.numberOfNodes();
         var tDepth = arbor.state.tree.depth();
 
@@ -183,7 +187,7 @@ var arbor = {
         var tValues = {
             predict: arbor.informalDVBoolean,    //  the infomal expression of what is being predicted.
             N: N,
-            base: (tRes.TP + tRes.FN) / N,
+            base: (tRes.TP + tRes.FN + tRes.PU) / N,
             state: tStateAsString,
             nodes: tNodes,
             depth: tDepth
@@ -198,6 +202,9 @@ var arbor = {
             tValues.TN = tRes.TN;
             tValues.FP = tRes.FP;
             tValues.FN = tRes.FN;
+            tValues.NPPos = tRes.PU;
+            tValues.NPNeg = tRes.NU;
+
             arbor.codapConnector.createClassificationTreeItem(tValues);
         }
     },
@@ -241,45 +248,38 @@ var arbor = {
      * Then fills it.
      * Note the use of a promise(!) because getting these things is asynchronous.
      */
-    getAndRestoreModel: function () {
-        return new Promise(function (resolve, reject) {
-            if (!this.analysis) {
-                this.analysis = new Analysis(arbor);     //  the global, arbor, is the "host" for the analysis
-            }
+    getAndRestoreModel: async function () {
+        if (!this.analysis) {
+            this.analysis = new Analysis(arbor);     //  the global, arbor, is the "host" for the analysis
+        }
 
-            this.analysis.getStructureAndData().then(
-                function () {
-                    arbor.assembleAttributeAndCategoryNames();   //  we have the cases, collect the names
-                    this.attsInBaum.forEach(function (a) {
-                        a.latestSplit = new AttributeSplit(a);  //  set all defaults
-                    });
+        await this.analysis.getStructureAndData();
+        arbor.assembleAttributeAndCategoryNames();   //  we have the cases, collect the names
+        this.attsInBaum.forEach(function (a) {
+            a.latestSplit = new AttributeSplit(a);  //  set all defaults
+        });
 
-                    /* FIRST call to getInteractiveState */
+        /* FIRST call to getInteractiveState */
 
-                    arbor.state = codapInterface.getInteractiveState();
+        arbor.state = codapInterface.getInteractiveState();
 
-                    if (jQuery.isEmptyObject(arbor.state)) {
-                        codapInterface.updateInteractiveState(arbor.freshState());
-                        console.log("getting a fresh state");
-                    }
-                    console.log("arbor.state is " + JSON.stringify(arbor.state).length + " chars");
+        if (jQuery.isEmptyObject(arbor.state)) {
+            codapInterface.updateInteractiveState(arbor.freshState());
+            console.log("getting a fresh state");
+        }
+        console.log("arbor.state is " + JSON.stringify(arbor.state).length + " chars");
 
-                    arbor.doBaumRestoration(arbor.state);   //  restore the arbor data. Still all model.
-                    arbor.repopulate();
+        arbor.doBaumRestoration(arbor.state);   //  restore the arbor data. Still all model.
+        arbor.repopulate();
 
-                    //  register to receive notifications about selection in the data
+        //  register to receive notifications about selection in the data
 
-                    codapInterface.on(
-                        'notify',
-                        'dataContextChangeNotice[' + arbor.analysis.currentDataContextName + ']',
-                        'selectCases',
-                        arbor.selectionManager.processCodapSelectionOfDataCase
-                    );
-
-                    resolve();
-
-                }.bind(this))
-        }.bind(this))
+        codapInterface.on(
+            'notify',
+            'dataContextChangeNotice[' + arbor.analysis.currentDataContextName + ']',
+            'selectCases',
+            arbor.selectionManager.processCodapSelectionOfDataCase
+        );
     },
 
     /**
@@ -308,12 +308,12 @@ var arbor = {
 
         //  dependent variable
 
-        var dvn = iState.dependentVariableName;
-        var tAtt = this.attsInBaum.reduce(function (acc, val) {
+        const dvn = iState.dependentVariableName;
+        const tAtt = this.attsInBaum.reduce(function (acc, val) {
             return ((val.attributeName === dvn) ? val : acc);
         });
 
-        var tSavedSplit = iState.dependentVariableSplit;
+        const tSavedSplit = iState.dependentVariableSplit;
 
         this.setDependentVariableByName(tAtt.attributeName);
 
@@ -332,9 +332,7 @@ var arbor = {
      * Makes an empty, initial tree and a clean display
      */
     restoreTree: function (iTree) {
-        //  var outTree = new Tree();
-
-        var outTree = Object.assign(new Tree(), iTree);     //  now it's labeled as a tree.
+        let outTree = Object.assign(new Tree(), iTree);     //  now it's labeled as a tree.
 
         //  fix the root node
         outTree.rootNode = this.restoreNode(outTree.rootNode);
@@ -342,10 +340,10 @@ var arbor = {
     },
 
     restoreNode: function (iNode) {
-        var outNode = Object.assign(new Node(), iNode);
+        let outNode = Object.assign(new Node(), iNode);
 
         //  fix its split, if any
-        var tSplit = outNode.attributeSplit;
+        const tSplit = outNode.attributeSplit;
 
         if (tSplit) {
             outNode.attributeSplit = this.restoreSplit(tSplit);
@@ -353,7 +351,7 @@ var arbor = {
 
         //  fix its descendants
 
-        var tBranches = [];
+        let tBranches = [];
         outNode.branches.forEach(function (subNode) {
             subNode = this.restoreNode(subNode);
             tBranches.push(subNode);
@@ -365,8 +363,8 @@ var arbor = {
     },
 
     restoreSplit: function (iSplit) {
-        var tAttName = iSplit.attName;
-        var tAtt = this.getAttributeByName(tAttName);
+        const tAttName = iSplit.attName;
+        const tAtt = this.getAttributeByName(tAttName);
         return outSplit = Object.assign(new AttributeSplit(tAtt), iSplit);
     },
 
@@ -376,9 +374,10 @@ var arbor = {
      * @param iEvent
      */
     resizeWindow: function (iEvent) {
-        this.windowWidth = window.innerWidth;
-        arbor.treePanelView.drawTreePanelViewSetup();
-        arbor.treePanelView.redrawEntireZone();
+        console.log("WINDOW resize to width: " + arbor.displayWidth());
+
+        arbor.treePanelView.redrawEntirePanel();
+        arbor.corralView.refreshCorral();
     },
 
 
@@ -390,23 +389,31 @@ var arbor = {
     repopulate: function () {
         console.log("   repopulate begins");
         this.state.tree.populateTree();               //  count up how many are in what bin throughout the tree, leaving structure intact
-        console.log("       populated with " + this.analysis.cases.length + " cases");
+        //  console.log("       populated with " + this.analysis.cases.length + " cases");
         focusSplitMgr.theSplit.updateSplitStats(this.analysis.cases);    //  update these stats based on all cases
-        console.log("       splitStats updated");
+        //  console.log("       splitStats updated");
         console.log("   repopulate ends");
     },
 
     redisplay: function () {
-        console.log("Redisplay ------------------------");
+        console.log("Redisplay (in arbor.js) ------------------------");
+
         this.fixDependentVariableMechanisms();  //  sets appropriate label text
         focusSplitMgr.displayAttributeConfiguration();   //  the HTML on the main page
-        this.treePanelView.redrawEntireZone();
+        this.corralView = new CorralView();
+        this.treePanelView = new TreePanelView();  //  the main view.
+        this.corralView.refreshCorral();
+        arbor.ui.updateConfusionMatrix();
+    },
+
+    displayWidth: function () {
+        return window.innerWidth - 44;
     },
 
     setDependentVariableByName: function (iAttName) {
 
         //  which attribute (attInBaum) corresponds to this name?
-        var theAttribute = this.attsInBaum.reduce(function (acc, val) {
+        const theAttribute = this.attsInBaum.reduce(function (acc, val) {
             return ((iAttName === val.attributeName) ? val : acc);
         });
 
@@ -455,7 +462,7 @@ var arbor = {
 
             //  set focusSplit:
 
-            var tSplit = this.state.dependentVariableSplit;
+            let tSplit = this.state.dependentVariableSplit;
 
             if (this.focusNode.attributeSplit) {
                 tSplit = this.focusNode.attributeSplit;
@@ -465,14 +472,14 @@ var arbor = {
 
             focusSplitMgr.setFocusSplit(tSplit);
 
-            var tEvent = new Event("changeTree");
+            let tEvent = new Event("changeTree");
             tEvent.why = "set focus on a node";
             arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+            console.log("    ** dispatch " + JSON.stringify(tEvent));
 
             //  trigger the selection of the cases in that node
 
             arbor.selectionManager.selectCasesInNode(this.focusNode);
-
         }
     },
 
@@ -511,38 +518,43 @@ var arbor = {
     /**
      * When CODAP gives us the list of collections (in Analysis), we are informed and make a menu.
      * @param iList
+     * todo : see if we need this any more
      */
     gotCollectionList: function (iList) {
-        var collm = $("#collectionMenu");
+        let collm = $("#collectionMenu");
         collm.empty().append(this.analysis.makeOptionsList(iList));
         collm.val(iList[0].name);  //  first item by default
         this.changeCollection();  //  make sure analysis knows
     },
 
     /**
-     * Called when we successfully get the attribute list from CODAP
+     * (2019-08-14) caled when we START getting the list of attributes in Analysis;
+     * we need the list to be empty!
      * @param iList     a list of the attributes. We need theAttribute.name
      */
-    gotAttributeList: function (iList) {
-
-        console.log("gotAttributeList: [ " + TEEUtils.getListOfOneFieldInArrayOfObjects(iList, "name").join(" | ") + " ]");
-
-        //  make the whole AttsInBaum thing
+    resetAttributeList: function (iList) {
 
         this.attsInBaum = [];           //      new attribute list whenever we change collection? Correct? maybe not.
     },
 
-    gotOneAttribute: function( iValues ) {
-        console.log("   >>> got " + iValues.name );
+    /**
+     * Called by a loop in processDataContext in this file,
+     * as part of the setup for an analysis.
+     *
+     * Creates the attInBaum, creates the category map.
+     * @param iValues
+     */
+    gotOneAttribute: function (iValues) {
+        console.log("   >>> got " + iValues.name);
 
         if (iValues.name.length > 0) {
-            var tNewAttInBaum = new AttInBaum( iValues );
+            var tNewAttInBaum = new AttInBaum(iValues);
             var tColorIndex = iValues.id % arbor.constants.attributeColors.length;
-            tNewAttInBaum.attributeColor = arbor.constants.attributeColors[ tColorIndex ];
-            this.attsInBaum.push( tNewAttInBaum );
+            tNewAttInBaum.attributeColor = arbor.constants.attributeColors[tColorIndex];
+            this.attsInBaum.push(tNewAttInBaum);
 
-            if (iValues._categoryMap){
-                iValues._categoryMap.__order.forEach(function(v) {
+            if (iValues._categoryMap) {
+                iValues._categoryMap.__order.forEach(function (v) {
                     tNewAttInBaum.considerValue(v, true);
                 })
             }
@@ -554,14 +566,14 @@ var arbor = {
     },
 
     /**
-     * Get the attribute (AttInBaum by name. Used by AttributeSplit.makeInitialSplitParameters();
+     * Get the attribute (AttInBaum) by name. Used by AttributeSplit.makeInitialSplitParameters();
      * @param iName
      * @returns {*}
      */
     getAttributeByName: function (iName) {
 
         return this.attsInBaum.reduce(function (acc, val) {
-            return ( iName === val.attributeName ? val : acc);
+            return (iName === val.attributeName ? val : acc);
         })
     },
 
@@ -584,23 +596,25 @@ var arbor = {
     },
 
     setTreeTypeByString: function (iType) {
-        this.state.treeType = iType;
-        $("#treeTypeMenu").val(this.state.treeType);
-        console.log("Changing tree type to " + this.state.treeType);
+        if (this.state.treeType !== iType) {
+            this.state.treeType = iType;
+            $("#treeTypeMenu").val(this.state.treeType);
+            console.log("Changing tree type to " + this.state.treeType);
+        }
     },
 
-/*
-    /!**
-     * For some reason other than the user choosing the attribute in the menu,
-     * (e.g., a mouse down in a CorralAttView)
-     * we are changing which attribute we are configuring.
-     * @param iAttInBaum
-     *!/
-    forceChangeFocusAttribute: function (iAttInBaum) {
-        $("#attributeMenu").val(iAttInBaum.attributeName);    //  force the menu to change
-        this.changeFocusAttribute();
-    },
-*/
+    /*
+        /!**
+         * For some reason other than the user choosing the attribute in the menu,
+         * (e.g., a mouse down in a CorralAttView)
+         * we are changing which attribute we are configuring.
+         * @param iAttInBaum
+         *!/
+        forceChangeFocusAttribute: function (iAttInBaum) {
+            $("#attributeMenu").val(iAttInBaum.attributeName);    //  force the menu to change
+            this.changeFocusAttribute();
+        },
+    */
 
 
     displayStatus: function (iHTML) {
@@ -636,6 +650,11 @@ var arbor = {
 
     dispatchTreeEvent: function (iEvent) {
         this.eventDispatcher.dispatchEvent(iEvent);
+    },
+
+    paperString: function (p) {
+        return "(x, y) = (" + Math.round(Number(p.attr("x"))) + ", " + Math.round(Number(p.attr("y")))
+            + ") ... (w, h) = (" + Math.round(Number(p.attr("width"))) + ", " + Math.round(Number(p.attr("height"))) + ")";
     }
 
 };
@@ -709,12 +728,15 @@ arbor.constants = {
     kRegressTreeCollectionName: "regressTrees",
     kRegressTreeDataSetTitle: "Regression Tree Records",
 
-    buttonImageFilenames : {
+    buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",
         "leftRight": "art/left-right.png",
         "configure": "art/configure.png",
         "trash": "art/trash.png"
-    }
+    },
+
+    kTreePanelDOMName: "treePaper",
+    kCorralDOMName: "corral"
 
 
 };

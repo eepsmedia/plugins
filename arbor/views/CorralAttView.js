@@ -1,7 +1,15 @@
-CorralAttView = function (iAtt, iPanel) {
+/**
+ * This is a class for the "corral" attribute VIEW, that is, the thing you drag
+ * to a NodeBoxView to split the tree at that node.
+ *
+ * @param iAtt      the attribute (which contains the name)
+ * @param iCorralView   the corral view we are embedded in
+ * @constructor
+ */
+CorralAttView = function (iAtt, iCorralView) {
     this.attInBaum = iAtt;
     this.labelText = this.attInBaum.attributeTitle;
-    this.panel = iPanel;
+    this.panel = iCorralView;
     this.w = arbor.constants.attrWidth;
     this.h = arbor.constants.attrHeight;
 
@@ -21,22 +29,24 @@ CorralAttView = function (iAtt, iPanel) {
     this.label.node.setAttribute("class", "noselect");  //  this is that css thing
 
     this.theGroup.add( this.backShape, this.label);
+    this.theGroup.node.setAttribute("class", "corral-attribute-group");  //  this is that css thing
 
     //  new handlers using group
 
     function movehandler(dx, dy, x, y, event) {
-        this.panel.doDrag(dx, dy, x, y, event);
-        console.log("move! (CorralAttView)");
+        arbor.treePanelView.doDrag(dx, dy, x, y, event);
+        //  console.log("move! (CorralAttView)");
     }
 
     function starthandler(x, y, event) {
-        this.panel.setLastMouseDownNodeView( this );
+        arbor.corralView.setLastMouseDownNodeView( this );
         console.log("theGroup.mousedown in " + this.labelText + " event: " + JSON.stringify(event));
-        this.panel.startDrag(this.attInBaum, this.paper, event);
+        arbor.treePanelView.startDrag(this.attInBaum, this.paper, event);
     }
 
     function endhandler( object ) {
-        console.log("end! " + JSON.stringify(object));
+        console.log("end drag! " + JSON.stringify(object));
+        arbor.corralView.setLastMouseDownNodeView(null);    //  so this is not a drag
     }
 
     this.theGroup.drag( movehandler, starthandler, endhandler, this, this, this );
@@ -68,17 +78,14 @@ CorralAttView = function (iAtt, iPanel) {
 
 
     this.theGroup.click( function(e) {
-        //  are we the DV? If so, focus on the DV split
-        console.log("group.click in " + this.labelText + " event: " + JSON.stringify(e));
-
-        if (this === this.panel.dependentVariableView) {
-            focusSplitMgr.setFocusSplit( arbor.state.dependentVariableSplit);
-            focusSplitMgr.showHideAttributeConfigurationSection();
-            arbor.redisplay();
-        }
+        arbor.corralView.setLastMouseDownNodeView(null);    //  so this is not a drag
     }.bind(this));
 
     this.theGroup.dblclick( function(e) {
+        if (this === this.panel.dependentVariableView) {
+            focusSplitMgr.setFocusSplit( arbor.state.dependentVariableSplit);
+            focusSplitMgr.showHideAttributeConfigurationSection();
+        }
         console.log("theGroup.double click in " + this.labelText);
         arbor.setDependentVariableByName( this.labelText );
         arbor.repopulate();

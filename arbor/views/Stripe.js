@@ -9,12 +9,15 @@ Stripe = function (iParent, iTextParams, iRole) {
     this.centeredText = false;
 
 
-    this.paper = Snap(100, 100);
+    this.paper = Snap(100, 100).attr({"class" : iRole + "-stripe"});
     this.bgShape = iRole === "terminal" ?
         this.paper.circle(0, 0, 40).attr({fill : this.sBGColor }) :
         this.paper.rect(0, 0, 40, 40).attr({fill: this.sBGColor});
 
-    this.sLabel = this.paper.text(arbor.constants.treeObjectPadding, 15.5, this.sText).attr({fill: this.sTextColor});
+    this.sLabel = this.paper.text(arbor.constants.treeObjectPadding, 15.5, this.sText).attr({
+        fill: this.sTextColor,
+        pointerEvents : "none"
+    });
 
     //  Define the button image. Will be resized and positioned later
 
@@ -41,7 +44,7 @@ Stripe = function (iParent, iTextParams, iRole) {
                 .mousedown(
                     function (iEvent) {
                         this.parent.myNode.flipStopType();
-                        this.parent.myTreeView.myPanel.lastMouseDownNodeView = null;
+                        this.parent.myZoneView.myPanel.lastMouseDownNodeView = null;
                     }.bind(this)
                 );
             this.centeredText = true;
@@ -74,16 +77,6 @@ Stripe = function (iParent, iTextParams, iRole) {
             break;
 
         case "dependent-variable":
-/*
-            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.leftRight, 0, 0, 32, 32)
-                .append(Snap.parse("<title>" + toolTipTexts.dependent + "</title>"))
-                .mousedown(
-                    function (iEvent) {
-                        arbor.setFocusSplit(arbor.state.dependentVariableSplit);
-                        arbor.swapFocusSplit();              //  actually do the swap
-                    }.bind(this)
-                )
-*/
             this.rightButtonImage = null;
             break;
 
@@ -120,7 +113,12 @@ Stripe = function (iParent, iTextParams, iRole) {
     }
 };
 
-Stripe.prototype.resize = function (iSize) {
+/**
+ * Resize the stripe (mostly width to match the other stripes in the box.
+ * Called by NodeBoxView.redrawNodeBoxView() )
+ * @param iSize
+ */
+Stripe.prototype.resizeStripe = function (iSize) {
     this.paper.attr(iSize);
     this.bgShape.attr({width: iSize.width, height: iSize.height});
 
@@ -149,14 +147,15 @@ Stripe.prototype.resize = function (iSize) {
     }
 
     if (this.centeredText) {
-        var textWidth = this.sLabel.getBBox().width;
-        var tLeft = iSize.width / 2 - textWidth / 2;
+        const textWidth = this.sLabel.getBBox().width;
+        const tLeft = iSize.width / 2 - textWidth / 2;
         this.sLabel.attr("x", tLeft);
     }
 
 };
 
 Stripe.prototype.minimumWidth = function () {
-    var out = this.leftButtonImage ? 20 : 0;        //  todo: get 20 from somewhere else!
-    return out + this.sLabel.getBBox().width + 2 * arbor.constants.treeObjectPadding;
+    let out = this.leftButtonImage ? 20 : 0;        //  todo: get 20 from somewhere else!
+    out += this.sLabel.getBBox().width + 2 * arbor.constants.treeObjectPadding;
+    return out;
 };

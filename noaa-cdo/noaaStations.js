@@ -50,6 +50,23 @@ noaa.stations = {
         elev: 3.7,
     },
 
+    "GHCND:USC00368449" : {
+        name: "State College, PA",
+        group: "New England",
+        lat : 40.7933,
+        lon : -77.8672,
+        elev: 356.6,
+    },
+
+    "GHCND:USW00094728" : {
+        name: "Central Park, NYC",
+        group: "New England",
+        lat : 40.77898,
+        lon : -73.96925,
+        elev: 42.7,
+    },
+
+
     "GHCND:USW00014922" : {
         name: "MSP",
         group: "Minnesota",
@@ -123,22 +140,22 @@ noaa.stations = {
     },
 
     "GHCND:USW00026411": {
-        name: "Fairbanks AK",
+        name: "Fairbanks, AK",
         group: "Exotic",
     },
 
     "GHCND:GLW00017605": {
-        name: "Thule Greenland",
+        name: "Thule, Greenland",
         group: "Exotic",
     },
 
     "GHCND:ASN00066037": {
-        name: "Sydney Australia",
+        name: "Sydney, Australia",
         group: "Exotic",
     },
 
     "GHCND:USW00092811": {
-        name: "Miami Beach FL",
+        name: "Miami Beach, FL",
         group: "Exotic",
         lat : 25.8063,
         lon : -80.1334,

@@ -19,13 +19,30 @@ arbor.codapConnector = {
             iValues,
             arbor.constants.kClassTreeDataSetName
         ); // no callback.
+        codapInterface.sendRequest({
+            "action": "create",
+            "resource": "component",
+            "values": {
+                "type": "caseTable",
+                "dataContext": arbor.constants.kClassTreeDataSetName
+            }
+        })
     },
 
     createRegressionTreeItem : function(iValues ) {
         pluginHelper.createItems(
             iValues,
             arbor.constants.kRegressTreeDataSetName
-        )
+        );
+        codapInterface.sendRequest({
+            "action": "create",
+            "resource": "component",
+            "values": {
+                "type": "caseTable",
+                "dataContext": arbor.constants.kRegressTreeDataSetName
+            }
+        })
+
     }
 
 };
@@ -40,43 +57,8 @@ arbor.codapConnector.classificationTreesDataContextSetupString = {
     title : arbor.constants.kClassTreeDataSetTitle,
     description : 'records of classification trees',
     collections: [  // fist, simple: one collection
-        /*
-                {
-                    name: arbor.constants.kRecordsGameCollectionName,
-                    labels: {
-                        singleCase: "game",
-                        pluralCase: "games",
-                        setOfCasesWithArticle: "some games"
-                    },
-                    // The parent collection spec:
-                    attrs: [
-                        {name: "gameNumber", type: 'categorical'},
-                        {name: "outcome", type: 'categorical'}
-                    ],
-                    childAttrName: "patient"
-                },
-
-        {
-            name: arbor.constants.kRecordsPatientsCollectionName,
-            //  parent: arbor.constants.kRecordsGameCollectionName,
-            labels: {
-                singleCase: "patient",
-                pluralCase: "patientsAtbaum",
-                setOfCasesWithArticle: "a population"
-            },
-            // The child collection specification:
-            attrs: [
-                {name: "name", type: 'categorical'},
-                {name: "sex", type: 'categorical'},
-                {name: "age", type: 'numeric', precision: 1},
-                {name: "id", type: 'categorical', hidden : true}
-            ],
-            childAttrName: "record"
-        },
-*/
         {
             name: arbor.constants.kClassTreeCollectionName,
-            //  parent: arbor.constants.kRecordsPatientsCollectionName,
             labels: {
                 singleCase: "tree",
                 pluralCase: "trees",
@@ -87,15 +69,18 @@ arbor.codapConnector.classificationTreesDataContextSetupString = {
                 {name: "predict", type: 'categorical', description: 'what are we predicting?'},
                 {name: "N", type: 'numeric', precision : 0, description : 'total number of cases'},
                 {name: "nodes", type: 'numeric', precision : 0, description : 'total number of nodes'},
-                {name: "depth", type: 'numeric', precision : 0, description : 'dpth of tree'},
+                {name: "depth", type: 'numeric', precision : 0, description : 'depth of tree'},
                 {name: "base", title : "base rate", type: 'numeric', precision: 3, description : 'base rate'},
                 {name: "TP", type: 'numeric', precision: 0, description : 'number of true positives'},
                 {name: "FN", type: 'numeric', precision: 0, description : 'number of false negatives'},
                 {name: "FP", type: 'numeric', precision: 0, description : 'number of false positives'},
                 {name: "TN", type: 'numeric', precision: 0, description : 'number of true negatives'},
+                {name: "NPPos", type: 'numeric', precision: 0, description : 'number of positives without a prediction'},
+                {name: "NPNeg", type: 'numeric', precision: 0, description : 'number of negatives without a prediction'},
                 {name: "sens", type: 'numeric', precision: 3, editable : true,
                     description : 'sensitivity (calculated): the proportion of positive cases that are diagnosed positive',
-                    formula : "TP/(TP + FN)"},
+                    formula : "TP/(TP + FN + NPPos)"
+                },
                 {name: "state", type: 'categorical', description: "save state for this tree", editable : true, hidden: true}
                 /*
                 {name: "specificity", type: 'numeric', precision: 3, description : 'proportion of negative cases that are diagnosed negative'},

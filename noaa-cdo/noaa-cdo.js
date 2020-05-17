@@ -56,19 +56,28 @@ noaa = {
         let nRecords = 0;
         noaa.state.database  = document.querySelector("input[name='frequencyControl']:checked").value;
 
+        const theCheckedStations = noaa.ui.getCheckedStations();
+        if (theCheckedStations.length < 1) {
+            this.setResultText("Need at least one station!");
+            return;
+        }
+
         const tDatasetIDClause = "&datasetid=" + noaa.state.database;
-        const tStationIDClause = "&stationid=" + noaa.ui.getCheckedStations().join("&stationid=");
+        const tStationIDClause = "&stationid=" + theCheckedStations.join("&stationid=");
         const tDataTypeIDClause = "&datatypeid=" + noaa.ui.getCheckedDataTypes().join("&datatypeid=");
         const tDateClause = "&startdate=" + noaa.state.startDate + "&enddate=" + noaa.state.endDate;
 
-        let tURL = noaa.constants.noaaBaseURL + "data?limit=" + noaa.constants.recordCountLimit +
-            tDatasetIDClause + tStationIDClause + tDataTypeIDClause + tDateClause;
+        let tURL = noaa.constants.noaaBaseURL
+            + "data?limit=" + noaa.constants.recordCountLimit
+            + tDatasetIDClause + tStationIDClause
+            + tDataTypeIDClause + tDateClause;
 
         let tHeaders = new Headers();
         tHeaders.append("token", noaa.constants.noaaToken);
         const tRequest = new Request(tURL, {headers: tHeaders});
-        let resultText = "";
+        let resultText = "Request sent!";
         noaa.dataValues = [];
+        this.setResultText(resultText);
         try {
             const tResult = await fetch(tRequest);
             if (tResult.ok) {
@@ -90,8 +99,14 @@ noaa = {
             theText = msg;
         }
 
-        document.getElementById("results").innerHTML = resultText;
+        this.setResultText(resultText);
     },
+
+    setResultText : function( iText ) {
+        document.getElementById("results").innerHTML = iText;
+
+    },
+
 
     convertNOAAtoValue : function( iRecord ) {
         let out = {};
@@ -130,12 +145,12 @@ noaa = {
     },
 
     constants: {
-        version : "000c",
+        version : "000d",
 
         noaaToken: "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",
         noaaBaseURL: "https://www.ncdc.noaa.gov/cdo-web/api/v2/",
         defaultStart: "2018-01-01",
-        defaultEnd: "2018-01-31",
+        defaultEnd: "2018-12-31",
         recordCountLimit : 1000,
 
         DSName : "noaa",

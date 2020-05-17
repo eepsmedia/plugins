@@ -60,6 +60,15 @@ noaa.connect = {
         codapInterface.sendRequest(theSpreaderRequest);
     },
 
+    clearData :  function() {
+        codapInterface.sendRequest(
+            {
+                action : "delete",
+                resource : "dataContext[" + noaa.constants.DSName + "].allCases",
+            }
+        )
+    },
+
     /**
      * Tell CODAP to make items.
      * @param iValues   An array of objects containing the keys and values
