@@ -26,9 +26,23 @@ limitations under the License.
 
 */
 
-noaa.defaultDataTypes = ["TMAX"];
+noaa.defaultDataTypes = ["TAVG"];
 
 noaa.dataTypes = {
+    "TAVG": {
+        "name": "tAvg",
+        "units" : "°C",
+        "description": "Average temperature",
+        "decode": {
+            "GHCND": function (v) {
+                return v / 10;
+            },
+            "GSOM": function (v) {
+                return v;
+            }
+        },
+    },
+
     "TMAX": {
         "name": "tMax",
         "units" : "°C",
@@ -47,20 +61,6 @@ noaa.dataTypes = {
         "name": "tMin",
         "units" : "°C",
         "description": "Minimum temperature",
-        "decode": {
-            "GHCND": function (v) {
-                return v / 10;
-            },
-            "GSOM": function (v) {
-                return v;
-            }
-        },
-    },
-
-    "TAVG": {
-        "name": "tAvg",
-        "units" : "°C",
-        "description": "Average temperature",
         "decode": {
             "GHCND": function (v) {
                 return v / 10;

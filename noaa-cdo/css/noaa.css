@@ -55,7 +55,7 @@ details[open] summary {
     margin-bottom: .5em;
 }
 
-p, label, #dataFrequency {
+p, label, #dataFrequency, #monthOrYear {
     margin: 0;
     font-family: Verdana, sans-serif;
     font-size : x-small;

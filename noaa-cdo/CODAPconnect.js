@@ -116,8 +116,10 @@ noaa.connect = {
                 attrs: [
                     {name: "where", type: 'categorical', description: "weather station"},
                     {name: "when", type: 'date', description : "what day"},
-                    {name: "what", type : 'categorical', description : "the type of observation"},
+                    {name: "year", type: 'numeric', precision : 0, description : "year number"},
+                    {name: "month", type: 'numeric', precision : 0, description : "month number"},
                     {name: "value", type: 'numeric', precision : 2, description : "the value for the observation"},
+                    {name: "what", type : 'categorical', description : "the type of observation"},
                     {name: "units", type: 'categorical', description : "the units for the observation"},
                 ]
             }

@@ -46,11 +46,6 @@ noaa = {
         database : null,
     },
 
-    stationIDs : [
-        "GHCND:USW00023234",        //  KSFO
-        "GHCND:USW00023174",      //  KLAX
-    ],
-
     doGet: async function () {
         let theText = "Default text";
         let nRecords = 0;
@@ -110,11 +105,13 @@ noaa = {
 
     convertNOAAtoValue : function( iRecord ) {
         let out = {};
-        out.when = iRecord.date;
+        out.when = iRecord.date;    //  string in yyyy-mm-dd etc format
         out.where = noaa.decodeData("where", iRecord.station);
         out.what = noaa.decodeData("what", iRecord.datatype);
         out.value = noaa.decodeData(iRecord.datatype, iRecord.value);
         out.units = noaa.dataTypes[iRecord.datatype].units;
+        out.year = Number(iRecord.date.substring(0,4));     //  yyyy
+        out.month = Number(iRecord.date.substring(5,7));    //  mm
         return out;
     },
 
@@ -145,12 +142,12 @@ noaa = {
     },
 
     constants: {
-        version : "000d",
+        version : "000f",
 
         noaaToken: "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",
         noaaBaseURL: "https://www.ncdc.noaa.gov/cdo-web/api/v2/",
-        defaultStart: "2018-01-01",
-        defaultEnd: "2018-12-31",
+        defaultStart: "2019-01-01",
+        defaultEnd: "2019-12-31",
         recordCountLimit : 1000,
 
         DSName : "noaa",
@@ -159,8 +156,8 @@ noaa = {
         tallDimensions : {height : 444, width : 333},
 
         spreader : {
-            "URL" :  "http://localhost:8888/plugins/spreader/",
-            //"URL" :   "https://codap.xyz/plugins/spreader/",
+            // "URL" :  "http://localhost:8888/plugins/spreader/",
+            "URL" :   "https://codap.xyz/plugins/spreader/",
             "dimensions": {height: 210, width: 380},
         }
     },

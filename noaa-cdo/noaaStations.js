@@ -31,7 +31,7 @@ Find station IDs:
 https://www.ncdc.noaa.gov/cdo-web/search
 */
 
-noaa.defaultStations = ["GHCND:USC00040693", "GHCND:USC00049152"];     //  berkeley, ucla
+noaa.defaultStations = ["GHCND:USC00368449", "GHCND:USW00026411"];     //   state college + fairbanks //  berkeley, ucla
 
 noaa.stations = {
     "GHCND:USW00014755" : {
@@ -42,20 +42,43 @@ noaa.stations = {
         elev: 1911.4,
     },
 
-    "GHCND:USW00014739" : {
-        name: "Boston Logan",
-        group: "New England",
-        lat : 42.3606,
-        lon : -71.0097,
-        elev: 3.7,
-    },
-
     "GHCND:USC00368449" : {
         name: "State College, PA",
         group: "New England",
         lat : 40.7933,
         lon : -77.8672,
         elev: 356.6,
+    },
+
+    "GHCND:USW00026411": {
+        name: "Fairbanks, AK",
+        group: "Exotic",
+    },
+
+    "GHCND:USW00014922" : {
+        name: "MSP",
+        group: "Minnesota",
+        lat : 44.8831,
+        lon : -93.2289,
+        elev: 265.8,
+    },
+
+    "GHCND:USW00014739" : {
+        name: "BOS (Logan)",
+        group: "New England",
+        lat : 42.3606,
+        lon : -71.0097,
+        elev: 3.7,
+    },
+
+    "GHCND:USW00023174": {
+        name: "LAX",
+        group: "Socal",
+    },
+
+    "GHCND:USW00023234": {
+        name: "SFO",
+        group: "Norcal",
     },
 
     "GHCND:USW00094728" : {
@@ -67,13 +90,6 @@ noaa.stations = {
     },
 
 
-    "GHCND:USW00014922" : {
-        name: "MSP",
-        group: "Minnesota",
-        lat : 44.8831,
-        lon : -93.2289,
-        elev: 265.8,
-    },
 
     "GHCND:USW00014918" : {
         name: "International Falls, MN",
@@ -83,10 +99,6 @@ noaa.stations = {
         elev: 360.6,
     },
 
-    "GHCND:USW00023234": {
-        name: "SFO",
-        group: "Norcal",
-    },
 
     "GHCND:USW00023271": {
         name: "Sacramento",
@@ -111,10 +123,6 @@ noaa.stations = {
         elev: 94.5,
     },
 
-    "GHCND:USW00023174": {
-        name: "LAX",
-        group: "Socal",
-    },
 
     "GHCND:USW00093134": {
         name: "LA downtown",
@@ -139,10 +147,6 @@ noaa.stations = {
         elev: 131.1,
     },
 
-    "GHCND:USW00026411": {
-        name: "Fairbanks, AK",
-        group: "Exotic",
-    },
 
     "GHCND:GLW00017605": {
         name: "Thule, Greenland",
