@@ -71,7 +71,7 @@ var arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '002b',
+        version: '002c',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
