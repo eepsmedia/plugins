@@ -56,6 +56,13 @@ connect = {
         return theStructure;
     },
 
+    /**
+     * Retrieve "Attribute Lists" from each collection
+     *
+     * @param iDataSetName
+     * @param iCollectionName
+     * @returns {Promise<{}>}
+     */
     getTheseAttributes: async function (iDataSetName, iCollectionName) {
         let allAttsObject = {};     //   might should be an array....
         const tMessage = {
@@ -76,6 +83,17 @@ connect = {
         return allAttsObject;
     },
 
+    /**
+     * retrieve all of the info for a particular attribute.
+     * We got its name in the attribute list;
+     * this provides its type, units, etc., and, importantly, function
+     * (If it's a function, we will never choose to scramble it)
+     *
+     * @param iDataSetName
+     * @param iCollectionName
+     * @param iAttName
+     * @returns {Promise<{data: [], info: *}>}
+     */
     getThisAttribute: async function (iDataSetName, iCollectionName, iAttName) {
 
         const aMessage = {
@@ -93,6 +111,11 @@ connect = {
         }
     },
 
+    /**
+     * Construct and return the <option> tags in the menu of all datasets
+     *
+     * @returns {Promise<string>}
+     */
     makeDatasetMenuGuts: async function () {
         const theNames = await this.getListOfDataSetNames();
         let out = "";
@@ -103,6 +126,29 @@ connect = {
         return out;
     },
 
+    makeAttributeMenuGuts: function(iStructure) {
+        let out = "<option value=null selected>everything!</option>";
+
+        iStructure.collections.forEach( coll => {
+            for (attName in coll.attributes) {
+                const theAttribute = coll.attributes[attName];
+                if (theAttribute.info.formula === undefined) {
+                    out += `<option value="${attName}">${attName}</option>)`;
+                }
+            }
+        })
+
+        return out;
+    },
+
+
+    /**
+     * Get the list of cellections in the given dataset.
+     * These collection names are essential for getTheseAttributes, above.
+     *
+     * @param iDatasetName
+     * @returns {Promise<*>}
+     */
     getAllCollections: async function (iDatasetName) {
         const tMessage = {
             action: "get",

@@ -6,7 +6,7 @@
  
  
  ==========================================================================
-model in poseidon
+model in mazu
 
 Author:   Tim Erickson
 
@@ -27,107 +27,125 @@ limitations under the License.
 
 */
 
-//todo: bring checking the situation from php into this model.
-
-import phpConnect from "./poseidonPHPHelper";
-import poseidon from "./constants.js";
+import fireConnect from "./fireConnect";
+import mazu from "./constants.js";
 import strings from "./strings.js";
 
 export default class Model extends Object  {
 
-    constructor() {
+    constructor(iMazu) {
         super();
+
         this.theGame = {
             gameCode : "",
-            gameType : poseidon.constants.kInitialGameTypeName,     //  called 'config' in mySQL
-            gameState : poseidon.constants.kGameWaitingString,
+            gameType : mazu.constants.kInitialGameTypeName,     //  called 'config' in mySQL
+            gameState : mazu.constants.kGameWaitingString,
         };        //  an image of the mySQL record
         this.thePlayers = [];
         this.theTurns = [];
-        this.gameParameters = poseidon.fishGameParameters[this.theGame.gameType];
+        this.gameParameters = mazu.fishGameParameters[this.theGame.gameType];
+        this.mazu = iMazu;
+
+        fireConnect.initialize(this);
 
         return this;
     }
 
     /**
-     * Ask php to make a new game, and set the this.theGame variable.
+     * Ask fireStore to make a new game, and set the this.theGame variable.
      *
-     * @param iGameType
+     * @param iGameType     e.g., albacore
      * @returns {Promise<null>}
      */
     async newGame(iGameType) {
-        this.gameParameters = poseidon.fishGameParameters[iGameType];
-        this.theGame = await phpConnect.makeNewGame(iGameType);
+        this.gameParameters = mazu.fishGameParameters[iGameType];
+        this.theGame = await fireConnect.makeNewGame(iGameType);
         this.thePlayers = [];
         this.theTurns = [];
 
         return this.theGame;
     }
 
-    async refreshAllData(iCode) {
-
-        if (arguments.length === 1) {
-            this.theGame = {gameCode : iCode};
+    async   joinOldGame(iCode) {
+        this.theGame = await fireConnect.joinOldGame(iCode);
+        if (this.theGame) {
+            this.gameParameters = mazu.fishGameParameters[this.theGame.configuration];
         }
-        //  here is where these values get set.
-        this.theGame = await phpConnect.getGame(this.theGame) || {};
-        if (!this.theGame) return false;
-        this.thePlayers = await phpConnect.getPlayers(this.theGame) || [];
-        this.theTurns = await phpConnect.getTurns(this.theGame) || [];
-        return true;
+        return this.theGame;
+    }
+
+    async updateDataFromDB(iPlayers) {
+        this.thePlayers = iPlayers;
+        this.theTurns = await fireConnect.getTurnsForYear(this.theGame.turn);
+        this.mazu.poll();
+    }
+
+    updateTurnsFromDB(iTurns) {
+        this.theTurns = iTurns;
+        this.mazu.poll();
     }
 
     async sellFish() {
-        await this.refreshAllData();
-
-        this.updateTurnsData();  //   update the model. fast. synchronous. Sets game pop and unit price
-        this.updatePlayersData();   //  update the players balances based on their turns, unit price, etc.
-
-        //  must do side effects in checkForEndGame before setting the game, player, and turns
-
-        await phpConnect.setGame(this.theGame);
-        await phpConnect.setTurns(this.theTurns);
-        await phpConnect.setPlayers(this.thePlayers);
-
-        //  return endGameObject;
-    }
-
-    updateTurnsData() {
         const tN0 = Number(this.theGame['population']);
+
+        this.theTurns = await fireConnect.getTurnsForYear( this.theGame.turn );
+
         const nPlayers = this.theTurns.length;
 
         let tTotalCaughtFish = this.theTurns.reduce(function (a, v) {
             return {caught: a.caught + Number(v.caught)}
         }, {caught: 0});     //  count up how many fish got caught...
 
+        //  fish ecology
+
         const tBirths = this.births();
-
-        //  update the population in model.theGame, the local copy
-        this.theGame["population"] = tN0 + tBirths -
-            (nPlayers > 0 ? (tTotalCaughtFish.caught / nPlayers) : 0);
-        this.theGame['turn']++;
-
+        const newPopulation = Math.round(tN0 +
+            tBirths -
+            (nPlayers > 0 ? (tTotalCaughtFish.caught / nPlayers) : 0));
+        this.theGame["population"] = newPopulation;
 
         const tUnitPrice = this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers);
-        console.log("... total caught: " + tTotalCaughtFish.caught +
-            ", new population: " + this.theGame["population"] + " ... Unit price is " + tUnitPrice);
+        console.log(`${this.theGame["turn"]}: pop: ${tN0} to ${newPopulation} caught: ${tTotalCaughtFish.caught} Unit price: ${tUnitPrice}`);
 
-        //  update all of the turns from all of the players to show ending balance
-        //  not yet uploaded to DB
+        //  update the local copy of the turns
+        //  adding unitPrice, income, and after fields
+
+        this.theTurns.forEach((t) => {
+            t.unitPrice = tUnitPrice;
+            t.income = tUnitPrice * Number(t.caught);
+            t.after = Number(t.before) + t.income - Number(t.expenses);
+        });
+
+        const ended = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
+
+        if (!ended) {this.theGame['turn']++}         //  if the game is over, we don't bump the year.
+
+        let thePromises = [fireConnect.uploadGameToDB(this.theGame)];    //  update the game in the DB
+
+        //  load all the turns to the turnsDB
+        //  while we're there, update player records for balance and playerState
 
         this.theTurns.forEach(
             (t) => {
-                t.unitPrice = tUnitPrice;
-                t.income = tUnitPrice * Number(t.caught);
-                t.balanceAfter = Number(t.balanceBefore) + t.income - Number(t.expenses);
+                thePromises.push(fireConnect.uploadTurnToDB(t));
+
+                const playerStuff = {
+                    balance : t.after,
+                    playerState : mazu.constants.kFishingString,
+                };
+                thePromises.push(fireConnect.updatePlayerOnDB( t.playerName, playerStuff));
             }
         );
+        await Promise.all(thePromises);     //  updates all the collections in the DB
+
+        this.mazu.forceUpdate();    // todo:  need this??
     }
 
-    /**
+/*
+    /!**
      * update the player records to reflect the ending balance and the year in the corresponding turns record.
      * The trick is to get the names right... :P
-     */
+     *!/
     updatePlayersData() {
         this.thePlayers.forEach( (p) => {
             this.theTurns.forEach( (t) => {
@@ -138,6 +156,7 @@ export default class Model extends Object  {
             })
         });
     }
+*/
 
     births() {
         let tPop = this.theGame.population;
@@ -153,7 +172,7 @@ export default class Model extends Object  {
                 }
             }
         }
-        return tOut;
+        return Math.round(tOut);
     }
 
     /**
@@ -178,42 +197,39 @@ export default class Model extends Object  {
             tReasonObject.time = true;
             if (this.theGame.population > this.gameParameters.winningPopulation) {
                 tReasonObject.pop = "high";
-                tEnd = poseidon.constants.kWonString;
+                tEnd = mazu.constants.kWonString;
             } else {
                 tReasonObject.pop = "low";
-                tEnd = poseidon.constants.kLostString;
+                tEnd = mazu.constants.kLostString;
             }
         }
 
         //  check all turns to see if anyone went negative
-        this.theTurns.forEach((t) => {
-            if (t.balanceAfter < 0) {
+        this.theTurns.forEach((aTurn) => {
+            if (aTurn.after < 0) {
                 tReasonObject.end = true;
-                tReasonObject.broke.push(t.playerName);
-                tEnd = poseidon.constants.kLostString;
+                tReasonObject.broke.push(aTurn.playerName);
+                tEnd = mazu.constants.kLostString;
             }
         });
 
         if (this.theGame.population < this.gameParameters.losingPopulation) {
             tReasonObject.end = true;
             tReasonObject.pop = "low";
-            tEnd = poseidon.constants.kLostString;
+            tEnd = mazu.constants.kLostString;
         }
 
         //  set game state appropriately to win and loss
 
         if (tReasonObject.end) {
             this.theGame.gameState = tEnd;      //  side effect; change the game
-
             tReasonText = strings.constructGameEndMessageFrom(tReasonObject);
         } else {
             tReasonText = "End of year " + this.theGame.turn;
         }
 
         this.theGame.reason = tReasonText;
-        await phpConnect.setGame(this.theGame);
-
-        return this.theGame;
+        return tEnd;
     }
 
     /**
@@ -221,13 +237,11 @@ export default class Model extends Object  {
      * Especially these Booleans:
      *
      * OK : is it OK to sell fish? (i.e., has everybody moved?)
+     * missing: who has not moved yet?
      * gameOver : has the game ended?
      * @returns {Promise<{missing: [], playing: boolean, OK: boolean, allPlayers: *}|{missing: [], playing: boolean, OK: boolean, allPlayers: []}|{missing: *, playing: boolean, OK: boolean, allPlayers: *}>}
      */
     async getCurrentSituation() {
-
-        await this.refreshAllData();
-        await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
 
         if (this.theGame.gameCode) {
             //  game information
@@ -235,21 +249,17 @@ export default class Model extends Object  {
             let allPlayers = [];
 
             this.thePlayers.forEach((p) => {
-                let innit = false;
-                this.theTurns.forEach((t) => {
-                    if (t.playerName === p.playerName) {
-                        innit = true;
-                    }
-                });
                 allPlayers.push(p.playerName);
-                if (!innit) {
+                if (p.playerState !== mazu.constants.kSellingString) {
                     missingPlayers.push(p.playerName);
                 }
             });
 
-            if (this.theGame.gameState === poseidon.constants.kInProgressString) {
+            const ok = this.thePlayers.length === this.theTurns.length;
+
+            if (this.theGame.gameState === mazu.constants.kInProgressString) {
                 return {
-                    OK: (this.thePlayers.length === this.theTurns.length),
+                    OK: ok,
                     missing: missingPlayers,
                     allPlayers: allPlayers,
                     playing : true,

@@ -42,7 +42,10 @@ let fish = {
      * this is the game configuration, has stuff like default values.
      * Set in setLevel() below.
      */
-    game: null,
+    gameFromDB: null,         //  the game in the DB, updated when it changes
+    gameConfig : null,
+    gameParameters : null,      //  a copy from fishGameConfiguration corresponding to config, e.g., "albacore"
+    players: [],
 
     language: null,
 
@@ -55,17 +58,13 @@ let fish = {
     freshState: {
         gameCode: null,     //  three-word nearly-unique code for each game
         gameState: null,    //  is the game in progress?
-        gameTurn: 0,        //  what year is it in, according to the DB
+        turn: 0,                //  year we are in locally. Usually the same as fish.gameFromDB.turn
 
         gameCodeList: [],
 
-        config: null,       //  the NAME of the level. Used to set fish.game, which has the parameters.
-
-        isChair: false,     //  this player is the "chair" of the game, that is, created it.
         fishRecordsInCODAPAreOutOfDate: false,
         playerName: null,       //  player's handle
         playerState: null,     //  fishing, selling, betweenGames
-        turn: 0,                //  year we are in locally. Usually the same as state.gameTurn
         balance: 0,
 
         gameEndMessage: "Game over",
@@ -74,7 +73,6 @@ let fish = {
         currentTurnResult: null,
 
         autoCatch: false,       //  automation button checked for catching
-        autoChair: false,       //  automation button checked for chairing (fish market)
         otherPlayersInfo: {OK: true},
         timerCount: 0,
     },
@@ -86,10 +84,10 @@ let fish = {
         fish.setLanguageFromURL();
         fish.state = fish.freshState;       //  todo: implement saving and restoring
 
-        fish.setLevel(fish.state.config);
+        //  fish.setLevel(fish.state.config);
         fish.state.gameState = fish.constants.kWaitingString;
         fish.state.playerState = fish.constants.kBetweenString;     //  not in a game until join
-        fish.state.turn = fish.game.openingTurn;
+        //  fish.state.turn = fish.game.openingTurn;
         fish.CODAPConnector.initialize(null)
             .then(() => {
                     if (!fish.state.hasOwnProperty('gameCodeList')) {
@@ -99,8 +97,121 @@ let fish = {
             );
 
         this.debugThing = $('#debugSpan');
+
+        // Initialize Firebase
+
+        fireConnect.initialize(this);
+
         fish.ui.initialize();
         fish.ui.update();
+    },
+
+    calculateVisible : function() {
+        let tVisible = 0;
+        let tPop = Number(fish.gameFromDB['population']);
+
+        if (fish.gameParameters.binomialProbabilityModel) {
+            for (let i = 0; i < tPop; i++) {
+                if (Math.random() < fish.gameParameters.visibleProbability) {
+                    tVisible++;
+                }
+            }
+        } else {
+            tVisible = Math.round(fish.gameParameters.visibleProbability * tPop);
+        }
+
+        console.log(`${fish.state.turn}: ${tVisible} seen of ${tPop}`);
+        return tVisible;
+    },
+
+    calculateCaught : function(iWanted, iVisible) {
+        //  now calculate how many we caught
+
+        let tCatchable = 0;
+
+        if (fish.gameParameters.binomialProbabilityModel) {
+            for (let i = 0; i < iVisible; i++) {
+                if (Math.random() < fish.gameParameters.catchProbability) {
+                    tCatchable++;
+                }
+            }
+        } else {
+            tCatchable = Math.round(fish.gameParameters.catchProbability * iVisible);
+        }
+
+        return tCatchable > iWanted ? iWanted : tCatchable;
+    },
+
+    catchFish: function (iWanted) {
+
+        try {
+            const tVisible = this.calculateVisible();
+            tCaught = this.calculateCaught(iWanted, tVisible);
+
+            let tExpenses = fish.gameParameters.overhead;
+
+            return {
+                playerName : fish.state.playerName,
+                turn : fish.state.turn,
+                want: iWanted,
+                visible: tVisible,
+                caught: tCaught,
+                expenses: tExpenses
+            };
+
+        } catch (msg) {
+            console.log('catch fish error: ', msg);
+        }
+    },
+
+    /**
+     * Called on receiving a notification that the game has changed in the DB.
+     * Typically, because poseidon has updated the game year.
+     * @param iGame
+     */
+    updateGame: async function(iGame) {
+        this.gameFromDB = iGame;
+        this.state.gameState = this.gameFromDB.gameState; //      maybe we won or lost!
+        this.gameConfig = this.gameFromDB.configuration;
+        fish.state.gameEndMessage = this.gameFromDB.reason;
+
+        if (this.state.turn !== this.gameFromDB.turn) {
+            //  change of turn! Fish got sold!
+            this.updateTurnFromOldYearInCODAP(this.state.turn); //  gets the turn data and pushes it
+            this.state.turn = this.gameFromDB.turn;
+
+            const myData = await fireConnect.getMyData();
+
+            this.state.playerState = fish.constants.kFishingString;     //  myData.playerState;        //  we are back to fishing
+            this.state.balance = myData.balance;
+
+            console.log(`\nfish.updateGame() Year is now ${this.state.turn} (now ${this.state.playerState})`);
+            if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
+                await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
+            }
+        }
+
+        if (this.state.gameState === fish.constants.kWonString || this.state.gameState === fish.constants.kLostString) {
+            this.endGame(this.state.gameState);
+        }
+
+        this.ui.update();
+    },
+
+    updateTurnFromOldYearInCODAP : async function( iTurn ) {
+        const theTurn = await fireConnect.getOneTurn( this.state.playerName, iTurn );
+        fish.CODAPConnector.updateFishItemInCODAP(theTurn);
+    },
+
+    /**
+     * Called on receiving a notification that the players have changed in the DB.
+     * Common. Typically, a player has changed status from fishing to selling, so
+     * the message about who we're waiting for will change.
+     * @param iPlayers
+     */
+    updatePlayers: function(iPlayers) {
+        this.players = iPlayers;
+        this.ui.update();
     },
 
     setLanguageFromURL: function () {
@@ -127,46 +238,17 @@ let fish = {
 
     },
 
-    /**
-     * Set the game's level, a.k.a. scenario.
-     * This is stored in fish.state.config.
-     *
-     * @param iLevelName        the name of the level, e.g., albacore
-     */
-    setLevel: function (iLevelName) {
-        if (iLevelName) {
-            fish.state.config = iLevelName;
-        } else {
-            let theKey = null;
-            for (var key in fish.fishLevels) {
-                if (fish.fishLevels.hasOwnProperty(key)) {
-                    if (fish.fishLevels[key].starter) {
-                        theKey = key;
-                    }
-                }
-            }
-            fish.state.config = theKey;
-        }
-        fish.game = fish.fishLevels[fish.state.config];
-    },
 
     /**
-     * Called when the game has ended (called from fish.fishUpdate(), below).
+     * Called when the game has ended
      * Makes the historical data appear.
      *
      * @param iTheState     'won' or 'lost'
      * @returns {Promise<void>}
      */
     endGame: async function (iTheState) {
-
-        switch (iTheState) {
-            case 'won':
-                console.log('you won!');
-                break;
-            case 'lost':
-                console.log('you lost!');
-                break;
-        }
+        console.log(`in fish.endGame("${iTheState}")`);
+        fish.state.gameCodeList.push(this.state.gameCode);
         await fish.historicalData.getHistoricalData();
         //  fish.ui.update();
     },
@@ -176,82 +258,41 @@ let fish = {
      * Sets quantities so that we are not playing a game, no one is chair, etc.
      */
     startWaitingForNewGame: function () {
+        console.log(`\nNow waiting for a new game\n`);
         document.getElementById("automateCatchCheckbox").checked = false;   //  de-automate "catch"
 
         fish.state.gameState = fish.constants.kWaitingString;
         fish.state.playerState = fish.constants.kBetweenString;     //  not in a game until join
         fish.state.gameCode = null;
-        fish.state.gameTurn = 0;
-        fish.state.isChair = false;
+        fish.state.autoCatch = false;
+        fish.state.currentTurnResult = null;
         fish.state.turn = 0;
         fish.state.balance = 0;
 
-        $("#gameCode").val("");         //  empty the code!
+        $("#gameCodeTextField").val("");         //  empty the code!
+        $("#howManyFish").val("");         //  empty the code!
         fish.ui.update();
     },
 
-    mainLoop: async function () {
-        let gameOver = false;
-
-        while (!gameOver) {
-            fish.state.timerCount++;
-            await new Promise(resolve => setTimeout(resolve, fish.constants.kTimerInterval)); // 3 sec
-
-            try {
-                if (fish.state.gameCode && fish.state.playerName) {
-                    gameOver = await fish.fishUpdate();     //  update the model
-                    await fish.ui.update();             //  update the view
-                } else {
-                    fish.setNotice(fish.strings.waitingToStartText);
-                }
-            } catch (msg) {
-                console.error("fish.mainLoop() error (in fish.mainLoop()) " + msg);
-            }
-        }
-    },
-
-    /**
-     * Called periodically (fish.constants.kTimerInterval)
-     * If a game is in progress, updates model and view.
-     * @returns {Promise<void>}
-     */
-    doTimer: async function () {
-        fish.state.timerCount++;
-        let done = false;
-
-        try {
-            if (fish.state.gameCode && fish.state.playerName) {
-                done = await fish.fishUpdate();     //  update the model
-                await fish.ui.update();             //  update the view
-            } else {
-                fish.setNotice(fish.strings.waitingToStartText);
-            }
-        } catch (msg) {
-            console.error("fish.doTimer() error (in fish.fishUpdate()) " + msg);
-        }
-
-        if (!done) {
-            setTimeout(fish.doTimer, fish.constants.kTimerInterval);
-        }
-    },
 
     /**
      * At the top level, update the model
      *
      * @returns {Promise<boolean>}
      */
+/*
     fishUpdate: async function () {
         fish.state.otherPlayersInfo = await this.otherPlayersInfo();
         let done = false;
         let tUpdatedTurn;
-        const tDBgame = await fish.phpConnector.getGameData();
+        const tDBgame = await fish.fireConnect.getGameData();
 
         const tNewGameTurn = Number(tDBgame['turn']);
         fish.state.gameState = tDBgame['gameState'];
 
         if (tNewGameTurn > fish.state.turn) {    //  the game just updated; its turn (from the DB) is more advanced.
 
-            const tTurnArray = await fish.phpConnector.getOneTurn(fish.state.turn);
+            const tTurnArray = await fish.fireConnect.getOneTurn(fish.state.turn);
             const tMostRecentTurnFromDB = tTurnArray[0];
             const newBalance = tMostRecentTurnFromDB['balanceAfter'];
 
@@ -294,7 +335,7 @@ let fish = {
         if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
             await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
         }
-        /*
+        /!*
                 //  need to know if everyone is done fishing
                 fish.state.OKtoEndTurnObject = await fish.phpConnector.checkToSeeIfOKtoEndTurn();
 
@@ -306,9 +347,10 @@ let fish = {
                         }
                     }
                 }
-        */
+        *!/
         return done;
     },
+*/
 
     /**
      * Check to see if the player is ready to catch fish (game is in progress, player is tagged as "fishing"
@@ -319,8 +361,7 @@ let fish = {
     readyToCatch: function () {
         if (fish.state.playerState === fish.constants.kFishingString) {
             if (fish.state.gameState !== fish.constants.kInProgressString) {
-                console.warn("fish.js readyToCatch(), game state is " + fish.state.gameState);
-                // alert("(fish.readyToCatch()) Hmmm. Somehow, we're ready to catch but the game is now " + fish.constants.kInProgressString);
+                console.warn("fish.js readyToCatch(), but game state is " + fish.state.gameState);
             }
             return true;
         } else {
@@ -329,23 +370,20 @@ let fish = {
         //  return (fish.state.playerState === fish.constants.kFishingString && fish.state.gameState === fish.constants.kInProgressString)
     },
 
-    otherPlayersInfo: async function () {
-        const thePlayers = await fish.phpConnector.getPlayersData();
-        const theTurns = await fish.phpConnector.getTurnsData();
+    otherPlayersInfo: function () {
         let tAllPlayers = [];
         let tMissing = [];
 
-        thePlayers.forEach(p => {
+        this.players.forEach(p => {
             let innit = false;
-            theTurns.forEach(t => {
-                if (p.playerName === t.playerName) innit = true;
-            })
-            if (!innit) tMissing.push(p.playerName);
+            if (p.playerState === fish.constants.kFishingString) {
+                tMissing.push(p.playerName);
+            }
             tAllPlayers.push(p.playerName);
         });
 
         return {
-            OK: (thePlayers.length === theTurns.length),
+            OK: (tMissing.length === 0),
             missing:tMissing,
             allPlayers: tAllPlayers,
         }
@@ -361,7 +399,7 @@ let fish = {
     },
 
     constants: {
-        version: "001f",
+        version: "001g",
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
@@ -371,6 +409,17 @@ let fish = {
             local: "http://localhost:8888/plugins/fish/fish.php",
             xyz: "https://codap.xyz/projects/fish/fish.php",
             eeps: "https://www.eeps.com/codap/fish/fish.php"
+        },
+
+        kFirebaseConfiguration : {
+            apiKey: "AIzaSyAMkheBMSdVmMyUi76UGyeMX3pJpBGS0Hw",
+            authDomain: "eeps-fish-commons.firebaseapp.com",
+            databaseURL: "https://eeps-fish-commons.firebaseio.com",
+            projectId: "eeps-fish-commons",
+            storageBucket: "eeps-fish-commons.appspot.com",
+            messagingSenderId: "945924475632",
+            appId: "1:945924475632:web:8a0f6f26d292f317511035",
+            measurementId: "G-36DF6XG8Q7"
         },
 
         kFishDataSetName: "fish",

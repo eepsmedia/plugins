@@ -26,6 +26,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 limitations under the License.
 ==========================================================================
 
+local mamp: http://localhost:8888/plugins/scrambler/
 -->
 
 <head>
@@ -45,18 +46,26 @@ limitations under the License.
 
 </head>
 <body>
-<h1>scrambler</h1>
+<h1>scrambler  </h1>
 
 <div id="chooseDatasetDiv">
     <label for="datasetMenu">dataset: </label>
     <select id="datasetMenu"></select>
+    <button onclick="scrambler.refresh()">
+        <img src="art/refresh.png" height="14" width="16">
+    </button>
+</div>
+
+<div id="chooseAttributeDiv">
+    <label for="attributeMenu">scramble: </label>
+    <select id="attributeMenu"></select>
 </div>
 
 <div id="doScrambleDiv">
-    scramble
-    <button id="scrambleButton" onclick="scrambler.doScramble(1)">1</button>
-    <button id="scrambleButton" onclick="scrambler.doScramble(10)">10</button>
-    <button id="scrambleButton" onclick="scrambler.doScramble(50)">50</button>
+    how many?
+    <button class="scrambleButton" onclick="scrambler.doScramble(1)">1</button>
+    <button class="scrambleButton" onclick="scrambler.doScramble(10)">10</button>
+    <button class="scrambleButton" onclick="scrambler.doScramble(50)">50</button>
 </div>
 
 </body>

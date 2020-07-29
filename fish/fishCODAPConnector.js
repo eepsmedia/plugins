@@ -61,7 +61,6 @@ fish.CODAPConnector = {
         }
 
         await Promise.all(thePromises);
-        //  console.log("fish.state is " + JSON.stringify(fish.state));   //  .length + " chars");
     },
 
     /**
@@ -76,7 +75,7 @@ fish.CODAPConnector = {
         let aTurn = {
             year: Number(fish.state.turn),
             seen: iModelResult.visible,
-            want: iModelResult.sought,
+            want: iModelResult.want,
             caught: iModelResult.caught,
             before: fish.state.balance,
             expenses: iModelResult.expenses,
@@ -86,10 +85,19 @@ fish.CODAPConnector = {
 
         //  const localizedTurn = fish.localize.localizeValuesObject(aTurn);
 
-        console.log("    fish ... addSingleFishItemInCODAP");
-        console.log("      " + JSON.stringify(aTurn));
-        await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
+        console.log(`    fish ... addSingleFishItemInCODAP for ${aTurn.year} caught ${aTurn.caught}`);
+
+        const theResult = await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
+        if (theResult.success) {
+            aTurn.caseID = theResult.caseIDs[0];
+            aTurn.itemID = theResult.itemIDs[0];
+        }
         this.makeCaseTableAppear();
+        aTurn["playerName"] = aTurn.player;
+        aTurn["turn"] = aTurn.year;
+        delete aTurn.player;
+        delete aTurn.year;
+
         return aTurn;   //  localizedTurn
     },
 
@@ -100,57 +108,38 @@ fish.CODAPConnector = {
      * So here, we can fill in what we did not know at the time of fishing: unitPrice, income, and our "after" balance.
      *
      * @param iTurn     the data from db to be updated
-     * @param iWhy
      * @returns {Promise<void>}
      */
-    updateFishItemInCODAP: async function (iTurn, iWhy) {
+    updateFishItemInCODAP: async function (iTurn) {
         try {
-            const theYear = iTurn.onTurn;
+            const theYear = iTurn.turn;
 
             const tValues = {
                 'unitPrice' : iTurn.unitPrice,
                 'income' : iTurn.income,
-                'after' : iTurn.balanceAfter    //  note different name
+                'after' : iTurn.after,
             };
-            console.log("    fish ... updateFishItemInCODAP() for " + theYear + " because: " + iWhy);
+            console.log("    fish ... updateFishItemInCODAP() for " + theYear );
 
-            let theWholeTurn = null;
+            //  use the item id of the relevant case:
 
-            //  get the item id of the relevant case:
+            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemByID[" + iTurn.itemID + "]";
+            let tMessage = {action: "update", resource: tResource};
+            tMessage.values = tValues;
+            const tUpdateResult = await codapInterface.sendRequest(tMessage);
 
-            let tFilterString = 'year==' + theYear;
-            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemSearch[" + tFilterString + "]";
-            let tMessage = {action: "get", resource: tResource};
-            const tItemSearchResult = await codapInterface.sendRequest(tMessage);
-
-            let theItemID = 0;
-
-            if (tItemSearchResult.success && tItemSearchResult.values[0]) {
-                const theResult = tItemSearchResult.values[tItemSearchResult.values.length - 1];
-                theItemID = theResult.id;
-                theWholeTurn = theResult.values;
-                Object.assign(theWholeTurn, tValues);       //  merge the new values into the "turn" data (for return)
-            } else {
-                throw("    unsuccessful item search, year " + theYear);
-            }
-
-            //      now do the update
-            tResource = "dataContext[" + fish.constants.kFishDataSetName +
-                "].itemByID[" + theItemID + "]";
             //  sample tResource:  "dataContext[fish].itemByID[id:Cpz-fhDXr49K_u2R]"
             //  sample tValues:     {unitPrice: 100, income: 3300, after: 6300}
-
-            tMessage = {action: "update", resource: tResource, values: tValues};    //  fish.localize.localizeValuesObject(tValues)};
-            const tUpdateResult = await codapInterface.sendRequest(tMessage);
 
             if (!tUpdateResult.success) {
                 const errorString = "    unsuccessful update, item " + theItemID +
                     " | year: " + theYear + " | error: " + tUpdateResult.values.error +
                     " | message: " + JSON.stringify(tMessage);
                 console.log(errorString);
+                return  null;
             }
 
-            return theWholeTurn;       //      resolve to the most recent turn.
+            return iTurn;       //      resolve to the most recent turn.
         } catch (msg) {
             console.log("    error in updateFishItemInCODAP(): " + msg);
         }
@@ -165,8 +154,8 @@ fish.CODAPConnector = {
             const res = await pluginHelper.createItems(iValues, fish.constants.kFishDataSetName);
             console.log("Resolving createFishItems() with " + JSON.stringify(res));
             return res;
-        } catch {
-            console.log("Problem creating items using iValues = " + JSON.stringify(iValues));
+        } catch (msg) {
+            console.log("Problem creating items using iValues = " + JSON.stringify(iValues) + "\n" + msg);
         }
 
     },
@@ -212,6 +201,20 @@ fish.CODAPConnector = {
                 type : 'caseTable',
                 dataContext : fish.constants.kFishDataSetName,
                 name : fish.constants.kFishDataSetTitle,
+                cannotClose : true
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
+    makeHistoricalTableAppear : async function() {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'caseTable',
+                dataContext : fish.constants.kHistoricalDataSetName,
+                name : fish.constants.kHistoricalDataSetTitle,
                 cannotClose : true
             }
         };

@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-strings in poseidon
+strings in mazu
 
 Author:   Tim Erickson
 

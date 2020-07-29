@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-constants.js in poseidon
+constants.js in mazu
 
 Author:   Tim Erickson
 
@@ -28,11 +28,11 @@ limitations under the License.
 
 //  import model from "./Model.js";
 
-const poseidon = {
+const mazu = {
 
     constants: {
-        version: "001a",
-        whence : "local",
+        version: "001b",
+        whence: "local",
 
         kTimerInterval: 2500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
@@ -40,7 +40,7 @@ const poseidon = {
 
         kInitialTurn: 2020,
         kInitialPopulation: 200,
-        kInitialGameTypeName : "albacore",
+        kInitialGameTypeName: "albacore",
 
         //  player states
         kSellingString: "selling",
@@ -53,10 +53,6 @@ const poseidon = {
         kLostString: "lost",
         kWaitingString: "waiting",      //
 
-        kBaseURL: {
-            local: "http://localhost:8888/plugins/poseidon/src/poseidon.php",
-            xyz: "https://codap.xyz/projects/poseidon/src/poseidon.php",
-        },
     },
 
     /**
@@ -65,10 +61,10 @@ const poseidon = {
      *
      * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
      */
-    fishGameParameters : {
+    fishGameParameters: {
 
         albacore: {
-            starter : true,
+            starter: true,
             openingPopulation: 400,
             carryingCapacity: 3000,
 
@@ -76,20 +72,22 @@ const poseidon = {
             losingPopulation: 100,
             openingBalance: 5000,
             openingTurn: 2020,
-            endingTurn : 2060,          //          2060
+            endingTurn: 2025,          //          2060
             defaultPrice: 100,
             overhead: 2000,
             visibleProbability: 0.50,
             birthProbability: 0.10,
-            catchProbability : 1.00,
+            catchProbability: 1.00,
             binomialProbabilityModel: false,
             boatCapacity: 120,
 
-            calculatePrice : function(n) { return this.defaultPrice; }
+            calculatePrice: function (n) {
+                return this.defaultPrice;
+            }
         },
 
         bonito: {
-            starter : false,
+            starter: false,
             openingPopulation: 400,
             carryingCapacity: 3000,
 
@@ -97,20 +95,22 @@ const poseidon = {
             losingPopulation: 100,
             openingBalance: 5000,
             openingTurn: 2020,
-            endingTurn : 2060,
+            endingTurn: 2060,
             defaultPrice: 100,
             overhead: 2000,
             visibleProbability: 0.50,
             birthProbability: 0.10,
-            catchProbability : 1.00,
+            catchProbability: 1.00,
             binomialProbabilityModel: true,
             boatCapacity: 120,
 
-            calculatePrice : function(n) { return this.defaultPrice; }
+            calculatePrice: function (n) {
+                return this.defaultPrice;
+            }
         },
 
         cod: {
-            starter : false,
+            starter: false,
             openingPopulation: 400,
             carryingCapacity: 3000,
 
@@ -118,27 +118,27 @@ const poseidon = {
             losingPopulation: 100,
             openingBalance: 3000,
             openingTurn: 2020,
-            endingTurn : 2060,
+            endingTurn: 2060,
             defaultPrice: 100,
             overhead: 2000,
             visibleProbability: 0.50,
             birthProbability: 0.10,
-            catchProbability : 1.00,
+            catchProbability: 1.00,
             binomialProbabilityModel: false,
             boatCapacity: 120,
 
-            priceMax : 80,
-            salesMax : 200,
+            priceMax: 80,
+            salesMax: 200,
 
-            calculatePrice : function(n) {
-                let tPrice = this.priceMax * ( 1 - n / this.salesMax);
+            calculatePrice: function (n) {
+                let tPrice = this.priceMax * (1 - n / this.salesMax);
                 if (tPrice < 0) tPrice = 0;
                 return tPrice;
             }
         },
 
         halibut: {
-            starter : false,
+            starter: false,
             openingPopulation: 400,
             carryingCapacity: 3000,
 
@@ -146,20 +146,20 @@ const poseidon = {
             losingPopulation: 100,
             openingBalance: 3000,
             openingTurn: 2020,
-            endingTurn : 2060,
+            endingTurn: 2060,
             defaultPrice: 100,
             overhead: 2000,
             visibleProbability: 0.50,
             birthProbability: 0.10,
-            catchProbability : 0.60,
+            catchProbability: 0.60,
             binomialProbabilityModel: true,
             boatCapacity: 120,
 
-            priceMax : 80,
-            salesMax : 200,
+            priceMax: 80,
+            salesMax: 200,
 
-            calculatePrice : function(n) {
-                let tPrice = this.priceMax * ( 1 - n / this.salesMax);
+            calculatePrice: function (n) {
+                let tPrice = this.priceMax * (1 - n / this.salesMax);
                 if (tPrice < 0) tPrice = 0;
                 return tPrice;
             }
@@ -167,4 +167,4 @@ const poseidon = {
     }
 };
 
-export default poseidon;
+export default mazu;

@@ -1,11 +1,11 @@
 /*
 ==========================================================================
 
- * Created by tim on 5/23/20.
+ * Created by tim on 2/21/20.
  
  
  ==========================================================================
-scrambler in scrambler
+Firestore in mazu
 
 Author:   Tim Erickson
 
@@ -26,25 +26,22 @@ limitations under the License.
 
 */
 
-body {
-    margin : 0;
-    padding : 0;
-    color : #eee;
-    background-color: darkcyan;
-    font-family: "Helvetica Neue", Verdana, sans-serif;
-    font-size: small;
-}
 
-h1 {
-    padding-left: 1em;
-    font-stretch: condensed;
-    font-size: small;
-}
+import firebase from 'firebase';
 
-#chooseDatasetDiv, #chooseAttributeDiv, #doScrambleDiv {
-    padding: 0.5em;
-    border-radius: 4px;
-    margin: 0.5em;
-    background-color: #eee;
-    color : #333;
-}
+const firebaseConfig = {
+    apiKey: "AIzaSyAMkheBMSdVmMyUi76UGyeMX3pJpBGS0Hw",
+    authDomain: "eeps-fish-commons.firebaseapp.com",
+    databaseURL: "https://eeps-fish-commons.firebaseio.com",
+    projectId: "eeps-fish-commons",
+    storageBucket: "eeps-fish-commons.appspot.com",
+    messagingSenderId: "945924475632",
+    appId: "1:945924475632:web:8a0f6f26d292f317511035",
+    measurementId: "G-36DF6XG8Q7"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+
+export default firebase;

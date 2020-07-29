@@ -1,8 +1,9 @@
 import React from 'react';
 //  import logo from './logo.svg';
 import './App.css';
-import './css/poseidon.css';
-import Poseidon from './Poseidon.js';
+import './css/mazu.css';
+import Mazu from './Mazu.js';
+
 
 function App() {
 
@@ -10,8 +11,8 @@ function App() {
 
         <div className="App">
             <header className="App-header">
-                <h3>Poseidon</h3>
-                <Poseidon className={"poseidon-main"}/>
+                <h3>Mazu</h3>
+                <Mazu className={"mazu-main"}/>
             </header>
         </div>
 

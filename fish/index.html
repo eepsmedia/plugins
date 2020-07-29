@@ -68,36 +68,33 @@ todo: fix bug: at end of game, historical records don't include the very last on
 
     <link rel='stylesheet' type='text/css' href='fish.css'/>
 
-    <script src="../common/iframe-phone.js" ></script>
-    <script src="../common/codapInterface.js" ></script>
-    <script src="../common/pluginHelper.js" ></script>
-    <script src="../common/TEEUtils.js" ></script>
-    <script src="../common/jqueryFolder/jquery.min.js" ></script>
-    <script src="../common/jqueryFolder/jquery-ui.min.js" ></script>
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/TEEUtils.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
 
-    <script src="fish.js" ></script>
+    <script src="fish.js"></script>
 
-    <script src="fishGameConfigurations.js" ></script>
-    <script src="fishStrings.js" ></script>
+    <script src="fishGameConfigurations.js"></script>
+    <script src="fishStrings.js"></script>
 
-    <script src="fishphpConnector.js" ></script>
-    <script src="fishCODAPConnector.js" ></script>
-    <script src="fishUI.js" ></script>
-    <script src="fishUserActions.js" ></script>
-    <script src="fishModel.js" ></script>
-    <script src="fishHistoricalData.js" ></script>
-    <script src="whence.js" ></script>
+    <script src="fireConnect.js"></script>
+    <script src="fishCODAPConnector.js"></script>
+    <script src="fishUI.js"></script>
+    <script src="fishUserActions.js"></script>
 
-    <script>
-        $(function () {
-            //  $("#tabs").tabs();
-            fish.initialize();
-        });
-    </script>
+    <script src="fishHistoricalData.js"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
+    <!--    <script src="https://www.gstatic.com/firebasejs/7.9.0/firebase-analytics.js">-->
 
 </head>
-<body>
 
+<body onload="fish.initialize()">
 
 <div id="status" class="fishUIblock">
     <div id="statusText">
@@ -107,7 +104,7 @@ todo: fix bug: at end of game, historical records don't include the very last on
     </div>
 
     <div id="clock">
-        <div class="info" id="statusYear">
+        <div class="info" id="statusYear" title="the game year">
 
         </div>
     </div>
@@ -115,64 +112,32 @@ todo: fix bug: at end of game, historical records don't include the very last on
 
 <br>
 
-<div id="getPlayerName" class="fishUIblock">
-    <div id="needPlayerName">
-        <label class="noNameYet" id="playerNameLabel" for="playerName">xxx NAME xxx?</label>
-        <input class="noNameYet" type="text" id="playerName">
-        <button id="setNameButton" onclick="fish.userActions.pressNameButton('need')" value="setName">xxx SET NAME xxx
-        </button>
-    </div>
-    <div id="havePlayerName">
-
-    </div>
+<div id="needPlayerName" class="fishUIblock">
+    <label class="noNameYet" id="playerNameLabel" for="playerName">xxx NAME xxx?</label>
+    <input class="noNameYet" type="text" id="playerName">
+    <button id="setNameButton" onclick="fish.userActions.pressNameButton('need')" value="setName">xxx SET NAME xxx
+    </button>
 </div>
 
 <div id="joinGame" class="fishUIblock">
-<!--
-    <input id="joinRadioButton" type="radio" name="newGameOrJoinExisting" value="join" onchange="fish.ui.update()"
-           checked>
-    <label id="joinExistingGameButtonLabel" for="joinRadioButton">xxx JOIN EXISTING xxx</label>
 
-    <input id="newRadioButton" type="radio" name="newGameOrJoinExisting" value="new" onchange="fish.ui.update()">
-    <label id="makeNewGameButtonLabel" for="newRadioButton">make new game</label>
--->
-
-    <div id="joinExistingDIV" class="fishUIsub">
-        <label id="gameCodeTextFieldLabel" for="gameCodeTextField">xxx GAME CODE xxx</label>
-        <input type="text" id="gameCodeTextField" onchange="fish.ui.gameCodeTextFieldChange()">
-        <button id="joinGameButton" onclick="fish.userActions.clickJoinButton('join')" value="start new game">
-            xxx JOIN xxx
-        </button>
-    </div>
-
-<!--
-    <div id="makeNewGameDIV" class="fishUIsub">
-        <label id="gameLevelMenuLabel" for="gameLevelMenu">xxx LEVEL xxx</label>
-        <select id="gameLevelMenu" onchange="fish.ui.update();"></select>
-        &nbsp;
-        <button id="createGameButton" onclick="fish.userActions.clickJoinButton('new')" value="start new game">
-            xxx CREATE xxx
-        </button>
-    </div>
--->
-
+    <label id="gameCodeTextFieldLabel" for="gameCodeTextField">xxx GAME CODE xxx</label>
+    <input type="text" id="gameCodeTextField" onchange="fish.ui.gameCodeTextFieldChange()">
+    <button id="joinGameButton" onclick="fish.userActions.clickJoinButton()" value="start new game">
+        xxx JOIN xxx
+    </button>
     <br>
-    <hr>
-    <div class="notice">
-
-    </div>
 </div>
 
+
+
 <div id="catchFishDIV" class="fishUIblock">
-    <span id="catchManualSpan">
         <label id="fishQuantityLabel" for="howManyFish">xxx HOW MANY xxx</label>
         <input type="number" id="howManyFish">
-        <button id="catchButton" onclick="fish.userActions.catchFish()"> xxx CATCH xxx</button>
-    </span>
-    <span id="catchAutoSpan">
+    <button id="catchButton" onclick="fish.userActions.catchFish()"> xxx CATCH xxx</button>
+    <br>
         <label id="automateCatchLabel" for="automateCatchCheckbox"> xxx AUTOMATE xxx</label>
-        <input type="checkbox" id="automateCatchCheckbox" onchange="fish.ui.update()">
-    </span>
+        <input type="checkbox" id="automateCatchCheckbox" onchange="fish.userActions.changeAutomation()">
 </div>
 
 
@@ -183,25 +148,13 @@ todo: fix bug: at end of game, historical records don't include the very last on
     </div>
 </div>
 
+<hr>
 <div id="notice" class="fishUIblock"></div>
-
-
-<div id="chairControls" class="fishUIblock">
-    <hr>
-    <span id="youAreChairText">You are the "chair" of this game.</span><br>
-    <button id="chairEndsTurnButton" onclick="fish.userActions.chairEndsTurn()" class="chairOnly">
-        xxx END TURN xxx
-    </button>
-    <label id="automateChairLabel" for="automateChairCheckbox">xxx AUTOMATE CHAIR xxx</label>
-    <input type="checkbox" id="automateChairCheckbox" onchange="fish.ui.update()">
-
-</div>
 
 <div id="aboutPlayersText" class="fishUIblock"></div>
 <div id="debug" class="fishUIblock">
     <span id="debugSpan"></span>
 </div>
-
 
 
 </body>
