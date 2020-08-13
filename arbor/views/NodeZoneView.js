@@ -88,6 +88,7 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
 
     let currentTotalHeight = 0;   //  we will accumulate these as we add elements
     let currentTotalWidth = 0;
+    let tRightX = 0;
     let tCurrentX = 0;
     let tCurrentY = 0;
 
@@ -97,23 +98,26 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
     this.myBoxView = new NodeBoxView(this.myNode, this);  //  create, not draw
     this.leaf = (this.myNode.branches.length === 0 && arbor.options.showLeaves()) ? new Leaf({node: this.myNode}) : null;          //  our leaf
 
-    const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created in the constructor; this call adjusts its size
+    const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created just above
     this.paper.append(boxPaper);    //  attach it, but it's not yet in the right place.
 
     //  we need to know the width of this entire ZoneView in order to place the NodeBoxView.
     currentTotalHeight = Number(boxPaper.attr("height"));
     currentTotalWidth = Number(boxPaper.attr("width"));
+
+    //  now those two variables account for the size of the node box ONLY.
+
     let topsOfSubZoneBoxes = {};
 
     //  in addition to the node itself, you need subNodeZones
 
-    tCurrentX = 0;
     tCurrentY = currentTotalHeight;
 
     switch (this.myNode.branches.length) {
         case 2:
             tCurrentY += arbor.constants.treeLineLabelHeight + arbor.constants.treeObjectPadding;    //  top of subZoneViews
 
+            let rightSide = false;
             this.myNode.branches.forEach(function (iBranch) {
                 const tSubZoneView = new NodeZoneView( iBranch, this );
                 this.paper.append(tSubZoneView.paper);
@@ -121,8 +125,14 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
                 const subZoneSize = tSubZoneView.getZoneViewSize();   //  now they have good widths
                 currentTotalHeight = (tCurrentY + subZoneSize.height > currentTotalHeight)
                     ? tCurrentY + subZoneSize.height : currentTotalHeight;
-                currentTotalWidth = (tCurrentX + subZoneSize.width > currentTotalWidth)
-                    ? tCurrentX + subZoneSize.width : currentTotalWidth;
+
+                if (rightSide) {
+                    if (tCurrentX + subZoneSize.width > currentTotalWidth) {
+                        currentTotalWidth = tCurrentX + subZoneSize.width;
+                    } else {    //  currentTotalWidth is enough to cover both children, Right-justify the right one
+                        tCurrentX = currentTotalWidth - subZoneSize.width;
+                    }
+                }
 
                 tSubZoneView.paper.attr({
                     x : tCurrentX,
@@ -130,9 +140,10 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
                     id : "NodeZV-for-Node-" + iBranch.arborNodeID
                 });
 
-                topsOfSubZoneBoxes[iBranch.LoR] = { x : tCurrentX + subZoneSize.width / 2, y : tCurrentY}; //  centered on top of new zone;
+                topsOfSubZoneBoxes[iBranch.LoR] = { x : (rightSide ? tCurrentX : 0) + subZoneSize.width / 2, y : tCurrentY}; //  centered on top of new zone;
 
-                tCurrentX += subZoneSize.width + arbor.constants.treeObjectPadding;
+                tCurrentX += subZoneSize.width + arbor.constants.treeObjectPadding; //  minimum position for the right side
+                rightSide =  true;
             }.bind(this));
 
             break;
@@ -144,6 +155,12 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
                 this.paper.append(this.leaf.paper);
                 const tLeafDimensions = this.leaf.refreshLeaf();
                 //  todo: make a leaf move-to method
+
+                //  in case the leaf label is longer than the size of the node box
+
+                if (tLeafDimensions.width > currentTotalWidth) {
+                    currentTotalWidth = tLeafDimensions.width;
+                }
                 this.leaf.paper.attr({
                     x: currentTotalWidth / 2 - tLeafDimensions.width / 2,
                     y: tCurrentY

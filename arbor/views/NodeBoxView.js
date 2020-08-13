@@ -29,6 +29,8 @@ NodeBoxView = function (iNode, iZoneView) {
     this.myZoneView = iZoneView;        //  the view I am embedded in
     this.paper = new Snap(133, 133).attr({"class": "NBV-" + iNode.arborNodeID});
 
+    this.paper.mouseup(this.mouseUpHandler.bind(this));
+
     //  We watch this event for changes from the model,
     //  e.g., changes in number or text.
     arbor.eventDispatcher.addEventListener("changeNode", this.handleNodeChange, this);
@@ -138,7 +140,7 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
     this.theGroup = this.paper.g();     //  fresh group
 
     //  handle mouseUp events in the NodeBoxView
-    this.theGroup.mouseup(this.mouseUpHandler.bind(this));
+    //  this.theGroup.mouseup(this.mouseUpHandler.bind(this));
     this.theGroup.node.setAttribute("class", "node-box-view-group");  //  this is that css thing
 
     this.stripes = [];  //  fresh set of stripes

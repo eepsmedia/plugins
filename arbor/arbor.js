@@ -40,10 +40,8 @@
  */
 
 /**
- * 001z notes
- * goals:
- * * Set it so that a click on the root's title strip brings up the dependent split edit
- * * incorporate confusion matrix / double tree
+for testing: http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/arbor/arbor.html
+
  */
 
 /* global codapInterface */
@@ -71,7 +69,7 @@ var arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '002c',
+        version: '002d',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},

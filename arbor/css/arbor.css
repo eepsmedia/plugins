@@ -6,10 +6,22 @@ body {
     font-size : 80%;
 }
 
+/*  prevent text selection in svg       */
+
+svg text {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+svg text::selection {
+    background: none;
+}
+
 /*  BASIC TEXT FONTS */
 
 h1 {
-    font-family: Verdana, Geneva, sans-serif;
+    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
     font-size: 20px;
     font-style: normal;
     font-variant: normal;
@@ -17,7 +29,7 @@ h1 {
     line-height: 22px;
 }
 h2 {
-    font-family: Verdana, Geneva, sans-serif;
+    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
     font-size: 17px;
     font-style: normal;
     font-variant: normal;
@@ -25,7 +37,7 @@ h2 {
     line-height: 19px;
 }
 h3 {
-    font-family: Verdana, Geneva, sans-serif;
+    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
     font-size: 14px;
     font-style: normal;
     font-variant: normal;
@@ -129,6 +141,11 @@ pre {
 
 }
 
+.node-box-view-group {
+    border-color: #34a;
+    cursor: pointer;
+}
+
 .baumControlGroup {
     padding : 8px;
     margin : 4px;
@@ -137,7 +154,6 @@ pre {
 }
 
 /*  Special stuff   */
-
 
 .noselect {
     cursor: default;
@@ -159,9 +175,17 @@ pre {
     color : #444;
 }
 
+/* passes pointer effect through to things beneath  */
+
 .noPointer {
-     pointer-events: none;
-    }
+    pointer-events: none;
+}
+
+/*  results at the bottom   */
+
+#statusDiv {
+    padding : 0.5em;
+}
 
 #resultsText {
     font-family: Consolas, monospace;

@@ -84,7 +84,7 @@ CorralView.prototype.setLastMouseDownNodeView = function (iCorralAttView) {
 
 CorralView.prototype.refreshCorral = function (  ) {
 
-    console.log("Redrawing Corral to " + Math.round(arbor.displayWidth()) + " px");
+    //  console.log("Redrawing Corral to " + Math.round(arbor.displayWidth()) + " px");
 
     this.corralPaper.clear();
     this.corralPaper = new Snap(document.getElementById(arbor.constants.kCorralDOMName));

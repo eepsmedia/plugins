@@ -56,7 +56,8 @@ TreePanelView = function ( ) {
 
     this.panelPaper.mouseup(function (e) {
         //  this.dragSVGPaper.remove();     //  remove it from the DOM
-        console.log("    mouse up in tree panel view");
+        const dragStatus = this.draggingAttribute ? "dragging" : "not dragging";
+        console.log(`    mouse up in tree panel view: ${dragStatus}`);
     }.bind(this));
 
     this.redrawEntirePanel();
@@ -99,7 +100,7 @@ TreePanelView.prototype.redrawEntirePanel = function (  ) {
     this.panelPaper.append(this.rootNodeZoneView.paper);
 
     const tPad = arbor.constants.treeObjectPadding;
-    console.log("Redrawing TreePanelView to " + Math.round(arbor.displayWidth()) + " px");
+    //  console.log("Redrawing TreePanelView to " + Math.round(arbor.displayWidth()) + " px");
 
     if (arbor.state.tree) {    //  if not, there is no root node, and we display only the background
 

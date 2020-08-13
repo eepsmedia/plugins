@@ -9,15 +9,16 @@ Stripe = function (iParent, iTextParams, iRole) {
     this.centeredText = false;
 
 
-    this.paper = Snap(100, 100).attr({"class" : iRole + "-stripe"});
+    this.paper = Snap(100, 100).attr({"class": iRole + "-stripe"});
     this.bgShape = iRole === "terminal" ?
-        this.paper.circle(0, 0, 40).attr({fill : this.sBGColor }) :
+        this.paper.circle(0, 0, 40).attr({fill: this.sBGColor}) :
         this.paper.rect(0, 0, 40, 40).attr({fill: this.sBGColor});
 
-    this.sLabel = this.paper.text(arbor.constants.treeObjectPadding, 15.5, this.sText).attr({
-        fill: this.sTextColor,
-        pointerEvents : "none"
-    });
+    this.sLabel = this.paper.text(arbor.constants.treeObjectPadding, 15.5, this.sText)
+        .attr({
+            fill: this.sTextColor,
+            pointerEvents : "none"
+        });
 
     //  Define the button image. Will be resized and positioned later
 
@@ -33,7 +34,7 @@ Stripe = function (iParent, iTextParams, iRole) {
         "plusMinus": "change the diagnosis in this 'leaf' node from + to – or vice versa",
         "leftRight": "swap the labels for " + this.sText,
         "trash": "remove the children of this node (get rid of " + this.sText + " here)",
-        "configure" : "configure this attribute: " + tVariableName,
+        "configure": "configure this attribute: " + tVariableName,
         "dependent": "change positive diagnoses to negative and vice versa"
     };
 
@@ -124,7 +125,9 @@ Stripe.prototype.resizeStripe = function (iSize) {
 
 
     if (this.leftButtonImage) {
-        this.sLabel.attr({"x" : arbor.constants.treeObjectPadding + iSize.height});
+        this.sLabel.attr({
+            "x": arbor.constants.treeObjectPadding + iSize.height
+        });
         this.leftButtonImage.attr({
             x: 0,
             y: 0,
