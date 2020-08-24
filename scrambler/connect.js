@@ -143,7 +143,7 @@ connect = {
 
 
     /**
-     * Get the list of cellections in the given dataset.
+     * Get the list of collections in the given dataset.
      * These collection names are essential for getTheseAttributes, above.
      *
      * @param iDatasetName

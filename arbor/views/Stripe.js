@@ -17,7 +17,7 @@ Stripe = function (iParent, iTextParams, iRole) {
     this.sLabel = this.paper.text(arbor.constants.treeObjectPadding, 15.5, this.sText)
         .attr({
             fill: this.sTextColor,
-            pointerEvents : "none"
+            pointerEvents : "none",     //  so clicks go through
         });
 
     //  Define the button image. Will be resized and positioned later
