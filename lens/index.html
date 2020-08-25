@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <!--
 ==========================================================================
@@ -88,18 +88,42 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
         <div id="chooseDataset"></div>
 
         <div id="sampleSummaryDiv"></div>
-        <p>To change which attributes you are collecting, click the <b>attributes</b> tab above.</p>
+        <p>To change which attributes you are looking at, click the <b>attributes</b> tab above.</p>
 
-        <div>
-            <p>Find counties</p>
+
+        <fieldset>
+            <legend>Find counties</legend>
+            <label for="county-input">County: </label>
+            <input id="county-input" type="text" oninput="lens.handleCountyTextChange()">
+            <button class="apply-selection-button"
+                    onclick='lens.applySelection("only")'>=
+            </button>
+            <button class="apply-selection-button"
+                    onclick='lens.applySelection("add")'>+
+            </button>
+            <button class="apply-selection-button"
+                    onclick='lens.applySelection("remove")'>–
+            </button>
+            <button class="apply-selection-button"
+                    onclick='lens.applySelection("clear")'>0
+            </button>
+            <div id="county-result"></div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Dynamic selection including cities</legend>
             <label for="place-input">Place name: </label>
-            <input id="place-input" type="text" oninput="lens_ui.displayPlaces()">
+            <input id="place-input" type="text" oninput="lens.handlePlaceTextChange()">
             <div id="place-result"></div>
-        </div>
-        <div>
+
+        </fieldset>
+
+        <fieldset>
+            <legend>experimental filter formula section!</legend>
             <textarea id="filter-input"></textarea>
-            <button id="apply-filter-button" onclick="lens.applyFilter()">apply</button>
-        </div>
+            <button id="apply-filter-button" onclick=`lens.applyFilter()`>apply</button>
+        </fieldset>
+
     </div>
 
 

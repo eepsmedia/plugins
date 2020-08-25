@@ -45,6 +45,11 @@ body {
     background: var(--bg-bottom-color);
     font-size: small;
 }
+
+frameset {
+    padding-bottom: 12px;
+}
+
 .ui-state-active:defined {
     background: var(--bg-top-color);
     color : var(--main-text-color);

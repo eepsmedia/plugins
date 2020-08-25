@@ -28,6 +28,11 @@ limitations under the License.
 
 
 let lens = {
+
+    currentZIPCollectionName : "cases",
+
+    currentZIPSet : new Set(),
+
     initialize: async function () {
         await connect.initialize();
         await lens_ui.initialize();
@@ -44,15 +49,18 @@ let lens = {
     },
 
     setTargetDatasetByName: async function (iName) {
+
+        //  get all the information on this dataset
         const tInfo = await connect.getDatasetInfoFor(iName);
         if (tInfo.name) {
             console.log(`∂   changing dataset to [${iName}]`);
             this.state.datasetInfo = tInfo;
+            lens_ui.attributeCheckboxes.install();
 
             //  now with a new dataset, we need to set up notifications and get all the attributes
             connect.setUpOtherNotifications();
+
             //  await model.loadCurrentData(this.state.datasetName);
-            lens_ui.attributeCheckboxes.install();
             this.loadCurrentData(iName);
 
             connect.makeFilterAttributeIn(iName, this.getLastCollectionName());
@@ -71,26 +79,28 @@ let lens = {
     },
 
     loadCurrentData: async function (iDatasetName) {
-        const theItems = await connect.getAllItemsFrom(iDatasetName);
-        this.state.data = {};       //  fresh!
-
-        //  populate this.state.data with the data from that call
-        this.state.datasetInfo.collections.forEach(
-            col => {
-                col.attrs.forEach(theAttr => {
-                    this.state.data[theAttr.name] = [];
-                    theItems.forEach(
-                        item => {
-                            this.state.data[theAttr.name].push(item[theAttr.name]);
-                        }
-                    )
-                })
-            }
-        );
+        const theCases = await connect.getAllCasesFrom(iDatasetName);
+        this.state.data = theCases;       //  fresh!
     },
 
     //  handlers for controls ----------------
 
+    handleCountyTextChange : function() {
+        const theText = document.getElementById("county-input").value;
+        lens.currentZIPSet = zip.findZipsFromString(theText);
+        lens_ui.displayCounties(lens.currentZIPSet, theText);
+    },
+
+    handlePlaceTextChange : function() {
+        const theText = document.getElementById("place-input").value;
+        lens.currentZIPSet = zip.findZipsFromString(theText, true, true, true);
+        lens_ui.displayPlaces(lens.currentZIPSet, theText);
+        this.applySelection(connect.constants.kOnly);
+    },
+
+    applySelection : function(iMode) {
+        lens.state.zips = connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
+    },
 
     applyFilter: function () {
         console.log(`attempting to apply a filter`);
@@ -118,13 +128,15 @@ let lens = {
     //  not functions ------------------------------------
 
     state: {
-        datasetName: "",
+        datasetInfo: "",
+        data : {},      //  keyed by indexAttribute (zip code)
+        zips : [],      //  currently-focused-on zip RECORDS
     },
 
     constants: {
         version: "000",
+        indexAttributeName : "ZIP",
+        filterAttributeName : "ƒƒilter",
     },
 
 }
-
-const applyFilter = lens.applyFilter;

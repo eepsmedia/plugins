@@ -28,6 +28,8 @@ limitations under the License.
 
 connect = {
 
+    selectedIDs: new Set(),
+
     initialize: async function () {
 
         //  set up the iframe this plugin is in
@@ -65,34 +67,34 @@ connect = {
 
     },
 
-    showHideAttribute: async function( iDS, iColl, iAttr, toHide) {
+    showHideAttribute: async function (iDS, iColl, iAttr, toHide) {
         const theResource = `dataContext[${iDS}].collection[${iColl}].attribute[${iAttr}]`;
 
         const tMessage = {
-            "action" : "update",
-            "resource" : theResource,
-            "values" : {
-                "hidden" : toHide
+            "action": "update",
+            "resource": theResource,
+            "values": {
+                "hidden": toHide
             }
         }
         const hideResult = await codapInterface.sendRequest(tMessage);
         console.log(`    ∂    ${hideResult.success ? "success" : "failure"} changing ${iAttr} to ${toHide ? "hidden" : "visible"}`);
     },
 
-    makeFilterAttributeIn : async function(iDSname, iLastCollectionName) {
+    makeFilterAttributeIn: async function (iDSname, iLastCollectionName) {
         const tMessage = {
             "action": "create",
             "resource": `dataContext[${iDSname}].collection[${iLastCollectionName}].attribute`,
             "values": [
-            {
-                "name": "lens_filter",
-                "type": "boolean",
-                "title": "Filter",
-                "description": "should this nt be set aside?",
-                "editable": false,
-                //  "hidden" : "true",
-            }
-        ]
+                {
+                    "name": lens.constants.filterAttributeName,
+                    "type": "boolean",
+                    "title": "Filter",
+                    "description": "should this not be set aside?",
+                    "editable": false,
+                    //  "hidden" : "true",
+                }
+            ]
         }
         const makeFilterAttResult = await codapInterface.sendRequest(tMessage);
 
@@ -101,10 +103,10 @@ connect = {
         }
     },
 
-    applyFilterFormulaIn : async function(iDS, iColl, iFunction) {
+    applyFilterFormulaIn: async function (iDS, iColl, iFunction) {
         const tMessage = {
             "action": "update",
-            "resource": `dataContext[${iDS}].collection[${iColl}].attribute[lens_filter]`,
+            "resource": `dataContext[${iDS}].collection[${iColl}].attribute[${lens.constants.filterAttributeName}]`,
             "values": {
                 "formula": iFunction
             }
@@ -117,19 +119,86 @@ connect = {
 
     /**
      *
-     * @param iZips     array of ZIP codes
+     * @param iZips     array of ZIP code RECORD OBJECTS. The zip itself is in foo.zip
      * @param iMode     this.constants.kOnly | except | add | remove, constants here in connect
      * @returns {Promise<void>}
      */
-    selectByZIP : async function(iZips, iMode) {
+    selectByZIP: async function (iZips, iMode = this.constants.kOnly) {
 
+        const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
         //  first make sure iZips is an Array (OK to pass a single ZIP)
 
         if (!Array.isArray(iZips)) {
             iZips = [iZips];
         }
 
+        //  now we go through the zip records we just received and find the corresponding caseIDs.
+        //  We make an array `currentIDs` of the ones we find.
+        //  There are many ZIP codes that will NOT appear in the data (`lens.state.data`)
+        //  so we check to make sure that that ZIP code is present before pushing.
+        let currentIDs = [];
+        iZips.forEach(zRecord => {
+            const recordInCODAPdataset = lens.state.data[zRecord.zip];
+            if (recordInCODAPdataset) {
+                currentIDs.push(recordInCODAPdataset.id);
+            }
+        });
 
+        //  now get all the currently selected caseIDs.
+        const gMessage = {
+            "action": "get", "resource": selectionListResource
+        }
+        const getSelectionResult = await codapInterface.sendRequest(gMessage);
+
+        //  the result has the ID but also the collection ID and name,
+        //  so we collect just the caseID in `oldIDs`
+        let oldIDs = [];
+        if (getSelectionResult.success) {
+
+            //  consturct an array of the currently-selected cases.
+            //  NOTE that `val`
+            getSelectionResult.values.forEach(val => {
+                oldIDs.push(val.caseID)
+            })
+        }
+
+        //  now we make a new array of IDs depending on the mode
+        const newSelection = this.figureOutSelection(oldIDs, currentIDs, iMode);
+
+        const tMessage = {
+            "action": "create",
+            "resource": selectionListResource,
+            "values": newSelection,
+        }
+
+        const makeSelectionResult = await codapInterface.sendRequest(tMessage);
+
+
+    },
+
+    figureOutSelection: function (iOld, iNew, iMode) {
+        let out = [];
+        switch (iMode) {
+            case this.constants.kOnly:
+                out = iNew;
+                break;
+            case this.constants.kClear:
+                out = [];
+                break;
+            case this.constants.kAdd:
+                out = iOld;
+                iNew.forEach(id => {
+                    if (!out.includes(id)) out.push(id);
+                })
+                break;
+            case this.constants.kRemove:
+                out = [];
+                iOld.forEach(id => {
+                    if (!iNew.includes(id)) out.push(id);
+                })
+                break;
+        }
+        return out;
     },
 
     /*  Notification setups */
@@ -166,10 +235,10 @@ connect = {
         return dataContextListResult.values;
     },
 
-    getDatasetInfoFor : async function(iName) {
+    getDatasetInfoFor: async function (iName) {
         const tMessage = {
-            "action" : "get",
-            "resource" : `dataContext[${iName}]`
+            "action": "get",
+            "resource": `dataContext[${iName}]`
         }
         const dsInfoResult = await codapInterface.sendRequest(tMessage);
         if (dsInfoResult.success) {
@@ -180,20 +249,39 @@ connect = {
         }
     },
 
-    getAllItemsFrom: async function (iDatasetName) {
+    getAllCasesFrom: async function (iDatasetName) {
+
+        //  figure out the name of the collection that "zip" is in.
+        let collectionName = lens.currentZIPCollectionName;
+        lens.state.datasetInfo.collections.forEach(coll => {
+            //  todo: fill this in
+        });
+
+
         const tMessage = {
             action: "get",
-            resource: `dataContext[${iDatasetName}].itemSearch[*]`,
+            resource: `dataContext[${iDatasetName}].collection[${collectionName}].allCases`,
         };
-        const tAllItemsResult = await codapInterface.sendRequest(tMessage);
+        const tAllCasesResult = await codapInterface.sendRequest(tMessage);
 
-        let outItems = [];
-        tAllItemsResult.values.forEach(
-            item => {
-                outItems.push(item.values);
+        let outCases = {};      //  we will return an object
+
+        tAllCasesResult.values.cases.forEach(
+            aCase => {
+                const theValues = aCase.case.values;
+                const theID = aCase.case.id;
+                const theCaseIndex = aCase.caseIndex;
+                const theIndexValue = theValues[lens.constants.indexAttributeName];
+                const thisCase = {
+                    id: theID,
+                    caseIndex: theCaseIndex,
+                    values: theValues,
+                }
+
+                outCases[theIndexValue] = thisCase;
             }
         );
-        return  outItems;
+        return outCases;
     },
 
     iFrameDescriptor: {
@@ -203,10 +291,11 @@ connect = {
         dimensions: {width: 333, height: 444},
     },
 
-    constants : {
-        kOnly : "only",
-        kExcept : "except",
-        kAdd : "add",
-        kRemove : "remove",
+    constants: {
+        kOnly: "only",
+        kExcept: "except",
+        kAdd: "add",
+        kRemove: "remove",
+        kClear: "clear",
     },
 }

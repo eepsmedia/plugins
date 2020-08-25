@@ -36,13 +36,34 @@ zip = {
                             pAcceptable = false,
                             pUnacceptable = false) {
 
-        let out = [];
+        let out= new Set();
 
-        zips.forEach( z => {
-            if ((z.county.toLowerCase()).includes(iString.toLowerCase())) {
-                out.push(z);
-            }
-        })
+        if (iString) {
+
+            zips.forEach(z => {
+
+                if (pCounty && (z.county.toLowerCase()).includes(iString.toLowerCase())) {
+                    if (lens.state.data[z.zip]) {
+                        out.add(z);
+                    }
+                }
+                if (pPrincipal && (z.primary_city.toLowerCase()).includes(iString.toLowerCase())) {
+                    if (lens.state.data[z.zip]) {
+                        out.add(z);
+                    }
+                }
+                if (pAcceptable && (z.acceptable_cities.toLowerCase()).includes(iString.toLowerCase())) {
+                    if (lens.state.data[z.zip]) {
+                        out.add(z);
+                    }
+                }
+                if (pUnacceptable && (z.unacceptable_cities.toLowerCase()).includes(iString.toLowerCase())) {
+                    if (lens.state.data[z.zip]) {
+                        out.add(z);
+                    }
+                }
+            })
+        }
 
         return out;
     }

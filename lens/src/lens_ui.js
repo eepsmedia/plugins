@@ -38,24 +38,30 @@ lens_ui = {
 
     },
 
-
-    displayPlaces : function( ) {
-        const theText = document.getElementById("place-input").value;
-        const thePlaces = zip.findZipsFromString(theText);
+    /**
+     *
+     * @param thePlaces this is a Set of the "zip" records
+     * @param theText   the original text used to find these records
+     */
+    displayCounties : function(thePlaces, theText ) {
 
         let zipCityList = "";
         let countySummary = "";
         let tCounties = new Set();
-        let nZips = thePlaces.length;
+        let nZips = thePlaces.size;
 
-        if (thePlaces.length > 0) {
+        if (thePlaces.size > 0) {
 
+            let nCities = 0;
             thePlaces.forEach(place => {
                 tCounties.add(place.county);
 
-                const placeString = place.primary_city +
-                    (place.acceptable_cities ? ` (${place.acceptable_cities})` : "");
-                zipCityList += `${place.zip}: ${placeString}<br>`;
+                if (nCities < 4) {
+                    const placeString = place.primary_city +
+                        (place.acceptable_cities ? ` (${place.acceptable_cities})` : "");
+                    zipCityList += `&emsp;${place.zip}: ${placeString}<br>`;
+                }
+                nCities++;
             })
         } else {
             zipCityList = `No places match "${theText}"`;
@@ -66,13 +72,56 @@ lens_ui = {
                 countySummary = "no counties"
                 break;
             case 1:
-                countySummary = `${[...tCounties][0]} with ${nZips} ZIP codes`;
+                countySummary = `${[...tCounties][0]} with ${nZips} ZIP codes, for example:`;
                 break;
             default:
                 countySummary = `${tCounties.size} counties with ${nZips} ZIP codes`;
                 break;
         }
-        
+
+        document.getElementById("county-result").innerHTML = `${countySummary}<br>${zipCityList}`;
+    },
+
+    displayPlaces : function(thePlaces, theText ) {
+
+        let zipCityList = "";
+        let countySummary = "";
+        let tCounties = new Set();
+        let nZips = thePlaces.size;
+
+        if (thePlaces.size > 0) {
+
+            let nCities = 0;
+            thePlaces.forEach(place => {
+                tCounties.add(place.county);
+
+                if (nCities < 4) {
+                    const placeString = place.primary_city +
+                        (place.acceptable_cities ? ` (${place.acceptable_cities})` : "");
+                    zipCityList += `&emsp;${place.zip}: ${placeString}<br>`;
+                }
+                nCities++;
+            })
+        } else {
+            zipCityList = `No places match "${theText}"`;
+        }
+        const zipCount = (nZips === 1) ? `1 ZIP code` : `${nZips} ZIP codes`;
+        const zipTag = (nZips > 4) ? ", for example:" : ":";
+        const countyCount = `${tCounties.size} counties`;
+
+        switch(tCounties.size) {
+            case 0:
+                countySummary = "no counties"
+                break;
+            case 1:
+                countySummary = `${zipCount} in ${[...tCounties][0]}${zipTag}`;
+                break;
+            default:
+                countySummary = `${zipCount} in ${countyCount}${zipTag}` ;
+                break;
+
+        }
+
         document.getElementById("place-result").innerHTML = `${countySummary}<br>${zipCityList}`;
     },
 
