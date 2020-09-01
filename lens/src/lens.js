@@ -33,6 +33,8 @@ let lens = {
 
     currentZIPSet : new Set(),
 
+    currentTagValue : "foo",
+
     initialize: async function () {
         await connect.initialize();
         await lens_ui.initialize();
@@ -51,7 +53,7 @@ let lens = {
     setTargetDatasetByName: async function (iName) {
 
         //  get all the information on this dataset
-        const tInfo = await connect.getDatasetInfoFor(iName);
+        const tInfo = await connect.refreshDatasetInfoFor(iName);
         if (tInfo.name) {
             console.log(`∂   changing dataset to [${iName}]`);
             this.state.datasetInfo = tInfo;
@@ -60,10 +62,10 @@ let lens = {
             //  now with a new dataset, we need to set up notifications and get all the attributes
             connect.setUpOtherNotifications();
 
-            //  await model.loadCurrentData(this.state.datasetName);
             this.loadCurrentData(iName);
 
-            connect.makeFilterAttributeIn(iName, this.getLastCollectionName());
+            connect.makeFilterAttributeIn(iName);
+            connect.makeTagsAttributeIn(iName);
 
         } else {
             console.log(`?   called setTargetDatasetName without a dataset name`);
@@ -85,21 +87,40 @@ let lens = {
 
     //  handlers for controls ----------------
 
-    handleCountyTextChange : function() {
-        const theText = document.getElementById("county-input").value;
-        lens.currentZIPSet = zip.findZipsFromString(theText);
-        lens_ui.displayCounties(lens.currentZIPSet, theText);
+    handleTextChange : function( ) {
+        const placeType = document.querySelector("input[name='place-type']:checked").value;
+        const theText = document.getElementById("place-input").value;
+        if (placeType === 'county') {
+            lens.currentZIPSet = zip.findZipsFromString(theText, true);
+        } else {
+            lens.currentZIPSet = zip.findZipsFromString(theText, false, true, true);
+        }
+        lens_ui.displayPlaces(lens.currentZIPSet, theText); //  set the text in the box
+        this.applySelection(connect.constants.kOnly);       //  set the COAP selection to match
     },
 
-    handlePlaceTextChange : function() {
-        const theText = document.getElementById("place-input").value;
-        lens.currentZIPSet = zip.findZipsFromString(theText, true, true, true);
-        lens_ui.displayPlaces(lens.currentZIPSet, theText);
-        this.applySelection(connect.constants.kOnly);
+    handleTagValueChange : function() {
+        this.currentTagValue = document.getElementById("tag-value-input").value;
     },
+
+    handlePlaceTypeChoiceChange : function() {
+        this.handleTextChange();
+    },
+
 
     applySelection : function(iMode) {
         lens.state.zips = connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
+    },
+
+
+    /**
+     * TAG the selection with the value in the tag box
+     * @param iMode
+     */
+    setTagValuesToSelection : function(iMode) {
+        //  lens.state.zips = connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
+
+        connect.tagByZIP(iMode);
     },
 
     applyFilter: function () {
@@ -134,9 +155,12 @@ let lens = {
     },
 
     constants: {
-        version: "000",
+        version: "000c",
         indexAttributeName : "ZIP",
         filterAttributeName : "ƒƒilter",
+        tagsAttributeName : "Tags",
+        noGroupString : "none",
+
     },
 
 }

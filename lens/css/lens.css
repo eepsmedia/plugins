@@ -65,8 +65,13 @@ frameset {
 
 }
 
+.selection-text-input-label {
+    min-width : 6.0em;
+}
+
 .vertically-centered-image {
     vertical-align: middle;
+    cursor: pointer;
     height : 100%;
 }
 

@@ -2,8 +2,8 @@
 ==========================================================================
 
  * Created by tim on 8/20/20.
- 
- 
+
+
  ==========================================================================
 lens_ui in lens
 
@@ -38,12 +38,9 @@ lens_ui = {
 
     },
 
-    /**
-     *
-     * @param thePlaces this is a Set of the "zip" records
-     * @param theText   the original text used to find these records
-     */
-    displayCounties : function(thePlaces, theText ) {
+    displayPlaces: function (thePlaces, theText) {
+        const zipListLimit = 3;
+        const placeType = document.querySelector("input[name='place-type']:checked").value;
 
         let zipCityList = "";
         let countySummary = "";
@@ -51,12 +48,11 @@ lens_ui = {
         let nZips = thePlaces.size;
 
         if (thePlaces.size > 0) {
-
             let nCities = 0;
             thePlaces.forEach(place => {
                 tCounties.add(place.county);
 
-                if (nCities < 4) {
+                if (nCities < zipListLimit) {
                     const placeString = place.primary_city +
                         (place.acceptable_cities ? ` (${place.acceptable_cities})` : "");
                     zipCityList += `&emsp;${place.zip}: ${placeString}<br>`;
@@ -66,106 +62,117 @@ lens_ui = {
         } else {
             zipCityList = `No places match "${theText}"`;
         }
-
-        switch(tCounties.size) {
-            case 0:
-                countySummary = "no counties"
-                break;
-            case 1:
-                countySummary = `${[...tCounties][0]} with ${nZips} ZIP codes, for example:`;
-                break;
-            default:
-                countySummary = `${tCounties.size} counties with ${nZips} ZIP codes`;
-                break;
-        }
-
-        document.getElementById("county-result").innerHTML = `${countySummary}<br>${zipCityList}`;
-    },
-
-    displayPlaces : function(thePlaces, theText ) {
-
-        let zipCityList = "";
-        let countySummary = "";
-        let tCounties = new Set();
-        let nZips = thePlaces.size;
-
-        if (thePlaces.size > 0) {
-
-            let nCities = 0;
-            thePlaces.forEach(place => {
-                tCounties.add(place.county);
-
-                if (nCities < 4) {
-                    const placeString = place.primary_city +
-                        (place.acceptable_cities ? ` (${place.acceptable_cities})` : "");
-                    zipCityList += `&emsp;${place.zip}: ${placeString}<br>`;
-                }
-                nCities++;
-            })
-        } else {
-            zipCityList = `No places match "${theText}"`;
-        }
-        const zipCount = (nZips === 1) ? `1 ZIP code` : `${nZips} ZIP codes`;
-        const zipTag = (nZips > 4) ? ", for example:" : ":";
+        const zipCountText = (nZips === 1) ? `1 ZIP code` : `${nZips} ZIP codes`;
+        const zipTag = (nZips > zipListLimit) ? ", for example:" : ":";
         const countyCount = `${tCounties.size} counties`;
+        let countyList = "";
 
-        switch(tCounties.size) {
-            case 0:
-                countySummary = "no counties"
-                break;
-            case 1:
-                countySummary = `${zipCount} in ${[...tCounties][0]}${zipTag}`;
-                break;
-            default:
-                countySummary = `${zipCount} in ${countyCount}${zipTag}` ;
-                break;
+        tCounties.forEach(c=>{
+            countyList += `&emsp;${c}<br>`;
+        })
 
+        if (placeType == "county") {
+            switch (tCounties.size) {
+                case 0:
+                    countySummary = `no counties match "${theText}"`;
+                    zipCityList = "";
+                    break;
+                case 1:
+                    countySummary = `${[...tCounties][0]}. ${zipCountText} ${zipTag}`;
+                    break;
+                default:
+                    countySummary = `${zipCountText} in ${countyCount}:<br>${countyList}`;
+                    zipCityList = "";
+                    break;
+            }
+        } else {            //  the place is just a place: i.e., a city name
+            switch (tCounties.size) {
+                case 0:
+                    countySummary = ""
+                    break;
+                case 1:
+                    countySummary = `${zipCountText} in ${[...tCounties][0]}${zipTag}`;
+                    break;
+                default:
+                    countySummary = `${zipCountText} in ${countyCount}${zipTag}`;
+                    break;
+            }
         }
 
         document.getElementById("place-result").innerHTML = `${countySummary}<br>${zipCityList}`;
     },
 
     /*
-    dataset menu section
+    attribute checkbox section
      */
 
     attributeCheckboxes: {
         domID: "chooseAttributeDiv",
 
+        preprocessAttributes: function (iCollInfo) {
+            let out = {};
+            out[lens.constants.noGroupString] = [];
+
+            iCollInfo.forEach(coll => {
+                coll.attrs.forEach(att => {
+                    const theGroup = att.group ? att.group : lens.constants.noGroupString;
+                    if (!out[theGroup]) {
+                        out[theGroup] = [];     //  fresh array for new group
+                    }
+                    out[theGroup].push(att);
+                })
+            })
+
+            return out;
+        },
+
         make: function () {
             let tGuts = "";
-            const sit = model.situation;
 
             if (lens.state.datasetInfo.collections) {
                 const hierarchy = (lens.state.datasetInfo.collections.length !== 1);
 
-                lens.state.datasetInfo.collections.forEach(coll => {
-                    const collectionName = coll.name;       //      collection.name;
-                    tGuts += `<h3>Attributes in "${coll.title}"</h3>`;
+                const mungedAttributes = this.preprocessAttributes(lens.state.datasetInfo.collections);
 
-                    if (hierarchy) {
+                if (hierarchy) {
+                }
+
+                for (const theGroup in mungedAttributes) {
+                    const theArrayOfAttributes = mungedAttributes[theGroup];
+                    const theAttributeBoxCode = this.makeAttrGroupCode(theArrayOfAttributes);
+                    if (theGroup === lens.constants.noGroupString) {
+                        tGuts += `${theAttributeBoxCode}`;
+                    } else {
+                        tGuts += `<details><summary>${theGroup}</summary>`;
+                        tGuts += `${theAttributeBoxCode}`;
+                        tGuts += `</details>`;
                     }
-
-                    coll.attrs.forEach( theAttr => {
-                        const attrInfoButton = this.makeAttrInfo(theAttr);
-                        const isHiddenNow = theAttr.hidden;
-                        const checkedText = isHiddenNow ? "" : "checked";
-                        tGuts += `<div class="a-checkbox">`;
-                        tGuts += `<span class="checkbox-and-text">`;
-                        tGuts += `<input id="att_${theAttr.name}" type="checkbox" ${checkedText} 
-                onchange="lens_ui.attributeCheckboxes.handle('${collectionName}', '${theAttr.name}')">`;
-                        tGuts += `<label for="att_${theAttr.name}" class="att_label">${theAttr.title}</label>`;
-                        tGuts += `</span>`;
-                        tGuts += attrInfoButton;
-                        tGuts += `</div>`;
-
-                        if (attrInfoButton) {console.log(`å   attrInfoButton: ${attrInfoButton}`)};
-
-                    });
-                })
+                }       //  end of for-in loop over groups
             } else {
                 tGuts = "No attributes to work with here";
             }
+            return tGuts;
+        },
+
+        makeAttrGroupCode(iGroupAfAttributes) {
+            let tGuts = "";
+            iGroupAfAttributes.forEach(att => {
+                const attrInfoButton = this.makeAttrInfo(att);
+                const isHiddenNow = att.hidden;
+                const checkedText = isHiddenNow ? "" : "checked";
+                tGuts += `<div class="a-checkbox">`;
+                tGuts += `<span class="checkbox-and-text">`;
+                tGuts += `<input id="att_${att.name}" type="checkbox" ${checkedText} 
+                                onchange="lens_ui.attributeCheckboxes.handle('${att.collection}', '${att.name}')">`;
+                tGuts += `<label for="att_${att.name}" class="att_label">${att.title}</label>`;
+                tGuts += `</span>`;
+                tGuts += attrInfoButton;
+                tGuts += `</div>`;
+
+                if (attrInfoButton) {
+                    //  console.log(`å   attrInfoButton: ${attrInfoButton}`)
+                }
+            })
             return tGuts;
         },
 
@@ -173,17 +180,30 @@ lens_ui = {
             let out = "";
 
             if (iAttr.description || iAttr.unit) {
-                let theHint = "";
+                let theHint = ``;
+
                 if (iAttr.description) {
-                    theHint += iAttr.description + " ";
+                    theHint += `${iAttr.description}`;
                 }
                 if (iAttr.unit) {
-                    theHint += `(${iAttr.unit})`;
+                    theHint += ` (${iAttr.unit})`;
                 }
-                const theImage = `&emsp;<img class="vertically-centered-image" src="../common/art/info.png" width="14" title="${theHint}"/>`;
+                const theImage = `&emsp;<img class="vertically-centered-image" 
+                    src="art/info.png" width="14" title="${theHint}" 
+                    onclick="lens_ui.attributeCheckboxes.makeSweetAlert('${iAttr.title}', '${theHint}')" 
+                    alt = "circular information button image"  
+                    />`;
                 out += theImage;
             }
             return out;
+        },
+
+        makeSweetAlert: function (iTitle, iText, iIcon = 'info') {
+            Swal.fire({
+                icon: iIcon,
+                title: iTitle,
+                text: iText,
+            })
         },
 
         install: function () {
@@ -198,6 +218,10 @@ lens_ui = {
             connect.showHideAttribute(lens.state.datasetInfo.name, iColl, iAtt, !isChecked);
         },
     },
+
+    /*
+        dataset menu section
+     */
 
     datasetMenu: {
         install: async function () {

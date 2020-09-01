@@ -66,6 +66,10 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
     <script src="src/zipCA.js"></script>
     <script src="src/zip-model.js"></script>
 
+
+    <script src="../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+
     <script>
         $(function () {
             $("#tabs").tabs();
@@ -80,6 +84,7 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
 <div id="tabs">
     <ul>
         <li><a href="#summary">summary</a></li>
+        <li><a href="#select-places">places</a></li>
         <li><a href="#atts">attributes</a></li>
     </ul>
 
@@ -88,43 +93,75 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
         <div id="chooseDataset"></div>
 
         <div id="sampleSummaryDiv"></div>
+        <p>To to select places by name,
+            or to tag selected places,
+            click the <b>places</b> tab above.</p>
         <p>To change which attributes you are looking at, click the <b>attributes</b> tab above.</p>
 
 
-        <fieldset>
-            <legend>Find counties</legend>
-            <label for="county-input">County: </label>
-            <input id="county-input" type="text" oninput="lens.handleCountyTextChange()">
-            <button class="apply-selection-button"
-                    onclick='lens.applySelection("only")'>=
-            </button>
-            <button class="apply-selection-button"
-                    onclick='lens.applySelection("add")'>+
-            </button>
-            <button class="apply-selection-button"
-                    onclick='lens.applySelection("remove")'>–
-            </button>
-            <button class="apply-selection-button"
-                    onclick='lens.applySelection("clear")'>0
-            </button>
-            <div id="county-result"></div>
-        </fieldset>
 
-        <fieldset>
-            <legend>Dynamic selection including cities</legend>
-            <label for="place-input">Place name: </label>
-            <input id="place-input" type="text" oninput="lens.handlePlaceTextChange()">
-            <div id="place-result"></div>
 
-        </fieldset>
+    </div>
 
+<div id="select-places">
+
+    <fieldset>
+        <legend>Selected</legend>
+        <div id="place-result"></div>
+
+    </fieldset>
+    <fieldset>
+        <legend>Select by place name</legend>
+        <label class="selection-text-input-label" for="place-input">Place name: </label>
+        <input id="place-input" type="text"
+               oninput="lens.handleTextChange( )"
+               onfocus="lens.handleTextChange( )"
+        >
+        <br>
+        <input type="radio" id="county-radio" name="place-type" value="county"
+               onchange="lens.handlePlaceTypeChoiceChange()" checked>
+        <label for="county-radio">county</label>
+        &emsp;
+        <input type="radio" id="city-radio" name="place-type" value="city"
+               onchange="lens.handlePlaceTypeChoiceChange()" >
+        <label for="city-radio">city</label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Use place results to set tags</legend>
+        <label class="selection-text-input-label" for="tag-value-input">Tag value: </label>
+        <input id="tag-value-input" type="text" onchange="lens.handleTagValueChange()">
+        <div id="select-buttons">
+<!--
+            <button class="apply-selection-button"
+                    onclick='lens.setTagValuesToSelection("only")'>=
+            </button>
+-->
+            <button id="add-button" class="apply-selection-button"
+                    onclick='lens.setTagValuesToSelection("add")'>+
+            </button>
+            <label for="add-button">add selection to tag</label>
+<!--            <button class="apply-selection-button"-->
+<!--                    onclick='lens.setTagValuesToSelection("remove")'>–-->
+<!--            </button>-->
+            <button id="clear-button" class="apply-selection-button"
+                    onclick='lens.setTagValuesToSelection("clear")'>0
+            </button>
+            <label for="clear-button">clear all tags</label>
+        </div>
+
+
+    </fieldset>
+
+    <!--
         <fieldset>
             <legend>experimental filter formula section!</legend>
             <textarea id="filter-input"></textarea>
             <button id="apply-filter-button" onclick=`lens.applyFilter()`>apply</button>
         </fieldset>
+-->
 
-    </div>
+</div>
 
 
     <div id="atts">
