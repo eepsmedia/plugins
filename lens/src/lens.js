@@ -117,10 +117,11 @@ let lens = {
      * TAG the selection with the value in the tag box
      * @param iMode
      */
-    setTagValuesToSelection : function(iMode) {
+    setTagValuesToSelection : async function(iMode) {
         //  lens.state.zips = connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
 
-        connect.tagByZIP(iMode);
+        lens.state.datasetInfo =  await connect.refreshDatasetInfoFor(lens.state.datasetInfo.name);
+        await connect.tagByZIP(iMode);
     },
 
     applyFilter: function () {

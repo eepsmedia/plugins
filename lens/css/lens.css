@@ -50,6 +50,11 @@ frameset {
     padding-bottom: 12px;
 }
 
+button {
+    cursor: pointer;
+    border-radius: 8px;
+}
+
 .ui-state-active:defined {
     background: var(--bg-top-color);
     color : var(--main-text-color);

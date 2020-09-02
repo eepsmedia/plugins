@@ -73,18 +73,25 @@ connect = {
 
     },
 
-    showHideAttribute: async function (iDS, iColl, iAttr, toHide) {
-        const theResource = `dataContext[${iDS}].collection[${iColl}].attribute[${iAttr}]`;
-
+    refreshDatasetInfoFor: async function (iName) {
         const tMessage = {
-            "action": "update",
-            "resource": theResource,
-            "values": {
-                "hidden": toHide
-            }
+            "action": "get",
+            "resource": `dataContext[${iName}]`
         }
-        const hideResult = await codapInterface.sendRequest(tMessage);
-        console.log(`    ∂    ${hideResult.success ? "success" : "failure"} changing ${iAttr} to ${toHide ? "hidden" : "visible"}`);
+        const dsInfoResult = await codapInterface.sendRequest(tMessage);
+        if (dsInfoResult.success) {
+            this.processDatasetInfoForAttributeGroups(dsInfoResult.values);
+            dsInfoResult.values["attLocations"] = this.processDatasetInfoForAttributeLocations(dsInfoResult.values);
+
+            //  so, for example, `lens.state.datasetInfo.attLocations.filterCollection`
+            //  will hold the name of the colletion that the filter attribute is in
+
+            console.log(`å   attLocations: ${JSON.stringify(dsInfoResult.values.attLocations)}`);
+            return dsInfoResult.values;
+        } else {
+            Swal.fire({icon: "error", title: "Drat!", text: `Problem getting information for dataset [${iName}]`});
+            return null;
+        }
     },
 
     makeFilterAttributeIn: async function (iDSname) {
@@ -124,34 +131,69 @@ connect = {
     },
 
     deleteTagsAttributeFrom: async function (iDSName) {
+        //  we assume that the lens.datasetInfo is recently refreshed.
+
+        const tTagsCollectionName = lens.state.datasetInfo.attLocations.tagsCollection;
+
+        if (tTagsCollectionName) {
+            const tResource = `dataContext[${iDSName}].collection[${tTagsCollectionName}].attribute[${lens.constants.tagsAttributeName}]`;
+            const tMessage = {"action": "delete", "resource": tResource}
+
+            const deleteTagsAttResult = await codapInterface.sendRequest(tMessage);
+
+            if (deleteTagsAttResult.success) {
+                lens.state.datasetInfo.attLocations.tagsCollection = null;
+                console.log(`∂   Yay! Deleted [${lens.constants.tagsAttributeName}] from collection [${tTagsCollectionName}]!`);
+            } else {
+                const eText = `Trouble deleting the Tags attribute in ${iDSName}|${tTagsCollectionName}`
+                Swal.fire({
+                    icon: "error",
+                    title: "Dagnabbit!",
+                    text: eText,
+                });
+            }
+        } else {
+            console.log(`∂   Hmm. Trying to delete the Tags attribute, and the tags collection did not exist.`);
+        }
 
     },
 
     makeTagsAttributeIn: async function (iDSname) {
-        const theTagsCollectionName = "cases";
+        let theTagsCollectionName = lens.state.datasetInfo.attLocations.tagsCollection;
 
-        const tMessage = {
-            "action": "create",
-            "resource": `dataContext[${iDSname}].collection[${theTagsCollectionName}].attribute`,
-            "values": [
-                {
-                    "name": lens.constants.tagsAttributeName,
-                    "type": "boolean",
-                    "title": "Tags",
-                    "description": "user-made tags for sets of ZIP codes",
-                    "editable": false,
-                    //  "hidden" : "true",
-                }
-            ]
-        }
-        const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
+        if (!theTagsCollectionName) {
+            //  for tags, we'll make it at the top level.
+            const theFirstCollection = lens.state.datasetInfo.collections[0];
+            theTagsCollectionName = theFirstCollection.name;
+            const tResource = `dataContext[${iDSname}].collection[${theTagsCollectionName}].attribute`;
+            const tValues = {
+                "name": lens.constants.tagsAttributeName,
+                "type": "boolean",
+                "title": "Tags",
+                "description": "user-made tags for sets of ZIP codes",
+                "editable": false,
+                //  "hidden" : "true",
+            }
 
-        if (!makeTagsAttResult.success) {
-            Swal.fire({
-                icon: "error",
-                title: "Dagnabbit!",
-                text: `Trouble making the Tags attribute in ${iDSname}|${theTagsCollectionName}`
-            });
+            const tMessage = {
+                "action": "create", "resource": tResource, "values": [tValues],
+            }
+
+            const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
+
+            if (makeTagsAttResult.success) {
+                lens.state.datasetInfo.attLocations.tagsCollection = theTagsCollectionName;
+                console.log(`µ   Yay! Made [${lens.constants.tagsAttributeName}] in collection [${theTagsCollectionName}]!`);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Dagnabbit!",
+                    text: `Trouble making the Tags attribute in ${iDSname}|${theTagsCollectionName}:`
+                        + ` ${makeTagsAttResult.values.error}.`,
+                });
+            }
+        } else {
+            console.log(`Hmm. The tags attribute already existed in ${theTagsCollectionName}.`);
         }
     },
 
@@ -174,16 +216,30 @@ connect = {
 
     },
 
+    showHideAttribute: async function (iDS, iColl, iAttr, toHide) {
+        const theResource = `dataContext[${iDS}].collection[${iColl}].attribute[${iAttr}]`;
+
+        const tMessage = {
+            "action": "update",
+            "resource": theResource,
+            "values": {
+                "hidden": toHide
+            }
+        }
+        const hideResult = await codapInterface.sendRequest(tMessage);
+        console.log(`    ∂    ${hideResult.success ? "success" : "failure"} changing ${iAttr} to ${toHide ? "hidden" : "visible"}`);
+    },
+
     /*  tag methods     */
 
     tagByZIP: async function (iMode = this.constants.kOnly) {
 
         switch (iMode) {
             case (this.constants.kAdd):
-                const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
-                //  first make sure iZips is an Array (OK to pass a single ZIP)
+                this.makeTagsAttributeIn(lens.state.datasetInfo.name);
 
                 //  first we get the selectionList
+                const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
 
                 const tMessage = {
                     "action": "get",
@@ -221,34 +277,45 @@ connect = {
                 }
                 break;
             case this.constants.kClear:
-                //  another compound request to update every case
 
-                document.body.style.cursor = 'wait';
-                Swal.fire({
-                    title: "Patience is a virtue",
-                    text: "We are trying to make this process faster. It's way too slow right now. We know.",
-                    icon: "warning",
-                })
-                let clearCompoundRequest = [];
+                console.log(`ç trying to clear tags`);
 
-                for (const zip in lens.state.data) {
-                    const theID = lens.state.data[zip].id;
-                    const oneReqest = {
-                        "action": "update",
-                        "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${theID}]`,
-                        "values": {
-                            "Tags": ""
-                        }
-                    }
-                    clearCompoundRequest.push(oneReqest);
-                }
+                //  begin by refreshing the datasetInfo to get the Tags collection name
+                //  lens.state.datasetInfo = await this.refreshDatasetInfoFor(lens.state.datasetInfo.name);
 
-                const setTagValuesResult = await codapInterface.sendRequest(clearCompoundRequest);
-                document.body.style.cursor = 'default';
+                //  now delete that attribute, then remake it
+                await this.deleteTagsAttributeFrom(lens.state.datasetInfo.name);
+                await this.makeTagsAttributeIn(lens.state.datasetInfo.name);
+                /*
+                                //  another compound request to update every case
 
-                if (setTagValuesResult.success) {
-                    console.log(`Cleared ${lens.state.data.length} tags`);
-                }
+                                document.body.style.cursor = 'wait';
+                                Swal.fire({
+                                    title: "Patience is a virtue",
+                                    text: "We are trying to make this process faster. It's way too slow right now. We know.",
+                                    icon: "warning",
+                                })
+                                let clearCompoundRequest = [];
+
+                                for (const zip in lens.state.data) {
+                                    const theID = lens.state.data[zip].id;
+                                    const oneReqest = {
+                                        "action": "update",
+                                        "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${theID}]`,
+                                        "values": {
+                                            "Tags": ""
+                                        }
+                                    }
+                                    clearCompoundRequest.push(oneReqest);
+                                }
+
+                                const setTagValuesResult = await codapInterface.sendRequest(clearCompoundRequest);
+                                document.body.style.cursor = 'default';
+
+                                if (setTagValuesResult.success) {
+                                    console.log(`Cleared ${lens.state.data.length} tags`);
+                                }
+                */
                 break;
         }
     },
@@ -381,26 +448,6 @@ connect = {
         return dataContextListResult.values;
     },
 
-    refreshDatasetInfoFor: async function (iName) {
-        const tMessage = {
-            "action": "get",
-            "resource": `dataContext[${iName}]`
-        }
-        const dsInfoResult = await codapInterface.sendRequest(tMessage);
-        if (dsInfoResult.success) {
-            this.processDatasetInfoForAttributeGroups(dsInfoResult.values);
-            dsInfoResult.values["attLocations"] = this.processDatasetInfoForAttributeLocations(dsInfoResult.values);
-
-            //  so, for example, `lens.state.datasetInfo.attLocations.filterCollection`
-            //  will hold the name of the colletion that the filter attribute is in
-
-            return dsInfoResult.values;
-        } else {
-            Swal.fire({icon: "error", title : "Drat!", text: `Problem getting information for dataset [${iName}]`});
-            return null;
-        }
-    },
-
     getAllCasesFrom: async function (iDatasetName) {
 
         //  figure out the name of the collection that "ZIP" is in.
@@ -441,10 +488,10 @@ connect = {
      * @param theInfo
      */
     processDatasetInfoForAttributeLocations: function (theInfo) {
-        out = {
-            "indexCollection" : null,
-            "filterCollection" : null,
-            "tagsCollection" : null,
+        let out = {
+            "indexCollection": null,
+            "filterCollection": null,
+            "tagsCollection": null,
         };
 
         theInfo.collections.forEach(coll => {
@@ -458,6 +505,7 @@ connect = {
                         break;
                     case lens.constants.tagsAttributeName:
                         out.tagsCollection = coll.name;
+                        console.log(`¬   Found [${lens.constants.tagsAttributeName}] in [${coll.name}]`);
                         break;
                 }
             })
@@ -465,6 +513,7 @@ connect = {
 
         return out;
     },
+
     processDatasetInfoForAttributeGroups: function (theInfo) {
         theInfo.collections.forEach(coll => {
             coll.attrs.forEach(att => {
