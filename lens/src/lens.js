@@ -87,16 +87,24 @@ let lens = {
 
     //  handlers for controls ----------------
 
+    /**
+     * User has changed the text in the place search box.
+     *
+     */
     handleTextChange : function( ) {
         const placeType = document.querySelector("input[name='place-type']:checked").value;
         const theText = document.getElementById("place-input").value;
+
+        //  here we set `lens.currentZIPset`, which contains all the data for all ZIPs
+        //  as found in `lens.state.data`
+
         if (placeType === 'county') {
-            lens.currentZIPSet = zip.findZipsFromString(theText, true);
+            lens.currentZIPSet = zip.findZIPsFromString(theText, true);
         } else {
-            lens.currentZIPSet = zip.findZipsFromString(theText, false, true, true);
+            lens.currentZIPSet = zip.findZIPsFromString(theText, false, true, true, true);
         }
         lens_ui.displayPlaces(lens.currentZIPSet, theText); //  set the text in the box
-        this.applySelection(connect.constants.kOnly);       //  set the COAP selection to match
+        this.applySelection(connect.constants.kOnly);       //  set the CODAP selection to match
     },
 
     handleTagValueChange : function() {
@@ -107,9 +115,8 @@ let lens = {
         this.handleTextChange();
     },
 
-
-    applySelection : function(iMode) {
-        lens.state.zips = connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
+    applySelection : async function(iMode) {
+        lens.state.zips = await connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
     },
 
 
@@ -137,6 +144,11 @@ let lens = {
 
     //  handlers for changes from CODAP ----------------
 
+    /**
+     * We have been notified of a change in the number of data contexts.
+     * Re-initialize so that we have to choose a context if there is more than one.
+     * @param mess
+     */
     handleDatasetCountChange: function (mess) {
         console.log(`∂   changed number of data contexts. Message [${JSON.stringify(mess)}]`);
         lens_ui.initialize();
@@ -145,6 +157,60 @@ let lens = {
     handleAttributeChange: function (mess) {
         console.log(`∂   changed attribute. Message [${JSON.stringify(mess)}]`);
 
+    },
+
+    /**
+     * User has changed the selection in CODAP, e.g., by clicking in the map.
+     * We change the display and selection records in the plugin to match.
+     *
+     * @param iMessage  the message that comes from the notification.
+     */
+    handleSelectionChangeFromCODAP: async function(iMessage) {
+        console.log(`ß   lens.handleSelectionChange`);
+
+        if (Array.isArray(iMessage)) {
+            Swal.fire({
+                icon : "warning",
+                title: "Mysterious occurrence",
+                text: "Handling selection change, the message is unexpectedly an array."
+            });
+        } else {
+            if (iMessage.values && iMessage.values.operation === "selectCases") {
+                if (iMessage.values.result.success) {
+                    const theSelectedIDs = await connect.getCODAPSelectedCaseIDs();
+                    lens.currentZIPSet = lens.processCaseIDsToMakeZIPSet(theSelectedIDs);
+                    const theText = "user selection";
+
+                    lens_ui.displayPlaces(lens.currentZIPSet, theText); //  set the text in the box
+                }
+            }
+        }
+
+    },
+
+    /**
+     * Helper function solely to get a list (a `SET`) of ZIPs of selected cases.
+     * This is used when the user selects cases by hand, in order to display a text listing describing
+     * the selection by zip, city, and county.
+     *
+     * We will try NOT to use the list to re-select these cases!
+     *
+     * Plan: use `lens.state.data` to get the ZIPs from the IDs.
+     * Then use the city-county-zip information (via `zip-model.js`) to construct the zip set,
+     * which we will ship back to be `lens.currentZIPSet`.
+     *
+     * @param iCaseIDs
+     */
+    processCaseIDsToMakeZIPSet: function(iCaseIDs) {
+
+        let theZIPs = [];
+
+        for (const z in lens.state.data) {
+            if (iCaseIDs.includes(lens.state.data[z].id)) {
+                theZIPs.push(lens.state.data[z].values.ZIP);
+            }
+        }
+        return zip.findRecordsFromArrayOfZIPs(theZIPs);
     },
 
     //  not functions ------------------------------------
@@ -156,7 +222,7 @@ let lens = {
     },
 
     constants: {
-        version: "000c",
+        version: "000d",
         indexAttributeName : "ZIP",
         filterAttributeName : "ƒƒilter",
         tagsAttributeName : "Tags",

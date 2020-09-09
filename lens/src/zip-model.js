@@ -30,13 +30,25 @@ limitations under the License.
 
 zip = {
 
-    findZipsFromString(iString,
-                            pCounty = true,
-                            pPrincipal = false,
-                            pAcceptable = false,
-                            pUnacceptable = false) {
+    /**
+     * Return a js "Set" of records that contain the input string.
+     *
+     * @param iString       the input string
+     * @param pCounty       look in the county field?
+     * @param pPrincipal    look in the principal city field?
+     * @param pAcceptable   look in th e"acceptable city" field?
+     * @param pZIP          look in the ZIP field itself?
+     * @param pUnacceptable look in the "unacceptable city" field?
+     * @returns {Set<any>}  the set of records. NOTE: it's a Set!
+     */
+    findZIPsFromString(iString,
+                       pCounty = true,
+                       pPrincipal = false,
+                       pAcceptable = false,
+                       pZIP = false,
+                       pUnacceptable = false) {
 
-        let out= new Set();
+        let out = new Set();
 
         if (iString) {
 
@@ -57,6 +69,11 @@ zip = {
                         out.add(z);
                     }
                 }
+                if (pZIP && (z.zip.toString()).includes(iString.toLowerCase())) {
+                    if (lens.state.data[z.zip]) {
+                        out.add(z);
+                    }
+                }
                 if (pUnacceptable && (z.unacceptable_cities.toLowerCase()).includes(iString.toLowerCase())) {
                     if (lens.state.data[z.zip]) {
                         out.add(z);
@@ -66,5 +83,17 @@ zip = {
         }
 
         return out;
-    }
+    },
+
+    findRecordsFromArrayOfZIPs(iZIPs) {
+        let out = new Set();
+
+        zips.forEach( z => {
+            if (iZIPs.includes(z.zip)) {
+                out.add(z)
+            }
+        })
+
+        return out;
+    },
 }

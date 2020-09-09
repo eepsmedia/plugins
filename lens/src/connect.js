@@ -70,7 +70,6 @@ connect = {
         if (!updateIframeResult.success) {
             Swal.fire({icon: "error", text: `Problem making the interactive frame mutable`});
         }
-
     },
 
     refreshDatasetInfoFor: async function (iName) {
@@ -84,7 +83,7 @@ connect = {
             dsInfoResult.values["attLocations"] = this.processDatasetInfoForAttributeLocations(dsInfoResult.values);
 
             //  so, for example, `lens.state.datasetInfo.attLocations.filterCollection`
-            //  will hold the name of the colletion that the filter attribute is in
+            //  will hold the name of the collection that the filter attribute is in
 
             console.log(`å   attLocations: ${JSON.stringify(dsInfoResult.values.attLocations)}`);
             return dsInfoResult.values;
@@ -245,24 +244,26 @@ connect = {
                     "action": "get",
                     "resource": selectionListResource,
                 }
+
+                const tSelectedCaseIDs = await this.getCODAPSelectedCaseIDs();
                 const getSelectionListResult = await codapInterface.sendRequest(tMessage);
 
-                if (getSelectionListResult.success) {
+                if (tSelectedCaseIDs.length) {
                     const tagLabel = document.getElementById("tag-value-input").value;
-                    console.log(`Applying tag [${tagLabel}] to ${getSelectionListResult.values.length} cases`);
+                    console.log(`Applying tag [${tagLabel}] to ${tSelectedCaseIDs.length} cases`);
 
                     //  construct a compound request to update the items by caseID
 
                     let theCompoundRequest = [];
 
-                    getSelectionListResult.values.forEach(val => {
+                    tSelectedCaseIDs.forEach(caseID => {
                         //  val.caseID is the caseID
                         const tTagAttributeName = lens.constants.tagsAttributeName;
                         let valuesObject = {};
                         valuesObject[tTagAttributeName] = tagLabel;
                         const oneReqest = {
                             "action": "update",
-                            "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${val.caseID}]`,
+                            "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${caseID}]`,
                             "values": valuesObject,
                         }
                         theCompoundRequest.push(oneReqest);
@@ -271,7 +272,7 @@ connect = {
 
                     const setTagValuesResult = await codapInterface.sendRequest(theCompoundRequest);
                     if (setTagValuesResult.success) {
-                        console.log(`Applied tag [${tagLabel}] to ${getSelectionResult.values.length} cases`);
+                        console.log(`Applied tag [${tagLabel}] to ${tSelectedCaseIDs.length} cases`);
                     }
 
                 }
@@ -323,15 +324,56 @@ connect = {
 
     /*  selection methods   */
 
+    getCODAPSelectedCaseIDs : async function() {
+        const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
+        //  now get all the currently selected caseIDs.
+        const gMessage = {
+            "action": "get", "resource": selectionListResource
+        }
+        const getSelectionResult = await codapInterface.sendRequest(gMessage);
+
+        //  the result has the ID but also the collection ID and name,
+        //  so we collect just the caseID in `oldIDs`
+        let oldIDs = [];
+        if (getSelectionResult.success) {
+
+            //  construct an array of the currently-selected cases.
+            //  NOTE that `val`
+            getSelectionResult.values.forEach(val => {
+                oldIDs.push(val.caseID)
+            })
+        }
+        return oldIDs;
+    },
+
+    setCODAPSelectionToCaseIDs : async  function(iList) {
+        const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
+        const tMessage = {
+            "action": "create",
+            "resource": selectionListResource,
+            "values": iList,
+        }
+
+        const makeSelectionResult = await codapInterface.sendRequest(tMessage);
+        if (!makeSelectionResult.success) {
+            Swal.fire({
+                icon: 'error',
+                title: "Curses!",
+                text: `Trouble making the new selection`,
+            });
+        }
+    },
+
     /**
+     *  Given a list of ZIP codes to select (or add to the selection, or...)
+     *  have CODAP actually perform the selection.
      *
-     * @param iZips     array of ZIP code RECORD OBJECTS. The zip itself is in foo.zip
+     * @param iZips     array of ZIP code RECORD OBJECTS (see zipCA.js). The zip itself is in [zips].zip
      * @param iMode     this.constants.kOnly | except | add | remove, constants here in connect
      * @returns {Promise<void>}
      */
     selectByZIP: async function (iZips, iMode = this.constants.kOnly) {
 
-        const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
         //  first make sure iZips is an Array (OK to pass a single ZIP)
 
         if (!Array.isArray(iZips)) {
@@ -346,45 +388,16 @@ connect = {
         iZips.forEach(zRecord => {
             const recordInCODAPdataset = lens.state.data[zRecord.zip];
             if (recordInCODAPdataset) {
-                currentIDs.push(recordInCODAPdataset.id);
+                currentIDs.push(recordInCODAPdataset.id);   //  so an array of CODAP caseIDs
             }
         });
 
-        //  now get all the currently selected caseIDs.
-        const gMessage = {
-            "action": "get", "resource": selectionListResource
-        }
-        const getSelectionResult = await codapInterface.sendRequest(gMessage);
-
-        //  the result has the ID but also the collection ID and name,
-        //  so we collect just the caseID in `oldIDs`
-        let oldIDs = [];
-        if (getSelectionResult.success) {
-
-            //  consturct an array of the currently-selected cases.
-            //  NOTE that `val`
-            getSelectionResult.values.forEach(val => {
-                oldIDs.push(val.caseID)
-            })
-        }
+        const oldIDs = await this.getCODAPSelectedCaseIDs();    //  array of selected caseIDs
 
         //  now we make a new array of IDs depending on the mode
-        const newSelection = this.figureOutSelection(oldIDs, currentIDs, iMode);
+        const newSelection = this.figureOutSelection(oldIDs, currentIDs, iMode);    //  corrected array
 
-        const tMessage = {
-            "action": "create",
-            "resource": selectionListResource,
-            "values": newSelection,
-        }
-
-        const makeSelectionResult = await codapInterface.sendRequest(tMessage);
-        if (!makeSelectionResult.success) {
-            Swal.fire({
-                icon: 'error',
-                totle: "Curses!",
-                text: `Trouble making the new selection`,
-            });
-        }
+        await this.setCODAPSelectionToCaseIDs(newSelection);    //  perform the selection
 
     },
 
@@ -411,10 +424,11 @@ connect = {
                 break;
         }
         return out;
-    }
-    ,
+    },
 
-    /*  Notification setups */
+    /*
+                    Notification setups
+    */
 
     setUpDatasetNotifications: async function () {
         codapInterface.on(
@@ -434,8 +448,20 @@ connect = {
             '*',
             lens.handleAttributeChange
         );
-
         console.log(`Asked for notify on [${tResource}]`);
+
+        //  register to receive notifications about selection
+
+        const sResource = `dataContextChangeNotice[${lens.state.datasetInfo.name}]`;
+        codapInterface.on(
+            'notify',
+            sResource,
+            'selectCases',
+            lens.handleSelectionChangeFromCODAP
+        );
+
+        console.log(`Asked for getting selectCases on [${sResource}]`);
+
 
     },
 
