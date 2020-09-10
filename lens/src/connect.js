@@ -72,6 +72,13 @@ connect = {
         }
     },
 
+    /**
+     * Get "dataset info" for the dataset.
+     * This includes all attribute names in all collections, as returned by `get...dataContext`.
+     *
+     * @param iName         dataset name
+     * @returns {Promise<null|*>}
+     */
     refreshDatasetInfoFor: async function (iName) {
         const tMessage = {
             "action": "get",
@@ -129,6 +136,11 @@ connect = {
 
     },
 
+    /**
+     * Actually remove the "tags" attribute from the dataset,
+     * @param iDSName       name of the dataset
+     * @returns {Promise<void>}
+     */
     deleteTagsAttributeFrom: async function (iDSName) {
         //  we assume that the lens.datasetInfo is recently refreshed.
 
@@ -154,7 +166,6 @@ connect = {
         } else {
             console.log(`∂   Hmm. Trying to delete the Tags attribute, and the tags collection did not exist.`);
         }
-
     },
 
     makeTagsAttributeIn: async function (iDSname) {
@@ -167,7 +178,7 @@ connect = {
             const tResource = `dataContext[${iDSname}].collection[${theTagsCollectionName}].attribute`;
             const tValues = {
                 "name": lens.constants.tagsAttributeName,
-                "type": "boolean",
+                "type": "nominal",
                 "title": "Tags",
                 "description": "user-made tags for sets of ZIP codes",
                 "editable": false,
@@ -235,6 +246,7 @@ connect = {
 
         switch (iMode) {
             case (this.constants.kAdd):
+                document.body.style.cursor = 'wait';
                 this.makeTagsAttributeIn(lens.state.datasetInfo.name);
 
                 //  first we get the selectionList
@@ -267,60 +279,82 @@ connect = {
                             "values": valuesObject,
                         }
                         theCompoundRequest.push(oneReqest);
-
                     })
 
                     const setTagValuesResult = await codapInterface.sendRequest(theCompoundRequest);
-                    if (setTagValuesResult.success) {
+                    if (setTagValuesResult[0].success) {
                         console.log(`Applied tag [${tagLabel}] to ${tSelectedCaseIDs.length} cases`);
                     }
-
                 }
+                document.body.style.cursor = 'default';
                 break;
             case this.constants.kClear:
 
                 console.log(`ç trying to clear tags`);
+                this.clearTagValues();
 
                 //  begin by refreshing the datasetInfo to get the Tags collection name
                 //  lens.state.datasetInfo = await this.refreshDatasetInfoFor(lens.state.datasetInfo.name);
 
                 //  now delete that attribute, then remake it
-                await this.deleteTagsAttributeFrom(lens.state.datasetInfo.name);
-                await this.makeTagsAttributeIn(lens.state.datasetInfo.name);
-                /*
-                                //  another compound request to update every case
-
-                                document.body.style.cursor = 'wait';
-                                Swal.fire({
-                                    title: "Patience is a virtue",
-                                    text: "We are trying to make this process faster. It's way too slow right now. We know.",
-                                    icon: "warning",
-                                })
-                                let clearCompoundRequest = [];
-
-                                for (const zip in lens.state.data) {
-                                    const theID = lens.state.data[zip].id;
-                                    const oneReqest = {
-                                        "action": "update",
-                                        "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${theID}]`,
-                                        "values": {
-                                            "Tags": ""
-                                        }
-                                    }
-                                    clearCompoundRequest.push(oneReqest);
-                                }
-
-                                const setTagValuesResult = await codapInterface.sendRequest(clearCompoundRequest);
-                                document.body.style.cursor = 'default';
-
-                                if (setTagValuesResult.success) {
-                                    console.log(`Cleared ${lens.state.data.length} tags`);
-                                }
-                */
+                //await this.deleteTagsAttributeFrom(lens.state.datasetInfo.name);
+                //await this.makeTagsAttributeIn(lens.state.datasetInfo.name);
                 break;
         }
     },
 
+    /**
+     * Clear all values of the "Tags" attribute by
+     * * getting all items from CODAP in order to get their `itemID`s
+     * * issuing an update request to all items blanking the "Tags" attribute
+     * @returns {Promise<void>}
+     */
+    clearTagValues : async function() {
+
+        const tGetAllItemsMessage = {
+            "action": "get",
+            "resource": `dataContext[${lens.state.datasetInfo.name}].itemSearch[*]`,
+        }
+        const getAllItemsResult = await codapInterface.sendRequest(tGetAllItemsMessage);
+
+        if (getAllItemsResult.success) {
+            let updateCompoundRequestValues = [];
+            getAllItemsResult.values.forEach( val => {
+                const tItemID = val.id;
+                updateCompoundRequestValues.push({
+                    "id" : tItemID,
+                    "values" : {
+                        "Tags" : ""         //  todo: use the variable/constant instead of the literal string
+                    }
+                })
+            })
+
+            const tCompoundRequestMessage = {
+                "action" : "update",
+                "resource" : `dataContext[${lens.state.datasetInfo.name}].item`,
+                "values" : updateCompoundRequestValues,
+            }
+
+            const compoundRequestResult = await codapInterface.sendRequest(tCompoundRequestMessage);
+
+            if (!compoundRequestResult.success) {
+                const theMessage = compoundRequestResult.values.error;
+                Swal.fire({
+                    icon: 'error',
+                    title: theMessage,
+                    text: `In connect.clearTagValues, we got the items but failed to update them.`,
+                });
+            }
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: "Drat!",
+                text: `In connect.clearTagValues, we could not retrieve all the items.`,
+            });
+        }
+
+    },
 
     /*  selection methods   */
 
@@ -401,6 +435,19 @@ connect = {
 
     },
 
+    /**
+     * Given two input arrays and a mode, produce an output array reflecting the mode.
+     * The modes are
+     * * only: the output has only the input
+     * * clear: the output is empty
+     * * add: the output i th eunion of what was with the new selection
+     * * remove: the output eliminates any of the new selection from the old selection
+     *
+     * @param iOld  the old selection
+     * @param iNew  the set of "new" cases to be considered
+     * @param iMode the mode
+     * @returns {[]}
+     */
     figureOutSelection: function (iOld, iNew, iMode) {
         let out = [];
         switch (iMode) {
@@ -540,6 +587,14 @@ connect = {
         return out;
     },
 
+    /**
+     * Parse the attribute "groups" indicated by bracketed group names in the attribute descriptions.
+     *
+     * For example, `{work}Percent of people working in agriculture`
+     * puts the attribute in a group called "work" and then strips that tag from the description
+     *
+     * @param theInfo   the information on all collections and sttributes
+     */
     processDatasetInfoForAttributeGroups: function (theInfo) {
         theInfo.collections.forEach(coll => {
             coll.attrs.forEach(att => {
