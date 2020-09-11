@@ -246,7 +246,9 @@ connect = {
 
         switch (iMode) {
             case (this.constants.kAdd):
-                document.body.style.cursor = 'wait';
+                //  document.body.style.cursor = 'wait';
+
+                //      make sure the tags attribute exists
                 this.makeTagsAttributeIn(lens.state.datasetInfo.name);
 
                 //  first we get the selectionList
@@ -258,7 +260,7 @@ connect = {
                 }
 
                 const tSelectedCaseIDs = await this.getCODAPSelectedCaseIDs();
-                const getSelectionListResult = await codapInterface.sendRequest(tMessage);
+                await codapInterface.sendRequest(tMessage);
 
                 if (tSelectedCaseIDs.length) {
                     const tagLabel = document.getElementById("tag-value-input").value;
@@ -270,23 +272,33 @@ connect = {
 
                     tSelectedCaseIDs.forEach(caseID => {
                         //  val.caseID is the caseID
+                        const theResource = `dataContext[${lens.state.datasetInfo.name}].collection[${lens.state.datasetInfo.attLocations.tagsCollection}].caseByID[${caseID}]`;
                         const tTagAttributeName = lens.constants.tagsAttributeName;
                         let valuesObject = {};
                         valuesObject[tTagAttributeName] = tagLabel;
-                        const oneReqest = {
+                        const oneRequest = {
                             "action": "update",
                             "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${caseID}]`,
+                            //  "resource": theResource,
                             "values": valuesObject,
+                            //  "values": {values: valuesObject},
                         }
-                        theCompoundRequest.push(oneReqest);
+                        theCompoundRequest.push(oneRequest);
                     })
 
                     const setTagValuesResult = await codapInterface.sendRequest(theCompoundRequest);
                     if (setTagValuesResult[0].success) {
-                        console.log(`Applied tag [${tagLabel}] to ${tSelectedCaseIDs.length} cases`);
+                        console.log(`Applied tag [${tagLabel}] to ${setTagValuesResult.length} cases`);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: setTagValuesResult[0].values.error,
+                            text: `In connect.tagByZIP, we failed to update the cases with the new tag.`,
+                        });
+
                     }
                 }
-                document.body.style.cursor = 'default';
+                //  document.body.style.cursor = 'default';
                 break;
             case this.constants.kClear:
 
