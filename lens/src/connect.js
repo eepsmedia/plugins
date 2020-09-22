@@ -242,12 +242,20 @@ connect = {
 
     /*  tag methods     */
 
-    tagByZIP: async function (iMode = this.constants.kOnly) {
+    /**
+     * Updates case values in CODAP so that all selected cases have the values of their "Tags"
+     * attribute set to the value in the `id="tag-value-input"` text box.
+     *
+     * Note: the name of the "Tags" attribute is probably "Tags" -- but more
+     * specifically is `lens.constants.tagsAttributeName`
+     *
+     * @param iMode     normally as described. But if `this.constants.kClear`, blanks all Tag values.
+     * @returns {Promise<void>}
+     */
+    tagSelectedCases: async function (iMode = this.constants.kOnly) {
 
         switch (iMode) {
             case (this.constants.kAdd):
-                //  document.body.style.cursor = 'wait';
-
                 //      make sure the tags attribute exists
                 this.makeTagsAttributeIn(lens.state.datasetInfo.name);
 
@@ -266,28 +274,31 @@ connect = {
                     const tagLabel = document.getElementById("tag-value-input").value;
                     console.log(`Applying tag [${tagLabel}] to ${tSelectedCaseIDs.length} cases`);
 
-                    //  construct a compound request to update the items by caseID
+                    //  construct a new update...case request to update the items by caseID
 
-                    let theCompoundRequest = [];
+                    const theResource = `dataContext[${lens.state.datasetInfo.name}].collection[${lens.state.datasetInfo.attLocations.tagsCollection}].case`;
+                    const tTagAttributeName = lens.constants.tagsAttributeName;     //      probably "Tags"
 
+                    //  construct the array of value objects, one for each selected case.
+                    let valuesArray = [];
                     tSelectedCaseIDs.forEach(caseID => {
-                        //  val.caseID is the caseID
-                        const theResource = `dataContext[${lens.state.datasetInfo.name}].collection[${lens.state.datasetInfo.attLocations.tagsCollection}].caseByID[${caseID}]`;
-                        const tTagAttributeName = lens.constants.tagsAttributeName;
                         let valuesObject = {};
                         valuesObject[tTagAttributeName] = tagLabel;
-                        const oneRequest = {
-                            "action": "update",
-                            "resource": `dataContext[${lens.state.datasetInfo.name}].itemByCaseID[${caseID}]`,
-                            //  "resource": theResource,
+                        const oneCase = {
+                            "id": caseID,
                             "values": valuesObject,
-                            //  "values": {values: valuesObject},
                         }
-                        theCompoundRequest.push(oneRequest);
+                        valuesArray.push(oneCase);
                     })
 
-                    const setTagValuesResult = await codapInterface.sendRequest(theCompoundRequest);
-                    if (setTagValuesResult[0].success) {
+                    const theRequest = {
+                        "action" : "update",
+                        "resource" : theResource,
+                        "values" : valuesArray,
+                    }
+
+                    const setTagValuesResult = await codapInterface.sendRequest(theRequest);
+                    if (setTagValuesResult.success) {
                         console.log(`Applied tag [${tagLabel}] to ${setTagValuesResult.length} cases`);
                     } else {
                         Swal.fire({
@@ -298,8 +309,8 @@ connect = {
 
                     }
                 }
-                //  document.body.style.cursor = 'default';
                 break;
+
             case this.constants.kClear:
 
                 console.log(`ç trying to clear tags`);
