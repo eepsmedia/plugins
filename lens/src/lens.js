@@ -128,7 +128,7 @@ let lens = {
         //  lens.state.zips = connect.selectByZIP(Array.from(lens.currentZIPSet), iMode);    //  has modes
 
         lens.state.datasetInfo =  await connect.refreshDatasetInfoFor(lens.state.datasetInfo.name);
-        await connect.tagByZIP(iMode);
+        await connect.tagSelectedCases(iMode);
     },
 
     applyFilter: function () {
@@ -222,7 +222,7 @@ let lens = {
     },
 
     constants: {
-        version: "000d",
+        version: "000e",
         indexAttributeName : "ZIP",
         filterAttributeName : "ƒƒilter",
         tagsAttributeName : "Tags",
