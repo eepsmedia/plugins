@@ -132,21 +132,14 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
         <label class="selection-text-input-label" for="tag-value-input">Tag value: </label>
         <input id="tag-value-input" type="text" onchange="lens.handleTagValueChange()">
         <div id="select-buttons">
-<!--
-            <button class="apply-selection-button"
-                    onclick='lens.setTagValuesToSelection("only")'>=
-            </button>
--->
-            <button id="add-button" class="apply-selection-button"
-                    onclick='lens.setTagValuesToSelection("add")'>+
-            </button>
+            <img id="add-button" class="apply-selection-button" src="art/add.png"
+                 width="24"
+                 onclick='lens.setTagValuesToSelection("add")'>
             <label for="add-button">add selection to tag</label>
-<!--            <button class="apply-selection-button"-->
-<!--                    onclick='lens.setTagValuesToSelection("remove")'>–-->
-<!--            </button>-->
-            <button id="clear-button" class="apply-selection-button"
-                    onclick='lens.setTagValuesToSelection("clear")'>0
-            </button>
+            &emsp;
+            <img id="clear-button" class="apply-selection-button"
+                 src="art/clear.png" width="24"
+                    onclick='lens.setTagValuesToSelection("clear")'>
             <label for="clear-button">clear all tags</label>
         </div>
 

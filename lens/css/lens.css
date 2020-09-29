@@ -55,6 +55,11 @@ button {
     border-radius: 8px;
 }
 
+#select-buttons {
+    padding : 0.5em;
+
+}
+
 .ui-state-active:defined {
     background: var(--bg-top-color);
     color : var(--main-text-color);
@@ -85,4 +90,9 @@ button {
     height: 100%;
     vertical-align: middle;
 
+}
+
+.apply-selection-button {
+    vertical-align: middle;
+    cursor : pointer;
 }
