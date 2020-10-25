@@ -72,6 +72,20 @@ timer.connect = {
         }
     },
 
+    makeCaseTableAppear : async function() {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'caseTable',
+                dataContext : timer.constants.kTimerDataSetName,
+                name : timer.constants.kTimerDataSetName,
+                cannotClose : true
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
     iFrameDescriptor: {
         version: timer.constants.version,
         name: 'timer',
@@ -96,8 +110,8 @@ timer.connect = {
                 attrs: [ // note how this is an array of objects.
                     {name: "set", type: 'categorical', description: "group of data"},
                     {name: "seq", type: 'numeric', precision: 0, description: "sequence number"},
-                    {name: "time", type: 'numeric', precision: 3, description: "seconds since start"},
-                    {name: "dt", type: 'numeric', precision: 3, description: "seconds since last data"},
+                    {name: "time", type: 'numeric', unit: "sec", precision: 3, description: "seconds since start"},
+                    {name: "dt", type: 'numeric', unit: "sec", precision: 3, description: "seconds since last data"},
                     {name: "what", type: 'categorical', description: "what happened"},
                     {name: "when", type: 'date', description: "date/time of event"}
                 ]

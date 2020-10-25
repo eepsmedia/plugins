@@ -31,7 +31,6 @@ let timer = {
 
     startTime : null,
     waiting : true,
-    setNumber : 0,
     sequenceNumber : 1,
     previousTime : null,
     timerMode : true,
@@ -40,7 +39,8 @@ let timer = {
 
     freshState : function() {
         return {
-            configurationText : "data"
+            configurationText : "data",
+            setNumber : 0,
         }
     },
 
@@ -55,12 +55,13 @@ let timer = {
         });
         wholeShebang.focus();
 
+        await timer.connect.initialize();
+
         timer.state = codapInterface.getInteractiveState();
         if (Object.keys(timer.state).length === 0) {
             codapInterface.updateInteractiveState( timer.freshState() );
         }
 
-        await timer.connect.initialize();
         timer.ui.initialize();
     },
 
@@ -87,10 +88,11 @@ let timer = {
         if (this.waiting) {
             this.waiting = false;
             this.startTime = new Date();
-            this.setNumber++;
+            this.state.setNumber++;
             this.sequenceNumber = 1;
             this.previousTime = null;
-            console.log("Starting group " + this.setNumber);
+            console.log("Starting group " + this.state.setNumber);
+            timer.connect.makeCaseTableAppear();    //  no need to async
         }
         let now = new Date();
 
@@ -103,7 +105,7 @@ let timer = {
         this.previousTime = now;
 
         let tValues = {
-            set : this.setNumber,
+            set : this.state.setNumber,
             seq : this.sequenceNumber,
             time : elapsed / 1000.0,
             dt : tDt === null ? null : tDt  / 1000.0,
@@ -135,7 +137,7 @@ let timer = {
     },
 
     constants : {
-        version : "001b",
+        version : "001d",
 
         kTimerDataSetName : "Times",
         kTimerDataSetTitle : "Times",

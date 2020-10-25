@@ -46,8 +46,8 @@ timer.ui = {
         let tCaseOrCasesWord = (timer.sequenceNumber - 1) === 1 ? " case " : " cases "
 
         let theStatus = timer.waiting
-            ? "Waiting for the first data in set " + (timer.setNumber + 1)
-            : "You have " + (timer.sequenceNumber - 1) + tCaseOrCasesWord + " in set " + timer.setNumber;
+            ? "Waiting for the first data in set " + (timer.state.setNumber + 1)
+            : "You have " + (timer.sequenceNumber - 1) + tCaseOrCasesWord + " in set " + timer.state.setNumber;
         newSetButton.style.visibility = timer.waiting ? "hidden" : "visible";
         statusDiv.innerHTML = theStatus;
 
@@ -64,8 +64,7 @@ timer.ui = {
         buttonTextArray.forEach( name => {
             const thisButton =
                 "<button class = 'do' " +
-                " onclick='timer.doDataButton( \"" +  name + "\")'>" +
-                name + "</button>";
+                `onclick='timer.doDataButton("${name}")'>${name}</button>`;
             buttonsHTMLArray.push(thisButton);
         });
 
