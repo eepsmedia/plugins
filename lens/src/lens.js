@@ -68,7 +68,7 @@ let lens = {
             connect.makeTagsAttributeIn(iName);
 
         } else {
-            console.log(`?   called setTargetDatasetName without a dataset name`);
+            console.log(`?   called setTargetDatasetByName without a dataset name`);
         }
     },
 

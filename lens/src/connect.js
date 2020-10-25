@@ -36,17 +36,15 @@ connect = {
 
         //  set up the iframe this plugin is in
         await codapInterface.init(this.iFrameDescriptor, null);
-
         await this.setUpDatasetNotifications();
 
         //  get any saved state
         //  restore the state if possible
-        //  todo: investigate why state.datasetInfo seems to have the entire saved file (14 MB) in it!
 
         lens.state = await codapInterface.getInteractiveState();
 
         if (lens.state.datasetInfo) {
-            lens.setTargetDatasetByName(lens.state.datasetInfo.name);
+            await lens.setTargetDatasetByName(lens.state.datasetInfo.name);
         }
 
         if (jQuery.isEmptyObject(lens.state)) {
@@ -128,7 +126,7 @@ connect = {
             const makeFilterAttResult = await codapInterface.sendRequest(tMessage);
 
             if (!makeFilterAttResult.success) {
-                alert(`Trouble making the filter attribute in ${iDSname}|${iLastCollectionName}`);
+                alert(`Trouble making the filter attribute in ${iDSname}|${theCollectionName}`);
             }
         }
 
@@ -220,7 +218,7 @@ connect = {
             Swal.fire({
                 icon: 'error',
                 totle: "Curses!",
-                text: `Trouble applying the filter attribute in ${iDSname}|${theTagsCollectionName}`,
+                text: `Trouble applying the filter attribute in ${iDS}|${iColl}`,
             });
         }
 
@@ -257,7 +255,7 @@ connect = {
         switch (iMode) {
             case (this.constants.kAdd):
                 //      make sure the tags attribute exists
-                this.makeTagsAttributeIn(lens.state.datasetInfo.name);
+                await this.makeTagsAttributeIn(lens.state.datasetInfo.name);
 
                 //  first we get the selectionList
                 const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
@@ -463,7 +461,7 @@ connect = {
      * The modes are
      * * only: the output has only the input
      * * clear: the output is empty
-     * * add: the output i th eunion of what was with the new selection
+     * * add: the output is the union of what was with the new selection
      * * remove: the output eliminates any of the new selection from the old selection
      *
      * @param iOld  the old selection
@@ -579,7 +577,7 @@ connect = {
      * {
      *     indexCollection : <index (ZIP) collection name>,
      *     filterCollection : <filter collection name>,
-     *     tagsCollection : <tags colelction name>,
+     *     tagsCollection : <tags collection name>,
      * }
      * @param theInfo
      */
@@ -616,7 +614,7 @@ connect = {
      * For example, `{work}Percent of people working in agriculture`
      * puts the attribute in a group called "work" and then strips that tag from the description
      *
-     * @param theInfo   the information on all collections and sttributes
+     * @param theInfo   the information on all collections and attributes
      */
     processDatasetInfoForAttributeGroups: function (theInfo) {
         theInfo.collections.forEach(coll => {
