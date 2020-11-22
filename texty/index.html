@@ -57,7 +57,9 @@ LOCAL, TESTING:     http://localhost:8888/plugins/texty/
     <p>Paste text into the box, then press <b>analyze</b>.</p>
     <textarea id="theText" ></textarea>
     <br>
-    <input type="button" value="analyze" onclick="texty.analyze()">
+    <input type="button" value="analyze" onclick="texty.analyze()">&emsp;
+    <label for="do-digraphs-box">collect digraphs</label>
+    <input type="checkbox" id="do-digraphs-box">
     <p>Only letters and spaces are saved; accents are removed; spaces get replaced by underscores.</p>
 </div>
 

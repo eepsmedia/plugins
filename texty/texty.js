@@ -29,7 +29,7 @@ limitations under the License.
 let texty = {
 
     constants: {
-        version: "001b",
+        version: "001c",
         kTextyDataSetName: "text",
         kTextyDataSetTitle: "text data",
         kTextySampleCollectionName: "samples",
@@ -38,6 +38,7 @@ let texty = {
 
     state: {
         sampleNumber: 0,
+        doDigraphs: false,
         theText: ""
     },
 
@@ -47,6 +48,7 @@ let texty = {
 
     analyze: function () {
         texty.state.sampleNumber++;
+        this.state.doDigraphs = document.getElementById("do-digraphs-box").checked;
 
         texty.state.theText = texty.preprocessText();
 
@@ -58,7 +60,9 @@ let texty = {
 
             aValue["sample"] = texty.state.sampleNumber;
             aValue["letter"] = letter;
-            aValue["digraph"] = digraph;
+            if (this.state.doDigraphs) {
+                aValue["digraph"] = digraph;
+            }
 
             tValues.push(aValue);
         });
