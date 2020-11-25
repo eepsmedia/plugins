@@ -33,7 +33,9 @@ let texty = {
         kTextyDataSetName: "text",
         kTextyDataSetTitle: "text data",
         kTextySampleCollectionName: "samples",
-        kTextyLetterCollectionName: "letters"
+        kTextyLetterCollectionName: "letters",
+        kDefaultStatusText :
+            "Only letters and spaces are saved; accents are removed; spaces get replaced by underscores.",
     },
 
     state: {
@@ -46,7 +48,7 @@ let texty = {
         texty.connect.initialize();
     },
 
-    analyze: function () {
+    analyze: async function () {
         texty.state.sampleNumber++;
         this.state.doDigraphs = document.getElementById("do-digraphs-box").checked;
 
@@ -67,8 +69,10 @@ let texty = {
             tValues.push(aValue);
         });
 
-        texty.connect.sendCases(tValues);   //  no need to await
+        document.getElementById("status").innerHTML = "Processing...";
+        await texty.connect.sendCases(tValues);   //  no need to await
         texty.connect.makeTableAppear();
+        document.getElementById("status").innerHTML = texty.constants.kDefaultStatusText;
     },
 
     /**
