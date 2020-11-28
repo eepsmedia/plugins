@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 11/27/20.
+
+
+ ==========================================================================
+index in binomial
+
+    Author:   Tim Erickson
+
+Copyright (c) 2020 by Epistemological Engineering. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<!--
+    This plugin simulates a binomial situation, emitting "count" results
+    from multiple runs of binomial experiments
+
+
+LOCAL, TESTING:     http://localhost:8888/plugins/binomial/
+                    http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/binomial/
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Binomial Simulator</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+
+    <link rel='stylesheet' type='text/css' href='css/binomial.css'/>
+
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/TEEUtils.js"></script>
+
+    <script src="src/binomial.js"></script>
+    <script src="src/binomial.ui.js"></script>
+    <script src="src/connect.js"></script>
+
+
+</head>
+<body>
+
+<div id="main">
+    <div id="constant">
+    <h3>Binomial Simulator &emsp;
+        <button onclick="binomial.engage()">Engage!</button>
+    </h3>
+    </div>
+
+    <div id="container">
+        <div id="description">
+
+        </div>
+
+
+        <div id="settings">
+            <h4>Settings</h4>
+            <div>
+                <input type="number" id="numberOfExperimentsInput" value="50"
+                       min="1" max="500" onchange="binomial.update()">
+                <label for="numberOfExperimentsInput" id="numberOfExperimentsInputLabel">baz</label>
+            </div>
+            <div>
+                <input type="number" id="numberOfAtomicEventsInput" value="20"
+                       min="1" max="10000" onchange="binomial.update()">
+                <label for="numberOfAtomicEventsInput" id="numberOfAtomicEventsInputLabel">bar</label>
+            </div>
+            <div>
+                <input type="range" id="probabilityOfSuccessInput"
+                       max="1" min="0" value="0.5" step="0.01" oninput="binomial.update()">
+                <label for="probabilityOfSuccessInput" id="probabilityOfSuccessInputLabel">foo</label>
+            </div>
+
+        </div>
+
+
+        <div id="vocabulary">
+            <h4>Vocabulary &emsp;
+                <button onclick="binomial.reset()">Reset</button>
+            </h4>
+            <p>Set the words that you want to use in this simulator, then press <b>Reset</b>.</p>
+
+            <div>
+                <input type="text" id="atomicEventNameInput" value="flip" onchange="binomial.nameChange()"
+                       class="name-input">
+                <label for="atomicEventNameInput">A basic event</label>
+            </div>
+            <div>
+                <input type="text" id="eventSuccessInput" value="heads" onchange="binomial.nameChange()"
+                       class="name-input">
+                <label for="eventSuccessInput" id="eventSuccessInputLabel">baz</label>
+            </div>
+            <div>
+                <input type="text" id="eventFailureInput" value="tails" onchange="binomial.nameChange()"
+                       class="name-input">
+                <label for="eventFailureInput" id="eventFailureInputLabel">foo</label>
+            </div>
+            <div>
+                <input type="text" id="experimentNameInput" value="experiment" onchange="binomial.nameChange()"
+                       class="name-input">
+                <label for="experimentNameInput" id="experimentNameInputLabel">bar</label>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+        console.log("DOMContentLoaded: " + JSON.stringify(event));
+        binomial.initialize();
+    });
+</script>
+
+</html>
