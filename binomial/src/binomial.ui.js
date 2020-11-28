@@ -48,7 +48,7 @@ binomial.ui = {
         eventFailureLabel.innerHTML =
             `the opposite of <b>${binomial.state.words.eventSuccess}</b>`;
         eventSuccessLabel.innerHTML =
-            `result of a ${binomial.state.words.atomicEventName}`;
+            `possible result of one ${binomial.state.words.atomicEventName}`;
         experimentNameLabel.innerHTML =
             `what do you call a set of ${binomial.state.atomicEventsPerExperiment} ${binomial.state.words.atomicEventName}s?`
 
