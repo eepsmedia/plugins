@@ -46,7 +46,8 @@ let snapper = {
     domObjects: {
         dataContextMenu: null,
         resultsDataContextNameBox: null,
-        autoCollect : null
+        autoCollect : null,
+        statusDiv : null,
     },
 
     initialize: async function () {
@@ -76,6 +77,9 @@ let snapper = {
     },
 
     doSetup: async function () {
+        await snapper.structure.constructDataContextMenu();
+        await snapper.structure.setDataContext();
+
         snapper.state.resultsDataContextName = snapper.domObjects.resultsDataContextNameBox.value;
         console.log("Setting up for results in " + snapper.state.resultsDataContextName);
         await snapper.structure.setDataContext();

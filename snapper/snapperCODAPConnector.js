@@ -93,7 +93,9 @@ snapper.connect = {
         let attrGuts = [];
 
         //  first we get the list of sliders (globals), then we add the attributes
+        /*
         const tGlobalsResult = await codapInterface.sendRequest({ "action": "get", "resource": "globalList"});
+*/
 
         snapper.state.theSliders = await this.getListOfSliders();
 
