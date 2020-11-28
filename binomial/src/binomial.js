@@ -64,8 +64,8 @@ const binomial = {
             aResult["runNumber"] = binomial.state.runNumber;
             aResult[binomial.state.words.eventSuccess] = nSuccesses;
             aResult[binomial.state.words.eventFailure] = (binomial.state.atomicEventsPerExperiment) - nSuccesses;
-            aResult[`${binomial.state.words.atomicEventName}s`] = binomial.state.atomicEventsPerExperiment;
-            aResult[`${binomial.state.words.experimentName}s`] = binomial.state.experimentsPerRun;
+            aResult[TEEUtils.pluralize(binomial.state.words.atomicEventName)] = binomial.state.atomicEventsPerExperiment;
+            aResult[TEEUtils.pluralize(binomial.state.words.experimentName)] = binomial.state.experimentsPerRun;
             aResult["trueP"] = binomial.state.successProbability;
 
             results.push(aResult);

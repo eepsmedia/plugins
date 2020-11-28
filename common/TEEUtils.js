@@ -30,7 +30,7 @@ var TEEUtils = {
 
     pluralize: function(iSingular = "noun", iArticle = "") {
         const specialNouns = [
-            "fish", "deer", "series", "offspring", "sheep",
+            "fish", "deer", "series", "offspring", "sheep", "bison", "cod",
         ]
 
         let thePlural = iSingular;
@@ -38,9 +38,12 @@ var TEEUtils = {
         const lower = iSingular.toLocaleLowerCase();
 
         if (!specialNouns.includes(lower)) {
-            const lastOne = iSingular.slice(-1);
-            const lastTwo = iSingular.slice(-2);
-            if (thePlural == "man") {
+            const lastOne = lower.slice(-1);
+            const lastTwo = lower.slice(-2);
+
+            if (lower.slice(-5) === "craft") {
+                thePlural = iSingular;
+            } else if (thePlural === "man") {
                 thePlural = "men";
             } else if (thePlural === 'woman') {
                 thePlural = 'women';
@@ -54,10 +57,12 @@ var TEEUtils = {
             } else if (lastTwo === 'us') {
                 thePlural = thePlural.slice(0,theLength-2) + "i";
 */
+            } else if (lastTwo === 'zz') {
+                thePlural = thePlural + "es";
             } else if (lastOne === 's') {
                 thePlural = thePlural + "es";
             } else if (lastOne === 'z') {
-                thePlural = thePlural + "es";
+                thePlural = thePlural + "zes";
             } else {
                 thePlural = thePlural + "s";
             }

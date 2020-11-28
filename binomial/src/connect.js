@@ -120,34 +120,33 @@ connect = {
 
                         attrs: [ // note how this is an array of objects.
                             {name: "runNumber", type: 'categorical', description: "run number"},
-                            {name: `${binomial.state.words.atomicEventName}s`,
-                                type: 'numeric', description: `number of ${binomial.state.words.atomicEventName}s per experiment`},
-                            {name: `${binomial.state.words.experimentName}s`,
-                                type: 'numeric', description: `number of ${binomial.state.words.experimentName}s per run`},
+                            {name: `${TEEUtils.pluralize(binomial.state.words.atomicEventName)}`,
+                                type: 'numeric', description: `number of ${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per experiment`},
+                            {name: `${TEEUtils.pluralize(binomial.state.words.experimentName)}`,
+                                type: 'numeric', description: `number of ${TEEUtils.pluralize(binomial.state.words.experimentName)} per run`},
                             {name: "trueP", type : "numeric", precision : 4,
                                 description: `true probability of ${binomial.state.words.eventSuccess}`},
                         ]
                     },
                     {
-                        name: binomial.constants.kExperimentsCollectionName,
+                        name: TEEUtils.pluralize(binomial.state.words.experimentName),
                         labels: {
-                            singleCase: "experiment",
-                            pluralCase: "experiments",
-                            setOfCasesWithArticle: "the experiments from one run"
+                            singleCase: binomial.state.words.experimentName,
+                            pluralCase: TEEUtils.pluralize(binomial.state.words.experimentName),
+                            setOfCasesWithArticle:
+                                `the ${TEEUtils.pluralize(binomial.state.words.experimentName)} from one run`,
                         },
 
                         parent: binomial.constants.kRunCollectionName,
 
                         attrs: [ // note how this is an array of objects.
                             {
-                                name: `${binomial.state.words.eventSuccess}`,
+                                name: binomial.state.words.eventSuccess,
                                 type: 'numeric',
-                                description: "number of successes"
                             },
                             {
-                                name: `${binomial.state.words.eventFailure}`,
+                                name: binomial.state.words.eventFailure,
                                 type: 'numeric',
-                                description: "number of failures"
                             },
                         ]
                     }
