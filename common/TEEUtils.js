@@ -28,6 +28,45 @@
 
 var TEEUtils = {
 
+    pluralize: function(iSingular = "noun", iArticle = "") {
+        const specialNouns = [
+            "fish", "deer", "series", "offspring", "sheep",
+        ]
+
+        let thePlural = iSingular;
+        const theLength = thePlural.length;
+        const lower = iSingular.toLocaleLowerCase();
+
+        if (!specialNouns.includes(lower)) {
+            const lastOne = iSingular.slice(-1);
+            const lastTwo = iSingular.slice(-2);
+            if (thePlural == "man") {
+                thePlural = "men";
+            } else if (thePlural === 'woman') {
+                thePlural = 'women';
+            } else if (thePlural === 'child') {
+                thePlural = 'children';
+            } else if (thePlural === 'radius') {
+                thePlural = 'radii';
+/*
+            } else if (lastTwo === 'um') {
+                thePlural = thePlural.slice(0, theLength - 2) + "a";
+            } else if (lastTwo === 'us') {
+                thePlural = thePlural.slice(0,theLength-2) + "i";
+*/
+            } else if (lastOne === 's') {
+                thePlural = thePlural + "es";
+            } else if (lastOne === 'z') {
+                thePlural = thePlural + "es";
+            } else {
+                thePlural = thePlural + "s";
+            }
+        }
+
+        return thePlural;
+    },
+
+
     getListOfOneFieldInArrayOfObjects: function (iList, what) {
         var out = [];
         iList.forEach(function (o) {

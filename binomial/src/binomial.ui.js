@@ -41,16 +41,16 @@ binomial.ui = {
         probabilityLabel.innerHTML =
             `probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.successProbability}</b>.`
         numberOfExperimentsLabel.innerHTML =
-            `${binomial.state.words.experimentName}s per run`;
+            `${TEEUtils.pluralize(binomial.state.words.experimentName)} per run`;
         numberOfAtomicEventsLabel.innerHTML =
-            `${binomial.state.words.atomicEventName}s per ${binomial.state.words.experimentName}`;
+            `${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}`;
 
         eventFailureLabel.innerHTML =
             `the opposite of <b>${binomial.state.words.eventSuccess}</b>`;
         eventSuccessLabel.innerHTML =
             `possible result of one ${binomial.state.words.atomicEventName}`;
         experimentNameLabel.innerHTML =
-            `what do you call a set of ${binomial.state.atomicEventsPerExperiment} ${binomial.state.words.atomicEventName}s?`
+            `what do you call a set of ${binomial.state.atomicEventsPerExperiment} ${TEEUtils.pluralize(binomial.state.words.atomicEventName)}?`
 
 
     },
@@ -59,10 +59,10 @@ binomial.ui = {
     makeDescription: function () {
         let out = "";
 
-        out += `<p>Press <b>Engage!</b> ` +
-            `to perform <b>${binomial.state.experimentsPerRun}</b> ${binomial.state.words.experimentName}s. <br/>` +
+        out += `<p>Press <button onclick="binomial.engage()">Engage!</button> ` +
+            `to perform <b>${binomial.state.experimentsPerRun}</b> ${TEEUtils.pluralize(binomial.state.words.experimentName)}. <br/>` +
             `One ${binomial.state.words.experimentName} consists of <b>${binomial.state.atomicEventsPerExperiment}</b> 
-                ${binomial.state.words.atomicEventName}s.<br/>` +
+                ${TEEUtils.pluralize(binomial.state.words.atomicEventName)}.<br/>` +
             `One ${binomial.state.words.atomicEventName} is either <b>${binomial.state.words.eventSuccess}</b> or 
                 <b>${binomial.state.words.eventFailure}</b><br/>` +
             `The probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.successProbability}</b>.</p>`;

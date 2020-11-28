@@ -99,7 +99,7 @@ connect = {
         version: binomial.constants.kVersion,
         name: 'binomial',
         title: 'Binomial Simulator',
-        dimensions: {width: 366, height: 566},
+        dimensions: {width: 333, height: 533},
         preventDataContextReorg: false,
     },
 

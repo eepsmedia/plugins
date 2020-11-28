@@ -64,9 +64,7 @@ LOCAL, TESTING:     http://localhost:8888/plugins/binomial/
 
 <div id="main">
     <div id="constant">
-    <h3>Binomial Simulator &emsp;
-        <button onclick="binomial.engage()">Engage!</button>
-    </h3>
+    <h3>Binomial Simulator</h3>
     </div>
 
     <div id="container">
@@ -97,10 +95,7 @@ LOCAL, TESTING:     http://localhost:8888/plugins/binomial/
 
 
         <div id="vocabulary">
-            <h4>Vocabulary &emsp;
-                <button onclick="binomial.reset()">Reset</button>
-            </h4>
-            <p>Set the words that you want to use in this simulator, then press <b>Reset</b>.</p>
+            <h4>Vocabulary</h4>
 
             <div>
                 <input type="text" id="atomicEventNameInput" value="flip" onchange="binomial.nameChange()"
@@ -122,6 +117,7 @@ LOCAL, TESTING:     http://localhost:8888/plugins/binomial/
                        class="name-input">
                 <label for="experimentNameInput" id="experimentNameInputLabel">bar</label>
             </div>
+            <p>Enter the words you want to use in this simulator, then press <button onclick="binomial.reset()">Reset</button>.</p>
 
         </div>
     </div>
