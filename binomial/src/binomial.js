@@ -29,6 +29,11 @@ limitations under the License.
 
 const binomial = {
 
+    /**
+     * Have we changed the vocabulary?
+     */
+    dirty : false,
+
     initialize : async function() {
         await connect.connectToCODAP();
         binomial.state = await codapInterface.getInteractiveState();
@@ -45,8 +50,13 @@ const binomial = {
         binomial.ui.update();
     },
 
-    engage : function() {
+    engage : async function() {
         binomial.state.runNumber++;     //  increment the run number
+
+        if (binomial.dirty) {
+            await binomial.reset();
+            binomial.dirty = false;
+        }
 
         console.log("Engage!");
 
@@ -79,11 +89,17 @@ const binomial = {
         this.state.successProbability = Number(document.getElementById("probabilityOfSuccessInput").value);
         this.state.atomicEventsPerExperiment = Number(document.getElementById("numberOfAtomicEventsInput").value);
         this.state.experimentsPerRun = Number(document.getElementById("numberOfExperimentsInput").value);
+        if (this.state.experimentsPerRun > binomial.constants.kMaxExperimentsPerRun) {
+            this.state.experimentsPerRun = binomial.constants.kMaxExperimentsPerRun;
+            document.getElementById("numberOfExperimentsInput").value = binomial.constants.kMaxExperimentsPerRun;
+        }
 
         binomial.ui.update();
     },
 
     nameChange : function() {
+        binomial.dirty = true;
+
         this.state.words.atomicEventName = document.getElementById("atomicEventNameInput").value;
         this.state.words.eventSuccess = document.getElementById("eventSuccessInput").value;
         this.state.words.eventFailure = document.getElementById("eventFailureInput").value;
@@ -117,11 +133,12 @@ const binomial = {
     },
 
     constants : {
-        kVersion : "000a",
+        kVersion : "000b",
         kBinomialDataSetName : "binData",
         kBinomialDataSetTitle : "binomial data",
         kRunCollectionName : "runs",
         kExperimentsCollectionName : "experiments",
+        kMaxExperimentsPerRun : 400,
     }
 
 

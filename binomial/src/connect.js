@@ -89,17 +89,18 @@ connect = {
     },
 
     destroyDataset : async function() {
-        codapInterface.sendRequest({
+        await codapInterface.sendRequest({
             action : "delete",
             resource : `dataContext[${binomial.constants.kBinomialDataSetName}]`,
         });
+        console.log(`deleted [${binomial.constants.kBinomialDataSetName}]`);
     },
 
     iFrameDescriptor: {
         version: binomial.constants.kVersion,
         name: 'binomial',
         title: 'Binomial Simulator',
-        dimensions: {width: 333, height: 533},
+        dimensions: {width: 366, height: 466},
         preventDataContextReorg: false,
     },
 

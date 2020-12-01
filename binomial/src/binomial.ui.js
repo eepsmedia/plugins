@@ -46,7 +46,7 @@ binomial.ui = {
             `${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}`;
 
         eventFailureLabel.innerHTML =
-            `the opposite of <b>${binomial.state.words.eventSuccess}</b>`;
+            `the alternative to <b>${binomial.state.words.eventSuccess}</b>`;
         eventSuccessLabel.innerHTML =
             `possible result of one ${binomial.state.words.atomicEventName}`;
         experimentNameLabel.innerHTML =
