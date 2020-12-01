@@ -126,14 +126,14 @@ const binomial = {
         },
 
         successProbability : 0.5,
-        atomicEventsPerExperiment : 20,
-        experimentsPerRun : 50,
+        atomicEventsPerExperiment : 10,
+        experimentsPerRun : 100,
 
         runNumber : 0,
     },
 
     constants : {
-        kVersion : "000b",
+        kVersion : "000c",
         kBinomialDataSetName : "binData",
         kBinomialDataSetTitle : "binomial data",
         kRunCollectionName : "runs",

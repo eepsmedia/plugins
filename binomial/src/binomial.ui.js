@@ -40,8 +40,11 @@ binomial.ui = {
         descriptionDiv.innerHTML = this.makeDescription();
         probabilityLabel.innerHTML =
             `probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.successProbability}</b>.`
-        numberOfExperimentsLabel.innerHTML =
-            `${TEEUtils.pluralize(binomial.state.words.experimentName)} per run`;
+
+        let experimentsLabelText = `${TEEUtils.pluralize(binomial.state.words.experimentName)} per run. `;
+        experimentsLabelText += `<span class="fine-print">This should be large. ≥100.</span>`
+        numberOfExperimentsLabel.innerHTML = experimentsLabelText;
+
         numberOfAtomicEventsLabel.innerHTML =
             `${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}`;
 
@@ -57,16 +60,24 @@ binomial.ui = {
 
 
     makeDescription: function () {
-        let out = "";
 
-        out += `<p>Press <button onclick="binomial.engage()">Engage!</button> ` +
-            `to perform <b>${binomial.state.experimentsPerRun}</b> ${TEEUtils.pluralize(binomial.state.words.experimentName)}. <br/>` +
-            `One ${binomial.state.words.experimentName} consists of <b>${binomial.state.atomicEventsPerExperiment}</b> 
-                ${TEEUtils.pluralize(binomial.state.words.atomicEventName)}.<br/>` +
-            `One ${binomial.state.words.atomicEventName} is either <b>${binomial.state.words.eventSuccess}</b> or 
-                <b>${binomial.state.words.eventFailure}</b><br/>` +
-            `The probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.successProbability}</b>.</p>`;
-
+        let out =
+            `
+                One ${binomial.state.words.atomicEventName} 
+                is either <b>${binomial.state.words.eventSuccess}</b> or 
+                <b>${binomial.state.words.eventFailure}</b>.
+                <br/>
+                The probability of <b>${binomial.state.words.eventSuccess}</b> 
+                is <b>${binomial.state.successProbability}</b>.
+                <br/>
+                One ${binomial.state.words.experimentName} 
+                consists of <b>${binomial.state.atomicEventsPerExperiment}</b> 
+                ${TEEUtils.pluralize(binomial.state.words.atomicEventName)}.
+                <br/>
+                Press <button onclick="binomial.engage()">Engage!</button> 
+                to simulate <b>${binomial.state.experimentsPerRun}</b> 
+                ${TEEUtils.pluralize(binomial.state.words.experimentName)}.
+                `;
         return out;
     },
 
