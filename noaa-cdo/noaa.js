@@ -30,15 +30,18 @@ let noaa;
 
 noaa = {
 
+    /**
+     * Initialize the data and call other initializers.
+     */
     initialize: function () {
         noaa.state.startDate = noaa.constants.defaultStart;
         noaa.state.endDate = noaa.constants.defaultEnd;
 
-        noaa.connect.initialize();
-        noaa.ui.initialize();
+        noaa.connect.initialize();  //  initialize the connection to CODAP
+        noaa.ui.initialize();   //  initialize UI elements such as checkboxes
     },
 
-    dataValues : [],
+    dataValues : [],    //  the data we get from the NOAA server
 
     state : {
         startDate : null,
@@ -46,17 +49,29 @@ noaa = {
         database : null,
     },
 
+    /**
+     * Called when the user presses the button to get data
+     *
+     * @returns {Promise<void>}
+     */
     doGet: async function () {
         let theText = "Default text";
         let nRecords = 0;
+
+        /**
+         * Determine which dataset (daily, monthly...) the user wants. The result determines how we decode the data.
+         */
         noaa.state.database  = document.querySelector("input[name='frequencyControl']:checked").value;
 
-        const theCheckedStations = noaa.ui.getCheckedStations();
-        if (theCheckedStations.length < 1) {
+        const theCheckedStations = noaa.ui.getCheckedStations();    //  get array of checked stations IDs
+        if (theCheckedStations.length < 1) {    //  validate: do we have a station?
             this.setResultText("Need at least one station!");
             return;
         }
 
+        /**
+         * Assemble the URL to be passed to NOAA in order to get a response.
+         */
         const tDatasetIDClause = "&datasetid=" + noaa.state.database;
         const tStationIDClause = "&stationid=" + theCheckedStations.join("&stationid=");
         const tDataTypeIDClause = "&datatypeid=" + noaa.ui.getCheckedDataTypes().join("&datatypeid=");
@@ -67,24 +82,30 @@ noaa = {
             + tDatasetIDClause + tStationIDClause
             + tDataTypeIDClause + tDateClause;
 
+        //  Assemble a "fetch" request
         let tHeaders = new Headers();
-        tHeaders.append("token", noaa.constants.noaaToken);
+        tHeaders.append("token", noaa.constants.noaaToken);     //  need this for the NOAA API
         const tRequest = new Request(tURL, {headers: tHeaders});
+
         let resultText = "Request sent!";
         noaa.dataValues = [];
-        this.setResultText(resultText);
+        this.setResultText(resultText);     //  Make the text appear on the screen
         try {
+            /**
+             * Actually issue the request to fetch data from NOAA
+             * @type {Response}     The fetch result, which we will render as JSON
+             */
             const tResult = await fetch(tRequest);
             if (tResult.ok) {
                 const theJSON = await tResult.json();
-                theJSON.results.forEach( (r) => {
+                theJSON.results.forEach( (r) => {   //  process each result record
                     nRecords++;
-                    theText += "<br>" + JSON.stringify(r);
-                    const aValue = noaa.convertNOAAtoValue(r);
-                    noaa.dataValues.push(aValue);
+                    theText += "<br>" + JSON.stringify(r);      //  not used :) Useful for debugging.
+                    const aValue = noaa.convertNOAAtoValue(r); // convert to a CODAP-style object
+                    noaa.dataValues.push(aValue); //    stuff it into the array
                 });
-                noaa.connect.createNOAAItems(noaa.dataValues);
-                resultText =  "Retrieved " + nRecords + " observations";
+                noaa.connect.createNOAAItems(noaa.dataValues);  //  Make the CODAP records
+                resultText =  "Retrieved " + nRecords + " observations";    //  create informative text
             } else {
                 console.error("noaa.doGet() error: " + tResult.statusText);
                 resultText = "Error. No records retrieved.";
@@ -94,15 +115,24 @@ noaa = {
             theText = msg;
         }
 
-        this.setResultText(resultText);
+        this.setResultText(resultText);     //  tell the user how many observations we retrieved
     },
 
+    /**
+     * Display the text in the "results" area of the screen
+     * @param iText
+     */
     setResultText : function( iText ) {
         document.getElementById("results").innerHTML = iText;
 
     },
 
-
+    /**
+     * Gives a record as sent by NOAA, convert to the form we want for CODAP
+     *
+     * @param iRecord   record extracted from a NOAA response
+     * @returns {{}}
+     */
     convertNOAAtoValue : function( iRecord ) {
         let out = {};
         out.when = iRecord.date;    //  string in yyyy-mm-dd etc format
@@ -115,11 +145,24 @@ noaa = {
         return out;
     },
 
+    /**
+     * If the user has changed any dates, call this
+     * and change the noaa.state variable
+     */
     dateChange : function() {
         noaa.state.startDate = document.getElementById("startDate").value;
         noaa.state.endDate = document.getElementById("endDate").value;
     },
 
+    /**
+     * Called from convertNOAAtoValue.
+     * For many fields in the CODAP record (what, where, when) return the categorical label.
+     * For actual numeric values (temperatures, precip, etc) return a "decoded" numeric value.
+     *
+     * @param iField
+     * @param iValue
+     * @returns {*}
+     */
     decodeData : function( iField, iValue ) {
         switch(iField) {
             case "where":
@@ -131,7 +174,7 @@ noaa = {
             case "SNOW":
             case "EVAP":
             case "PRCP":
-                const decoder = noaa.dataTypes[iField].decode[noaa.state.database];
+                const decoder = noaa.dataTypes[iField].decode[noaa.state.database]; //  each data type has its own function
                 return decoder(iValue);
                 break;
             case "what":
@@ -144,7 +187,7 @@ noaa = {
     constants: {
         version : "000f",
 
-        noaaToken: "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",
+        noaaToken: "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",          //  apply to get this thing
         noaaBaseURL: "https://www.ncdc.noaa.gov/cdo-web/api/v2/",
         defaultStart: "2019-01-01",
         defaultEnd: "2019-12-31",

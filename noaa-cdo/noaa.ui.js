@@ -26,14 +26,25 @@ limitations under the License.
 
 */
 
-
+/**
+ * This solitaire copes with user interface calculations and processes.
+ * @type {{getCheckedDataTypes: (function(): []), getCheckedStations: (function(): []), makeBoxes: (function(*, *): string), initialize: noaa.ui.initialize, clearStations: noaa.ui.clearStations}}
+ */
 noaa.ui = {
 
+    /**
+     * Initialize the UI.
+     * Called by noaa.initialize()
+     */
     initialize : function() {
         document.getElementById("stationUI").innerHTML = this.makeBoxes(noaa.stations, noaa.defaultStations);
         document.getElementById("dataTypeUI").innerHTML = this.makeBoxes(noaa.dataTypes, noaa.defaultDataTypes);
     },
 
+    /**
+     * Which station boxes have been checked?
+     * @returns {[]}    An array of the station IDs. See noaaStations.js to see what we mean.
+     */
     getCheckedStations : function() {
         let out = [];
         for (const theKey in noaa.stations) {
@@ -44,6 +55,9 @@ noaa.ui = {
         return out;
     },
 
+    /**
+     * Clear the checkmarks in all the station boxes
+     */
     clearStations : function() {
         for (const theKey in noaa.stations) {
             const theBox = document.getElementById(theKey);
@@ -52,6 +66,10 @@ noaa.ui = {
 
     },
 
+    /**
+     * Get a list of the types of data to be emitted
+     * @returns {[]}    Array of the data type IDs (zB: `tAvg`). See noaaDataTypes.js.
+     */
     getCheckedDataTypes : function() {
         let out = [];
         for (const theKey in noaa.dataTypes) {

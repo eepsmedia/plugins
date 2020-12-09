@@ -29,6 +29,11 @@ limitations under the License.
 noaa.defaultDataTypes = ["TAVG"];
 
 noaa.dataTypes = {
+    /**
+     * For example, this is average temperature. Its units are Celsius.
+     * But if the "database" is GHCND, the result that gets reported is in TENTHS of a degree,
+     * so 56.7 C appears as 567. So in that case we divide by 10.
+     */
     "TAVG": {
         "name": "tAvg",
         "units" : "°C",

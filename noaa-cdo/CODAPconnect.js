@@ -28,11 +28,15 @@ limitations under the License.
 
 noaa.connect = {
 
+    /**
+     * Initialize all connections to CODAP
+     * @returns {Promise<void>}
+     */
     initialize : async function () {
-        await codapInterface.init(this.iFrameDescriptor, null);
-        await pluginHelper.initDataSet(this.noaaDataContextSetupObject);
+        await codapInterface.init(this.iFrameDescriptor, null);     //  opens the connection to CODAP
+        await pluginHelper.initDataSet(this.noaaDataContextSetupObject);    //  sets the properties of the iFrame
 
-        //  and now mutable
+        //  and now make the dataset mutable
         const tMessage = {
             "action": "update",
             "resource": "interactiveFrame",
@@ -41,9 +45,12 @@ noaa.connect = {
                 "preventDataContextReorg": false,
             }
         };
-        await codapInterface.sendRequest(tMessage);
+        await codapInterface.sendRequest(tMessage);     //  this is how you send CODAP a message
     },
 
+    /**
+     * This opens up a separate plugin, a "spreader," which we can talk about later!
+     */
     createSpreader: function () {
         const theSpreaderRequest = {
             "action": "create",
@@ -60,6 +67,9 @@ noaa.connect = {
         codapInterface.sendRequest(theSpreaderRequest);
     },
 
+    /**
+     * Clear all data from the CODAP table
+     */
     clearData :  function() {
         codapInterface.sendRequest(
             {
@@ -94,6 +104,9 @@ noaa.connect = {
         });
     },
 
+    /**
+     * Uses in initialization: set the properties of the iFrame the plug lives in
+     */
     iFrameDescriptor : {
         name: noaa.constants.DSName,
         title: noaa.constants.DSTitle,
@@ -101,6 +114,10 @@ noaa.connect = {
         dimensions: noaa.constants.tallDimensions,      //      dimensions,
     },
 
+    /**
+     * This object sets the properties of the CODAP dataset.
+     * That is, here is where you set the names of all the columns in the table!
+     */
     noaaDataContextSetupObject : {
         name : noaa.constants.DSName,
         title : noaa.constants.DSName,

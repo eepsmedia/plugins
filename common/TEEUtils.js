@@ -51,6 +51,8 @@ const TEEUtils = {
                     thePlural = 'children';
                 } else if (thePlural === 'radius') {
                     thePlural = 'radii';
+                } else if (thePlural === 'die') {
+                    thePlural = 'dice';
                     /*
                                 } else if (lastTwo === 'um') {
                                     thePlural = thePlural.slice(0, theLength - 2) + "a";
