@@ -30,9 +30,9 @@ limitations under the License.
 -->
 
 <!--
-  LOCAL, TESTING:         http://localhost:8888/plugins/gator/
+  LOCAL, TESTING:         http://localhost/plugins/gator/
   LOCAL testing WITH CODAP:
-        http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/gator/
+        http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/gator/
 -->
 
 
@@ -40,26 +40,28 @@ limitations under the License.
     <meta charset="UTF-8">
     <title>Gator</title>
 
+    <!--        jquery section      -->
+    <script src="../../common/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" type='text/css' href="../../common/jquery/jquery-ui.min.css">
+    <script src="../../common/jquery/jquery-ui.min.js"></script>
+
 
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
 
-    <link rel="stylesheet" type='text/css' href="../common/jqueryFolder/jquery-ui.css">
     <link rel='stylesheet' type='text/css' href='css/gator.css'/>
 
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
-    <script src="../common/TEEUtils.js"></script>
-    <script src="../common/jqueryFolder/jquery.min.js"></script>
-    <script src="../common/jqueryFolder/jquery-ui.js"></script>
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/TEEUtils.js"></script>
 
 
     <script src="src/gator.js"></script>
     <script src="src/gator_ui.js"></script>
     <script src="src/connect.js"></script>
 
-    <script src="../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
     <script>
         $(function () {

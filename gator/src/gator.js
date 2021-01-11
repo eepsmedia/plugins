@@ -55,7 +55,7 @@ const gator = {
     },
 
     freshState: function () {
-        console.log(`called lens.freshState()`);
+        console.log(`called gator.freshState()`);
         return {
             datasetName: "",
         };

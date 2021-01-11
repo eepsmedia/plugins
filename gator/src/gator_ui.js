@@ -91,10 +91,17 @@ const gator_ui = {
             return tGuts;
         },
 
+        /**
+         * Create the checkboxes for an entire group of attributes.
+         * Called by `make()`
+         * @param iGroupAfAttributes
+         * @returns {string}
+         */
         makeAttrGroupCode(iGroupAfAttributes) {
             let tGuts = "";
             iGroupAfAttributes.forEach(att => {
                 const attrInfoButton = this.makeAttrInfo(att);
+                const visibilityButton = this.makeVisibilityButton(att);
                 const isHiddenNow = att.hidden;
                 const checkedText = isHiddenNow ? "" : "checked";
                 tGuts += `<div class="a-checkbox">`;
@@ -104,6 +111,7 @@ const gator_ui = {
                 tGuts += `<label for="att_${att.name}" class="att_label">${att.title}</label>`;
                 tGuts += `</span>`;
                 tGuts += attrInfoButton;
+                tGuts += visibilityButton;
                 tGuts += `</div>`;
 
                 if (attrInfoButton) {
@@ -111,6 +119,25 @@ const gator_ui = {
                 }
             })
             return tGuts;
+        },
+
+        makeVisibilityButton(iAttr) {
+
+            const isHidden = iAttr.hidden;
+            const visibilityIconPath = isHidden ?
+                "../../common/art/visibility-no.png" :
+                "../../common/art/visibility.png";
+
+            const theHint = isHidden ? `click to make ${iAttr.title} visible in the table` :
+                `click to hide ${iAttr.title} in the table`;
+
+            const theImage = `&emsp;<img class="vertically-centered-image image-button" 
+                    src=${visibilityIconPath} width="14" title="${theHint}" 
+                    onclick="gator_ui.attributeCheckboxes.makeSweetAlert('${iAttr.title}', '${theHint}')" 
+                    alt = "visibility image"  
+                    />`;
+
+            return theImage;
         },
 
         makeAttrInfo(iAttr) {
