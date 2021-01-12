@@ -34,6 +34,7 @@ const connect = {
         await codapInterface.init(this.iFrameDescriptor, null);
 
         //
+/*
         const tMessage = {
             "action": "update",
             "resource": "interactiveFrame",
@@ -47,6 +48,7 @@ const connect = {
         if (!updateIframeResult.success) {
             Swal.fire({icon: "error", text: `Problem making the interactive frame mutable`});
         }
+*/
 
     },
 
@@ -102,20 +104,13 @@ const connect = {
      * @returns {Promise<null|*>}
      */
     refreshDatasetInfoFor: async function (iName) {
+        console.log(`gator --- connect --- refreshing dataset info for [${iName}]`);
         const tMessage = {
             "action": "get",
             "resource": `dataContext[${iName}]`
         }
         const dsInfoResult = await codapInterface.sendRequest(tMessage);
         if (dsInfoResult.success) {
-            this.processDatasetInfoForAttributeClumps(dsInfoResult.values); //  get clumps and add the collection
-
-            //  dsInfoResult.values["attLocations"] = this.processDatasetInfoForAttributeLocations(dsInfoResult.values);
-
-            //  so, for example, `lens.state.datasetInfo.attLocations.filterCollection`
-            //  will hold the name of the collection that the filter attribute is in
-
-            //  console.log(`å   attLocations: ${JSON.stringify(dsInfoResult.values.attLocations)}`);
             return dsInfoResult.values;
         } else {
             Swal.fire({icon: "error", title: "Drat!", text: `Problem getting information for dataset [${iName}]`});
@@ -161,6 +156,16 @@ const connect = {
         return outCases;
     },
 
+    /**
+     * Assign the given attribute (by name) to the clump (also by name).
+     * This actually updates the dataset, so that the next time we process it,
+     * gator will read the clump assignment properly.
+     *
+     * @param iDSName   the string name of the dataset
+     * @param iAttName  the string name of the attribute
+     * @param iClump    the string name of the clump
+     * @returns {Promise<void>}
+     */
     setAttributeClump : async function(iDSName, iAttName, iClump) {
         const theCollection =  this.utilities.collectionNameFromAttributeName(iAttName, gator.datasetInfo);
         let theDescription = this.utilities.descriptionFromAttributeName(iAttName, gator.datasetInfo);
@@ -235,37 +240,13 @@ const connect = {
 
     },
 
-    /**
-     * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
-     *
-     * For example, `{work}Percent of people working in agriculture`
-     * puts the attribute in a clump called "work" and then strips that tag from the description
-     *
-     * @param theInfo   the information on all collections and attributes
-     */
-    processDatasetInfoForAttributeClumps: function (theInfo) {
-        theInfo.collections.forEach(coll => {
-            coll.attrs.forEach(att => {
-                let theDescription = att.description;
-                let theClump = "";
-                const leftB = theDescription.indexOf("{");
-                const rightB = theDescription.indexOf("}");
-                if (rightB > leftB) {
-                    theClump = theDescription.substring(leftB + 1, rightB);
-                    att["description"] = theDescription.substring(rightB + 1);
-                }
-                att["clump"] = theClump;
-                att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
-            })
-        })
-    },
 
     iFrameDescriptor: {
         version: gator.constants.version,
         name: 'gator',
         title: 'gator',
         dimensions: {
-            width: 444, height: 333,
+            width: 333, height: 444,
         },
     },
 

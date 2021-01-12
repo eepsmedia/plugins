@@ -52,13 +52,40 @@ h1  {
 }
 
 
-/* used for info button */
+/* used for info and other buttons */
 .image-button {
+    cursor: pointer;
+}
+
+.attribute-clump {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.attribute-control-cluster {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    height: 20px;
+}
+
+.small-button-image {
+    width: 14px;
+    height: 14px;
     cursor: pointer;
 }
 
 .vertically-centered-image {
     vertical-align: middle;
+    display: inline-block;
     height : 100%;
 }
+
+.att_label {
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+
+}
+
 

@@ -31,29 +31,78 @@ const gator_ui = {
 
     currentClumpName : "",
 
+    /**
+     * An object keyed by clump names that records whether the details for that clump are open.
+     */
+    clumpRecord : {},
+
     initialize: async function () {
         //  set up the dataset menu
         await this.datasetMenu.install();      //  async but we can go on...
-        this.update();
+        //  this.update();
     },
 
     update: async function () {
-        this.attributeCheckboxes.install();
-
+        this.recordCurrentOpenDetailStates();
+        gator.datasetInfo = await connect.refreshDatasetInfoFor(gator.state.datasetName);
+        this.processDatasetInfoForAttributeClumps(gator.datasetInfo); //  get clumps and add the collection
+        this.attributeControls.install();
     },
 
     changeAttributeClumpNameInput : function(e) {
         const theNameBox = document.getElementById("clump-name-text-input");
         this.currentClumpName = theNameBox.value;
 
-        this.attributeCheckboxes.install();
+        this.attributeControls.install();
+    },
+
+    recordCurrentOpenDetailStates   : function() {
+        for (const clump in this.clumpRecord) {
+            if (clump !== gator.constants.noClumpString) {
+                const theID = "details-" + clump;
+                const theElement = document.getElementById(theID);
+                if (theElement) {   //  there might be an empty clump, so no element to be open or closed
+                    this.clumpRecord[clump].open = theElement.hasAttribute("open");
+                }
+            }
+        }
+    },
+
+    /**
+     * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
+     *
+     * For example, `{work}Percent of people working in agriculture`
+     * puts the attribute in a clump called "work" and then strips that tag from the description
+     *
+     * @param theInfo   the information on all collections and attributes
+     */
+    processDatasetInfoForAttributeClumps: function (theInfo) {
+        theInfo.collections.forEach(coll => {
+            coll.attrs.forEach(att => {
+                let theDescription = att.description;
+                let theClump = gator.constants.noClumpString;
+                const leftB = theDescription.indexOf("{");
+                const rightB = theDescription.indexOf("}");
+                if (rightB > leftB) {
+                    theClump = theDescription.substring(leftB + 1, rightB);
+                    att["description"] = theDescription.substring(rightB + 1);  //  strip the bracketed clump name from the description
+                }
+                att["clump"] = theClump;
+                att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
+
+                //  add an element to the object for this clump if it's not there already
+                if (!this.clumpRecord[theClump]) {
+                    this.clumpRecord[theClump] = {open : true};
+                }
+            })
+        })
     },
 
     /*
         attribute checkbox section
     */
 
-    attributeCheckboxes: {
+    attributeControls: {
         divID: "chooseAttributeDiv",
 
         preprocessAttributes: function (iCollInfo) {
@@ -86,12 +135,15 @@ const gator_ui = {
 
                 for (const theClumpName in mungedAttributes) {
                     const theArrayOfAttributes = mungedAttributes[theClumpName];
-                    const theAttributeBoxCode = this.makeAttrClumpCode(theArrayOfAttributes, theClumpName);
+                    const oneAttributeClumpControlSet = this.makeAttrClumpCode(theArrayOfAttributes, theClumpName);
+                    const openClause = gator_ui.clumpRecord[theClumpName].open ? "open" : "";
+                    const theDOMID = "details-" + theClumpName;
+
                     if (theClumpName === gator.constants.noClumpString) {
-                        tGuts += `${theAttributeBoxCode}`;
+                        tGuts += `${oneAttributeClumpControlSet}`;
                     } else {
-                        tGuts += `<details><summary>${theClumpName}</summary>`;
-                        tGuts += `${theAttributeBoxCode}`;
+                        tGuts += `<details id="${theDOMID}" ${openClause}><summary>${theClumpName}</summary>`;
+                        tGuts += `${oneAttributeClumpControlSet}`;
                         tGuts += `</details>`;
                     }
                 }       //  end of for-in loop over clumps
@@ -102,14 +154,14 @@ const gator_ui = {
         },
 
         /**
-         * Create the checkboxes for an entire clump of attributes.
+         * Create the attribute controls for an entire clump of attributes.
          * Called by `make()`
          * @param iClumpOfAttributes    array of attribute infos
          * @param iClumpName    the name of this clump, a string
          * @returns {string}
          */
         makeAttrClumpCode(iClumpOfAttributes, iClumpName) {
-            let tGuts = "";
+            let tGuts = "<div class='attribute-clump'>";
             const isCurrentClump = iClumpName === gator_ui.currentClumpName;
 
             iClumpOfAttributes.forEach(att => {
@@ -118,18 +170,21 @@ const gator_ui = {
                 const addSubtractClumpButton = this.makeAddSubtractClumpButton(att);
                 const isHiddenNow = att.hidden;
                 const checkedText = isHiddenNow ? "" : "checked";
-                tGuts += `<div class="a-checkbox">`;
-                tGuts += `<span class="checkbox-and-text">`;
-                tGuts += `<input id="att_${att.name}" type="checkbox" ${checkedText} 
-                                onchange="gator_ui.attributeCheckboxes.handle('${att.name}')">`;
+
+                tGuts += `<div class="attribute-control-cluster">`;
+                tGuts += "&emsp;" + visibilityButton;
+                tGuts += "&ensp;" + addSubtractClumpButton;
+/*
+                tGuts += `<input id="att_${att.name}" type="checkbox" ${checkedText}
+                                onchange="gator_ui.attributeControls.handle('${att.name}')">`;
                 tGuts += `<label for="att_${att.name}" class="att_label">${att.title}</label>`;
-                tGuts += `</span>`;
+*/
+                tGuts += `&ensp; ${att.title}`;
                 tGuts += attrInfoButton;
-                tGuts += visibilityButton;
-                tGuts += addSubtractClumpButton;
                 tGuts += `</div>`;
 
             })
+            tGuts += "</div>"
             return tGuts;
         },
 
@@ -143,13 +198,18 @@ const gator_ui = {
             const theHint = isHidden ? `click to make ${iAttr.title} visible in the table` :
                 `click to hide ${iAttr.title} in the table`;
 
-            const theImage = `&emsp;<img class="vertically-centered-image image-button" 
-                    src=${visibilityIconPath} width="14" title="${theHint}" 
-                    onclick="gator_ui.attributeCheckboxes.makeSweetAlert('${iAttr.title}', '${theHint}')" 
+            const theImage = `<img class="small-button-image" 
+                    src=${visibilityIconPath} title="${theHint}" 
+                    onclick="gator_ui.attributeControls.handleVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "visibility image"  
                     />`;
 
             return theImage;
+        },
+
+        async handleVisibilityButton(iAttName, iHidden) {
+            await connect.showHideAttribute(gator.state.datasetName, iAttName, !iHidden);
+            gator_ui.update();
         },
 
         makeAddSubtractClumpButton(iAttr) {
@@ -165,8 +225,8 @@ const gator_ui = {
                 `click to remove ${iAttr.title} from clump ${iAttr.clump}` :
                 `click to add ${iAttr.title} to clump ${gator_ui.currentClumpName}`;
 
-            const theImage = `&emsp;<img class="vertically-centered-image image-button" 
-                    src=${clumpIconPath} width="14" title="${theHint}" 
+            const theImage = `&nbsp;<img class="small-button-image" 
+                    src=${clumpIconPath} title="${theHint}" 
                     onclick="gator.addAttributeToClump('${iAttr.name}', '${destClump}')" 
                     alt = "clump toggle image"  
                     />`;
@@ -187,9 +247,12 @@ const gator_ui = {
                 if (iAttr.unit) {
                     theHint += ` (${iAttr.unit})`;
                 }
-                const theImage = `&emsp;<img class="vertically-centered-image image-button" 
+                if (iAttr.clump && iAttr.clump !== gator.constants.noClumpString) {
+                    theHint += ` (${iAttr.clump})`;
+                }
+                const theImage = `&emsp;<img class="small-button-image" 
                     src="art/info.png" width="14" title="${theHint}" 
-                    onclick="gator_ui.attributeCheckboxes.makeSweetAlert('${iAttr.title}', '${theHint}')" 
+                    onclick="gator_ui.attributeControls.makeSweetAlert('${iAttr.title}', '${theHint}')" 
                     alt = "circular information button image"  
                     />`;
                 out += theImage;

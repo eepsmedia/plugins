@@ -40,12 +40,22 @@ const gator = {
 
         //  Note: if there is only one dataset, the state.datasetName gets set to that DS
         //  Therefore _ui.initialize() must follow the call to getInteractiveState.
-        await gator_ui.initialize();
+        try {
+            console.log(`gator --- ui.initialize --- try`);
+            await gator_ui.initialize();
+        } catch (msg) {
+            console.log(`gator --- ui.initialize --- catch [${msg}]`);
+        }
 
         //  Do we have a DS name?
 
         if (gator.state.datasetName) {
-            await gator.setTargetDataset();
+            console.log(`gator --- initialize --- about to set to [${gator.state.datasetName}]`);
+            try {
+                await gator.setTargetDataset();
+            } catch (e) {
+                console.log(`gator --- initialize.setTargetDatabase --- catch [${e}]`);
+            }
         }
 
         if (Object.keys(gator.state).length === 0 && gator.state.constructor === Object) {
@@ -72,18 +82,21 @@ const gator = {
     setTargetDatasetByName: async function (iName) {
 
         //  get all the information on this dataset
-        const tInfo = await connect.refreshDatasetInfoFor(iName);
-        if (tInfo.name) {
-            console.log(`∂   changing dataset to [${iName}]`);
-            this.state.datasetName = tInfo.name;
-            this.datasetInfo = tInfo;
-            gator_ui.attributeCheckboxes.install();
+        if (iName) {
+            this.datasetInfo = await connect.refreshDatasetInfoFor(iName);
+            if (this.datasetInfo) {
+                console.log(`∂   changing dataset to [${iName}]`);
+                this.state.datasetName = this.datasetInfo.name;
+                gator_ui.processDatasetInfoForAttributeClumps(this.datasetInfo); //  get clumps and add the collection
+                gator_ui.attributeControls.install();
 
-            //  now with a new dataset, we need to set up notifications and get all the attributes
-            connect.setUpOtherNotifications();
+                //  now with a new dataset, we need to set up notifications and get all the attributes
+                connect.setUpOtherNotifications();
 
-            this.loadCurrentData(iName);
-            //  connect.makeTagsAttributeIn(iName);
+                await this.loadCurrentData(iName);
+                //  connect.makeTagsAttributeIn(iName);
+                gator_ui.update();
+            }
 
         } else {
             console.log(`?   called setTargetDatasetByName without a dataset name`);
@@ -109,7 +122,7 @@ const gator = {
     },
 
     constants : {
-        version : '000a',
+        version : '000b',
         noClumpString : "none",
     }
 }
