@@ -103,8 +103,13 @@ const gator = {
         return lastCollName;
     },
 
+    addAttributeToClump : async function(iAttName, iClumpName) {
+        await connect.setAttributeClump(gator.state.datasetName, iAttName, iClumpName);
+        gator_ui.update();
+    },
+
     constants : {
         version : '000a',
-        noGroupString : "none",
+        noClumpString : "none",
     }
 }

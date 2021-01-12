@@ -30,9 +30,9 @@ limitations under the License.
 
 <!--
 
-  LOCAL, TESTING:         http://localhost:8888/plugins/lens/
+  LOCAL, TESTING:         http://localhost/plugins/lens/
   LOCAL testing WITH CODAP:
-        http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/lens/
+        http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/lens/
 
 
 https://codap.concord.org/app/static/dg/en/cert/index.html#shared=https://cfm-shared.concord.org/7tSgTslcVGqP2IeI6KOL/file.json?di=http://localhost:8888/plugins/lens/
@@ -44,19 +44,19 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
     <meta charset="UTF-8">
     <title>Lens</title>
 
+    <script src="../../common/jquery/jquery.min.js"></script>
+    <script src="../../common/jquery/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="../../common/jquery/jquery-ui.min.css">
 
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
 
-    <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.css">
     <link rel='stylesheet' type='text/css' href='css/lens.css'/>
 
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
-    <script src="../common/TEEUtils.js"></script>
-    <script src="../common/jqueryFolder/jquery.min.js"></script>
-    <script src="../common/jqueryFolder/jquery-ui.js"></script>
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/TEEUtils.js"></script>
 
 
     <script src="src/lens.js"></script>
@@ -67,7 +67,7 @@ http://localhost:8888/codap/static/dg/en/cert/index.html#shared=https://cfm-shar
     <script src="src/zip-model.js"></script>
 
 
-    <script src="../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
 
     <script>

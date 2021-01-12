@@ -108,7 +108,8 @@ const connect = {
         }
         const dsInfoResult = await codapInterface.sendRequest(tMessage);
         if (dsInfoResult.success) {
-            //  this.processDatasetInfoForAttributeGroups(dsInfoResult.values);
+            this.processDatasetInfoForAttributeClumps(dsInfoResult.values); //  get clumps and add the collection
+
             //  dsInfoResult.values["attLocations"] = this.processDatasetInfoForAttributeLocations(dsInfoResult.values);
 
             //  so, for example, `lens.state.datasetInfo.attLocations.filterCollection`
@@ -160,6 +161,29 @@ const connect = {
         return outCases;
     },
 
+    setAttributeClump : async function(iDSName, iAttName, iClump) {
+        const theCollection =  this.utilities.collectionNameFromAttributeName(iAttName, gator.datasetInfo);
+        let theDescription = this.utilities.descriptionFromAttributeName(iAttName, gator.datasetInfo);
+
+        theDescription = "{" + iClump + "}" + theDescription;
+
+        if (theCollection) {
+            const theResource = `dataContext[${iDSName}].collection[${theCollection}].attribute[${iAttName}]`;
+
+            const tMessage = {
+                "action": "update",
+                "resource": theResource,
+                "values": {
+                    "description": theDescription,
+                }
+            }
+            const addClumpResult = await codapInterface.sendRequest(tMessage);
+            console.log(`    ∂    ${addClumpResult.success ? "success" : "failure"} adding ${iAttName} to clump ${iClump}`);
+        } else {
+            Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttName}]`});
+        }
+
+    },
 
     showHideAttribute: async function (iDSName, iAttr, toHide) {
         const theCollection = await this.utilities.collectionNameFromAttributeName(iAttr, gator.datasetInfo);
@@ -183,7 +207,7 @@ const connect = {
 
     utilities : {
 
-        collectionNameFromAttributeName : async function(iName, info) {
+        collectionNameFromAttributeName : function(iName, info) {
             let out = "";
 
             info.collections.forEach( coll => {
@@ -194,8 +218,46 @@ const connect = {
                 })
             })
             return out;
+        },
+
+        descriptionFromAttributeName : function(iName, info) {
+            let out = "";
+
+            info.collections.forEach( coll => {
+                coll.attrs.forEach( att => {
+                    if (att.name === iName) {
+                        out = att.description;
+                    }
+                })
+            })
+            return out;
         }
 
+    },
+
+    /**
+     * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
+     *
+     * For example, `{work}Percent of people working in agriculture`
+     * puts the attribute in a clump called "work" and then strips that tag from the description
+     *
+     * @param theInfo   the information on all collections and attributes
+     */
+    processDatasetInfoForAttributeClumps: function (theInfo) {
+        theInfo.collections.forEach(coll => {
+            coll.attrs.forEach(att => {
+                let theDescription = att.description;
+                let theClump = "";
+                const leftB = theDescription.indexOf("{");
+                const rightB = theDescription.indexOf("}");
+                if (rightB > leftB) {
+                    theClump = theDescription.substring(leftB + 1, rightB);
+                    att["description"] = theDescription.substring(rightB + 1);
+                }
+                att["clump"] = theClump;
+                att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
+            })
+        })
     },
 
     iFrameDescriptor: {

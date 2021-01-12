@@ -29,6 +29,8 @@ limitations under the License.
 
 const gator_ui = {
 
+    currentClumpName : "",
+
     initialize: async function () {
         //  set up the dataset menu
         await this.datasetMenu.install();      //  async but we can go on...
@@ -36,7 +38,15 @@ const gator_ui = {
     },
 
     update: async function () {
+        this.attributeCheckboxes.install();
 
+    },
+
+    changeAttributeClumpNameInput : function(e) {
+        const theNameBox = document.getElementById("clump-name-text-input");
+        this.currentClumpName = theNameBox.value;
+
+        this.attributeCheckboxes.install();
     },
 
     /*
@@ -48,15 +58,15 @@ const gator_ui = {
 
         preprocessAttributes: function (iCollInfo) {
             let out = {};
-            out[gator.constants.noGroupString] = [];
+            out[gator.constants.noClumpString] = [];
 
             iCollInfo.forEach(coll => {
                 coll.attrs.forEach(att => {
-                    const theGroup = att.group ? att.group : gator.constants.noGroupString;
-                    if (!out[theGroup]) {
-                        out[theGroup] = [];     //  fresh array for new group
+                    const theClump = att.clump ? att.clump : gator.constants.noClumpString;
+                    if (!out[theClump]) {
+                        out[theClump] = [];     //  fresh array for new clump
                     }
-                    out[theGroup].push(att);
+                    out[theClump].push(att);
                 })
             })
 
@@ -74,17 +84,17 @@ const gator_ui = {
                 if (hierarchy) {
                 }
 
-                for (const theGroup in mungedAttributes) {
-                    const theArrayOfAttributes = mungedAttributes[theGroup];
-                    const theAttributeBoxCode = this.makeAttrGroupCode(theArrayOfAttributes);
-                    if (theGroup === gator.constants.noGroupString) {
+                for (const theClumpName in mungedAttributes) {
+                    const theArrayOfAttributes = mungedAttributes[theClumpName];
+                    const theAttributeBoxCode = this.makeAttrClumpCode(theArrayOfAttributes, theClumpName);
+                    if (theClumpName === gator.constants.noClumpString) {
                         tGuts += `${theAttributeBoxCode}`;
                     } else {
-                        tGuts += `<details><summary>${theGroup}</summary>`;
+                        tGuts += `<details><summary>${theClumpName}</summary>`;
                         tGuts += `${theAttributeBoxCode}`;
                         tGuts += `</details>`;
                     }
-                }       //  end of for-in loop over groups
+                }       //  end of for-in loop over clumps
             } else {
                 tGuts = "No attributes to work with here";
             }
@@ -92,16 +102,20 @@ const gator_ui = {
         },
 
         /**
-         * Create the checkboxes for an entire group of attributes.
+         * Create the checkboxes for an entire clump of attributes.
          * Called by `make()`
-         * @param iGroupAfAttributes
+         * @param iClumpOfAttributes    array of attribute infos
+         * @param iClumpName    the name of this clump, a string
          * @returns {string}
          */
-        makeAttrGroupCode(iGroupAfAttributes) {
+        makeAttrClumpCode(iClumpOfAttributes, iClumpName) {
             let tGuts = "";
-            iGroupAfAttributes.forEach(att => {
+            const isCurrentClump = iClumpName === gator_ui.currentClumpName;
+
+            iClumpOfAttributes.forEach(att => {
                 const attrInfoButton = this.makeAttrInfo(att);
                 const visibilityButton = this.makeVisibilityButton(att);
+                const addSubtractClumpButton = this.makeAddSubtractClumpButton(att);
                 const isHiddenNow = att.hidden;
                 const checkedText = isHiddenNow ? "" : "checked";
                 tGuts += `<div class="a-checkbox">`;
@@ -112,11 +126,9 @@ const gator_ui = {
                 tGuts += `</span>`;
                 tGuts += attrInfoButton;
                 tGuts += visibilityButton;
+                tGuts += addSubtractClumpButton;
                 tGuts += `</div>`;
 
-                if (attrInfoButton) {
-                    //  console.log(`å   attrInfoButton: ${attrInfoButton}`)
-                }
             })
             return tGuts;
         },
@@ -138,6 +150,29 @@ const gator_ui = {
                     />`;
 
             return theImage;
+        },
+
+        makeAddSubtractClumpButton(iAttr) {
+
+            const destClump =  (iAttr.clump && iAttr.clump !== gator.constants.noClumpString) ?
+                gator.constants.noClumpString : gator_ui.currentClumpName ;
+
+            const clumpIconPath = (destClump === gator.constants.noClumpString) ?
+                "../../common/art/clear.png" :
+                "../../common/art/add.png";
+
+            const theHint = (destClump === gator.constants.noClumpString) ?
+                `click to remove ${iAttr.title} from clump ${iAttr.clump}` :
+                `click to add ${iAttr.title} to clump ${gator_ui.currentClumpName}`;
+
+            const theImage = `&emsp;<img class="vertically-centered-image image-button" 
+                    src=${clumpIconPath} width="14" title="${theHint}" 
+                    onclick="gator.addAttributeToClump('${iAttr.name}', '${destClump}')" 
+                    alt = "clump toggle image"  
+                    />`;
+
+            return theImage;
+
         },
 
         makeAttrInfo(iAttr) {
