@@ -324,7 +324,7 @@ const gator_ui = {
                     theHint += ` (${iAttr.clump})`;
                 }
                 const theImage = `&emsp;<img class="small-button-image" 
-                    src="art/info.png" width="14" title="${theHint}" 
+                    src="../../common/art/info.png" width="14" title="${theHint}" 
                     onclick="gator_ui.attributeControls.makeSweetAlert('${iAttr.title}', '${theHint}')" 
                     alt = "circular information button image"  
                     />`;
