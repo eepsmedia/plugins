@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-
+/*  global Swal  */
 const gator_ui = {
 
     currentClumpName : "",
@@ -51,7 +51,7 @@ const gator_ui = {
     },
 
     makeSummary : function() {
-        summaryEl = document.getElementById(gator.constants.summaryElementID);
+        const summaryEl = document.getElementById(gator.constants.summaryElementID);
 
         let theText = "";
         let nAtts = 0;
@@ -371,13 +371,13 @@ const gator_ui = {
             }
         },
 
-        handle: function () {
+        handle: async function () {
             const tElement = document.getElementById(this.menuID);
             if (tElement) {
                 const theName = tElement.value;
                 if (theName !== gator.datasetInfo.title) {
                     console.log(`∂  switching from [${gator.datasetInfo.title}] to [${theName}]`);
-                    gator.setTargetDatasetByName(theName);
+                    await gator.setTargetDatasetByName(theName);
                 }
             } else {
                 console.log(`NB: no dataset menu`);
