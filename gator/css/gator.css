@@ -64,11 +64,23 @@ h1  {
 }
 
 .attribute-control-cluster {
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+    font-size : small;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: left;
     height: 20px;
+}
+
+.summary-head {
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+    font-size: medium;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;    //  vertical align
+    justify-content: left;
+    height: 24px;
 }
 
 .small-button-image {

@@ -47,6 +47,26 @@ const gator_ui = {
         gator.datasetInfo = await connect.refreshDatasetInfoFor(gator.state.datasetName);
         this.processDatasetInfoForAttributeClumps(gator.datasetInfo); //  get clumps and add the collection
         this.attributeControls.install();
+        this.makeSummary();
+    },
+
+    makeSummary : function() {
+        summaryEl = document.getElementById(gator.constants.summaryElementID);
+
+        let theText = "";
+        let nAtts = 0;
+        if (gator.datasetInfo) {
+            gator.datasetInfo.collections.forEach( coll => {
+                coll.attrs.forEach( att => {
+                    nAtts++;
+                })
+            })
+        }
+        const nCases = Object.keys(gator.theData).length;
+
+        theText += `${nAtts} attributes, ${nCases} cases.`
+
+        summaryEl.innerHTML = theText;
     },
 
     changeAttributeClumpNameInput : function(e) {
@@ -145,8 +165,11 @@ const gator_ui = {
                         const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);
                         tGuts += `<details id="${theDOMID}" ${openClause}>
                             <summary>
+                            <div class="summary-head">
                                 ${theClumpName}&emsp;${clumpVisibilityButtons}
-                            </summary>`;
+                            </div>
+                            </summary>
+                            `;
                         tGuts += `${oneAttributeClumpControlSet}`;
                         tGuts += `</details>`;
                     }
@@ -263,7 +286,7 @@ const gator_ui = {
             const useClearIcon = (destClump === gator.constants.noClumpString);
 
             const clumpIconPath = useClearIcon ?
-                "../../common/art/clear.png" :
+                "../../common/art/subtract.png" :
                 "../../common/art/add.png";
 
             const theHint = (destClump === gator.constants.noClumpString) ?

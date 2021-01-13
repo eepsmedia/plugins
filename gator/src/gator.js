@@ -123,6 +123,7 @@ const gator = {
 
     constants : {
         version : '000b',
+        summaryElementID : 'summaryInfo',
         noClumpString : "none",
     }
 }
