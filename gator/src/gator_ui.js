@@ -92,7 +92,7 @@ const gator_ui = {
 
                 //  add an element to the object for this clump if it's not there already
                 if (!this.clumpRecord[theClump]) {
-                    this.clumpRecord[theClump] = {open : true};
+                    this.clumpRecord[theClump] = {open : false};
                 }
             })
         })
@@ -142,7 +142,11 @@ const gator_ui = {
                     if (theClumpName === gator.constants.noClumpString) {
                         tGuts += `${oneAttributeClumpControlSet}`;
                     } else {
-                        tGuts += `<details id="${theDOMID}" ${openClause}><summary>${theClumpName}</summary>`;
+                        const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);
+                        tGuts += `<details id="${theDOMID}" ${openClause}>
+                            <summary>
+                                ${theClumpName}&emsp;${clumpVisibilityButtons}
+                            </summary>`;
                         tGuts += `${oneAttributeClumpControlSet}`;
                         tGuts += `</details>`;
                     }
@@ -212,25 +216,71 @@ const gator_ui = {
             gator_ui.update();
         },
 
+        makeClumpVisibilityButtons : function (iClumpName) {
+            const theHideHint = `Hide all attributes in [${iClumpName}]`;
+            const theShowHint = `Show all attributes in [${iClumpName}]`;
+
+            const hidingImage = `<img class="small-button-image" 
+                    src="../../common/art/visibility-no.png" title="${theHideHint}" 
+                    onclick="gator_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', true)"
+                    alt = "clump invisibility image"  
+                    />`;
+            const showingImage = `<img class="small-button-image" 
+                    src="../../common/art/visibility.png" title="${theShowHint}" 
+                    onclick="gator_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', false)" 
+                    alt = "clump visibility image"  
+                    />`;
+
+            return hidingImage + "&ensp;" + showingImage;
+        },
+
+        handleClumpVisibilityButton : async function(iClumpName, toHide) {
+            event.preventDefault();
+            //  event.stopPropagation();
+            console.log(`${toHide ? "Hiding" : "Showing"} clump [${iClumpName}]`);
+
+            let thePromises = [];
+
+            gator.datasetInfo.collections.forEach( coll => {
+                coll.attrs.forEach( att => {
+                    if (att.clump === iClumpName) {
+                        const p = connect.showHideAttribute(gator.state.datasetName, att.name, toHide);
+                        thePromises.push(p);    //  collect all these promises
+                    }
+                })
+            })
+
+            await Promise.all(thePromises);
+            gator_ui.update();
+        },
+
         makeAddSubtractClumpButton(iAttr) {
 
             const destClump =  (iAttr.clump && iAttr.clump !== gator.constants.noClumpString) ?
                 gator.constants.noClumpString : gator_ui.currentClumpName ;
 
-            const clumpIconPath = (destClump === gator.constants.noClumpString) ?
+            // we will clear the clump if our computed "destination" is no clump.
+            const useClearIcon = (destClump === gator.constants.noClumpString);
+
+            const clumpIconPath = useClearIcon ?
                 "../../common/art/clear.png" :
                 "../../common/art/add.png";
 
             const theHint = (destClump === gator.constants.noClumpString) ?
-                `click to remove ${iAttr.title} from clump ${iAttr.clump}` :
-                `click to add ${iAttr.title} to clump ${gator_ui.currentClumpName}`;
+                `click to remove ${iAttr.title} from clump [${iAttr.clump}]` :
+                `click to add ${iAttr.title} to clump [${gator_ui.currentClumpName}]`;
 
-            const theImage = `&nbsp;<img class="small-button-image" 
+            let theImage = `&nbsp;<img class="small-button-image" 
                     src=${clumpIconPath} title="${theHint}" 
                     onclick="gator.addAttributeToClump('${iAttr.name}', '${destClump}')" 
                     alt = "clump toggle image"  
                     />`;
 
+            //  but if there is nothing in the clump name box, we cannot use the "add" button
+
+            if (!useClearIcon && !gator_ui.currentClumpName) {
+                theImage = "";
+            }
             return theImage;
 
         },

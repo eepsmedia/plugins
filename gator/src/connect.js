@@ -104,7 +104,7 @@ const connect = {
      * @returns {Promise<null|*>}
      */
     refreshDatasetInfoFor: async function (iName) {
-        console.log(`gator --- connect --- refreshing dataset info for [${iName}]`);
+        //  console.log(`gator --- connect --- refreshing dataset info for [${iName}]`);
         const tMessage = {
             "action": "get",
             "resource": `dataContext[${iName}]`
