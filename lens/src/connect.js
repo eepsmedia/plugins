@@ -258,15 +258,17 @@ connect = {
                 await this.makeTagsAttributeIn(lens.state.datasetInfo.name);
 
                 //  first we get the selectionList
+/*
                 const selectionListResource = `dataContext[${lens.state.datasetInfo.name}].selectionList`;
 
                 const tMessage = {
                     "action": "get",
                     "resource": selectionListResource,
                 }
+*/
 
                 const tSelectedCaseIDs = await this.getCODAPSelectedCaseIDs();
-                await codapInterface.sendRequest(tMessage);
+                //await codapInterface.sendRequest(tMessage);
 
                 if (tSelectedCaseIDs.length) {
                     const tagLabel = document.getElementById("tag-value-input").value;
