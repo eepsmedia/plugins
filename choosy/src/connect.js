@@ -30,7 +30,7 @@ limitations under the License.
 
 const connect = {
 
-    initialize : async function() {
+    initialize: async function () {
         await codapInterface.init(this.iFrameDescriptor, null);
     },
 
@@ -71,7 +71,7 @@ const connect = {
             'notify',
             sResource,
             'selectCases',
-            choosy.handleSelectionChangeFromCODAP
+            choosy.handlers.handleSelectionChangeFromCODAP
         );
 
         console.log(`Asked for getting selectCases on [${sResource}]`);
@@ -139,6 +139,43 @@ const connect = {
     },
 
     /**
+     * Produces an object that's going to be appended to the
+     * dataset info.
+     * {
+     *     indexCollection : <index (ZIP) collection name>,
+     *     filterCollection : <filter collection name>,
+     *     tagsCollection : <tags collection name>,
+     * }
+     * @param theInfo
+     */
+    processDatasetInfoForAttributeLocations: function (theInfo) {
+        let out = {
+            "indexCollection": null,
+            "filterCollection": null,
+            "tagsCollection": null,
+        };
+
+        theInfo.collections.forEach(coll => {
+            coll.attrs.forEach(att => {
+                switch (att.name) {
+                    case choosy.constants.indexAttributeName:
+                        out.indexCollection = coll.name;
+                        break;
+                    case choosy.constants.filterAttributeName:
+                        out.filterCollection = coll.name;
+                        break;
+                    case choosy.constants.tagsAttributeName:
+                        out.tagsCollection = coll.name;
+                        console.log(`¬   Found [${choosy.constants.tagsAttributeName}] in [${coll.name}]`);
+                        break;
+                }
+            })
+        });
+
+        return out;
+    },
+
+    /**
      * Assign the given attribute (by name) to the clump (also by name).
      * This actually updates the dataset, so that the next time we process it,
      * choosy will read the clump assignment properly.
@@ -148,8 +185,8 @@ const connect = {
      * @param iClump    the string name of the clump
      * @returns {Promise<void>}
      */
-    setAttributeClump : async function(iDSName, iAttName, iClump) {
-        const theCollection =  this.utilities.collectionNameFromAttributeName(iAttName, choosy.datasetInfo);
+    setAttributeClump: async function (iDSName, iAttName, iClump) {
+        const theCollection = this.utilities.collectionNameFromAttributeName(iAttName, choosy.datasetInfo);
         let theDescription = this.utilities.descriptionFromAttributeName(iAttName, choosy.datasetInfo);
 
         theDescription = "{" + iClump + "}" + theDescription;
@@ -192,12 +229,51 @@ const connect = {
         }
     },
 
+    makeTagsAttributeIn: async function (iDSname) {
+        let theTagsCollectionName = choosy.state.datasetInfo.attLocations.tagsCollection;
+
+        if (!theTagsCollectionName) {
+            //  for tags, we'll make it at the top level.
+            const theFirstCollection = choosy.state.datasetInfo.collections[0];
+            theTagsCollectionName = theFirstCollection.name;
+            const tResource = `dataContext[${iDSname}].collection[${theTagsCollectionName}].attribute`;
+            const tValues = {
+                "name": choosy.constants.tagsAttributeName,
+                "type": "nominal",
+                "title": "Tags",
+                "description": "user-made tags",
+                "editable": false,
+                //  "hidden" : "true",
+            }
+
+            const tMessage = {
+                "action": "create", "resource": tResource, "values": [tValues],
+            }
+
+            const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
+
+            if (makeTagsAttResult.success) {
+                choosy.state.datasetInfo.attLocations.tagsCollection = theTagsCollectionName;
+                console.log(`µ   Yay! Made [${choosy.constants.tagsAttributeName}] in collection [${theTagsCollectionName}]!`);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Dagnabbit!",
+                    text: `Trouble making the Tags attribute in ${iDSname}|${theTagsCollectionName}:`
+                        + ` ${makeTagsAttResult.values.error}.`,
+                });
+            }
+        } else {
+            console.log(`¬   Hmm. The tags attribute already existed in ${theTagsCollectionName}.`);
+        }
+    },
+
     /**
      * Selection methods: interacting with CODAP selection
      */
-    selection : {
+    tagging: {
 
-        getCODAPSelectedCaseIDs : async function() {
+        getCODAPSelectedCaseIDs: async function () {
             const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
             //  now get all the currently selected caseIDs.
             const gMessage = {
@@ -219,7 +295,7 @@ const connect = {
             return oldIDs;
         },
 
-        setCODAPSelectionToCaseIDs : async  function(iList) {
+        setCODAPSelectionToCaseIDs: async function (iList) {
             const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
             const tMessage = {
                 "action": "create",
@@ -237,15 +313,135 @@ const connect = {
             }
         },
 
+        doBinaryTag : async function() {
+            const yesTag = document.getElementById(choosy.constants.tagValueSelectedElementID).value;
+            const noTag = document.getElementById(choosy.constants.tagValueNotSelectedElementID).value;
+
+            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
+
+            let valuesArray = [];
+
+            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+
+            Object.keys(allData).forEach(caseID => {
+                let valuesObject = {};
+                const isSelected = selectedCases.includes(Number(caseID));
+                valuesObject[tTagAttributeName] = isSelected ? yesTag : noTag;
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(tTagAttributeName, valuesArray);
+
+        },
+
+        doRandomTag : async function() {
+            const aTag = document.getElementById(choosy.constants.tagValueGroupAElementID).value;
+            const bTag = document.getElementById(choosy.constants.tagValueGroupBElementID).value;
+            const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value)/100.0;
+
+            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            //  const selectedCases = await connect.selection.getCODAPSelectedCaseIDs();
+
+            let valuesArray = [];
+
+            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+
+            Object.keys(allData).forEach(caseID => {
+                let valuesObject = {};
+                const inGroupA = Math.random() < theProportion;
+                valuesObject[tTagAttributeName] = inGroupA ? aTag : bTag;
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(tTagAttributeName, valuesArray);
+
+        },
+
+        clearAllTagsFrom : async function(iTag) {
+            let valuesArray = [];
+
+            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+
+            Object.keys(allData).forEach(caseID => {
+                let valuesObject = {};
+                valuesObject[iTag] = "";
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(iTag, valuesArray);
+
+        },
+
+        tagSelectedCases: async function (iMode = "clear") {
+
+            const tagLabel = (iMode === "add") ?
+                document.getElementById(choosy.constants.tagValueElementID).value :
+                "";
+            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
+
+            let valuesArray = [];
+
+            //  construct the array of value objects, one for each selected case.
+
+            selectedCases.forEach(caseID => {
+                let valuesObject = {};
+                valuesObject[tTagAttributeName] = tagLabel;
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(tTagAttributeName, valuesArray);
+        },
     },
 
-    utilities : {
+    updateTagValues : async function(iTagAttName, iValues) {
+        const tagCollection = connect.utilities.collectionNameFromAttributeName(
+            iTagAttName, choosy.datasetInfo
+        );
+        const theResource = `dataContext[${choosy.state.datasetName}].collection[${tagCollection}].case`;
+        const theRequest = {
+            "action" : "update",
+            "resource" : theResource,
+            "values" : iValues,
+        }
 
-        collectionNameFromAttributeName : function(iName, info) {
+        const tagCasesResult = await codapInterface.sendRequest(theRequest);
+        if (tagCasesResult.success) {
+            console.log(`Applied tags to ${tagCasesResult.length} case(s)`);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: tagCasesResult[0].values.error,
+                text: `In connect.tagSelectedCases(), we failed to update the cases with the new tag.`,
+            });
+        }
+
+    },
+
+    utilities: {
+
+        collectionNameFromAttributeName: function (iName, info) {
             let out = "";
 
-            info.collections.forEach( coll => {
-                coll.attrs.forEach( att => {
+            info.collections.forEach(coll => {
+                coll.attrs.forEach(att => {
                     if (att.name === iName) {
                         out = coll.name;
                     }
@@ -254,11 +450,11 @@ const connect = {
             return out;
         },
 
-        descriptionFromAttributeName : function(iName, info) {
+        descriptionFromAttributeName: function (iName, info) {
             let out = "";
 
-            info.collections.forEach( coll => {
-                coll.attrs.forEach( att => {
+            info.collections.forEach(coll => {
+                coll.attrs.forEach(att => {
                     if (att.name === iName) {
                         out = att.description;
                     }

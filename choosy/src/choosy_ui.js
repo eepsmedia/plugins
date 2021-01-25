@@ -47,11 +47,21 @@ const choosy_ui = {
         choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.datasetName);
         this.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
         this.attributeControls.install();
+        this.doTagVisibility();
         this.makeSummary();
     },
 
-    makeSummary : function() {
-        const summaryEl = document.getElementById(choosy.constants.summaryElementID);
+    doTagVisibility : function() {
+        const tagModeString = document.querySelector("input[name='tag-mode']:checked").value;
+
+        document.getElementById("simple-tag").style.display = (tagModeString === "simple") ? "block" : "none";
+        document.getElementById("binary-tag").style.display = (tagModeString === "binary") ? "block" : "none";
+        document.getElementById("random-tag").style.display = (tagModeString === "random") ? "block" : "none";
+    },
+
+    makeSummary : async function() {
+        const summaryEl = document.getElementById(choosy.constants.selectionStatusElementID);
+        const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
 
         let theText = "";
         let nAtts = 0;
@@ -64,7 +74,7 @@ const choosy_ui = {
         }
         const nCases = Object.keys(choosy.theData).length;
 
-        theText += `${nAtts} attributes, ${nCases} cases.`
+        theText += `${nAtts} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
 
         summaryEl.innerHTML = theText;
     },

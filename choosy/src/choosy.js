@@ -33,6 +33,9 @@ const choosy = {
     state : {},             //  stores the dataset name. To be saved.
     datasetInfo : {},       //  from the API, has name, collections, attribute names. Do not save!
     theData : {},           //  case-ID-keyed object containing objects with non-formula values for all cases
+    selectedCaseIDs : [],   //  the case IDs of the selected cases
+
+    currentTagValue : "foo",
 
     initialize : async function() {
         await connect.initialize();
@@ -121,9 +124,62 @@ const choosy = {
         choosy_ui.update();
     },
 
+    handlers : {
+
+        changeSearchText : async function () {
+
+        },
+
+        /**
+         * todo: do we need this? We call it but we don't need it, right?
+         * @returns {Promise<void>}
+         */
+        changeTagValue : async function () {
+            this.currentTagValue = document.getElementById("tag-value-input").value;
+            console.log(`    tag is now ${this.currentTagValue}`);
+        },
+
+        changeTagMode : function() {
+            choosy_ui.update();
+        },
+
+        applyTagToSelection : async function (iMode) {
+            //  lens.state.datasetInfo =  await connect.refreshDatasetInfoFor(lens.state.datasetInfo.name);
+            await connect.tagging.tagSelectedCases(iMode);
+        },
+
+        applyBinaryTags : async function() {
+            await connect.tagging.doBinaryTag();
+        },
+
+        applyRandomTags : async function() {
+            await connect.tagging.doRandomTag();
+        },
+
+        clearAllTags : async function() {
+            const theTagName = choosy.constants.tagsAttributeName;
+            await connect.tagging.clearAllTagsFrom(theTagName);
+        },
+
+        //  todo: decide if we really need this
+        handleSelectionChangeFromCODAP: async function () {
+            choosy.selectedCaseIDs = await connect.tagging.getCODAPSelectedCaseIDs();
+            console.log(`    ${choosy.selectedCaseIDs.length} selected case(s)`);
+            choosy_ui.update();
+        },
+
+    },
+
     constants : {
-        version : '000b',
-        summaryElementID : 'summaryInfo',
+        version : '2021a-',
+        selectionStatusElementID : 'selection-status',
+        tagValueElementID : "tag-value-input",
+        tagValueSelectedElementID : "tag-value-selected",
+        tagValueNotSelectedElementID : "tag-value-not-selected",
+        tagValueGroupAElementID : "tag-value-group-A",
+        tagValueGroupBElementID : "tag-value-group-B",
+        tagPercentageElementID : "tag-percentage",
+        tagsAttributeName : "Tags",
         noClumpString : "none",
     }
 }
