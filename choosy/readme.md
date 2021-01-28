@@ -13,7 +13,7 @@ Now when you click the green "plus" icon, that attribute gets put into the `work
 
 ## Tag cases tab
 
-You can "tag" cases with a label which you type into the box.
+You can "tag" cases with a label that you type into the box.
 
 The basic idea is to select the cases in CODAP, then tag them in `choosy`. There are three modes for tagging:
 
