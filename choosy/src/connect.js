@@ -229,49 +229,75 @@ const connect = {
         }
     },
 
-    makeTagsAttributeIn: async function (iDSname) {
-        let theTagsCollectionName = choosy.state.datasetInfo.attLocations.tagsCollection;
+    /**
+     * Selection methods: interacting with CODAP selection, applying tags, etc.
+     */
+    tagging: {
 
-        if (!theTagsCollectionName) {
-            //  for tags, we'll make it at the top level.
-            const theFirstCollection = choosy.state.datasetInfo.collections[0];
-            theTagsCollectionName = theFirstCollection.name;
-            const tResource = `dataContext[${iDSname}].collection[${theTagsCollectionName}].attribute`;
-            const tValues = {
-                "name": choosy.constants.tagsAttributeName,
-                "type": "nominal",
-                "title": "Tags",
-                "description": "user-made tags",
-                "editable": false,
-                //  "hidden" : "true",
-            }
+        /**
+         *
+         * @returns {Promise<string>} the name of the "Tags" collection
+         */
+        ensureTagsAttributeExists: async function () {
 
-            const tMessage = {
-                "action": "create", "resource": tResource, "values": [tValues],
-            }
+            await connect.refreshDatasetInfoFor(choosy.state.datasetName);
+            let theTagsCollectionName = connect.utilities.collectionNameFromAttributeName(
+                choosy.constants.tagsAttributeName,
+                choosy.datasetInfo
+            );
 
-            const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
+            if (choosy.state.datasetName) {
+                if (!theTagsCollectionName) {       //  we don't have this attribute yet
+                    //  for new tags attributes, we'll make it at the bottom level.
+                    const bottomLevel = choosy.datasetInfo.collections.length - 1;
+                    const theFirstCollection = choosy.datasetInfo.collections[bottomLevel];
+                    theTagsCollectionName = theFirstCollection.name;
+                    const tResource = `dataContext[${choosy.state.datasetName}].collection[${theTagsCollectionName}].attribute`;
+                    const tValues = {
+                        "name": choosy.constants.tagsAttributeName,
+                        "type": "nominal",
+                        "title": "Tags",
+                        "description": "user-made tags for sets of ZIP codes",
+                        "editable": false,
+                        //  "hidden" : "true",
+                    }
 
-            if (makeTagsAttResult.success) {
-                choosy.state.datasetInfo.attLocations.tagsCollection = theTagsCollectionName;
-                console.log(`µ   Yay! Made [${choosy.constants.tagsAttributeName}] in collection [${theTagsCollectionName}]!`);
+                    const tMessage = {
+                        "action": "create", "resource": tResource, "values": [tValues],
+                    }
+
+                    const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
+
+                    if (makeTagsAttResult.success) {
+                        //  choosy.state.datasetInfo.attLocations.tagsCollection = theTagsCollectionName;
+                        console.log(`µ   Yay! Made [${choosy.constants.tagsAttributeName}] in collection [${theTagsCollectionName}]!`);
+                        Swal.fire({
+                            icon: "success",
+                            title: "Yay!",
+                            text: `The new [${choosy.constants.tagsAttributeName}] attribute 
+                            is in collection [${theTagsCollectionName}]!`,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Dagnabbit!",
+                            text: `Trouble making the Tags attribute in ${iDSname}|${theTagsCollectionName}:`
+                                + ` ${makeTagsAttResult.values.error}.`,
+                        });
+                    }
+                } else {
+                    console.log(`Hmm. The tags attribute already existed in ${theTagsCollectionName}.`);
+                }
             } else {
                 Swal.fire({
                     icon: "error",
                     title: "Dagnabbit!",
-                    text: `Trouble making the Tags attribute in ${iDSname}|${theTagsCollectionName}:`
-                        + ` ${makeTagsAttResult.values.error}.`,
-                });
+                    text: `we apparently don't have a dataset defined: ${makeTagsAttResult.values.error}.`,
+                })
             }
-        } else {
-            console.log(`¬   Hmm. The tags attribute already existed in ${theTagsCollectionName}.`);
-        }
-    },
 
-    /**
-     * Selection methods: interacting with CODAP selection
-     */
-    tagging: {
+            return theTagsCollectionName;
+        },
 
         getCODAPSelectedCaseIDs: async function () {
             const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
@@ -313,7 +339,7 @@ const connect = {
             }
         },
 
-        doBinaryTag : async function() {
+        doBinaryTag: async function () {
             const yesTag = document.getElementById(choosy.constants.tagValueSelectedElementID).value;
             const noTag = document.getElementById(choosy.constants.tagValueNotSelectedElementID).value;
 
@@ -339,10 +365,10 @@ const connect = {
 
         },
 
-        doRandomTag : async function() {
+        doRandomTag: async function () {
             const aTag = document.getElementById(choosy.constants.tagValueGroupAElementID).value;
             const bTag = document.getElementById(choosy.constants.tagValueGroupBElementID).value;
-            const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value)/100.0;
+            const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value) / 100.0;
 
             const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
             //  const selectedCases = await connect.selection.getCODAPSelectedCaseIDs();
@@ -366,7 +392,7 @@ const connect = {
 
         },
 
-        clearAllTagsFrom : async function(iTag) {
+        clearAllTagsFrom: async function (iTag) {
             let valuesArray = [];
 
             const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
@@ -411,20 +437,19 @@ const connect = {
         },
     },
 
-    updateTagValues : async function(iTagAttName, iValues) {
-        const tagCollection = connect.utilities.collectionNameFromAttributeName(
-            iTagAttName, choosy.datasetInfo
-        );
+    updateTagValues: async function (iTagAttName, iValues) {
+        const tagCollection = await connect.tagging.ensureTagsAttributeExists();
+
         const theResource = `dataContext[${choosy.state.datasetName}].collection[${tagCollection}].case`;
         const theRequest = {
-            "action" : "update",
-            "resource" : theResource,
-            "values" : iValues,
+            "action": "update",
+            "resource": theResource,
+            "values": iValues,
         }
 
         const tagCasesResult = await codapInterface.sendRequest(theRequest);
         if (tagCasesResult.success) {
-            console.log(`Applied tags to ${tagCasesResult.length} case(s)`);
+            console.log(`Applied tags to ${tagCasesResult.caseIDs.length} case(s)`);
         } else {
             Swal.fire({
                 icon: 'error',
