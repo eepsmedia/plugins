@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 12/26/20.
+ 
+ 
+ ==========================================================================
+index in netwise
+
+    Author:   Tim Erickson
+
+Copyright (c) 2020 by Epistemological Engineering. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<!--
+index for netwise
+
+local test w/o CODAP: http://localhost/plugins/netwise/
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Netwise</title>
+
+    <link rel='stylesheet' type='text/css' href='css/netwise.css'/>
+
+    <!-- These scripts take care of the communication with CODAP  -->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+
+    <script src="../common/snap.svg-min.js"></script>
+
+    <script src="src/netwise.js"></script>
+    <script src="src/netwise-ui.js"></script>
+    <script src="src/netwise-connect.js"></script>
+    <script src="src/netwise-model.js"></script>
+
+    <script src="src/NodeModel.js"></script>
+
+    <script src="src/NetView.js"></script>
+
+</head>
+<body>
+
+<div id="testing">
+    <button onclick="netwise.initialize()">restart</button>
+    <button onclick="netwiseModel.relax()">relax</button>
+</div>
+
+<div id="status"></div>
+
+<div id="setup">
+    <div class="setupControl">
+        <label for="datasetMenu" class="setupLabel">dataset: </label>
+        <select id="datasetMenu"></select>
+    </div>
+
+    <div class="setupControl">
+        <label for="idAttributeMenu" class="setupLabel">ID attribute: </label>
+        <select id="idAttributeMenu"></select>
+    </div>
+
+    <div class="setupControl">
+        <label for="linkAttributeMenu" class="setupLabel">link attribute: </label>
+        <select id="linkAttributeMenu"></select>
+    </div>
+
+</div>
+
+<svg id="net-view" width = "100%" height="100%">
+    <rect height="100%" width="100%" fill="yellow"></rect>
+
+</svg>
+
+</body>
+
+<script>
+    window.onload = function () {
+        netwise.initialize();
+    }
+</script>
+
+</html>
