@@ -32,7 +32,7 @@ netwiseUI = {
     theNetView : null,
 
     initialize: async function () {
-        this.theNetView = new NetView(netwiseModel.nodes);
+        this.theNetView = new NetView(netwiseModel);
         netwiseUI.update();
 
     },

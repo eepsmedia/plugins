@@ -29,13 +29,13 @@ limitations under the License.
 netwiseModel = {
 
     nodes: null,
-    optimalDistance: 40,
-    optimalLinkedDistance: 20,
-    linkedCoefficient: 20,
+    optimalDistance: 400,
+    optimalLinkedDistance: 200,
+    linkedCoefficient: 200,
     relaxConstant: 0.2,
 
     initialize: function () {
-        this.nodes = [];
+        this.nodes = [];    //  array of NodeModels
     },
 
     relax: async function () {
@@ -46,28 +46,28 @@ netwiseModel = {
         for (let i = 0; i < nRelaxes; i++) {
             this.findOptimaAndForces();
 
+            let totalMovement = 0;
             this.nodes.forEach(n => {
                 const fx = n.forces.x;
                 const fy = n.forces.y;
-                const fTot = Math.sqrt(fx*fx + fy*fy);
+                const fTot = Math.hypot(fx,fy);
                 if (fTot > forceScaleNumber) {
                     const theScale = forceScaleNumber * Math.random();
                     //  dx = dx * (theScale/fTot);
                     //  dy = dy * (theScale/fTot);
                 }
 
-
-
                 const dx = (n.optima.x - n.location.x);
                 const dy = (n.optima.y - n.location.y);
 
-
                 n.location.x += this.relaxConstant  * dx;
                 n.location.y += this.relaxConstant  * dy;
+                totalMovement += Math.hypot(dx, dy);
             });
+            //  console.log(`       tmove  ${i}: ${totalMovement}`);
 
             this.moveToCenterOfMass();
-            netwiseUI.theNetView.draw();
+            //  netwiseUI.theNetView.draw();
         }
         await netwiseUI.update();
         const now = new Date();

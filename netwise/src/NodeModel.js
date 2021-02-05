@@ -26,14 +26,22 @@ limitations under the License.
 
 */
 
+class NodeModel {
 
-NodeModel = function(iItem) {
-    this.id = iItem.id;
-    this.name = iItem.values[netwise.state.id_attribute];
-    const tLinkRaw = iItem.values[netwise.state.link_attribute];
-    this.links = tLinkRaw.split(",");
+    constructor (iItem) {
+        this.id = iItem.id;
+        this.name = iItem.values[netwise.state.id_attribute];
+        this.links = [];
+        const tLinkRaw = iItem.values[netwise.state.link_attribute];
+        const rawLinksArray = tLinkRaw.split(",");
 
-    this.location = { x : -50 + 100 * Math.random(), y : -50 + 100 * Math.random()};
-    this.optima = {x : 0, y : 0};
-    this.forces = {x : 0, y : 0};
+        rawLinksArray.forEach( L => {
+            L = L.trim();
+            this.links.push(L);
+        })
+
+        this.location = {x: -500 + 1000 * Math.random(), y: -500 + 1000 * Math.random()};
+        this.optima = {x: 0, y: 0};
+        this.forces = {x: 0, y: 0};
+    }
 }

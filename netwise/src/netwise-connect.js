@@ -38,7 +38,7 @@ connect = {
             version: iVersion,
             name: 'netwise',
             title: 'network/graph tool',
-            dimensions: {width: 200, height: 366},
+            dimensions: {width: 222, height: 366},
         };
         return theDescriptor;
     },
@@ -55,15 +55,7 @@ connect = {
             console.log(`CODAP error getting all items from ${iDatasetName}: ${e}`);
         }
 
-/*
-        let outItems = [];
-        tAllItemsResult.values.forEach(
-            item => {
-                outItems.push(item.values);
-            }
-        );
-        return  outItems;
-*/
+
     },
 
 
