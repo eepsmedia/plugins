@@ -32,7 +32,8 @@ netwiseUI = {
     theNetView : null,
 
     initialize: async function () {
-        this.theNetView = new NetView(netwiseModel);
+        this.theNetView = new NetView(linkyModel);
+        linkyModel.relax(3);
         netwiseUI.update();
 
     },
@@ -48,8 +49,8 @@ netwiseUI = {
                 domIDmenu.innerHTML = attGuts;
                 domLinkmenu.innerHTML = attGuts;
 
-                netwise.state.id_attribute = null;
-                netwise.state.link_attribute = null;
+                linky.state.id_attribute = null;
+                linky.state.link_attribute = null;
                 break;
         }
 
@@ -62,14 +63,16 @@ netwiseUI = {
         const domSetup = document.getElementById("setup");
         const domStatus = document.getElementById("status");
 
-        let theStatus = "Status of the Network";
-
-        domStatus.innerHTML = theStatus;
+        domStatus.innerHTML = this.makeStatus();
 
         this.theNetView.draw();
 
     },
 
+    makeStatus: function() {
+        const theStatus = linkyModel.netStatus();
+        return `${theStatus.nodeCount} nodes, ${theStatus.linkCount} links`
+    },
 
     makeDatasetMenuGuts: async function (iNames) {
         let out = "";
@@ -80,9 +83,16 @@ netwiseUI = {
         return out;
     },
 
-    makeAttributeMenuGuts: async function (iType) {
-        const theNames = await connect.getListOfAttributes(netwise.state.datasetName);
+    makeAttributeMenuGuts: async function (iCollections) {
         let out = "";
+
+        let theNames = [];
+
+        iCollections.forEach(c => {
+            c.attrs.forEach(a => {
+                theNames.push(a);   //  the CODAP attribute object
+            })
+        })
 
         //  for now, the list is the CODAP attribute object
 

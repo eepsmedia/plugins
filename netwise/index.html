@@ -40,63 +40,94 @@ local test w/o CODAP: http://localhost/plugins/netwise/
     <meta charset="UTF-8">
     <title>Netwise</title>
 
+    <!--        jquery section      -->
+    <script src="../../common/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" type='text/css' href="../../common/jquery/jquery-ui.min.css">
+    <script src="../../common/jquery/jquery-ui.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
     <link rel='stylesheet' type='text/css' href='css/netwise.css'/>
 
     <!-- These scripts take care of the communication with CODAP  -->
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
 
-    <script src="../common/snap.svg-min.js"></script>
+    <script src="../../common/src/snap.svg-min.js"></script>
 
-    <script src="src/netwise.js"></script>
+    <script src="src/linky.js"></script>
     <script src="src/netwise-ui.js"></script>
     <script src="src/netwise-connect.js"></script>
-    <script src="src/netwise-model.js"></script>
+    <script src="src/linkyModel.js"></script>
 
     <script src="src/NodeModel.js"></script>
 
     <script src="src/NetView.js"></script>
 
+    <script>
+        $(function () {
+            $("#tabs").tabs();
+            linky.initialize();
+        });
+
+    </script>
+
 </head>
 <body>
 
-<div id="testing">
-    <button onclick="netwise.initialize()">restart</button>
-    <button onclick="netwiseModel.relax()">relax</button>
+<div id="tabs">
+    <ul>
+        <li><a href="#net">net</a></li>
+        <li><a href="#setup">setup</a></li>
+    </ul>
+
+
+    <div id="setup" class="linky-tab-panel">
+        <p>Note: these controls don't do anything yet.</p>
+        <div class="setupControl">
+            <label for="datasetMenu" class="setupLabel">dataset: </label>
+            <select id="datasetMenu" onchange="netwiseUI.setupChange(this)"></select>
+        </div>
+
+        <div class="setupControl">
+            <label for="idAttributeMenu" class="setupLabel">ID attribute: </label>
+            <select id="idAttributeMenu" onchange="netwiseUI.setupChange(this)"></select>
+        </div>
+
+        <div class="setupControl">
+            <label for="linkAttributeMenu" class="setupLabel">link attribute: </label>
+            <select id="linkAttributeMenu" onchange="netwiseUI.setupChange(this)"></select>
+        </div>
+
+    </div>
+
+    <div id="net" class="linky-tab-panel">
+        <div id="controls">
+            <button onclick="linky.initialize()">restart</button>
+            <button onclick="linkyModel.relax()">relax</button>
+        </div>
+
+        <svg id="net-view" width="90%" height="90%">
+            <rect height="100%" width="100%" fill="yellow"></rect>
+
+        </svg>
+    </div>
 </div>
 
 <div id="status"></div>
 
-<div id="setup">
-    <div class="setupControl">
-        <label for="datasetMenu" class="setupLabel">dataset: </label>
-        <select id="datasetMenu"></select>
-    </div>
-
-    <div class="setupControl">
-        <label for="idAttributeMenu" class="setupLabel">ID attribute: </label>
-        <select id="idAttributeMenu"></select>
-    </div>
-
-    <div class="setupControl">
-        <label for="linkAttributeMenu" class="setupLabel">link attribute: </label>
-        <select id="linkAttributeMenu"></select>
-    </div>
-
-</div>
-
-<svg id="net-view" width = "90%" height="90%">
-    <rect height="100%" width="100%" fill="yellow"></rect>
-
-</svg>
-
 </body>
 
+<!--
 <script>
     window.onload = function () {
         netwise.initialize();
     }
 </script>
+-->
 
 </html>

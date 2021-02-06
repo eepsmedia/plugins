@@ -28,6 +28,7 @@ limitations under the License.
 
 .setupControl {
     display: block;
+    padding: .25em .5em;
 }
 
 .setupLabel {
@@ -35,8 +36,32 @@ limitations under the License.
     text-align: right;
 }
 
+.ui-tabs, .ui-tabs-panel {
+    padding : 0;
+}
+
+#setup, #net {
+    padding-top: .5em;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: .5em;
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+    font-size: 80%;
+}
+
+
 #net-view {
     min-width: 200px;
     min-height: 200px;
     background-color: #abf;
+}
+
+#status {
+    background-color: lightblue;
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+    font-size: 80%;
+    padding: 0;
+    padding-left: 1em;
+    padding-top: .5em;
+    padding-bottom: .5em;
 }

@@ -26,30 +26,31 @@ limitations under the License.
 
 */
 
-netwiseModel = {
+linkyModel = {
 
     nodes: null,
     optimalDistance: 400,
     optimalLinkedDistance: 200,
     linkedCoefficient: 200,
     relaxConstant: 0.2,
+    nRelaxes: 50,
 
     initialize: function () {
         this.nodes = [];    //  array of NodeModels
     },
 
-    relax: async function () {
+    relax: async function (iTerations = this.nRelaxes) {
+
         const then = new Date();
-        const nRelaxes = 100;
         const forceScaleNumber = 5;
 
-        for (let i = 0; i < nRelaxes; i++) {
+        for (let i = 0; i < iTerations; i++) {
             this.findOptimaAndForces();
 
             let totalMovement = 0;
-            this.nodes.forEach(n => {
-                const fx = n.forces.x;
-                const fy = n.forces.y;
+            this.nodes.forEach(thisNode => {
+                const fx = thisNode.forces.x;
+                const fy = thisNode.forces.y;
                 const fTot = Math.hypot(fx,fy);
                 if (fTot > forceScaleNumber) {
                     const theScale = forceScaleNumber * Math.random();
@@ -57,11 +58,11 @@ netwiseModel = {
                     //  dy = dy * (theScale/fTot);
                 }
 
-                const dx = (n.optima.x - n.location.x);
-                const dy = (n.optima.y - n.location.y);
+                const dx = (thisNode.optima.x - thisNode.location.x);
+                const dy = (thisNode.optima.y - thisNode.location.y);
 
-                n.location.x += this.relaxConstant  * dx;
-                n.location.y += this.relaxConstant  * dy;
+                thisNode.location.x += this.relaxConstant  * dx;
+                thisNode.location.y += this.relaxConstant  * dy;
                 totalMovement += Math.hypot(dx, dy);
             });
             //  console.log(`       tmove  ${i}: ${totalMovement}`);
@@ -72,13 +73,27 @@ netwiseModel = {
         await netwiseUI.update();
         const now = new Date();
 
-        console.log(`${nRelaxes} relaxes took ${now - then}`);
+        console.log(`${iTerations} relaxes took ${now - then}`);
+    },
+
+    netStatus : function() {
+        let out = {};
+        out["nodeCount"] = this.nodes.length;
+
+        let tLinkCount = 0;
+        this.nodes.forEach( nn => {
+            tLinkCount += nn.links.length;
+        })
+
+        out["linkCount"] = tLinkCount;
+
+        return out;
     },
 
     findOptimaAndForces: function () {
         const d = 1;
 
-        console.log(`---`);
+        //  console.log(`---`);
         this.nodes.forEach(n => {
             //  console.log(`finding potentials for ${n.name}`);
             const px1 = this.potentialForNode(n, -d, 0);
@@ -156,6 +171,10 @@ netwiseModel = {
         return out;
     },
 
+    /**
+     * Called from linky.getAllData();
+     * @param iData
+     */
     importData: function (iData) {
         this.nodes = [];
         iData.values.forEach(item => {
@@ -174,5 +193,37 @@ netwiseModel = {
         })
         return outNode;
     },
+
+    selectTheseNodes: function(iList) {
+        this.nodes.forEach( aNode => {
+            aNode.selected = (iList.includes(aNode.name));
+        })
+
+    },
+
+    /**
+     * Create a new link between these two NodeModels.
+     * No checking has been done; we do it here.
+     *
+     * @param iFrom
+     * @param iTo
+     */
+    newLink : function(iFrom, iTo) {
+        if (iFrom && iTo) {
+            console.log(`Attempting link from ${iFrom.name} to ${iTo.name}`);
+            if (iFrom === iTo) return;   //      no links to yourself
+
+            if (iFrom.links.includes(iTo.name)) return; //  no duplicate links
+
+            console.log(`Genuine new link detected!`);
+
+            iFrom.links.push(iTo.name);
+
+            connect.updateLinks(iFrom);
+        } else {
+            console.log(`    bad call to model.newLink. One of the endpoints was null`);
+        }
+    },
+
 
 }

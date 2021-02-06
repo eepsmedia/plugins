@@ -28,16 +28,17 @@ limitations under the License.
 
 class NodeModel {
 
-    constructor (iItem) {
-        this.id = iItem.id;
-        this.name = iItem.values[netwise.state.id_attribute];
+    constructor (iCase) {
+        this.codapCaseID = iCase.id;
+        this.name = iCase.values[linky.state.id_attribute];
         this.links = [];
-        const tLinkRaw = iItem.values[netwise.state.link_attribute];
+        this.selected = false;
+        const tLinkRaw = iCase.values[linky.state.link_attribute];
         const rawLinksArray = tLinkRaw.split(",");
 
         rawLinksArray.forEach( L => {
             L = L.trim();
-            this.links.push(L);
+            if (L.length) this.links.push(L);  //  could be "" in which case it doesn't count
         })
 
         this.location = {x: -500 + 1000 * Math.random(), y: -500 + 1000 * Math.random()};
