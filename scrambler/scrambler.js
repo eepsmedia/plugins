@@ -29,15 +29,17 @@ limitations under the License.
 const scrambler = {
 
     constants: {
-        version: "001b",
+        version: "001c",
         pluginName: "scrambler",
         dimensions: {height: 200, width: 202},
         scrambledTopLevelCollectionName: "scrit",
         scrambledIterationAttributeName: "scrit",
     },
 
+    situation : null,
+
     datasetName: "",
-    scrambledDatasetName: "",
+    scrambledDatasetName: "scrambled",
     attributes: {},
     needFreshOutputDataset: true,
 
@@ -50,89 +52,83 @@ const scrambler = {
         const datasetMenuGuts = await connect.makeDatasetMenuGuts(this.datasetName);
         document.getElementById("datasetMenu").innerHTML = datasetMenuGuts;
         this.datasetName = document.getElementById("datasetMenu").value;
+        //  this.scrambledDatasetName = `scram_${this.datasetName}`;
+
         if (this.datasetName) {
-            const tStructure = await connect.getStructure(this.datasetName);
-            const attributeMenuGuts = await connect.makeAttributeMenuGuts(tStructure);
+            this.situation = await connect.getStructure(this.datasetName);
+            const attributeMenuGuts = await connect.makeAttributeMenuGuts(this.situation);
             document.getElementById("attributeMenu").innerHTML = attributeMenuGuts;
         }
     },
 
     doScramble: async function (iReps) {
-        const theSituation = await this.loadCurrentData();
+        await this.loadCurrentData();
 
         if (this.needFreshOutputDataset) {
-            this.scrambledDatasetName = await connect.createFreshOutputDataset(theSituation);
+            await connect.createFreshOutputDataset();
         }
 
         for (let i = 0; i < iReps; i++) {
-            this.scrambleTheSituation(theSituation);
-            theSituation["iteration"] = i + 1;
-            const theItems = this.turnSituationToItems(theSituation);
+            this.scrambleTheSituation();
+            const theItems = this.turnSituationToItems(i+1);
             await connect.emitScrambledData(this.scrambledDatasetName, theItems);
         }
     },
 
-    scrambleTheSituation(iSituation) {
+    scrambleTheSituation() {
         let valuesOut = [];
         //  scramble the data hidden in this structure
-        iSituation.collections.forEach(
-            col => {
-                for (const attName in col.attributes) {
-                    const theDataArray = col.attributes[attName].data;
-                    theDataArray.scramble();
-                }
-            }
-        );
+        this.situation.values.collections.forEach(col => {
+            col.attrs.forEach(att => {
+                const theDataArray = att.data;
+                theDataArray.scramble();
+            })
+        })
     },
 
-    turnSituationToItems: function (iSituation) {
+    turnSituationToItems: function (iterationNumber) {
         let allTheData = {};
-        let N = 0;
 
-        //  collect all the data (columns) into one object, keyed by attName
-        iSituation.collections.forEach(col => {
-            for (const attName in col.attributes) {
-                allTheData[attName] = col.attributes[attName].data;
-                if (!N) N = col.attributes[attName].data.length;
-            }
+        const theItems = [];  //  to be an array of "item" objects
+
+        this.situation.values.collections.forEach(col => {
+            col.attrs.forEach(att => {
+                let ix = 0;             //  the index into theItems
+                att.data.forEach(datum => {
+                    if (!theItems[ix]) {
+                        theItems[ix] = {};
+                        theItems[ix][this.constants.scrambledIterationAttributeName] =  iterationNumber;
+                    }
+                    const thisItem = theItems[ix];
+                    thisItem[att.name] = datum;
+                    ix++;
+                })
+            })
         });
-
-        let theItems = [];  //  to be an array of "item" objects
-
-        for (let i = 0; i < N; i++) {
-            let anItem = {};
-            anItem[scrambler.constants.scrambledIterationAttributeName] = iSituation.iteration;
-
-            for (const aName in allTheData) {
-                const theColumn = allTheData[aName];
-                anItem[aName] = theColumn[i];
-            }
-            theItems.push(anItem);
-        }
 
         return theItems;
     },
 
-
+    /**
+     * Put the current data from the dataset into arrays in the "this.structure" object.
+     * These are in attributes called `data` in the attributes.
+     *
+     */
     loadCurrentData: async function () {
         this.datasetName = document.getElementById("datasetMenu").value;
-        const theStructure = await connect.getStructure(this.datasetName);
+        this.situation = await connect.getStructure(this.datasetName);
         const theItems = await connect.getAllItems(this.datasetName);
 
         //  populate the structure with the data
-        theStructure.collections.forEach(
+        this.situation.values.collections.forEach(
             col => {
-                for (const attName in col.attributes) {
-                    const theDataArray = col.attributes[attName].data;
-                    theItems.forEach(
-                        item => {
-                            theDataArray.push(item[attName]);
-                        }
-                    )
-                }
+                col.attrs.forEach( att => {
+                    const theDataArray = [];
+                    theItems.forEach(item => {theDataArray.push(item[att.name]);})
+                    att["data"] = theDataArray;
+                })
             }
         );
-        return theStructure;        //  now that it has data, it's "theSituation"
     },
 
 };
