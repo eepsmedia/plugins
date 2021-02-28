@@ -62,5 +62,3 @@ const strings = {
         return out;
     },
 };
-
-export default strings;

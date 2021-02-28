@@ -34,8 +34,31 @@ limitations under the License.
  */
 fish.fishLevels = {
 
+    trout: {
+        starter: true,
+        openingPopulation: 400,
+        carryingCapacity: 3000,
+
+        winningPopulation: 405,
+        losingPopulation: 100,
+        openingBalance: 5000,
+        openingTurn: 2020,
+        endingTurn: 2022,          //          2060
+        defaultPrice: 100,
+        overhead: 2000,
+        visibleProbability: 0.50,
+        birthProbability: 0.10,
+        catchProbability: 1.00,
+        binomialProbabilityModel: false,
+        boatCapacity: 120,
+
+        calculatePrice: function (n) {
+            return this.defaultPrice;
+        }
+    },
+
     albacore: {
-        starter : true,
+        starter: true,
         openingPopulation: 400,
         carryingCapacity: 3000,
 
@@ -43,16 +66,18 @@ fish.fishLevels = {
         losingPopulation: 100,
         openingBalance: 5000,
         openingTurn: 2020,
-        endingTurn : 2060,          //          2060
+        endingTurn: 2060,          //          2060
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
         birthProbability: 0.10,
-        catchProbability : 1.00,
+        catchProbability: 1.00,
         binomialProbabilityModel: false,
         boatCapacity: 120,
 
-        calculatePrice : function(n) { return fish.game.defaultPrice; }
+        calculatePrice: function (n) {
+            return this.defaultPrice;
+        }
     },
 
     bonito: {

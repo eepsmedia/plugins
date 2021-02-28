@@ -39,19 +39,20 @@ fish.userActions = {
      *
      * @returns {Promise<void>}
      */
-    clickJoinButton: async function ( ) {
+    clickJoinButton: async function ( iCode = null) {
         const codeTextField = document.getElementById("gameCodeTextField");
-        const theCode = codeTextField.value;
+        const theCode = iCode ? iCode : codeTextField.value;
         const gameData = await fireConnect.tryGameCode(theCode);  //  null if not exist
         if (gameData) {
             fish.state.gameCode = theCode;
 
-            fish.state.turn = gameData.turn;
+            fish.state.gameTurn = gameData.turn;
             fish.state.gameState = gameData.gameState;
             fish.gameParameters = fish.fishLevels[gameData.configuration];
             fish.state.playerName = "";
 
-            fish.setNotice("You joined <b>" + theCode + "</b>");
+            const tJoinNotice = `You joined game ${theCode}`;
+            fish.setNotice(tJoinNotice);
             await fish.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
         } else {
             fish.state.gameCode = null;
@@ -112,8 +113,8 @@ fish.userActions = {
 
         $("#catchButton").hide();       //  hide immediately after pressing the button
 
-        if (fish.state.turn < fish.state.gameTurn) {         //  odd occurrence
-            fish.state.turn = fish.state.gameTurn;
+        if (fish.state.gameTurn < fish.state.gameTurn) {         //  odd occurrence
+            fish.state.gameTurn = fish.state.gameTurn;
             alert("Your turn number was somehow too low. Let Tim know. We'll catch you up for now.");
         }
 
@@ -155,63 +156,6 @@ fish.userActions = {
             fish.ui.update();   //  if we go to no auto, refresh so we can see the Catch Fish button
         }
     },
-
-    /**
-     * User is joining a new game, either because of clicking Join or New.
-     *
-     * @param iGameCode
-     * @returns {Promise<void>}
-     */
-/*
-    joinGame: async function (iGameCode) {
-        try {
-            const iGame = await fish.fireConnect.validateGameCode(iGameCode);
-            if (iGame) {
-                if (iGame.gameState !== fish.constants.kInProgressString) {
-                    alert('You cannot join ' + iGameCode);
-                    throw('You cannot join ' + iGameCode);
-                }
-            } else {
-                fish.state.gameCode = null;
-                $('#gameCode').val("");      //  put blank into the box
-                alert('You need a valid game code');
-                throw('You need a valid game code');
-            }
-
-            const iJoinResult = await fish.fireConnect.joinGame(iGame);
-            await fish.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
-
-            console.log("In joinGame(), connector.joinGame resolved with " + JSON.stringify(iJoinResult));
-
-            fish.setLevel(iJoinResult.config);
-            fish.state.gameCode = iJoinResult.gameCode;
-            fish.state.gameState = iJoinResult.gameState;
-            fish.state.gameTurn = iJoinResult.turn;
-            fish.state.turn = fish.state.gameTurn;
-            fish.state.playerState = fish.constants.kFishingString;     //  set us to be fishing
-            fish.state.balance = fish.gameParameters.openingBalance;
-
-            fish.state.gameCodeList.push(fish.state.gameCode);
-
-            if (iJoinResult.newPlayer) {
-                fish.setNotice(fish.strings.successfullyJoinedText + "<b>" + fish.state.gameCode
-                    + "</b>!<br>" + fish.strings.enterAndPressCatchText);
-            } else {
-                fish.setNotice("Rejoined <b>" + fish.state.gameCode
-                    + "</b>!<br>" + fish.strings.enterAndPressCatchText);
-            }
-
-            fish.fishUpdate();
-            $('#gameCodeTextField').val("");      //  empty the box for the game code.
-
-            return (iJoinResult);       //  return the valid game (with a newPlayer field)
-        }
-
-        catch (msg) {
-            console.log('joinGame() error: ' + msg);
-        }
-    },
-*/
 
 
 

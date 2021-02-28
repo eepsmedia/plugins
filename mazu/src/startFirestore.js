@@ -27,8 +27,6 @@ limitations under the License.
 */
 
 
-import firebase from 'firebase';
-
 const firebaseConfig = {
     apiKey: "AIzaSyAMkheBMSdVmMyUi76UGyeMX3pJpBGS0Hw",
     authDomain: "eeps-fish-commons.firebaseapp.com",
@@ -39,9 +37,4 @@ const firebaseConfig = {
     appId: "1:945924475632:web:8a0f6f26d292f317511035",
     measurementId: "G-36DF6XG8Q7"
 };
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
-
-export default firebase;

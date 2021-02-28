@@ -42,6 +42,10 @@ const choosy_ui = {
         //  this.update();
     },
 
+    /**
+     * Main update routine --- redraws everyting.
+     * @returns {Promise<void>}
+     */
     update: async function () {
         this.recordCurrentOpenDetailStates();
         choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.datasetName);
@@ -86,6 +90,16 @@ const choosy_ui = {
         this.attributeControls.install();
     },
 
+    setCurrentClumpTo : function (iName) {
+        this.currentClumpName = iName;
+        const theNameBox = document.getElementById("clump-name-text-input");
+        theNameBox.value = this.currentClumpName;
+    },
+
+    getClumpFromAttributeName : function(iAttName) {
+
+    },
+
     recordCurrentOpenDetailStates   : function() {
         for (const clump in this.clumpRecord) {
             if (clump !== choosy.constants.noClumpString) {
@@ -102,7 +116,9 @@ const choosy_ui = {
      * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
      *
      * For example, `{work}Percent of people working in agriculture`
-     * puts the attribute in a clump called "work" and then strips that tag from the description
+     * puts the attribute in a clump called "work" and then strips that tag from the description.
+     *
+     * Does this by adding a key in the attribute data called `clump` --- which does not exist in CODAP.
      *
      * @param theInfo   the information on all collections and attributes
      */
@@ -182,7 +198,7 @@ const choosy_ui = {
                     } else {
                         const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);
                         tGuts += `<details id="${theDOMID}" ${openClause}>
-                            <summary>
+                            <summary class="attribute-clump-summary">
                             <div class="clump-summary-head">
                                 ${theClumpName}&emsp;${clumpVisibilityButtons}
                             </div>
@@ -254,6 +270,8 @@ const choosy_ui = {
 
         async handleVisibilityButton(iAttName, iHidden) {
             await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
+            const theClumpName = connect.utilities.clumpNameFromAttributeName(iAttName, choosy.datasetInfo);
+            choosy_ui.setCurrentClumpTo(theClumpName);
             choosy_ui.update();
         },
 
@@ -276,7 +294,7 @@ const choosy_ui = {
         },
 
         handleClumpVisibilityButton : async function(iClumpName, toHide) {
-            event.preventDefault();
+            event.preventDefault();     //  todo: fix this; maybe set a handler separately from onclick?
             //  event.stopPropagation();
             console.log(`${toHide ? "Hiding" : "Showing"} clump [${iClumpName}]`);
 

@@ -171,7 +171,7 @@ const choosy = {
     },
 
     constants : {
-        version : '2021a',
+        version : '2021b',
         selectionStatusElementID : 'selection-status',
         tagValueElementID : "tag-value-input",
         tagValueSelectedElementID : "tag-value-selected",

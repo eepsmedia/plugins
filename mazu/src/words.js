@@ -1975,5 +1975,3 @@ const eepsWords = {
         "zoom",
     ]
 };
-
-export default eepsWords;

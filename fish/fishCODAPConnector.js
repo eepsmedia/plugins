@@ -73,7 +73,7 @@ fish.CODAPConnector = {
      */
     addSingleFishItemInCODAP: async function (iModelResult) {
         let aTurn = {
-            year: Number(fish.state.turn),
+            year: Number(fish.state.gameTurn),
             seen: iModelResult.visible,
             want: iModelResult.want,
             caught: iModelResult.caught,

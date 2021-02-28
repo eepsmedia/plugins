@@ -77,14 +77,21 @@ fieldset {
     height: 20px;
 }
 
-.clump-summary-head {
+.attribute-clump-summary {
     font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
-    font-size: medium;
+    font-size: small;
+    background-color: #cde;
+
+}
+
+.clump-summary-head {
+    font-weight: bold;
     display: inline-flex;
     flex-direction: row;
     align-items: center;    /*  vertical alignment  */
     justify-content: left;
     height: 24px;
+    border: none;
 }
 
 .tag-name-box {

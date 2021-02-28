@@ -39,7 +39,8 @@ const fireConnect = {
     gameDR: null,      //  document reference for THIS game
     playersCR: null,   //  collection reference for players in THIS game
     turnsCR: null,     //  collection reference for turns in this game
-    meDR: null,        //  document reference for THIS player
+    //  document reference for THIS player
+    meDR: null,
 
     unsubscribeFromGame: null,
     unsubscribeFromPlayers: null,

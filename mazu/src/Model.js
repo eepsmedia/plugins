@@ -27,11 +27,8 @@ limitations under the License.
 
 */
 
-import fireConnect from "./fireConnect";
-import mazu from "./constants.js";
-import strings from "./strings.js";
 
-export default class Model extends Object  {
+class Model extends Object  {
 
     constructor(iMazu) {
         super();
@@ -40,13 +37,14 @@ export default class Model extends Object  {
             gameCode : "",
             gameType : mazu.constants.kInitialGameTypeName,     //  called 'config' in mySQL
             gameState : mazu.constants.kGameWaitingString,
-        };        //  an image of the mySQL record
+            reason : "",
+        };
         this.thePlayers = [];
         this.theTurns = [];
         this.gameParameters = mazu.fishGameParameters[this.theGame.gameType];
         this.mazu = iMazu;
 
-        fireConnect.initialize(this);
+       // fireConnect.initialize(this);
 
         return this;
     }
@@ -70,7 +68,13 @@ export default class Model extends Object  {
         this.theGame = await fireConnect.joinOldGame(iCode);
         if (this.theGame) {
             this.gameParameters = mazu.fishGameParameters[this.theGame.configuration];
+            //  this.theGame does NOT include subcollections, players and turns
+            //  so we restore them here:
+
+            this.thePlayers = await fireConnect.getAllPlayers();
+            this.theTurns = await fireConnect.getAllTurns();
         }
+
         return this.theGame;
     }
 
@@ -137,8 +141,8 @@ export default class Model extends Object  {
             }
         );
         await Promise.all(thePromises);     //  updates all the collections in the DB
-
-        this.mazu.forceUpdate();    // todo:  need this??
+        ui.update();
+       // this.mazu.forceUpdate();    // todo:  need this??
     }
 
 /*

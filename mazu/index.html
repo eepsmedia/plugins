@@ -1,0 +1,79 @@
+<!--
+
+    MAZU index.html
+    Tim Erickson
+
+
+    http://localhost/plugins/mazu
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mazu - Goddess of the Sea</title>
+
+    <!--firebase setup-->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+
+
+    <link rel='stylesheet' type='text/css' href='src/css/mazu.css'/>
+
+    <script src="src/mazu.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/Model.js"></script>
+    <script src="src/mazuStart.js"></script>
+    <script src="src/constants.js"></script>
+    <script src="src/fireConnect.js"></script>
+    <script src="src/startFirestore.js"></script>
+    <script src="src/strings.js"></script>
+    <script src="src/words.js"></script>
+
+</head>
+
+
+<body onload="mazu.initialize()">
+
+<div id="mazu">
+    <div id="titleBar" class="ui-stripe">
+        <h1  class="ui-stripe-element">Mazu</h1>
+        <img id="refreshButton" alt="refresh" onclick="ui.update()"
+             src="art/refresh.png"  class="ui-stripe-element" />
+        <p class="ui-stripe-element">goddess of the sea</p>
+        <button class="ui-stripe-element" id="logout-button" onclick="mazu.initialize()" >log out</button>
+
+    </div>
+
+    <div id="mazuLoginDiv" class="ui-stripe">
+        <input id="loginName" type="text" class="ui-stripe-element">
+        <button id="loginButton"  class="ui-stripe-element" onclick="mazu.handleLogin()">login</button>
+    </div>
+
+    <div id="mazuHeader" class="ui-stripe"></div>
+
+    <div id="mazuStartDiv" class="ui-stripe">
+        <div id="newOrOldRadioButtons" class="ui-stripe-element"></div>
+        <div id="startGameControls"  class="ui-stripe-element">
+            <select id="gameTypesMenu" onchange="mazuStart.update()"></select>
+            <select id="oldGamesMenu" onchange="mazuStart.update()"></select>
+        </div>
+        <div id="startGameButton"  class="ui-stripe-element"></div>
+    </div>
+
+    <div id="mazuMarketDiv" class="ui-stripe"></div>
+    <div id="mazuPlayerListDiv" class="ui-stripe"></div>
+
+    <div id="gameOverDiv" class="ui-stripe"></div>
+
+</div>
+
+</body>
+</html>

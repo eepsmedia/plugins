@@ -26,36 +26,46 @@ limitations under the License.
 
 */
 
+
+
 body {
     margin : 0px;
     height : 320px;
-    font-family: 'Rokkitt',sans-serif;font-size: 16px;
+    font-family: 'IBM Plex Sans Condensed', "Helvetica Neue", Verdana, sans-serif;
+    font-size: 16px;
     font-weight: 300;
     background: linear-gradient(#dde, #aab );
     color : #333;
-    position: relative;
     /* max-width: 400px; */
 }
 
-.fishUIblock {
-    position : relative;
+.fish-ui-stripe {
     padding-left: 1em;
     padding-right: 1em;
-    /* padding-top: 1em;    */
+    padding-top : 6px;
+    padding-bottom : 6px;
+    display : flex;
+    min-height: 3em;
+    align-items: center;
+    flex-direction: row;
 }
 
+.fish-stripe-element {
+    margin-right: 1em;
+    font-size: 14px;
+    display : block;
+}
+
+#fish {
+    padding : 0;
+    margin : 0;
+}
 
 #bannerDiv {
 }
 
-#getPlayerName {
-    /* width: 100%; */
-    /*background-color: bisque;*/
-    /*!*background: linear-gradient(#ccd, #aab );*!*/
-}
-
 #playerName {
-    width : 8em;
+    width : 7em;
     font-family: 'Rokkitt',sans-serif; font-size: 14px;
 }
 
@@ -63,7 +73,11 @@ body {
     width: 4em;
 }
 
-#joinGame {
+div#needPlayerNameDIV {
+    background-color: #cde;
+}
+
+div#joinGameDIV {
     /*height: 80px;*/
 }
 
@@ -79,15 +93,29 @@ body {
 }
 
 
-#status {
-    /*width : 100%;*/
+div#statusDIV {
     height : 40px;
     position: relative;
+    background-color: #def;
 }
 
-#statusText{
+div#statusText{
     position: absolute;
     top: 50%; transform: translate(0, -50%); /* center vert, do nothing horiz */
+}
+
+div#catchFishDIV {
+    background-color: #cde;
+    display : flex;
+}
+
+
+div#noticeDIV {
+    background-color: #bcd;
+}
+
+div#aboutPlayersDIV {
+    background-color: #789;
 }
 
 #clock {
@@ -105,24 +133,16 @@ body {
     top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
 
-#chairControls {
-    /*height: 96px;*/
-    position : absolute;
-    padding-bottom: 1em;
-    bottom: 82px;
-}
 
 #aboutPlayersText {
     color : white;
-    position : absolute;
     bottom: 42px;
 }
 
 #debug {
-    font-family : "Andale Mono", monospace;
-    font-size: 9px;
+    font-family: 'IBM Plex Sans Condensed', "Helvetica Neue", Verdana, sans-serif;
+    font-size: 10px;
     color : white;
-    position : absolute;
     bottom: 8px;
 }
 
@@ -133,3 +153,4 @@ body {
     font-weight: 700;
     /*font-size: 14px;*/
 }
+

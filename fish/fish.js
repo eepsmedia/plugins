@@ -58,7 +58,7 @@ let fish = {
     freshState: {
         gameCode: null,     //  three-word nearly-unique code for each game
         gameState: null,    //  is the game in progress?
-        turn: 0,                //  year we are in locally. Usually the same as fish.gameFromDB.turn
+        gameTurn: 0,                //  year we are in locally. Usually the same as fish.gameFromDB.turn
 
         gameCodeList: [],
 
@@ -75,19 +75,22 @@ let fish = {
         autoCatch: false,       //  automation button checked for catching
         otherPlayersInfo: {OK: true},
         timerCount: 0,
+
+        gameCodeFromURL : null,
     },
 
     /**
      * Set up initial values, initialize other objects with initializers.
      */
     initialize: function () {
+        this.gameCodeFromURL = this.extractGameCodeFromURL();
         fish.setLanguageFromURL();
         fish.state = fish.freshState;       //  todo: implement saving and restoring
 
         //  fish.setLevel(fish.state.config);
         fish.state.gameState = fish.constants.kWaitingString;
         fish.state.playerState = fish.constants.kBetweenString;     //  not in a game until join
-        //  fish.state.turn = fish.game.openingTurn;
+
         fish.CODAPConnector.initialize(null)
             .then(() => {
                     if (!fish.state.hasOwnProperty('gameCodeList')) {
@@ -103,7 +106,12 @@ let fish = {
         fireConnect.initialize(this);
 
         fish.ui.initialize();
-        fish.ui.update();
+
+        if (this.gameCodeFromURL) {
+            fish.userActions.clickJoinButton(this.gameCodeFromURL);
+        } else {
+            fish.ui.update();
+        }
     },
 
     calculateVisible : function() {
@@ -120,7 +128,7 @@ let fish = {
             tVisible = Math.round(fish.gameParameters.visibleProbability * tPop);
         }
 
-        console.log(`${fish.state.turn}: ${tVisible} seen of ${tPop}`);
+        console.log(`${fish.state.gameTurn}: ${tVisible} seen of ${tPop}`);
         return tVisible;
     },
 
@@ -152,7 +160,7 @@ let fish = {
 
             return {
                 playerName : fish.state.playerName,
-                turn : fish.state.turn,
+                turn : fish.state.gameTurn,
                 want: iWanted,
                 visible: tVisible,
                 caught: tCaught,
@@ -175,17 +183,17 @@ let fish = {
         this.gameConfig = this.gameFromDB.configuration;
         fish.state.gameEndMessage = this.gameFromDB.reason;
 
-        if (this.state.turn !== this.gameFromDB.turn) {
+        if (this.state.gameTurn !== this.gameFromDB.turn) {
             //  change of turn! Fish got sold!
-            this.updateTurnFromOldYearInCODAP(this.state.turn); //  gets the turn data and pushes it
-            this.state.turn = this.gameFromDB.turn;
+            this.updateTurnFromOldYearInCODAP(this.state.gameTurn); //  gets the turn data and pushes it
+            this.state.gameTurn = this.gameFromDB.turn;
 
             const myData = await fireConnect.getMyData();
 
             this.state.playerState = fish.constants.kFishingString;     //  myData.playerState;        //  we are back to fishing
             this.state.balance = myData.balance;
 
-            console.log(`\nfish.updateGame() Year is now ${this.state.turn} (now ${this.state.playerState})`);
+            console.log(`\nfish.updateGame() Year is now ${this.state.gameTurn} (now ${this.state.playerState})`);
             if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
                 await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
             }
@@ -212,6 +220,17 @@ let fish = {
     updatePlayers: function(iPlayers) {
         this.players = iPlayers;
         this.ui.update();
+    },
+
+    extractGameCodeFromURL : function () {
+        const params = new URLSearchParams(document.location.search.substring(1));
+        const code = params.get("code");
+        if (code) {
+            console.log(`will try to join game ${code}`);
+        } else {
+            console.log(`No pre-set game`);
+        }
+        return code;
     },
 
     setLanguageFromURL: function () {
@@ -266,7 +285,7 @@ let fish = {
         fish.state.gameCode = null;
         fish.state.autoCatch = false;
         fish.state.currentTurnResult = null;
-        fish.state.turn = 0;
+        fish.state.gameTurn = 0;
         fish.state.balance = 0;
 
         $("#gameCodeTextField").val("");         //  empty the code!
@@ -275,82 +294,6 @@ let fish = {
     },
 
 
-    /**
-     * At the top level, update the model
-     *
-     * @returns {Promise<boolean>}
-     */
-/*
-    fishUpdate: async function () {
-        fish.state.otherPlayersInfo = await this.otherPlayersInfo();
-        let done = false;
-        let tUpdatedTurn;
-        const tDBgame = await fish.fireConnect.getGameData();
-
-        const tNewGameTurn = Number(tDBgame['turn']);
-        fish.state.gameState = tDBgame['gameState'];
-
-        if (tNewGameTurn > fish.state.turn) {    //  the game just updated; its turn (from the DB) is more advanced.
-
-            const tTurnArray = await fish.fireConnect.getOneTurn(fish.state.turn);
-            const tMostRecentTurnFromDB = tTurnArray[0];
-            const newBalance = tMostRecentTurnFromDB['balanceAfter'];
-
-            if (newBalance) {
-
-                //  The DB has updated prices, etc., so we now finish THIS YEAR's case, updating it in CODAP.
-                //  Note that we're using fish.state.turn BEFORE it gets updated to the "game's" turn.
-                tUpdatedTurn = await fish.CODAPConnector.updateFishItemInCODAP(
-                    tMostRecentTurnFromDB,
-                    "update " + fish.state.turn + " to " + tNewGameTurn);
-
-                fish.state.gameTurn = Number(tNewGameTurn); //  now update local turn number
-                fish.state.turn = fish.state.gameTurn;      //  here we update the turn (the player turn)
-                fish.state.balance = newBalance;  //  we only update balance when the turn updates
-                fish.state.playerState = fish.constants.kFishingString; //  now we are fishing again
-
-                fish.state.turnReport = fish.strings.makeRecentTurnReport(tUpdatedTurn);
-                fish.setNotice(fish.state.turnReport);
-            } else {
-                console.log("latest balance not available, wait for another tick...")
-            }
-        }
-
-        if (fish.state.playerState === fish.constants.kSellingString) {
-            //  this report will be DURING the turn, so we know how many we caught but not the price.
-            fish.state.turnReport = fish.strings.makeCurrentTurnReport(fish.state.currentTurnResult);
-            fish.setNotice(fish.state.turnReport);
-        }
-
-        //  check for end of game. fish.state.gameState set above (read from DB)
-
-        if (fish.state.gameState === fish.constants.kWonString || fish.state.gameState === fish.constants.kLostString) {
-            fish.state.gameEndMessage = tDBgame.reason;
-
-            await fish.endGame(fish.state.gameState);
-            done = true;
-        }
-
-        //  do an autocatch if appropriate
-        if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
-            await fish.userActions.catchFish();       //      AUTOMATICALLY catch fish, but wait to complete before continuing!
-        }
-        /!*
-                //  need to know if everyone is done fishing
-                fish.state.OKtoEndTurnObject = await fish.phpConnector.checkToSeeIfOKtoEndTurn();
-
-                //  do an auto fish-market if appropriate
-                if (fish.state.isChair) {
-                    if (fish.state.OKtoEndTurnObject.OK) {
-                        if (fish.state.autoChair) {
-                            await fish.userActions.chairEndsTurn();     //  OK to resolve AND autoChair. Do it!
-                        }
-                    }
-                }
-        *!/
-        return done;
-    },
-*/
 
     /**
      * Check to see if the player is ready to catch fish (game is in progress, player is tagged as "fishing"
@@ -395,11 +338,11 @@ let fish = {
      * @param iText     the text to appear
      */
     setNotice: function (iText) {
-        $("#notice").html(iText);
+        document.getElementById("notice").innerHTML = iText;
     },
 
     constants: {
-        version: "001g",
+        version: "001h",
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,

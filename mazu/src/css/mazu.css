@@ -30,6 +30,7 @@ body {
     background: linear-gradient(#dde, #88a );
     font-family: 'Rokkitt',sans-serif;font-size: 16px;
     height: 100vh;
+    margin : 0;
 }
 
 h1 {
@@ -53,7 +54,9 @@ th {
 td {
     text-align: right;
     font-family: Menlo, monospace;
+    /*
     font-weight: bold;
+    */
     font-size : 12px;
     padding-left: 1em;
 }
@@ -63,21 +66,30 @@ td {
 }
 
 #titleBar {
-    display : flex;
-    align-items: center;
-    background-color : lightslategray;
+    background-color : #778899;
     color : #ccc;
-    padding-left : 12px;
-    padding-top : 6px;
-    padding-bottom : 6px;
+    height : 3em;
 }
-#mazuHeader {
-    display : flex;
-    align-items: center;
-    /*background-color : lightgray;*/
-    padding-left : 12px;
-    padding-top : 6px;
-    padding-bottom : 6px;
+
+#refreshButton {
+    height : 50%;
+    cursor : pointer;
+}
+
+#mazuHeader  {
+    background-color: #667788;
+    font-weight: bold;
+    color : #ccc;
+}
+
+#mazuLoginDiv {
+    background-color: #667788;
+    color : #ccc;
+}
+
+#mazuStartDiv {
+    background-color: #556677;
+    color : #ccc;
 }
 
 #fishMarket {
@@ -113,6 +125,10 @@ td {
     padding-bottom : 6px;
 }
 
+.playerRow {
+    font-family: 'IBM Plex Sans Condensed', "Helvetica Neue", Verdana, sans-serif;
+}
+
 #clock {
     padding-left : 12px;
     padding-top : 6px;
@@ -122,4 +138,18 @@ td {
 
 .radioButtons {
     padding-right: 2em;
+}
+
+.ui-stripe {
+    min-height: 3em;
+    display : flex;
+    align-items: center;
+    /*background-color : lightgray;*/
+    padding-left : 12px;
+    padding-top : 6px;
+    padding-bottom : 6px;
+}
+
+.ui-stripe-element {
+    margin-right: 1em;
 }

@@ -30,19 +30,17 @@ limitations under the License.
 Local testing: http://localhost:3000/plugins/mazu
  */
 
-import React from 'react';
-//  import mazu from "./constants.js";
-import Model from "./Model.js";
-import MazuHeader from "./components/MazuHeader.js";
-import './css/mazu.css';
 
-import refreshIcon from "./art/refresh.png";
-import mazu from "./constants";
 
-class Mazu extends React.Component {
+const mazu =  {
 
-    constructor(props) {
-        super(props);
+    loginName : "",
+    model : null,
+
+    initialize : async function() {
+
+        this.loginName = "";
+
         this.state = {
             OKtoSell: false,
             autoSell: false,
@@ -52,9 +50,33 @@ class Mazu extends React.Component {
         console.log("Constructing Mazu. State: " + JSON.stringify(this.state));
 
         this.model = new Model(this);   //  singleton
+        await fireConnect.initialize( );   //  must precede ui initialize
 
-        //  bindings
-    }
+        ui.initialize();
+        ui.update();
+    },
+
+    handleLogin : function() {
+        const theName = document.getElementById("loginName").value;
+
+        if (theName.length > 2) {
+            this.loginName = theName;
+            mazuStart.initialize();     //  so that we redo the game menu
+            ui.update();
+            fireConnect.addGodToDB();
+        } else {
+            Swal.fire({ icon : "error", text : "Make up a longer name!"});
+        }
+    },
+
+    /**
+     * leave this game without logging out
+     */
+    leaveGame : function () {
+        this.model.theGame.gameCode = null;
+        mazuStart.initialize();
+        ui.update();
+    },
 
     componentDidMount() {
         /*
@@ -63,21 +85,18 @@ class Mazu extends React.Component {
                     mazu.constants.kTimerInterval
                 );
         */
-    }
+    },
 
     componentWillUnmount() {
         clearInterval(this.timerID);
-    }
+    },
 
     async poll() {
         const theSituationResponse = await this.model.getCurrentSituation();
 
-        //  this is the REACT state...
-        this.setState({
-            OKtoSell: theSituationResponse.OK,
-            missing: theSituationResponse.missing,
-            now: new Date(),
-        });
+        this.state.OKtoSell = theSituationResponse.OK;
+            this.state.missing = theSituationResponse.missing;
+            this.state.now = new Date();
 
         console.log("... poll() ... " + this.sitrep());
 
@@ -88,15 +107,31 @@ class Mazu extends React.Component {
             await this.sellFish();
             console.log(" *** auto sold *** now it's " + this.model.theGame.turn);
         }
-    }
 
+        ui.update();
+    },
+
+    showWonLost() {
+        if (this.model.theGame.gameCode) {
+            return (
+                this.model.theGame.gameState === mazu.constants.kWonString ||
+                this.model.theGame.gameState === mazu.constants.kLostString
+            )
+        } else {
+            return false;
+        }
+    },
 
     playing() {
-        return (
-            this.model.theGame.gameState === mazu.constants.kInProgressString ||
-            this.model.theGame.gameState === mazu.constants.kWaitingString
-        )
-    }
+        if (this.model.theGame.gameCode) {
+            return (
+                this.model.theGame.gameState === mazu.constants.kInProgressString ||
+                this.model.theGame.gameState === mazu.constants.kWaitingString
+            )
+        } else {
+            return false;
+        }
+    },
 
     sitrep() {
         const theGame = this.model.theGame;
@@ -105,23 +140,28 @@ class Mazu extends React.Component {
             " -- " + this.model.thePlayers.length + " players " +
             " -- " + this.model.theTurns.length + " turns "
             ;
-    }
+    },
 
     async sellFish() {
-        document.getElementById("sellFishButton").style.visibility = "hidden";
+        const theSellButton = await document.getElementById("sellFishButton");
+        if (theSellButton) {
+            theSellButton.style.visibility = "hidden";
+        }
         console.log("Selling fish!");
         await this.model.sellFish();
         console.log("Fish sold!");
-        document.getElementById("sellFishButton").style.visibility = "visible";
-    }
+        //  ui.update();    //  make the sales button appear again if we're manual
+        // update may not be necessary as we will update when the listener fires.
+    },
 
     handleAutoSellBoxChange(e) {
         const newCheckedState = document.getElementById("autoSellBox").checked;
-        this.setState({autoSell: newCheckedState});
+        this.state.autoSell = newCheckedState;
         console.log("Auto sell checkbox now " + newCheckedState);
         this.poll();
-    }
+    },
 
+/*
     render() {
         let gameRunningStuff;
 
@@ -167,6 +207,7 @@ class Mazu extends React.Component {
             </div>
         )
     }
+*/
 }
 
 /*
@@ -176,6 +217,7 @@ class Mazu extends React.Component {
  */
 
 function RefreshButton(props) {
+/*
     async function doRefresh(e) {
         props.doRefresh();
     }
@@ -188,118 +230,8 @@ function RefreshButton(props) {
                    onClick={doRefresh}></input>
         </div>
     )
+*/
 }
 
 function GameOverDiv(props) {
-    const theGame = props.game;
-
-    if (theGame.gameState === mazu.constants.kInProgressString) {
-        return null;
-    }
-
-    const theGuts = (
-        <div id={"gameOverDiv"}>
-            <h3>Game over! The players {theGame.gameState}!</h3>
-            <p>{props.reason}</p>
-        </div>
-    );
-
-    return <div>{theGuts}</div>
 }
-
-function PlayerList(props) {
-
-    function playerRow(p, iTurns) {
-        let myTurn = null;
-        iTurns.forEach((t) => {
-            console.log(`turn: ${JSON.stringify(t)}`);
-            if (t.playerName === p.playerName) {
-                myTurn = t;
-            }
-        });
-
-        const tWanted = myTurn ? myTurn.want : "--";
-        return (
-            <tr key={p.playerName}>
-                <td>{p.playerName}</td>
-                <td>{tWanted}</td>
-                <td>{p.balance}</td>
-                <td>{p.playerState}</td>
-            </tr>
-        )
-    }
-
-    const theTurns = props.theTurns;
-    const listGuts = props.thePlayers.map(
-        (p) => playerRow(p, theTurns)
-    );
-
-    const headerText = props.thePlayers.length + " player(s)";
-    const tableHeader = (<tr>
-        <th>name</th>
-        <th>wants</th>
-        <th>balance</th>
-        <th>status</th>
-    </tr>);
-    const wholeThing = props.thePlayers.length > 0 ?
-        (
-            <div>
-                <h3>{headerText}</h3>
-                <div>
-                    <table id={"playerTable"}>
-                        <thead>{tableHeader}</thead>
-                        <tbody>{listGuts}</tbody>
-                    </table>
-                </div>
-            </div>
-        ) : (
-            <h4>no players yet</h4>
-        );
-
-    return (<div>{wholeThing}</div>)
-}
-
-function FishMarket(props) {
-    if (props.OK) {
-        return (
-            <div id={"fishMarket"}>
-                <h3>Fish market: </h3>
-                <button id="sellFishButton" onClick={props.sellHandler}>sell fish</button>
-                <AutoSellBox
-                    autoHandler={props.autoHandler}
-                />
-
-            </div>
-        );
-    } else {
-        if (props.missingNames.length > 0) {
-            const missingPlayerList = props.missingNames.join(", ");
-            return (
-                <div id={"fishMarket"}>
-                    <h3>Fish market: </h3>
-                    <span>Waiting for {missingPlayerList}</span>
-                    <AutoSellBox
-                        autoHandler={props.autoHandler}
-                    />
-                </div>
-            )
-        } else {
-            return (<div id={"fishMarket"}>no fish to sell</div>)
-        }
-    }
-}
-
-function AutoSellBox(props) {
-
-    return (
-        <div>
-            <input type={"checkbox"}
-                   id={"autoSellBox"}
-                   onChange={props.autoHandler}
-            />
-            <label htmlFor={"autoSellBox"}>automate market</label>
-        </div>
-    )
-}
-
-export default Mazu;

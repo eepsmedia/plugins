@@ -46,35 +46,46 @@ fish.ui = {
 
         //  names of main UI elements
 
-        const needPlayerNameElement = document.getElementById("needPlayerName");
-        const joinGameElement = document.getElementById("joinGame");
+        const needPlayerNameElement = document.getElementById("needPlayerNameDIV");
+        const joinGameElement = document.getElementById("joinGameDIV");
         const winLoseElement = document.getElementById("winLoseDialog");
         const catchFishDIV = document.getElementById("catchFishDIV");
+        const statusDIV = document.getElementById("statusDIV");
+        const noticeDIV = document.getElementById("noticeDIV");
+        const aboutPlayersDIV = document.getElementById("aboutPlayersDIV");
+
         const catchButton = document.getElementById("catchButton");
+        const statusText = document.getElementById("statusText");
+        const theCalendar = document.getElementById("statusYear");
 
         //  Visibility of the main panels
 
-        needPlayerNameElement.style.display = (fish.state.gameCode && !fish.state.playerName) ? "block" : "none";
-
-        joinGameElement.style.display = (fish.state.gameCode ? "none" : "block");
-
+        statusDIV.style.display = (fish.state.gameState === fish.constants.kWaitingString) ?  "none" : "flex" ;
+        joinGameElement.style.display = (fish.state.gameCode ? "none" : "flex");
+        needPlayerNameElement.style.display = (fish.state.gameCode && !fish.state.playerName) ? "flex" : "none";
+        catchFishDIV.style.display
+            = ((fish.state.gameState === fish.constants.kInProgressString) && fish.state.playerName) ? "flex" : "none";   //  was : "none"
+        aboutPlayersDIV.style.display = (fish.constants.kInProgressString ? "flex" : "none");
+        noticeDIV.style.display = true;
         winLoseElement.style.display
             = (fish.state.gameState === fish.constants.kWonString || fish.state.gameState === fish.constants.kLostString)
-            ? "block" : "none";
+            ? "flex" : "none";
 
         //  visibility of catch fish DIV
 
-        catchFishDIV.style.display
-            = ((fish.state.gameState === fish.constants.kInProgressString) && fish.state.playerName) ? "block" : "none";   //  was : "none"
         catchButton.style.display
             = (fish.state.playerState === fish.constants.kFishingString) ? "block" : "none";
 
         //  update text to reflect current fish.state
 
-        $("#statusYear").html(fish.state.turn);
-        $("#statusBalance").html(fish.state.balance);
-        $("#statusPlayer").html(fish.state.playerName);
-        $("#statusGame").html(fish.state.gameCode);
+
+        let theStatusText = ""
+        theStatusText += fish.state.balance ? `\$${fish.state.balance} | ` : "";
+        theStatusText += fish.state.playerName ? `${fish.state.playerName} | ` : "";
+        theStatusText += fish.state.gameCode ? `${fish.state.gameCode} ` : "";
+        statusText.innerHTML = theStatusText;
+
+        theCalendar.innerHTML = fish.state.gameTurn;
 
         //  miscellaneous state-specific stuff
 
@@ -97,7 +108,7 @@ fish.ui = {
 
             case fish.constants.kInProgressString:
                 const theText = fish.strings.sitrep();
-                $("#aboutPlayersText").html(theText);   //  the "missing" text
+                $("#aboutPlayersText").html(theText);   //  the "who is missing" text
 
 
                 const noticeText = (fish.state.playerState === fish.constants.kFishingString) ?
@@ -111,7 +122,7 @@ fish.ui = {
         //  debugging
 
         fish.debugThing.html(
-            `${fish.gameConfig} (${fish.language}) ${fish.state.turn} `
+            `${fish.gameConfig} (${fish.language}) ${fish.state.gameTurn} `
         );
 
     },

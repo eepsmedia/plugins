@@ -235,7 +235,7 @@ const connect = {
     tagging: {
 
         /**
-         *
+         * Actually creates the attribute if it does not exist.
          * @returns {Promise<string>} the name of the "Tags" collection
          */
         ensureTagsAttributeExists: async function () {
@@ -461,6 +461,19 @@ const connect = {
     },
 
     utilities: {
+
+        clumpNameFromAttributeName : function(iName, info) {
+            let out = "";
+            info.collections.forEach(coll => {
+                coll.attrs.forEach(att => {
+                    if (att.name === iName) {
+                        out = att.clump;
+                    }
+                })
+            })
+            return out;
+
+        },
 
         collectionNameFromAttributeName: function (iName, info) {
             let out = "";
