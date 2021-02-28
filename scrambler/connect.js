@@ -37,21 +37,18 @@ connect = {
         await codapInterface.init(this.iFrameDescriptor, null);
     },
 
+    /**
+     * Retrieves the structure (the result of a get data context)
+     *
+     * @param iDatasetName  the name of the dataset
+     * @returns {Promise<*>}
+     */
     getStructure: async function (iDatasetName) {
-        let theStructure = {
-            dataSetName: iDatasetName,
-            collections: [],
-        };
-        const theCollections = await this.getAllCollections(iDatasetName);
-
-        for (const col of theCollections) {
-            let attributesForThisCollection = await this.getTheseAttributes(iDatasetName, col.name);
-            const tCollection = {
-                collection: col,
-                attributes: attributesForThisCollection,
-            };
-            theStructure.collections.push(tCollection);  //top level is an array of collections
+        const theMessage = {
+            action: "get",
+            resource: `dataContext[${iDatasetName}],`
         }
+        const theStructure = await codapInterface.sendRequest(theMessage);
 
         return theStructure;
     },
@@ -126,16 +123,15 @@ connect = {
         return out;
     },
 
-    makeAttributeMenuGuts: function(iStructure) {
+    makeAttributeMenuGuts: function (iStructure) {
         let out = "<option value=null selected>everything!</option>";
 
-        iStructure.collections.forEach( coll => {
-            for (attName in coll.attributes) {
-                const theAttribute = coll.attributes[attName];
-                if (theAttribute.info.formula === undefined) {
-                    out += `<option value="${attName}">${attName}</option>)`;
+        iStructure.values.collections.forEach(coll => {
+            coll.attrs.forEach(att => {
+                if (att.formula === undefined) {
+                    out += `<option value="${att.name}">${att.name}</option>)`;
                 }
-            }
+            })
         })
 
         return out;
@@ -158,6 +154,12 @@ connect = {
         return tAllCollectionsResult.values;    //  the array of collection info objects {name: xxx, title: yyy}
     },
 
+    /**
+     * Does an itemSearch to get all items in the dataset
+     *
+     * @param iDatasetName
+     * @returns {Promise<[]>}   an array of the items, containing only the "values" objects
+     */
     getAllItems: async function (iDatasetName) {
         const tMessage = {
             action: "get",
@@ -171,7 +173,7 @@ connect = {
                 outItems.push(item.values);
             }
         );
-        return  outItems;
+        return outItems;
     },
 
     getAllCases: async function (iCollection) {
@@ -203,58 +205,66 @@ connect = {
         return this.listOfDataSetNames;
     },
 
-    createFreshOutputDataset : async function(iSituation) {
-        const newName = "scram_" + iSituation.dataSetName;
+    createFreshOutputDataset: async function () {
 
         //  delete the old one
         const dMessage = {
-            "action" : "delete",
-            "resource" : `dataContext[${newName}]`,
+            "action": "delete",
+            "resource": `dataContext[${scrambler.scrambledDatasetName}]`,
         };
         await codapInterface.sendRequest(dMessage);
 
         //  construct the "values" field for the create request
         let theValues = {
-            "name" : newName,
-            "title" : newName,      //  todo: alter the title of the original
-            "collections" : [{      //  includes new top-level collection
-                name : scrambler.constants.scrambledTopLevelCollectionName,
-                attrs : [{
-                    name : scrambler.constants.scrambledIterationAttributeName,
-                    precision : 0,
-                    type : "numeric",
+            "name": scrambler.scrambledDatasetName,
+            "title": scrambler.scrambledDatasetName,      //
+            "collections": [{      //  includes new top-level collection
+                name: scrambler.constants.scrambledTopLevelCollectionName,
+                attrs: [{
+                    name: scrambler.constants.scrambledIterationAttributeName,
+                    precision: 0,
+                    type: "numeric",
                 }]
             }],
         };
 
         let parentCollectionName = scrambler.constants.scrambledTopLevelCollectionName;
 
+        const originalStructure = await this.getStructure(scrambler.datasetName);
+
         //  start at the top, looping over the collections
-        for (const col of iSituation.collections) {
+
+        originalStructure.values.collections.forEach(col => {
             let thisCollection = {
-                "name" : col.collection.name,
-                "title" : col.collection.title,
-                "parent" : parentCollectionName,
-                "attrs" : []
+                "name": col.name,
+                "title": col.title,
+                "parent": parentCollectionName,
+                "attrs": []
             };
 
-            parentCollectionName = col.collection.name;
+            parentCollectionName = col.name;
 
-            //  stuff all attributes into the attrs field for this collection
-            //  note that col.attributes is an OBJECT , not an ARRAY
-            for (const attrName in col.attributes) {        //  so in, not of
-                const theAttrThing = col.attributes[attrName];
-                thisCollection.attrs.push(theAttrThing.info);
-            }
-            //  now `thisCollection` is complete
+            //  now do the attributes directly
+            col.attrs.forEach( att => {
+                thisCollection.attrs.push({
+                    name: att.name,
+                    title : att.title,
+                    formula : att.formula,
+                    description : att.description,
+                    precision : att.precision,
+                    colormap : att.colormap,
+                    type : att.type,
+                })
+            })
+
             theValues.collections.push(thisCollection);
-        }
+        })
 
         //  make a new one
         const cMessage = {
-            "action" : "create",
-            "resource" : `dataContext`,
-            "values" : theValues,
+            "action": "create",
+            "resource": `dataContext`,
+            "values": theValues,
         };
         await codapInterface.sendRequest(cMessage);
 
@@ -263,14 +273,12 @@ connect = {
             "resource": "component",
             "values": {
                 "type": "caseTable",
-                "dataContext": newName,
+                "dataContext": scrambler.scrambledDatasetName,
             }
         });
-
-        return newName;
     },
 
-    emitScrambledData : async function(iDatasetName, iItems) {
+    emitScrambledData: async function (iDatasetName, iItems) {
         const cMessage = {
             "action": "create",
             "resource": `dataContext[${iDatasetName}].item`,
