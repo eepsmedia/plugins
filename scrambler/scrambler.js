@@ -44,10 +44,6 @@ const scrambler = {
     initialize: async function () {
         await connect.initialize();
         this.refresh();
-        /*
-                const datasetMenuGuts = await connect.makeDatasetMenuGuts(null);
-                document.getElementById("datasetMenu").innerHTML = datasetMenuGuts;
-        */
     },
 
     refresh: async function () {
