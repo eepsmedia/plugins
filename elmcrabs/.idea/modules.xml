@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../../common/common.iml" filepath="$PROJECT_DIR$/../../common/common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/scrambler.iml" filepath="$PROJECT_DIR$/scrambler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elmcrabs.iml" filepath="$PROJECT_DIR$/elmcrabs.iml" />
     </modules>
   </component>
 </project>

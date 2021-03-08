@@ -31,7 +31,7 @@ const scrambler = {
     constants: {
         version: "001c",
         pluginName: "scrambler",
-        dimensions: {height: 200, width: 202},
+        dimensions: {height: 244, width: 244},
         scrambledTopLevelCollectionName: "scrit",
         scrambledIterationAttributeName: "scrit",
     },
@@ -45,6 +45,9 @@ const scrambler = {
 
     initialize: async function () {
         await connect.initialize();
+        this.scrambleFew = document.getElementById("doScrambleDivFew");
+        this.scrambleMany = document.getElementById("doScrambleDivMany");
+
         this.refresh();
     },
 
@@ -58,6 +61,14 @@ const scrambler = {
             this.situation = await connect.getStructure(this.datasetName);
             const attributeMenuGuts = await connect.makeAttributeMenuGuts(this.situation);
             document.getElementById("attributeMenu").innerHTML = attributeMenuGuts;
+        }
+
+        if (document.getElementById("saveContentsCheckbox").checked) {
+            this.scrambleFew.style.display = "block";
+            this.scrambleMany.style.display = "none";
+        } else {
+            this.scrambleFew.style.display = "none";
+            this.scrambleMany.style.display = "block";
         }
     },
 

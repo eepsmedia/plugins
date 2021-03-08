@@ -64,11 +64,26 @@ local in local CODAP: http://localhost/codap/static/dg/en/cert/index.html?di=htt
     <select id="attributeMenu"></select>
 </div>
 
-<div id="doScrambleDiv">
+<div id="doScrambleDivFew">
     how many?
     <button class="scrambleButton" onclick="scrambler.doScramble(1)">1</button>
     <button class="scrambleButton" onclick="scrambler.doScramble(10)">10</button>
     <button class="scrambleButton" onclick="scrambler.doScramble(50)">50</button>
+</div>
+
+<div id="doScrambleDivMany">
+    how many?
+    <button class="scrambleButton" onclick="scrambler.doScramble(50)">40</button>
+    <button class="scrambleButton" onclick="scrambler.doScramble(100)">100</button>
+    <button class="scrambleButton" onclick="scrambler.doScramble(400)">400</button>
+</div>
+
+<div id="optionsDiv">
+    <input type="checkbox" id="eraseOldDataCheckbox" checked></input>
+    <label for="eraseOldDataCheckbox">erase old data</label>
+    <br>
+    <input type="checkbox" id="saveContentsCheckbox" onchange="scrambler.refresh()"></input>
+    <label for="saveContentsCheckbox">save contents</label>
 </div>
 
 </body>
