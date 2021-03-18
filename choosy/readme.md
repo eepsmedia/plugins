@@ -2,7 +2,9 @@
 
 ## Attribute tab
 
-Use the visibility icons (eyes) to hide or show attributes. This is the same as choosing hide or show attribute from the attribute's menu in CODAP.
+Use the visibility icons (eyes) to hide or show attributes. 
+This is the same as choosing hide or show attribute from the attribute's menu in CODAP...
+except that you can show single attributes instead of "all hidden."
 
 You can also group attributes into "clumps," which you can expand and collapse using the disclosure triangles. 
 There you can also show and hide clumps as a group.
@@ -10,6 +12,9 @@ There you can also show and hide clumps as a group.
 For example, in a dataset about people, you might have five attributes about work and income. 
 To make a clump called `work`, type "work" into the text box in the **attributes** tab. 
 Now when you click the green "plus" icon, that attribute gets put into the `work` clump.
+
+When an attribute is in a clump, you can remove it by clicking the red "minus" icon.
+At that point it goes back to the "no-clump" zone at the top of the list.
 
 ## Tag cases tab
 
