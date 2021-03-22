@@ -74,6 +74,10 @@ const choosy = {
         };
     },
 
+    refresh : async function() {
+
+    },
+
     setTargetDataset : async function() {
         if (this.state.datasetName) {
             this.setTargetDatasetByName(this.state.datasetName);
@@ -172,6 +176,7 @@ const choosy = {
 
     constants : {
         version : '2021b',
+        datasetSummaryEL : 'summaryInfo',
         selectionStatusElementID : 'selection-status',
         tagValueElementID : "tag-value-input",
         tagValueSelectedElementID : "tag-value-selected",

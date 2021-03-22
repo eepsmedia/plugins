@@ -65,6 +65,7 @@ const choosy_ui = {
 
     makeSummary : async function() {
         const summaryEl = document.getElementById(choosy.constants.selectionStatusElementID);
+        const datasetSummaryEL = document.getElementById(choosy.constants.datasetSummaryEL);
         const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
 
         let theText = "";
@@ -81,6 +82,7 @@ const choosy_ui = {
         theText += `${nAtts} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
 
         summaryEl.innerHTML = theText;
+        datasetSummaryEL.innerHTML = theText;
     },
 
     changeAttributeClumpNameInput : function(e) {
@@ -390,10 +392,10 @@ const choosy_ui = {
 
     datasetMenu: {
         divID: "chooseDatasetDIV",
-        menuID: "datasetMenu",
+        menuID: "chooseDatasetControl",
 
         install: async function () {
-            document.getElementById(this.divID).innerHTML = await this.make();
+            document.getElementById(this.menuID).innerHTML = await this.make();
             const tDatasetMenu = document.getElementById(this.menuID);
             if (tDatasetMenu) {     //  set its value if we already have a dataset chosen, e.g., back from save
                 tDatasetMenu.value = choosy.state.datasetName;
@@ -415,7 +417,7 @@ const choosy_ui = {
 
         make: async function () {
             const theList = await connect.getListOfDatasets();
-            let tGuts;
+            let tGuts = "";
 
             if (theList.length === 0) {
                 tGuts = "<h3>No datasets</h3>";
@@ -426,8 +428,8 @@ const choosy_ui = {
                 tGuts = `<h3>Dataset: <strong>${choosy.datasetInfo.title}</strong></h3>`;
 
             } else {
-                tGuts = `<select id="${this.menuID}" onchange="choosy_ui.datasetMenu.handle()">`;
-                tGuts += `<option value="">choose a dataset</option>`;
+                tGuts = `<label for="dataset-menu">choose a dataset</label>`;
+                tGuts += `<select id="dataset-menu" onchange="choosy_ui.datasetMenu.handle()">`;
                 theList.forEach(ds => {
                     console.log(`making menu:  ds ${ds.id} named [${ds.name}] title [${ds.title}]`);
                     tGuts += `<option value="${ds.name}">${ds.title}</option>`;

@@ -76,17 +76,33 @@ limitations under the License.
 
 <div id="tabs">
     <ul>
-        <li><a href="#summary">summary</a></li>
+        <li><a href="#dataset">dataset</a></li>
         <li><a href="#atts">attributes</a></li>
         <li><a href="#tag-cases">tag cases</a></li>
     </ul>
 
 
-    <div id="summary">
-        <h1>Summary</h1>
-        <div id="chooseDatasetDIV"></div>
+    <div id="dataset">
+        <div id="choosyHeaderDIV" class="stripe">
+            <h3 class="stripe-element">Choosy</h3>
+            <img class="stripe-element"
+                 src="../../common/art/refresh-empty.png"
+                 onclick="choosy.refresh()"
+                 style="cursor: pointer"
+                 height="16"
+                 title="refresh"
+            >
 
-        <div id="summaryInfo"></div>
+        </div>
+
+        <div id="chooseDatasetDIV" class="stripe">
+            <div class="stripe-element" id="chooseDatasetControl"></div>
+
+        </div>
+
+        <div id="summaryDIV" class="stripe">
+            <div id="summaryInfo" class="stripe-element"></div>
+        </div>
 
     </div>
 
@@ -120,7 +136,7 @@ limitations under the License.
                    onchange="choosy.handlers.changeTagMode()" checked> binary
             <input type="radio" name="tag-mode" value="random" id="random-mode-radio"
                    onchange="choosy.handlers.changeTagMode()"> random
-<br>
+            <br>
 
             <div id="simple-tag">
                 <p>Tag the selected cases with the value in the box.</p>
@@ -141,7 +157,7 @@ limitations under the License.
 
             <div id="binary-tag">
                 <p>Tag the selected cases with the value in the first box.
-                Everything else gets the value in the second box.</p>
+                    Everything else gets the value in the second box.</p>
 
                 <label class="selection-text-input-label" for="tag-value-selected">Selected: </label>
                 <input id="tag-value-selected" type="text" class="tag-name-box"
@@ -163,7 +179,7 @@ limitations under the License.
             <div id="random-tag">
                 <p>Randomly put a percentage of the cases into "Group A."
                     The rest are "Group B."
-                Enter how you want them tagged.</p>
+                    Enter how you want them tagged.</p>
 
                 <label class="selection-text-input-label" for="tag-value-selected">percentage in group A: </label>
                 <input id="tag-percentage" type="number" class="tag-number-box"
