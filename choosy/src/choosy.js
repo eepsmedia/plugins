@@ -75,6 +75,8 @@ const choosy = {
     },
 
     refresh : async function() {
+        await choosy.setTargetDataset();
+        choosy_ui.update();
 
     },
 
@@ -175,7 +177,7 @@ const choosy = {
     },
 
     constants : {
-        version : '2021b',
+        version : '2021c',
         datasetSummaryEL : 'summaryInfo',
         selectionStatusElementID : 'selection-status',
         tagValueElementID : "tag-value-input",

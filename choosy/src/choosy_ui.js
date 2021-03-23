@@ -53,6 +53,11 @@ const choosy_ui = {
         this.attributeControls.install();
         this.doTagVisibility();
         this.makeSummary();
+
+        //  more miscellaneous visibility
+
+        const clumpNameDIV = document.getElementById("clumpNameDIV");
+        clumpNameDIV.style.display = (this.getClumpingStrategy() === "byClump") ? "block" : "none";
     },
 
     doTagVisibility : function() {
@@ -92,10 +97,19 @@ const choosy_ui = {
         this.attributeControls.install();
     },
 
-    setCurrentClumpTo : function (iName) {
+    setCurrentClumpTo : async function (iName) {
         this.currentClumpName = iName;
         const theNameBox = document.getElementById("clump-name-text-input");
         theNameBox.value = this.currentClumpName;
+        // await this.update();
+    },
+
+    /**
+     *
+     * @returns {*} string! `byLayer` or `byClump`
+     */
+    getClumpingStrategy : function() {
+        return document.querySelector("input[name='clumpingStrategyRadioGroup']:checked").value;
     },
 
     getClumpFromAttributeName : function(iAttName) {
@@ -125,6 +139,9 @@ const choosy_ui = {
      * @param theInfo   the information on all collections and attributes
      */
     processDatasetInfoForAttributeClumps: function (theInfo) {
+
+        const whichWayToClump = this.getClumpingStrategy();
+
         theInfo.collections.forEach(coll => {
             coll.attrs.forEach(att => {
                 let theDescription = att.description;
@@ -135,12 +152,17 @@ const choosy_ui = {
                     theClump = theDescription.substring(leftB + 1, rightB);
                     att["description"] = theDescription.substring(rightB + 1);  //  strip the bracketed clump name from the description
                 }
-                att["clump"] = theClump;
+
+                //  if we're clumping "byLevel", use the collection name as the clump name
+                const theGroupName =  (whichWayToClump === "byLevel") ? coll.title : theClump;
+
+                //  change the `att` field to include fields for `clump` and `collection`
+                att["clump"] = theGroupName
                 att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
 
                 //  add an element to the object for this clump if it's not there already
-                if (!this.clumpRecord[theClump]) {
-                    this.clumpRecord[theClump] = {open : false};
+                if (!this.clumpRecord[theGroupName]) {
+                    this.clumpRecord[theGroupName] = {open : false};
                 }
             })
         })
@@ -199,7 +221,7 @@ const choosy_ui = {
                         tGuts += `${oneAttributeClumpControlSet}`;
                     } else {
                         const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);
-                        tGuts += `<details id="${theDOMID}" ${openClause}>
+                        tGuts += `<details id="${theDOMID}" ${openClause} onclick="choosy_ui.setCurrentClumpTo('${theClumpName}')">
                             <summary class="attribute-clump-summary">
                             <div class="clump-summary-head">
                                 ${theClumpName}&emsp;${clumpVisibilityButtons}
@@ -226,17 +248,22 @@ const choosy_ui = {
         makeAttrClumpCode(iClumpOfAttributes, iClumpName) {
             let tGuts = "<div class='attribute-clump'>";
             const isCurrentClump = iClumpName === choosy_ui.currentClumpName;
+            const clumpingStrategy = choosy_ui.getClumpingStrategy();
 
             iClumpOfAttributes.forEach(att => {
                 const attrInfoButton = this.makeAttrInfo(att);
-                const visibilityButton = this.makeVisibilityButton(att);
+                const visibilityButtons = this.makeVisibilityButtons(att);
                 const addSubtractClumpButton = this.makeAddSubtractClumpButton(att);
                 const isHiddenNow = att.hidden;
                 const checkedText = isHiddenNow ? "" : "checked";
 
                 tGuts += `<div class="attribute-control-cluster">`;
-                tGuts += "&emsp;" + visibilityButton;
-                tGuts += "&ensp;" + addSubtractClumpButton;
+                tGuts += "&emsp;" + visibilityButtons;
+
+                //  if we're clumping byLevel, i.e., using hierarchy, we don't get +/- buttons
+                if (clumpingStrategy === "byClump") {
+                    tGuts += "&ensp;" + addSubtractClumpButton;
+                }
 /*
                 tGuts += `<input id="att_${att.name}" type="checkbox" ${checkedText}
                                 onchange="choosy_ui.attributeControls.handle('${att.name}')">`;
@@ -251,12 +278,15 @@ const choosy_ui = {
             return tGuts;
         },
 
-        makeVisibilityButton(iAttr) {
+        makeVisibilityButtons(iAttr) {
 
             const isHidden = iAttr.hidden;
             const visibilityIconPath = isHidden ?
-                "../../common/art/visibility-no.png" :
+                "../../common/art/blank.png" :
                 "../../common/art/visibility.png";
+            const invisibilityIconPath = isHidden ?
+                "../../common/art/visibility-no.png" :
+                "../../common/art/blank.png";
 
             const theHint = isHidden ? `click to make ${iAttr.title} visible in the table` :
                 `click to hide ${iAttr.title} in the table`;
@@ -265,6 +295,11 @@ const choosy_ui = {
                     src=${visibilityIconPath} title="${theHint}" 
                     onclick="choosy_ui.attributeControls.handleVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "visibility image"  
+                    />
+                    <img class="small-button-image" 
+                    src=${invisibilityIconPath} title="${theHint}" 
+                    onclick="choosy_ui.attributeControls.handleVisibilityButton('${iAttr.name}', ${isHidden})" 
+                    alt = "invisibility image"  
                     />`;
 
             return theImage;
@@ -346,6 +381,11 @@ const choosy_ui = {
 
         },
 
+        /**
+         * This appears in a nice dialog if the user clicks the info button.
+         * @param iAttr
+         * @returns {string}
+         */
         makeAttrInfo(iAttr) {
             let out = "";
 

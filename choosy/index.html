@@ -110,21 +110,25 @@ limitations under the License.
         <div>
             <label>
                 <input id="byClumpButton" name="clumpingStrategyRadioGroup"
-                       value="byClump" type="radio">
+                       onchange="choosy.refresh()"
+                       value="byClump" type="radio" checked>
                 clump |
             </label>
             <label>
                 layer
                 <input id="byLevelButton" name="clumpingStrategyRadioGroup"
+                       onchange="choosy.refresh()"
                        value="byLevel" type="radio">
             </label>
         </div>
-        <p>Click <img src="../../common/art/add.png" width="14"> to add to clump
-            <input type="text" id="clump-name-text-input"
-                   placeholder="clump name"
-                   style="width : 122px;"
-                   onchange="choosy_ui.changeAttributeClumpNameInput()">
-        </p>
+        <div id="clumpNameDIV">
+            <p>Click <img src="../../common/art/add.png" width="14"> to add to clump
+                <input type="text" id="clump-name-text-input"
+                       placeholder="clump name"
+                       style="width : 122px;"
+                       onchange="choosy_ui.changeAttributeClumpNameInput()">
+            </p>
+        </div>
         <div id="chooseAttributeDiv"></div>
 
     </div>

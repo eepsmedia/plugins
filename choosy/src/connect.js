@@ -257,7 +257,7 @@ const connect = {
                         "name": choosy.constants.tagsAttributeName,
                         "type": "nominal",
                         "title": "Tags",
-                        "description": "user-made tags for sets of ZIP codes",
+                        "description": "user-made tags for sets of cases",
                         "editable": false,
                         //  "hidden" : "true",
                     }
