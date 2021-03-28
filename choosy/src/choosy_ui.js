@@ -233,6 +233,11 @@ const choosy_ui = {
             return out;
         },
 
+        /**
+         * Create HTML for the clumps and the attributes inside them.
+         *
+         * @returns {string}   the HTML
+         */
         make: function () {
             let tGuts = "";
 
@@ -243,10 +248,6 @@ const choosy_ui = {
 
                 if (hierarchy) {
                 }
-
-                /**
-                 * Construct HTML for the attributes and their clumps.
-                 */
 
                 //  loop over all the clumps (or collections, if we're doing this by level)
                 for (const theClumpName in mungedAttributes) {
@@ -264,7 +265,9 @@ const choosy_ui = {
                     if (theClumpName === choosy.constants.noClumpString) {
                         tGuts += `${oneAttributeClumpControlSet}`;
                     } else {
-                        const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);
+                        const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);   //  the two eyeballs in the summary
+
+                        //  this is the opening of the `<details>` markup for the top of the clump.
                         tGuts += `<details id="${theDOMID}" ${openClause} onclick="choosy_ui.setCurrentClumpTo('${theClumpName}')">
                             <summary class="attribute-clump-summary">
                             <div class="clump-summary-head">
@@ -272,7 +275,7 @@ const choosy_ui = {
                             </div>
                             </summary>
                             `;
-                        tGuts += `${oneAttributeClumpControlSet}`;
+                        tGuts += `${oneAttributeClumpControlSet}`;      //      all the attributes inside
                         tGuts += `</details>`;
                     }
                 }       //  end of for-in loop over clumps
