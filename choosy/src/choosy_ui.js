@@ -269,7 +269,7 @@ const choosy_ui = {
 
                         //  this is the opening of the `<details>` markup for the top of the clump.
                         //  tGuts += `<details id="${theDOMID}" ${openClause} onclick="choosy_ui.setCurrentClumpTo('${theClumpName}')">
-                        tGuts += `<details id="${theDOMID}" ${openClause} onclick="choosy.handlers.detailClick()">
+                        tGuts += `<details id="${theDOMID}" ${openClause} ontoggle="choosy.handlers.toggleDetail('${theClumpName}')">
                             <summary class="attribute-clump-summary">
                             <div class="clump-summary-head">
                                 ${theClumpName}&emsp;${clumpVisibilityButtons}

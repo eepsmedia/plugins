@@ -171,8 +171,9 @@ const choosy = {
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
 
-        detailClick : function(event) {
-            console.log(`detail click! ${event.target}`);
+        toggleDetail : function(iClumpName) {
+            console.log(`detail click! ${iClumpName}`);
+            choosy_ui.setCurrentClumpTo(iClumpName);
         },
 
         //  todo: decide if we really need this
