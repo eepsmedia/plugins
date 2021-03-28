@@ -49,33 +49,6 @@ const connect = {
         return dataContextListResult.values;
     },
 
-    /**
-     * Ask to be notified about changes in attributes and selections
-     * @returns {Promise<void>}
-     */
-    setUpOtherNotifications: async function () {
-
-        const tResource = `dataContext[${choosy.state.datasetName}].attribute`;
-        codapInterface.on(
-            'notify',
-            tResource,
-            '*',
-            choosy.handleAttributeChange
-        );
-        console.log(`Asked for notify on [${tResource}]`);
-
-        //  register to receive notifications about selection
-
-        const sResource = `dataContextChangeNotice[${choosy.state.datasetName}]`;
-        codapInterface.on(
-            'notify',
-            sResource,
-            'selectCases',
-            choosy.handlers.handleSelectionChangeFromCODAP
-        );
-
-        console.log(`Asked for getting selectCases on [${sResource}]`);
-    },
 
 
     /**
@@ -229,6 +202,48 @@ const connect = {
         }
     },
 
+    showHideAttributeList : async function(iDSName, iList, toHide) {
+        let messageList = [];
+        let problemAttributes = [];
+
+        for (let i = 0; i < iList.length; i++) {
+            const attName = iList[i];
+            const theCollection = await this.utilities.collectionNameFromAttributeName(attName, choosy.datasetInfo);
+            if (theCollection) {
+                const theResource = `dataContext[${iDSName}].collection[${theCollection}].attribute[${attName}]`;
+
+                const tMessage = {
+                    "action": "update",
+                    "resource": theResource,
+                    "values": {
+                        "hidden": toHide
+                    }
+                }
+                messageList.push(tMessage);
+            } else {
+                problemAttributes.push(attName);
+            }
+        }
+        const hideResult = await codapInterface.sendRequest(messageList);
+        let resultDescription = "", nSuccess = 0, nFailure = 0;
+        hideResult.forEach(res => {
+            if (res.success) {
+                nSuccess++;
+            } else {
+                nFailure++;
+            }
+        })
+        console.log(`    ∂    ${nSuccess} successes and ${nFailure} failures changing ${messageList.length} atts to ${toHide ? "hidden" : "visible"}`);
+
+        if (problemAttributes.length > 0) {
+            Swal.fire({
+                icon : "warning",
+                title : "look out!",
+                text : `Couldn't find a collection for these attributes: ${problemAttributes.join(', ')}`,
+            })
+        }
+    },
+
     /**
      * Selection methods: interacting with CODAP selection, applying tags, etc.
      */
@@ -299,6 +314,12 @@ const connect = {
             return theTagsCollectionName;
         },
 
+        /**
+         * Get the list of selected cases from CODAP, then
+         * process the array of cases to get just the CaseIDs
+         *
+         * @returns {Promise<[]>}
+         */
         getCODAPSelectedCaseIDs: async function () {
             const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
             //  now get all the currently selected caseIDs.

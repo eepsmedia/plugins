@@ -32,6 +32,7 @@ limitations under the License.
 const choosy = {
     state : {},             //  stores the dataset name. To be saved.
     datasetInfo : {},       //  from the API, has name, collections, attribute names. Do not save!
+    notificationsAreSetUp : null,    //  the name of the ds that we used to set up notifications
     theData : {},           //  case-ID-keyed object containing objects with non-formula values for all cases
     selectedCaseIDs : [],   //  the case IDs of the selected cases
 
@@ -94,13 +95,16 @@ const choosy = {
         if (iName) {
             this.datasetInfo = await connect.refreshDatasetInfoFor(iName);
             if (this.datasetInfo) {
-                console.log(`∂   changing dataset to [${iName}]`);
+                console.log(`∂   loading dataset [${iName}] structure`);
                 this.state.datasetName = this.datasetInfo.name;
                 choosy_ui.processDatasetInfoForAttributeClumps(this.datasetInfo); //  get clumps and add the collection
                 choosy_ui.attributeControls.install();
 
                 //  now with a new dataset, we need to set up notifications and get all the attributes
-                connect.setUpOtherNotifications();
+                if (!choosy.notificationsAreSetUp) {
+                    choosy.notificationsAreSetUp = notify.setUpNotifications();
+                }
+
 
                 await this.loadCurrentData(iName);
                 //  connect.makeTagsAttributeIn(iName);
@@ -166,6 +170,7 @@ const choosy = {
             const theTagName = choosy.constants.tagsAttributeName;
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
+
 
         //  todo: decide if we really need this
         handleSelectionChangeFromCODAP: async function () {

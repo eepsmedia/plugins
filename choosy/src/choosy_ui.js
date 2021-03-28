@@ -57,9 +57,13 @@ const choosy_ui = {
         //  more miscellaneous visibility
 
         const clumpNameDIV = document.getElementById("clumpNameDIV");
-        clumpNameDIV.style.display = (this.getClumpingStrategy() === "byClump") ? "block" : "none";
+        clumpNameDIV.style.display = (this.getClumpingStrategy() === "byClump") ? "flex" : "none";
     },
 
+    /**
+     * Set visibility for different parts of the **Tag** interface,
+     * e.g., show only "binary" controls in binary mode.
+     */
     doTagVisibility : function() {
         const tagModeString = document.querySelector("input[name='tag-mode']:checked").value;
 
@@ -90,6 +94,11 @@ const choosy_ui = {
         datasetSummaryEL.innerHTML = theText;
     },
 
+    /**
+     * User has changed the name of the clump. Set `this.currentClumpName` and ask for the attribute
+     * control "stripes" to be redrawn.
+     * @param e
+     */
     changeAttributeClumpNameInput : function(e) {
         const theNameBox = document.getElementById("clump-name-text-input");
         this.currentClumpName = theNameBox.value;
@@ -97,15 +106,27 @@ const choosy_ui = {
         this.attributeControls.install();
     },
 
+    /**
+     * Sets `this.currentClumpName` and also puts that name into the clump-choice text box.
+     * Then re-installs the attribute clumps (so that if we changed to or from no clump in the box, the (+) icons adjust)
+     *
+     * Called on `onclick` from the clump's `<details>` DOM object.
+     *
+     * @param iName     name of the clump to set
+     * @returns {Promise<void>}
+     */
     setCurrentClumpTo : async function (iName) {
+        console.log(`˙  setting clump name to ${iName}`);
         this.currentClumpName = iName;
         const theNameBox = document.getElementById("clump-name-text-input");
         theNameBox.value = this.currentClumpName;
-        // await this.update();
+        this.clumpRecord[iName].open = !this.clumpRecord[iName].open;
+        await this.attributeControls.install();
+        this.recordCurrentOpenDetailStates();
     },
 
     /**
-     *
+     * Look at the UI to tell whether we're clumping "by clump" or using the hierarchy (byLayer)
      * @returns {*} string! `byLayer` or `byClump`
      */
     getClumpingStrategy : function() {
@@ -116,13 +137,18 @@ const choosy_ui = {
 
     },
 
+    /**
+     * Record whether the `<details>` UI for each clump is currently open in the `clumpRecord` object.
+     */
     recordCurrentOpenDetailStates   : function() {
         for (const clump in this.clumpRecord) {
             if (clump !== choosy.constants.noClumpString) {
                 const theID = "details-" + clump;
                 const theElement = document.getElementById(theID);
                 if (theElement) {   //  there might be an empty clump, so no element to be open or closed
-                    this.clumpRecord[clump].open = theElement.hasAttribute("open");
+                    const isOpen = theElement.hasAttribute("open");
+                    this.clumpRecord[clump].open = isOpen;
+                    console.log(`ç  recording that ${clump} is ${isOpen ? " open" : " closed"}`);
                 }
             }
         }
@@ -134,7 +160,7 @@ const choosy_ui = {
      * For example, `{work}Percent of people working in agriculture`
      * puts the attribute in a clump called "work" and then strips that tag from the description.
      *
-     * Does this by adding a key in the attribute data called `clump` --- which does not exist in CODAP.
+     * Does this by adding a `clump` key to the attribute data --- which does not exist in CODAP.
      *
      * @param theInfo   the information on all collections and attributes
      */
@@ -183,6 +209,13 @@ const choosy_ui = {
     attributeControls: {
         divID: "chooseAttributeDiv",
 
+        /**
+         * Go through the attributes as returned by CODAP.
+         * Make an object keyed by clump name whose values are Arrays of attributes.
+         *
+         * @param iCollInfo
+         * @returns {{}}    Object: A reorganized list of attributes, keyed by clump name.
+         */
         preprocessAttributes: function (iCollInfo) {
             let out = {};
             out[choosy.constants.noClumpString] = [];
@@ -211,10 +244,21 @@ const choosy_ui = {
                 if (hierarchy) {
                 }
 
+                /**
+                 * Construct HTML for the attributes and their clumps.
+                 */
+
+                //  loop over all the clumps (or collections, if we're doing this by level)
                 for (const theClumpName in mungedAttributes) {
                     const theArrayOfAttributes = mungedAttributes[theClumpName];
+
+                    //  make all of the individual attribute "stripes" and put them together here
                     const oneAttributeClumpControlSet = this.makeAttrClumpCode(theArrayOfAttributes, theClumpName);
+
+                    //  is this clump open or not?
                     const openClause = choosy_ui.clumpRecord[theClumpName].open ? "open" : "";
+
+                    //  we need to give this clump a unique `id` in the DOM
                     const theDOMID = "details-" + theClumpName;
 
                     if (theClumpName === choosy.constants.noClumpString) {
@@ -235,11 +279,11 @@ const choosy_ui = {
             } else {
                 tGuts = "No attributes to work with here";
             }
-            return tGuts;
+            return tGuts;   //  the entire HTML
         },
 
         /**
-         * Create the attribute controls for an entire clump of attributes.
+         * Create the attribute controls (stripes) for an entire clump of attributes.
          * Called by `make()`
          * @param iClumpOfAttributes    array of attribute infos
          * @param iClumpName    the name of this clump, a string
@@ -264,12 +308,9 @@ const choosy_ui = {
                 if (clumpingStrategy === "byClump") {
                     tGuts += "&ensp;" + addSubtractClumpButton;
                 }
-/*
-                tGuts += `<input id="att_${att.name}" type="checkbox" ${checkedText}
-                                onchange="choosy_ui.attributeControls.handle('${att.name}')">`;
-                tGuts += `<label for="att_${att.name}" class="att_label">${att.title}</label>`;
-*/
-                tGuts += `&ensp; ${att.title}`;
+
+                // todo note that this should really be title, but CODAP doesn't do that correctly
+                tGuts += `&ensp; ${att.name}`;     //  the actual title of the attribute, at last!
                 tGuts += attrInfoButton;
                 tGuts += `</div>`;
 
@@ -278,6 +319,12 @@ const choosy_ui = {
             return tGuts;
         },
 
+        /**
+         * Make HTML for the visibility buttons for one attribute.
+         *
+         * @param iAttr
+         * @returns {string}
+         */
         makeVisibilityButtons(iAttr) {
 
             const isHidden = iAttr.hidden;
@@ -288,8 +335,9 @@ const choosy_ui = {
                 "../../common/art/visibility-no.png" :
                 "../../common/art/blank.png";
 
-            const theHint = isHidden ? `click to make ${iAttr.title} visible in the table` :
-                `click to hide ${iAttr.title} in the table`;
+            const theHint = isHidden ?
+                `click to make ${iAttr.name} visible in the table` :     //  todo: should be title
+                `click to hide ${iAttr.name} in the table`;             //  todo: should be title
 
             const theImage = `<img class="small-button-image" 
                     src=${visibilityIconPath} title="${theHint}" 
@@ -307,9 +355,11 @@ const choosy_ui = {
 
         async handleVisibilityButton(iAttName, iHidden) {
             await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
+/*
             const theClumpName = connect.utilities.clumpNameFromAttributeName(iAttName, choosy.datasetInfo);
             choosy_ui.setCurrentClumpTo(theClumpName);
-            choosy_ui.update();
+*/
+            //  choosy_ui.update();     //  no need to call because we'll get an updateAttribute notification
         },
 
         makeClumpVisibilityButtons : function (iClumpName) {
@@ -331,22 +381,18 @@ const choosy_ui = {
         },
 
         handleClumpVisibilityButton : async function(iClumpName, toHide) {
-            event.preventDefault();     //  todo: fix this; maybe set a handler separately from onclick?
-            //  event.stopPropagation();
-            console.log(`${toHide ? "Hiding" : "Showing"} clump [${iClumpName}]`);
+            console.log(`${toHide ? "Hiding" : "Showing"} all attributes in [${iClumpName}]`);
 
-            let thePromises = [];
+            let theAttNames = [];
 
             choosy.datasetInfo.collections.forEach(coll => {
                 coll.attrs.forEach( att => {
                     if (att.clump === iClumpName) {
-                        const p = connect.showHideAttribute(choosy.state.datasetName, att.name, toHide);
-                        thePromises.push(p);    //  collect all these promises
+                        theAttNames.push(att.name);    //  collect all these names
                     }
                 })
             })
-
-            await Promise.all(thePromises);
+            const p = await connect.showHideAttributeList(choosy.state.datasetName, theAttNames, toHide);
             choosy_ui.update();
         },
 
@@ -363,8 +409,8 @@ const choosy_ui = {
                 "../../common/art/add.png";
 
             const theHint = (destClump === choosy.constants.noClumpString) ?
-                `click to remove ${iAttr.title} from clump [${iAttr.clump}]` :
-                `click to add ${iAttr.title} to clump [${choosy_ui.currentClumpName}]`;
+                `click to remove ${iAttr.name} from clump [${iAttr.clump}]` :           //  todo: should be title
+                `click to add ${iAttr.name} to clump [${choosy_ui.currentClumpName}]`;  //  todo: should be title
 
             let theImage = `&nbsp;<img class="small-button-image" 
                     src=${clumpIconPath} title="${theHint}" 
@@ -403,7 +449,7 @@ const choosy_ui = {
                 }
                 const theImage = `&emsp;<img class="small-button-image" 
                     src="../../common/art/info.png" width="14" title="${theHint}" 
-                    onclick="choosy_ui.makeSweetAlert('${iAttr.title}', '${theHint}')" 
+                    onclick="choosy_ui.makeSweetAlert('${iAttr.name}', '${theHint}')"      //  todo: should be title
                     alt = "circular information button image"  
                     />`;
                 out += theImage;
@@ -460,12 +506,12 @@ const choosy_ui = {
             let tGuts = "";
 
             if (theList.length === 0) {
-                tGuts = "<h3>No datasets</h3>";
+                tGuts = `<h3 class="stripe-hed">No datasets</h3>`;
 
             } else if (theList.length === 1) {
                 const theDataSet = theList[0];    //  the only one
                 await choosy.setTargetDatasetByName(theDataSet.name);
-                tGuts = `<h3>Dataset: <strong>${choosy.datasetInfo.title}</strong></h3>`;
+                tGuts = `<h3 class="stripe-hed">Dataset: <strong>${choosy.datasetInfo.title}</strong></h3>`;
 
             } else {
                 tGuts = `<label for="dataset-menu">choose a dataset</label>`;
