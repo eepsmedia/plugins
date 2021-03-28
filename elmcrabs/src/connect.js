@@ -91,6 +91,35 @@ connect = {
                 "dataContext": iName,
             }
         });
+    },
 
-    }
+    /**
+     * Get a list of selected case IDs.
+     *
+     * @param iCases
+     * @returns {Promise<[]>}
+     */
+    getCODAPSelectedCaseIDs: async function () {
+        const theMeasuresName = "";     //  todoi: put in actual name
+        const selectionListResource = `dataContext[${theMeasuresName}].selectionList`;
+        //  now get all the currently selected caseIDs.
+        const gMessage = {
+            "action": "get", "resource": selectionListResource
+        }
+        const getSelectionResult = await codapInterface.sendRequest(gMessage);
+
+        //  the result has the ID but also the collection ID and name,
+        //  so we collect just the caseID in `oldIDs`
+        let oldIDs = [];
+        if (getSelectionResult.success) {
+
+            //  construct an array of the currently-selected cases.
+            //  NOTE that `val`
+            getSelectionResult.values.forEach(val => {
+                oldIDs.push(val.caseID)
+            })
+        }
+        return oldIDs;
+    },
+
 }

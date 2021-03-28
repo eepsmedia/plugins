@@ -75,7 +75,7 @@ class CODAPDataset {
         const lastCollectionLevel = nCollections - 2;
         if (nCollections <= 1) {
             alert(`You're using ${nCollections} level(s) of collection. You need at least two.
-
+            
 Maybe you didn't press the refresh circle after changing the dataset?`);
             return null;
         }
@@ -340,7 +340,7 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
     }
 
 
-    makeScrambled() {
+    makeIntoMeasuresDataset() {
         //  get rid of "leaf" collection
         this.structure.collections.pop();
 

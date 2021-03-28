@@ -1,4 +1,16 @@
 
+/*
+    define variables for css!
+ */
+:root {
+    --codap-color : #72bfca;
+    --bg-top-color : #678;        /* #eef;    */
+    --bg-bottom-color : #234;
+    --main-text-color : #cde;
+    --main-bg-color : #bcd;
+
+}
+
 body {
     margin : 0;
     padding : 0;
@@ -6,8 +18,12 @@ body {
     font-family: "Helvetica Neue", Verdana, sans-serif;
     font-size: small;
     /*background: linear-gradient(#dde, #aab );*/
-    background-color: #bcd;
+    background-color: var(--main-bg-color);;
 
+}
+
+html {
+    background-color: var(--main-bg-color);;
 }
 
 h1 {
@@ -23,7 +39,7 @@ button {
 
 .elmcrabs-stripe {
     padding: .3em 0 .3em 1em;
-    min-height: 1.5px;
+    min-height: 1.5em;
     display: flex;
     align-items: center;
     /*background-color: #dcb;*/

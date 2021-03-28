@@ -2,7 +2,7 @@ const elmcrabs = {
     constants: {},
     sourceDataset: null,
     cloneDataset: null,
-    scrambledDataset: null,
+    measuresDataset: null,
     iteration : 0,
 
     initialize: async function () {
@@ -20,7 +20,7 @@ const elmcrabs = {
             await this.sourceDataset.retrieveAllDataFromCODAP();
 
             await this.makeNewClone();
-            await this.makeNewScrambledDataset();
+            await this.makeNewMeasuresDataset();
         } else {
             console.log(`need a dataset name`);
         }
@@ -35,10 +35,10 @@ const elmcrabs = {
         await this.cloneDataset.retrieveAllDataFromCODAP(); //  redo to get IDs right
     },
 
-    makeNewScrambledDataset: async function () {
-        this.scrambledDataset = this.sourceDataset.clone("scrambled_");
-        this.scrambledDataset.makeScrambled();
-        await this.scrambledDataset.emitDatasetStructureOnly();
+    makeNewMeasuresDataset: async function () {
+        this.measuresDataset = this.sourceDataset.clone("measures_");
+        this.measuresDataset.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
+        await this.measuresDataset.emitDatasetStructureOnly();
     },
 
     doScramble: async function (iReps) {
@@ -56,7 +56,7 @@ const elmcrabs = {
 
         for (let i = 0; i < iReps; i++) {
             await this.cloneDataset.scrambleInPlace(sAttribute);
-            const oneRepItems = await this.scrambledDataset.makeMeasuresFrom(this.cloneDataset);
+            const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.cloneDataset);
             if (oneRepItems) {
                 newItems = newItems.concat(oneRepItems);
             } else {
@@ -64,8 +64,8 @@ const elmcrabs = {
             }
         }
 
-        this.scrambledDataset.emitItems(true, newItems);
-        connect.showTable(this.scrambledDataset.datasetName);
+        this.measuresDataset.emitItems(true, newItems);
+        connect.showTable(this.measuresDataset.datasetName);
     },
 
     initUI: async function () {
