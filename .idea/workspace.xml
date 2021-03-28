@@ -2,17 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fd40b128-64af-49a6-b2a9-f40390721b15" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/plugins.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/plugins.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/choosy/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/choosy/choosy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/choosy/choosy.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JupyterTrust" id="c095d0c9-73b7-4404-9207-42a25026f801" />
   <component name="ProjectId" id="1mtnNFp91ABJCnY9BFm0zdPFNUC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -23,6 +27,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -42,6 +47,7 @@
       <workItem from="1610321715019" duration="1523000" />
       <workItem from="1611627626062" duration="101000" />
       <workItem from="1611627741405" duration="56000" />
+      <workItem from="1616434484410" duration="101000" />
     </task>
     <servers />
   </component>
@@ -59,5 +65,11 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="306" y="166" key="NewModule_or_Project.wizard" timestamp="1616434562299">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="306" y="166" key="NewModule_or_Project.wizard/0.25.1440.875@0.25.1440.875" timestamp="1616434562299" />
   </component>
 </project>

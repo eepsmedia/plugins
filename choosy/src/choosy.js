@@ -171,6 +171,9 @@ const choosy = {
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
 
+        detailClick : function(event) {
+            console.log(`detail click! ${event.target}`);
+        },
 
         //  todo: decide if we really need this
         handleSelectionChangeFromCODAP: async function () {
