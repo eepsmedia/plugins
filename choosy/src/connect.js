@@ -66,6 +66,7 @@ const connect = {
         }
         const dsInfoResult = await codapInterface.sendRequest(tMessage);
         if (dsInfoResult.success) {
+            await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
             return dsInfoResult.values;
         } else {
             Swal.fire({icon: "error", title: "Drat!", text: `Problem getting information for dataset [${iName}]`});
@@ -150,7 +151,7 @@ const connect = {
 
     /**
      * Assign the given attribute (by name) to the clump (also by name).
-     * This actually updates the dataset, so that the next time we process it,
+     * This actually updates the dataset, altering the description (!), so that the next time we process it,
      * choosy will read the clump assignment properly.
      *
      * @param iDSName   the string name of the dataset
@@ -182,11 +183,11 @@ const connect = {
 
     },
 
-    showHideAttribute: async function (iDSName, iAttr, toHide) {
-        const theCollection = await this.utilities.collectionNameFromAttributeName(iAttr, choosy.datasetInfo);
+    showHideAttribute: async function (iDSName, iAttrName, toHide) {
+        const theCollection = await this.utilities.collectionNameFromAttributeName(iAttrName, choosy.datasetInfo);
 
         if (theCollection) {
-            const theResource = `dataContext[${iDSName}].collection[${theCollection}].attribute[${iAttr}]`;
+            const theResource = `dataContext[${iDSName}].collection[${theCollection}].attribute[${iAttrName}]`;
 
             const tMessage = {
                 "action": "update",
@@ -196,15 +197,27 @@ const connect = {
                 }
             }
             const hideResult = await codapInterface.sendRequest(tMessage);
-            console.log(`    ∂    ${hideResult.success ? "success" : "failure"} changing ${iAttr} to ${toHide ? "hidden" : "visible"}`);
+            console.log(`    ∂    ${hideResult.success ? "success" : "failure"} changing ${iAttrName} to ${toHide ? "hidden" : "visible"}`);
+            let goodAttributes = [];
+
+            if (hideResult.success) {
+                hideResult.values.attrs.forEach(att => {
+                    const cat = choosy.getChoosyAttributeAndCollectionByAttributeName(att.name).att;
+                    goodAttributes.push(cat);
+                })
+            }
+
+            return   goodAttributes;   //  the ARRAY of affected attributes, in this case, the one named `iAttrName`.
         } else {
-            Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttr}]`});
+            Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttrName}]`});
+            return null;
         }
     },
 
     showHideAttributeList : async function(iDSName, iList, toHide) {
         let messageList = [];
         let problemAttributes = [];
+        let goodAttributes = [];
 
         for (let i = 0; i < iList.length; i++) {
             const attName = iList[i];
@@ -225,10 +238,13 @@ const connect = {
             }
         }
         const hideResult = await codapInterface.sendRequest(messageList);
+        //  goodAttributes = hideResult.values.attrs;
+
         let resultDescription = "", nSuccess = 0, nFailure = 0;
         hideResult.forEach(res => {
             if (res.success) {
                 nSuccess++;
+                goodAttributes = goodAttributes.concat(res.values.attrs);
             } else {
                 nFailure++;
             }
@@ -242,6 +258,13 @@ const connect = {
                 text : `Couldn't find a collection for these attributes: ${problemAttributes.join(', ')}`,
             })
         }
+
+        let outAttributes = [];
+        goodAttributes.forEach( att => {
+            const cat = choosy.getChoosyAttributeAndCollectionByAttributeName(att.name).att;
+            outAttributes.push(cat);
+        })
+        return outAttributes;
     },
 
     /**

@@ -49,7 +49,7 @@ const choosy_ui = {
     update: async function () {
         this.recordCurrentOpenDetailStates();
         choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.datasetName);
-        this.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
+        //  choosy.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
         this.attributeControls.install();
         this.doTagVisibility();
         this.makeSummary();
@@ -117,12 +117,12 @@ const choosy_ui = {
      */
     setCurrentClumpTo : async function (iName) {
         console.log(`˙  setting clump name to ${iName}`);
+        this.recordCurrentOpenDetailStates();
         this.currentClumpName = iName;
         const theNameBox = document.getElementById("clump-name-text-input");
         theNameBox.value = this.currentClumpName;
-        this.clumpRecord[iName].open = !this.clumpRecord[iName].open;
+       //this.clumpRecord[iName].open = !this.clumpRecord[iName].open;
         await this.attributeControls.install();
-        this.recordCurrentOpenDetailStates();
     },
 
     /**
@@ -154,45 +154,6 @@ const choosy_ui = {
         }
     },
 
-    /**
-     * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
-     *
-     * For example, `{work}Percent of people working in agriculture`
-     * puts the attribute in a clump called "work" and then strips that tag from the description.
-     *
-     * Does this by adding a `clump` key to the attribute data --- which does not exist in CODAP.
-     *
-     * @param theInfo   the information on all collections and attributes
-     */
-    processDatasetInfoForAttributeClumps: function (theInfo) {
-
-        const whichWayToClump = this.getClumpingStrategy();
-
-        theInfo.collections.forEach(coll => {
-            coll.attrs.forEach(att => {
-                let theDescription = att.description;
-                let theClump = choosy.constants.noClumpString;
-                const leftB = theDescription.indexOf("{");
-                const rightB = theDescription.indexOf("}");
-                if (rightB > leftB) {
-                    theClump = theDescription.substring(leftB + 1, rightB);
-                    att["description"] = theDescription.substring(rightB + 1);  //  strip the bracketed clump name from the description
-                }
-
-                //  if we're clumping "byLevel", use the collection name as the clump name
-                const theGroupName =  (whichWayToClump === "byLevel") ? coll.title : theClump;
-
-                //  change the `att` field to include fields for `clump` and `collection`
-                att["clump"] = theGroupName
-                att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
-
-                //  add an element to the object for this clump if it's not there already
-                if (!this.clumpRecord[theGroupName]) {
-                    this.clumpRecord[theGroupName] = {open : false};
-                }
-            })
-        })
-    },
 
     makeSweetAlert: function (iTitle, iText, iIcon = 'info') {
         Swal.fire({
@@ -212,6 +173,8 @@ const choosy_ui = {
         /**
          * Go through the attributes as returned by CODAP.
          * Make an object keyed by clump name whose values are Arrays of attributes.
+         *
+         * called by attributeControls:make()
          *
          * @param iCollInfo
          * @returns {{}}    Object: A reorganized list of attributes, keyed by clump name.
@@ -269,7 +232,7 @@ const choosy_ui = {
 
                         //  this is the opening of the `<details>` markup for the top of the clump.
                         //  tGuts += `<details id="${theDOMID}" ${openClause} onclick="choosy_ui.setCurrentClumpTo('${theClumpName}')">
-                        tGuts += `<details id="${theDOMID}" ${openClause} ontoggle="choosy.handlers.toggleDetail('${theClumpName}')">
+                        tGuts += `<details id="${theDOMID}" ${openClause}>
                             <summary class="attribute-clump-summary">
                             <div class="clump-summary-head">
                                 ${theClumpName}&emsp;${clumpVisibilityButtons}
@@ -296,30 +259,44 @@ const choosy_ui = {
         makeAttrClumpCode(iClumpOfAttributes, iClumpName) {
             let tGuts = "<div class='attribute-clump'>";
             const isCurrentClump = iClumpName === choosy_ui.currentClumpName;
-            const clumpingStrategy = choosy_ui.getClumpingStrategy();
 
             iClumpOfAttributes.forEach(att => {
-                const attrInfoButton = this.makeAttrInfo(att);
-                const visibilityButtons = this.makeVisibilityButtons(att);
-                const addSubtractClumpButton = this.makeAddSubtractClumpButton(att);
-                const isHiddenNow = att.hidden;
-                const checkedText = isHiddenNow ? "" : "checked";
-
-                tGuts += `<div class="attribute-control-cluster">`;
-                tGuts += "&emsp;" + visibilityButtons;
-
-                //  if we're clumping byLevel, i.e., using hierarchy, we don't get +/- buttons
-                if (clumpingStrategy === "byClump") {
-                    tGuts += "&ensp;" + addSubtractClumpButton;
-                }
-
-                // todo note that this should really be title, but CODAP doesn't do that correctly
-                tGuts += `&ensp; ${att.name}`;     //  the actual title of the attribute, at last!
-                tGuts += attrInfoButton;
+                tGuts += `<div class="attribute-control-stripe" id="${choosy.attributeStripeID(att.name)}">`;
+                tGuts += this.makeOneAttCode(att);
                 tGuts += `</div>`;
-
             })
             tGuts += "</div>"
+            return tGuts;
+        },
+
+        /**
+         * Makes the HTML code for the INSIDE (the innerHTML) of one attribute,
+         * that is, the stuff inside its <div>.
+         *
+         * @param att
+         * @returns {string}
+         */
+        makeOneAttCode(att) {
+            const clumpingStrategy = choosy_ui.getClumpingStrategy();
+
+            let tGuts = "";
+            const attrInfoButton = this.makeAttrInfo(att);
+            const visibilityButtons = this.makeVisibilityButtons(att);
+            const addSubtractClumpButton = this.makeAddSubtractClumpButton(att);
+            const isHiddenNow = att.hidden;
+            const checkedText = isHiddenNow ? "" : "checked";
+
+            tGuts += "&emsp;" + visibilityButtons;
+
+            //  if we're clumping byLevel, i.e., using hierarchy, we don't get +/- buttons
+            if (clumpingStrategy === "byClump") {
+                tGuts += "&ensp;" + addSubtractClumpButton;
+            }
+
+            // todo note that this should really be title, but CODAP doesn't do that correctly
+            tGuts += `&ensp; ${att.name}`;     //  the actual title of the attribute, at last!
+            tGuts += attrInfoButton;
+
             return tGuts;
         },
 
@@ -345,26 +322,18 @@ const choosy_ui = {
 
             const theImage = `<img class="small-button-image" 
                     src=${visibilityIconPath} title="${theHint}" 
-                    onclick="choosy_ui.attributeControls.handleVisibilityButton('${iAttr.name}', ${isHidden})" 
+                    onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "visibility image"  
                     />
                     <img class="small-button-image" 
                     src=${invisibilityIconPath} title="${theHint}" 
-                    onclick="choosy_ui.attributeControls.handleVisibilityButton('${iAttr.name}', ${isHidden})" 
+                    onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "invisibility image"  
                     />`;
 
             return theImage;
         },
 
-        async handleVisibilityButton(iAttName, iHidden) {
-            await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
-/*
-            const theClumpName = connect.utilities.clumpNameFromAttributeName(iAttName, choosy.datasetInfo);
-            choosy_ui.setCurrentClumpTo(theClumpName);
-*/
-            //  choosy_ui.update();     //  no need to call because we'll get an updateAttribute notification
-        },
 
         makeClumpVisibilityButtons : function (iClumpName) {
             const theHideHint = `Hide all attributes in [${iClumpName}]`;
@@ -372,33 +341,21 @@ const choosy_ui = {
 
             const hidingImage = `<img class="small-button-image" 
                     src="../../common/art/visibility-no.png" title="${theHideHint}" 
-                    onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', true)"
+                    id="hide-${iClumpName}"
                     alt = "clump invisibility image"  
                     />`;
             const showingImage = `<img class="small-button-image" 
                     src="../../common/art/visibility.png" title="${theShowHint}" 
-                    onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', false)" 
+                    id="show-${iClumpName}"
                     alt = "clump visibility image"  
                     />`;
+
+            //  onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', true)"
+            //  onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', false)"
 
             return hidingImage + "&ensp;" + showingImage;
         },
 
-        handleClumpVisibilityButton : async function(iClumpName, toHide) {
-            console.log(`${toHide ? "Hiding" : "Showing"} all attributes in [${iClumpName}]`);
-
-            let theAttNames = [];
-
-            choosy.datasetInfo.collections.forEach(coll => {
-                coll.attrs.forEach( att => {
-                    if (att.clump === iClumpName) {
-                        theAttNames.push(att.name);    //  collect all these names
-                    }
-                })
-            })
-            const p = await connect.showHideAttributeList(choosy.state.datasetName, theAttNames, toHide);
-            choosy_ui.update();
-        },
 
         makeAddSubtractClumpButton(iAttr) {
 
@@ -461,9 +418,25 @@ const choosy_ui = {
             return out;
         },
 
+        registerForMoreNotifications : function() {
+            for (let clumpName in choosy_ui.clumpRecord) {
+                const clumpDOMid = `details-${clumpName}`;
+                const theElement = document.getElementById(clumpDOMid);
+                if (theElement) {
+                    theElement.addEventListener('toggle', choosy.handlers.toggleDetail);
+
+                    const hideButton = document.getElementById(`hide-${clumpName}`);
+                    const showButton = document.getElementById(`show-${clumpName}`);
+
+                    hideButton.addEventListener('click', choosy.handlers.clumpVisibilityButton);
+                    showButton.addEventListener('click', choosy.handlers.clumpVisibilityButton);
+                }
+            }
+        },
 
         install: function () {
             document.getElementById(this.divID).innerHTML = this.make();
+            this.registerForMoreNotifications();
         },
 
         handle: function (iAtt) {
@@ -526,7 +499,7 @@ const choosy_ui = {
                 })
                 tGuts += `</select>`;
             }
-            console.log(tGuts);
+
             return tGuts;
         },
     },

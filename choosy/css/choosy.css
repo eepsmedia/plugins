@@ -96,7 +96,7 @@ fieldset {
     align-items: flex-start;
 }
 
-.attribute-control-cluster, tag-button-cluster {
+.attribute-control-stripe, tag-button-cluster {
     font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
     font-size : small;
     display: flex;

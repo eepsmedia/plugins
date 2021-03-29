@@ -77,7 +77,7 @@ const choosy = {
 
     refresh : async function() {
         await choosy.setTargetDataset();
-        choosy_ui.update();
+        //  choosy_ui.update();
 
     },
 
@@ -93,22 +93,18 @@ const choosy = {
 
         //  get all the information on this dataset
         if (iName) {
-            this.datasetInfo = await connect.refreshDatasetInfoFor(iName);
+            choosy.state.datasetName = iName;
+            await choosy_ui.update();
+
             if (this.datasetInfo) {
-                console.log(`∂   loading dataset [${iName}] structure`);
-                this.state.datasetName = this.datasetInfo.name;
-                choosy_ui.processDatasetInfoForAttributeClumps(this.datasetInfo); //  get clumps and add the collection
-                choosy_ui.attributeControls.install();
+                console.log(`∂   loaded [${iName}] structure`);
+                await this.loadCurrentData(iName);
+                //  connect.makeTagsAttributeIn(iName);
 
                 //  now with a new dataset, we need to set up notifications and get all the attributes
                 if (!choosy.notificationsAreSetUp) {
                     choosy.notificationsAreSetUp = notify.setUpNotifications();
                 }
-
-
-                await this.loadCurrentData(iName);
-                //  connect.makeTagsAttributeIn(iName);
-                choosy_ui.update();
             }
 
         } else {
@@ -129,9 +125,120 @@ const choosy = {
         return lastCollName;
     },
 
+    getChoosyAttributeAndCollectionByAttributeName : function (iName) {
+        for (let i = 0; i < choosy.datasetInfo.collections.length; i++) {       //  loop over collections
+            const coll = choosy.datasetInfo.collections[i];
+            for (let j = 0; j < coll.attrs.length; j++) {       //  loop over attributes within collection
+                const att = coll.attrs[j];
+                if (att.name === iName) {
+                    return {
+                        att : att,
+                        coll : coll
+                    }
+                }
+            }
+        }
+        return null;
+    },
+
     addAttributeToClump : async function(iAttName, iClumpName) {
         await connect.setAttributeClump(choosy.state.datasetName, iAttName, iClumpName);
         choosy_ui.update();
+    },
+
+    /**
+     * return the id for an attribute stripe, e.g., "att-Age"
+     * @param iName
+     * @returns {string}
+     */
+    attributeStripeID(iName) {
+        return `att-${iName}`;
+    },
+
+    /**
+     * Some attributes have changed. We need to update their entries in choosy.datasetInfo AND
+     * update their appearance in the UI.
+     *
+     * Why not just hide or show them (in CODAP) and then read everything from CODAP?
+     * Because then that invokes a re-read and redraw of everything, which would be fine
+     * except that when we hide or show a clump, we get a notification and a DOM event for every. Frigging. Attribute.
+     *
+     * Also, we get ontoggle events in the <detail> clump header(s) because we restore their open/closed state.
+     * So this avoids the redraw and all its attendant peril.
+     *
+     * @param iAttArray
+     */
+
+    updateAttributes: async function(iAttArray) {
+        //  update choosy.datasetInfo. This is our internal list
+        const theDSName = choosy.state.datasetName;
+        if (theDSName) {
+            this.datasetInfo = await connect.refreshDatasetInfoFor(theDSName);
+            //  await this.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
+
+            //  now go fix the DOM.
+            iAttArray.forEach(att => {
+
+                const newElement = document.createElement('div');
+                newElement.id = choosy.attributeStripeID(att.name);
+                newElement.classList.add("attribute-control-stripe");
+
+                newElement.innerHTML = choosy_ui.attributeControls.makeOneAttCode(att);
+
+                const oldElement = document.getElementById(newElement.id);
+                oldElement.replaceWith(newElement);
+
+            })
+        } else {
+            Swal.fire({icon : "error", text : "No dataset name in updateAttribute"});
+        }
+    },
+
+    /**
+     * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
+     *
+     * For example, `{work}Percent of people working in agriculture`
+     * puts the attribute in a clump called "work" and then strips that tag from the description.
+     *
+     * Does this by adding a `clump` key to the attribute data --- which does not exist in CODAP.
+     *
+     * @param theInfo   the information on all collections and attributes
+     */
+    processDatasetInfoForAttributeClumps: function (theInfo) {
+
+        const whichWayToClump = choosy_ui.getClumpingStrategy();
+
+        for (let clump in choosy_ui.clumpRecord) {
+            let theRecord = choosy_ui.clumpRecord[clump];
+            theRecord["attrs"] = [];
+        }
+
+        theInfo.collections.forEach(coll => {
+            coll.attrs.forEach(att => {
+                let theDescription = att.description;
+                let theClump = choosy.constants.noClumpString;
+                const leftB = theDescription.indexOf("{");
+                const rightB = theDescription.indexOf("}");
+                if (rightB > leftB) {
+                    theClump = theDescription.substring(leftB + 1, rightB);
+                    att["description"] = theDescription.substring(rightB + 1);  //  strip the bracketed clump name from the description
+                }
+
+                //  if we're clumping "byLevel", use the collection name as the clump name
+                const theGroupName =  (whichWayToClump === "byLevel") ? coll.title : theClump;
+
+                //  change the `att` field to include fields for `clump` and `collection`
+                att["clump"] = theGroupName
+                att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
+
+                //  add an element to the object for this clump if it's not there already
+
+                if (!choosy_ui.clumpRecord[theGroupName]) {
+                    choosy_ui.clumpRecord[theGroupName] = {open : true, attrs : []};
+                }
+                choosy_ui.clumpRecord[theGroupName].attrs.push(att.name);
+            })
+        })
     },
 
     handlers : {
@@ -171,9 +278,48 @@ const choosy = {
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
 
-        toggleDetail : function(iClumpName) {
-            console.log(`detail click! ${iClumpName}`);
-            choosy_ui.setCurrentClumpTo(iClumpName);
+        oneAttributeVisibilityButton: async function(iAttName, iHidden) {
+            const theAttributes = await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
+            choosy_ui.update();
+
+/*
+            if (theAttributes) {
+                choosy.updateAttributes(theAttributes);     //  reset our datasetInfo, and alter the attribute stripe(s) in the DOM
+            }
+*/
+        },
+
+        clumpVisibilityButton : async function(event) {
+
+            event.stopPropagation();
+            event.preventDefault();
+
+            const theID = event.target.id;
+            const theType = theID.substring(0,4);
+            const theClumpName = theID.substring(5);
+            const toHide = theType === "hide";
+
+            console.log(`${toHide ? "Hiding" : "Showing"} all attributes in [${theClumpName}]`);
+
+            let theAttNames = [];
+
+            choosy.datasetInfo.collections.forEach(coll => {
+                coll.attrs.forEach( att => {
+                    if (att.clump === theClumpName) {
+                        theAttNames.push(att.name);    //  collect all these names
+                    }
+                })
+            })
+            const goodAttributes = await connect.showHideAttributeList(choosy.state.datasetName, theAttNames, toHide);
+            //  choosy.updateAttributes(goodAttributes);
+            choosy_ui.update();
+        },
+
+        toggleDetail : function(event) {
+            const theClumpName = event.target.id.substring(8);
+
+            console.log(`clump toggle! ${theClumpName}`);
+            //  choosy_ui.setCurrentClumpTo(iClumpName);
         },
 
         //  todo: decide if we really need this
