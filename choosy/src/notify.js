@@ -61,9 +61,10 @@ const notify = {
                 break;
             case `moveAttribute`:
             case `updateCases`:
+            case `updateCollection`:
+            case `createCollection`:
                 choosy_ui.update();
                 break;
-            case `createCollection`:
             case `deleteCollection`:
                 choosy.refresh();
                 break;

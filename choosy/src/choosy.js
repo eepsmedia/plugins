@@ -231,12 +231,14 @@ const choosy = {
                 att["clump"] = theGroupName
                 att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
 
+                //  this is where choosy_ui.clumpRecord gets set!
                 //  add an element to the object for this clump if it's not there already
 
                 if (!choosy_ui.clumpRecord[theGroupName]) {
-                    choosy_ui.clumpRecord[theGroupName] = {open : true, attrs : []};
+                    choosy_ui.clumpRecord[theGroupName] = {open : true, attrs : [], mode : ""};
                 }
                 choosy_ui.clumpRecord[theGroupName].attrs.push(att.name);
+                choosy_ui.clumpRecord[theGroupName].mode = whichWayToClump;
             })
         })
     },
@@ -319,7 +321,8 @@ const choosy = {
             const theClumpName = event.target.id.substring(8);
 
             console.log(`clump toggle! ${theClumpName}`);
-            //  choosy_ui.setCurrentClumpTo(iClumpName);
+            document.getElementById("clump-name-text-input").value = theClumpName;
+           // choosy_ui.setCurrentClumpTo(theClumpName);
         },
 
         //  todo: decide if we really need this

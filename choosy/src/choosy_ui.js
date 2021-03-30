@@ -47,9 +47,9 @@ const choosy_ui = {
      * @returns {Promise<void>}
      */
     update: async function () {
-        this.recordCurrentOpenDetailStates();
         choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.datasetName);
-        //  choosy.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
+        this.setClumpNameDefault();
+        this.recordCurrentOpenDetailStates();
         this.attributeControls.install();
         this.doTagVisibility();
         this.makeSummary();
@@ -58,6 +58,25 @@ const choosy_ui = {
 
         const clumpNameDIV = document.getElementById("clumpNameDIV");
         clumpNameDIV.style.display = (this.getClumpingStrategy() === "byClump") ? "flex" : "none";
+    },
+
+    setClumpNameDefault : function() {
+        let current = document.getElementById("clump-name-text-input").value;
+        this.currentClumpName = current;
+
+        if (!this.clumpRecord[current] || this.clumpRecord[current].attrs.length <= 0) {
+            for (let clump in this.clumpRecord) {
+                if (this.clumpRecord[clump] && this.clumpRecord[clump].attrs.length > 0
+                    && clump !== choosy.constants.noClumpString
+                    && this.clumpRecord[clump].mode === "byClump"
+                ) {
+                    document.getElementById("clump-name-text-input").value = clump;
+                    this.currentClumpName = clump;
+
+                    return;
+                }
+            }
+        }
     },
 
     /**
@@ -359,7 +378,7 @@ const choosy_ui = {
 
         makeAddSubtractClumpButton(iAttr) {
 
-            const destClump =  (iAttr.clump && iAttr.clump !== choosy.constants.noClumpString) ?
+            const destClump =  (iAttr.clump && (iAttr.clump !== choosy.constants.noClumpString)) ?
                 choosy.constants.noClumpString : choosy_ui.currentClumpName ;
 
             // we will clear the clump if our computed "destination" is no clump.
