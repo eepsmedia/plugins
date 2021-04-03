@@ -69,7 +69,9 @@ const notify = {
                 choosy.refresh();
                 break;
             case `updateAttributes`:
-                // choosy.updateAttributes(theValues.result.attrs);
+                //  todo: remove for performance if it's a problem until JS fixes the bug about
+                //  not issuing notifications for plugin-initiated changes.
+                choosy_ui.update();
                 break;
             default:
                 break;

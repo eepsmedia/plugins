@@ -52,7 +52,7 @@ const connect = {
 
 
     /**
-     * Get "dataset info" for the dataset.
+     * Get "dataset info" for the dataset from CODAP
      * This includes all attribute names in all collections, as returned by `get...dataContext`.
      *
      * @param iName         dataset name
@@ -122,6 +122,7 @@ const connect = {
      * }
      * @param theInfo
      */
+    /*
     processDatasetInfoForAttributeLocations: function (theInfo) {
         let out = {
             "indexCollection": null,
@@ -148,7 +149,7 @@ const connect = {
 
         return out;
     },
-
+*/
     /**
      * Assign the given attribute (by name) to the clump (also by name).
      * This actually updates the dataset, altering the description (!), so that the next time we process it,
@@ -183,6 +184,16 @@ const connect = {
 
     },
 
+    /**
+     * Ask CODAP to show or hide the specified attribute in the table.
+     *
+     * Called by `choosy.handlers.oneAttributeVisibilityButton()`
+     *
+     * @param iDSName
+     * @param iAttrName
+     * @param toHide
+     * @returns {Promise<null|[]>}
+     */
     showHideAttribute: async function (iDSName, iAttrName, toHide) {
         const theCollection = await this.utilities.collectionNameFromAttributeName(iAttrName, choosy.datasetInfo);
 
@@ -207,13 +218,25 @@ const connect = {
                 })
             }
 
-            return   goodAttributes;   //  the ARRAY of affected attributes, in this case, the one named `iAttrName`.
+            //  return   goodAttributes;   //  the ARRAY of affected attributes, in this case, the one named `iAttrName`.
         } else {
             Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttrName}]`});
-            return null;
+            //  return null;
         }
     },
 
+    /**
+     * Ask CODAP to show or hide the attributes named in the argument Array, en masse.
+     *
+     * called in `choosy.handlers.clumpVisibilityButton()`
+     *
+     * Note: Tim thinks the use of `goodAttributes` is no longer necessary.
+     *
+     * @param iDSName   String name of the dataset
+     * @param iList     Array of attribute _names_.
+     * @param toHide    Should we hide all of these? (Otherwise, make all visible)
+     * @returns {Promise<[]>}
+     */
     showHideAttributeList : async function(iDSName, iList, toHide) {
         let messageList = [];
         let problemAttributes = [];
@@ -240,7 +263,7 @@ const connect = {
         const hideResult = await codapInterface.sendRequest(messageList);
         //  goodAttributes = hideResult.values.attrs;
 
-        let resultDescription = "", nSuccess = 0, nFailure = 0;
+        let nSuccess = 0, nFailure = 0;
         hideResult.forEach(res => {
             if (res.success) {
                 nSuccess++;
@@ -249,7 +272,7 @@ const connect = {
                 nFailure++;
             }
         })
-        console.log(`    ∂    ${nSuccess} successes and ${nFailure} failures changing ${messageList.length} atts to ${toHide ? "hidden" : "visible"}`);
+        console.log(`    ∂    ${nSuccess} successes and ${nFailure} failures changing ${messageList.length} attributes to ${toHide ? "hidden" : "visible"}`);
 
         if (problemAttributes.length > 0) {
             Swal.fire({
@@ -259,12 +282,16 @@ const connect = {
             })
         }
 
+/*
+//  this was here from when we were updating the attributes separately in the DOM.
+
         let outAttributes = [];
         goodAttributes.forEach( att => {
             const cat = choosy.getChoosyAttributeAndCollectionByAttributeName(att.name).att;
             outAttributes.push(cat);
         })
         return outAttributes;
+*/
     },
 
     /**
@@ -365,6 +392,12 @@ const connect = {
             return oldIDs;
         },
 
+        /**
+         * Given an Array of CODAP case IDs, ask CODAP to select them.
+         *
+         * @param iList
+         * @returns {Promise<void>}
+         */
         setCODAPSelectionToCaseIDs: async function (iList) {
             const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
             const tMessage = {
@@ -383,78 +416,16 @@ const connect = {
             }
         },
 
-        doBinaryTag: async function () {
-            const yesTag = document.getElementById(choosy.constants.tagValueSelectedElementID).value;
-            const noTag = document.getElementById(choosy.constants.tagValueNotSelectedElementID).value;
-
-            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
-            const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
-
-            let valuesArray = [];
-
-            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
-
-            Object.keys(allData).forEach(caseID => {
-                let valuesObject = {};
-                const isSelected = selectedCases.includes(Number(caseID));
-                valuesObject[tTagAttributeName] = isSelected ? yesTag : noTag;
-                const oneCase = {
-                    "id": caseID,
-                    "values": valuesObject,
-                }
-                valuesArray.push(oneCase);
-            });
-
-            await connect.updateTagValues(tTagAttributeName, valuesArray);
-
-        },
-
-        doRandomTag: async function () {
-            const aTag = document.getElementById(choosy.constants.tagValueGroupAElementID).value;
-            const bTag = document.getElementById(choosy.constants.tagValueGroupBElementID).value;
-            const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value) / 100.0;
-
-            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
-            //  const selectedCases = await connect.selection.getCODAPSelectedCaseIDs();
-
-            let valuesArray = [];
-
-            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
-
-            Object.keys(allData).forEach(caseID => {
-                let valuesObject = {};
-                const inGroupA = Math.random() < theProportion;
-                valuesObject[tTagAttributeName] = inGroupA ? aTag : bTag;
-                const oneCase = {
-                    "id": caseID,
-                    "values": valuesObject,
-                }
-                valuesArray.push(oneCase);
-            });
-
-            await connect.updateTagValues(tTagAttributeName, valuesArray);
-
-        },
-
-        clearAllTagsFrom: async function (iTag) {
-            let valuesArray = [];
-
-            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
-
-            Object.keys(allData).forEach(caseID => {
-                let valuesObject = {};
-                valuesObject[iTag] = "";
-                const oneCase = {
-                    "id": caseID,
-                    "values": valuesObject,
-                }
-                valuesArray.push(oneCase);
-            });
-
-            await connect.updateTagValues(iTag, valuesArray);
-
-        },
-
+        /**
+         * Set up a "simple" tag for CODAP. This is like the others but is, ironically, less simple.
+         *
+         * Ultimately applies the name of the tag in the box
+         * (or the empty string if `iMode` is "clear")
+         * to the selection.
+         *
+         * @param iMode
+         * @returns {Promise<void>}
+         */
         tagSelectedCases: async function (iMode = "clear") {
 
             const tagLabel = (iMode === "add") ?
@@ -479,8 +450,122 @@ const connect = {
 
             await connect.updateTagValues(tTagAttributeName, valuesArray);
         },
+
+        /**
+         * Retrieve the specifications for a binary tag and apply them.
+         *
+         * That is, find the names to be given to the selected and unselected cases,
+         * then construct an array of "values" that will go to CODAP as part of an `updateCases` call.
+         *
+         * This happens in `connect.updateTagValues`.
+         *
+         * @returns {Promise<void>}
+         */
+        doBinaryTag: async function () {
+            const yesTag = document.getElementById(choosy.constants.tagValueSelectedElementID).value;
+            const noTag = document.getElementById(choosy.constants.tagValueNotSelectedElementID).value;
+
+            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
+
+
+
+            //  construct the array of value objects, one for each case.
+
+            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+            let valuesArray = [];
+
+            Object.keys(allData).forEach(caseID => {
+                let valuesObject = {};
+                const isSelected = selectedCases.includes(Number(caseID));
+                valuesObject[tTagAttributeName] = isSelected ? yesTag : noTag;
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(tTagAttributeName, valuesArray);
+
+        },
+
+        /**
+         *  Retrieve the specifications for random tagging and apply them.
+         *
+         * That is, find the names to be given to the chosen and unchosen cases,
+         * and the percentage of cases to be chosen.
+         * Then construct an array of "values" that will go to CODAP as part of an `updateCases` call.
+         *
+         * This happens in `connect.updateTagValues`.
+
+         * @returns {Promise<void>}
+         */
+        doRandomTag: async function () {
+            const aTag = document.getElementById(choosy.constants.tagValueGroupAElementID).value;
+            const bTag = document.getElementById(choosy.constants.tagValueGroupBElementID).value;
+            const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value) / 100.0;
+
+            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+
+            //  construct the array of value objects, one for each case.
+
+            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+            let valuesArray = [];
+
+            Object.keys(allData).forEach(caseID => {
+                let valuesObject = {};
+                const inGroupA = Math.random() < theProportion;
+                valuesObject[tTagAttributeName] = inGroupA ? aTag : bTag;
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(tTagAttributeName, valuesArray);
+
+        },
+
+        /**
+         * Set up a request to CODAP to blank all the values in the Tags attribute.
+         * Does not remove the attribute.
+         *
+         * @param iTag
+         * @returns {Promise<void>}
+         */
+        clearAllTagsFrom: async function (iTag) {
+            let valuesArray = [];
+
+            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+
+            Object.keys(allData).forEach(caseID => {
+                let valuesObject = {};
+                valuesObject[iTag] = "";
+                const oneCase = {
+                    "id": caseID,
+                    "values": valuesObject,
+                }
+                valuesArray.push(oneCase);
+            });
+
+            await connect.updateTagValues(iTag, valuesArray);
+
+        },
+
     },
 
+    /**
+     * Update the cases in the dataset, changing the values of their Tags attribute
+     * according to the values in the `iValues` parameter.
+     *
+     * Called by a method in `connect.tagging`
+     *
+     * @param iTagAttName   name of the Tags attribute, apparently not used?
+     * @param iValues       Array similar to [{id : 42, values : {Tags : "foo"}}, {etc}, ...]
+     * @returns {Promise<void>}
+     */
     updateTagValues: async function (iTagAttName, iValues) {
         const tagCollection = await connect.tagging.ensureTagsAttributeExists();
 

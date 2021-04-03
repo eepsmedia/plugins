@@ -43,7 +43,7 @@ const choosy_ui = {
     },
 
     /**
-     * Main update routine --- redraws everyting.
+     * Main update routine --- redraws everything.
      * @returns {Promise<void>}
      */
     update: async function () {
@@ -97,17 +97,17 @@ const choosy_ui = {
         const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
 
         let theText = "";
-        let nAtts = 0;
+        let nAttributes = 0;
         if (choosy.datasetInfo) {
             choosy.datasetInfo.collections.forEach(coll => {
-                coll.attrs.forEach( att => {
-                    nAtts++;
+                coll.attrs.forEach( () => {
+                    nAttributes++;
                 })
             })
         }
         const nCases = Object.keys(choosy.theData).length;
 
-        theText += `${nAtts} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
+        theText += `${nAttributes} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
 
         summaryEl.innerHTML = theText;
         datasetSummaryEL.innerHTML = theText;
@@ -116,9 +116,8 @@ const choosy_ui = {
     /**
      * User has changed the name of the clump. Set `this.currentClumpName` and ask for the attribute
      * control "stripes" to be redrawn.
-     * @param e
      */
-    changeAttributeClumpNameInput : function(e) {
+    changeAttributeClumpNameInput : function( ) {
         const theNameBox = document.getElementById("clump-name-text-input");
         this.currentClumpName = theNameBox.value;
 
@@ -134,6 +133,7 @@ const choosy_ui = {
      * @param iName     name of the clump to set
      * @returns {Promise<void>}
      */
+/*
     setCurrentClumpTo : async function (iName) {
         console.log(`˙  setting clump name to ${iName}`);
         this.recordCurrentOpenDetailStates();
@@ -143,6 +143,7 @@ const choosy_ui = {
        //this.clumpRecord[iName].open = !this.clumpRecord[iName].open;
         await this.attributeControls.install();
     },
+*/
 
     /**
      * Look at the UI to tell whether we're clumping "by clump" or using the hierarchy (byLayer)
@@ -150,10 +151,6 @@ const choosy_ui = {
      */
     getClumpingStrategy : function() {
         return document.querySelector("input[name='clumpingStrategyRadioGroup']:checked").value;
-    },
-
-    getClumpFromAttributeName : function(iAttName) {
-
     },
 
     /**
@@ -173,7 +170,6 @@ const choosy_ui = {
         }
     },
 
-
     makeSweetAlert: function (iTitle, iText, iIcon = 'info') {
         Swal.fire({
             icon: iIcon,
@@ -182,8 +178,8 @@ const choosy_ui = {
         })
     },
 
-    /*
-        attribute checkbox section
+    /**
+     *  attribute checkbox section
     */
 
     attributeControls: {
@@ -196,7 +192,7 @@ const choosy_ui = {
          * called by attributeControls:make()
          *
          * @param iCollInfo
-         * @returns {{}}    Object: A reorganized list of attributes, keyed by clump name.
+         * @returns {{}}    Object: An object keyed by clump name. Values are Arrays of attributes.
          */
         preprocessAttributes: function (iCollInfo) {
             let out = {};
@@ -242,7 +238,7 @@ const choosy_ui = {
                     const openClause = choosy_ui.clumpRecord[theClumpName].open ? "open" : "";
 
                     //  we need to give this clump a unique `id` in the DOM
-                    const theDOMID = "details-" + theClumpName;
+                    const theDOMid = "details-" + theClumpName;
 
                     if (theClumpName === choosy.constants.noClumpString) {
                         tGuts += `${oneAttributeClumpControlSet}`;
@@ -250,8 +246,8 @@ const choosy_ui = {
                         const clumpVisibilityButtons = this.makeClumpVisibilityButtons(theClumpName);   //  the two eyeballs in the summary
 
                         //  this is the opening of the `<details>` markup for the top of the clump.
-                        //  tGuts += `<details id="${theDOMID}" ${openClause} onclick="choosy_ui.setCurrentClumpTo('${theClumpName}')">
-                        tGuts += `<details id="${theDOMID}" ${openClause}>
+                        //  tGuts += `<details id="${theDOMid}" ${openClause} onclick="choosy_ui.setCurrentClumpTo('${theClumpName}')">
+                        tGuts += `<details id="${theDOMid}" ${openClause}>
                             <summary class="attribute-clump-summary">
                             <div class="clump-summary-head">
                                 ${theClumpName}&emsp;${clumpVisibilityButtons}
@@ -277,7 +273,6 @@ const choosy_ui = {
          */
         makeAttrClumpCode(iClumpOfAttributes, iClumpName) {
             let tGuts = "<div class='attribute-clump'>";
-            const isCurrentClump = iClumpName === choosy_ui.currentClumpName;
 
             iClumpOfAttributes.forEach(att => {
                 tGuts += `<div class="attribute-control-stripe" id="${choosy.attributeStripeID(att.name)}">`;
@@ -292,6 +287,8 @@ const choosy_ui = {
          * Makes the HTML code for the INSIDE (the innerHTML) of one attribute,
          * that is, the stuff inside its <div>.
          *
+         * Called by   `makeAttrClumpCode()`
+         *
          * @param att
          * @returns {string}
          */
@@ -303,7 +300,6 @@ const choosy_ui = {
             const visibilityButtons = this.makeVisibilityButtons(att);
             const addSubtractClumpButton = this.makeAddSubtractClumpButton(att);
             const isHiddenNow = att.hidden;
-            const checkedText = isHiddenNow ? "" : "checked";
 
             tGuts += "&emsp;" + visibilityButtons;
 
@@ -353,7 +349,15 @@ const choosy_ui = {
             return theImage;
         },
 
-
+        /**
+         * Make the HTML for the visibility buttons for one clump (the eyeballs in its stripe)
+         * This takes the form of two `<img>` tags with ids of `hide-whatever` and `show-whatever`.
+         *
+         * Their `onclick` handlers get registered later, in `registerForMoreNotifications`.
+         *
+         * @param iClumpName
+         * @returns {string}
+         */
         makeClumpVisibilityButtons : function (iClumpName) {
             const theHideHint = `Hide all attributes in [${iClumpName}]`;
             const theShowHint = `Show all attributes in [${iClumpName}]`;
@@ -375,7 +379,15 @@ const choosy_ui = {
             return hidingImage + "&ensp;" + showingImage;
         },
 
-
+        /**
+         * Make the html for the plus- or minus- buttons that appear with attributes.
+         *
+         * This routine determines whether it should be plus or minus,
+         * and that depends only on whether the attribute is in a real clump (minus) or in the no-clump zone (plus).
+         *
+         * @param iAttr
+         * @returns {string}
+         */
         makeAddSubtractClumpButton(iAttr) {
 
             const destClump =  (iAttr.clump && (iAttr.clump !== choosy.constants.noClumpString)) ?
@@ -388,7 +400,7 @@ const choosy_ui = {
                 "../../common/art/subtract.png" :
                 "../../common/art/add.png";
 
-            const theHint = (destClump === choosy.constants.noClumpString) ?
+            const theHint = useClearIcon ?
                 `click to remove ${iAttr.name} from clump [${iAttr.clump}]` :           //  todo: should be title
                 `click to add ${iAttr.name} to clump [${choosy_ui.currentClumpName}]`;  //  todo: should be title
 
@@ -408,7 +420,7 @@ const choosy_ui = {
         },
 
         /**
-         * This appears in a nice dialog if the user clicks the info button.
+         * This text appears in a nice dialog if the user clicks the info button.
          * @param iAttr
          * @returns {string}
          */
@@ -429,6 +441,7 @@ const choosy_ui = {
                 }
                 const theImage = `&emsp;<img class="small-button-image" 
                     src="../../common/art/info.png" width="14" title="${theHint}" 
+                    alt="press for info"
                     onclick="choosy_ui.makeSweetAlert('${iAttr.name}', '${theHint}')"      //  todo: should be title
                     alt = "circular information button image"  
                     />`;
@@ -442,7 +455,7 @@ const choosy_ui = {
                 const clumpDOMid = `details-${clumpName}`;
                 const theElement = document.getElementById(clumpDOMid);
                 if (theElement) {
-                    theElement.addEventListener('toggle', choosy.handlers.toggleDetail);
+                    //  theElement.addEventListener('toggle', choosy.handlers.toggleDetail);
 
                     const hideButton = document.getElementById(`hide-${clumpName}`);
                     const showButton = document.getElementById(`show-${clumpName}`);
@@ -458,6 +471,7 @@ const choosy_ui = {
             this.registerForMoreNotifications();
         },
 
+/*
         handle: function (iAtt) {
             console.log(`=   handling a checkbox for [${iAtt}]`);
 
@@ -465,6 +479,7 @@ const choosy_ui = {
             const isChecked = document.getElementById(domName).checked;
             connect.showHideAttribute(choosy.state.datasetName, iAtt, !isChecked);
         },
+*/
     },
 
 

@@ -143,7 +143,7 @@ const choosy = {
 
     addAttributeToClump : async function(iAttName, iClumpName) {
         await connect.setAttributeClump(choosy.state.datasetName, iAttName, iClumpName);
-        choosy_ui.update();
+        await choosy_ui.update();
     },
 
     /**
@@ -169,6 +169,7 @@ const choosy = {
      * @param iAttArray
      */
 
+/*
     updateAttributes: async function(iAttArray) {
         //  update choosy.datasetInfo. This is our internal list
         const theDSName = choosy.state.datasetName;
@@ -193,6 +194,7 @@ const choosy = {
             Swal.fire({icon : "error", text : "No dataset name in updateAttribute"});
         }
     },
+*/
 
     /**
      * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
@@ -225,7 +227,7 @@ const choosy = {
                 }
 
                 //  if we're clumping "byLevel", use the collection name as the clump name
-                const theGroupName =  (whichWayToClump === "byLevel") ? coll.title : theClump;
+                const theGroupName =  (whichWayToClump === "byLevel") ? coll.name : theClump;   //  todo: really should be title
 
                 //  change the `att` field to include fields for `clump` and `collection`
                 att["clump"] = theGroupName
@@ -253,10 +255,12 @@ const choosy = {
          * todo: do we need this? We call it but we don't need it, right?
          * @returns {Promise<void>}
          */
+/*
         changeTagValue : async function () {
             this.currentTagValue = document.getElementById("tag-value-input").value;
             console.log(`    tag is now ${this.currentTagValue}`);
         },
+*/
 
         changeTagMode : function() {
             choosy_ui.update();
@@ -280,15 +284,17 @@ const choosy = {
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
 
+        /**
+         * Handles user press of a visibility button for a single attribute (not a clump)
+         *
+         * @param iAttName
+         * @param iHidden       are we hiding this?
+         * @returns {Promise<void>}
+         */
         oneAttributeVisibilityButton: async function(iAttName, iHidden) {
-            const theAttributes = await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
+            await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
             choosy_ui.update();
 
-/*
-            if (theAttributes) {
-                choosy.updateAttributes(theAttributes);     //  reset our datasetInfo, and alter the attribute stripe(s) in the DOM
-            }
-*/
         },
 
         clumpVisibilityButton : async function(event) {
@@ -335,7 +341,7 @@ const choosy = {
     },
 
     constants : {
-        version : '2021c',
+        version : '2021d',
         datasetSummaryEL : 'summaryInfo',
         selectionStatusElementID : 'selection-status',
         tagValueElementID : "tag-value-input",
