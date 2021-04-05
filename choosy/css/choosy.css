@@ -123,6 +123,10 @@ fieldset {
     border: none;
 }
 
+.tag-number-box {
+    width: 44px;
+}
+
 .tag-name-box {
     width : 77px;
     margin: 3px;

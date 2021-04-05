@@ -489,10 +489,11 @@ const choosy_ui = {
 
     datasetMenu: {
         divID: "chooseDatasetDIV",
-        menuID: "chooseDatasetControl",
+        stripeID : "chooseDatasetControl",
+        menuID: "dataset-menu",
 
         install: async function () {
-            document.getElementById(this.menuID).innerHTML = await this.make();
+            document.getElementById(this.stripeID).innerHTML = await this.make();
             const tDatasetMenu = document.getElementById(this.menuID);
             if (tDatasetMenu) {     //  set its value if we already have a dataset chosen, e.g., back from save
                 tDatasetMenu.value = choosy.state.datasetName;
@@ -505,7 +506,8 @@ const choosy_ui = {
                 const theName = tElement.value;
                 if (theName !== choosy.datasetInfo.title) {
                     console.log(`∂  switching from [${choosy.datasetInfo.title}] to [${theName}]`);
-                    await choosy.setTargetDatasetByName(theName);
+                    choosy.state.datasetName = theName;
+                    choosy.refresh();
                 }
             } else {
                 console.log(`NB: no dataset menu`);

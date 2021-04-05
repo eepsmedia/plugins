@@ -504,9 +504,15 @@ const connect = {
         doRandomTag: async function () {
             const aTag = document.getElementById(choosy.constants.tagValueGroupAElementID).value;
             const bTag = document.getElementById(choosy.constants.tagValueGroupBElementID).value;
-            const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value) / 100.0;
+            const theParsedResult = choosy.utilities.stringFractionDecimalOrPercentToNumber(
+                document.getElementById(choosy.constants.tagPercentageElementID).value
+            );
+            const theProportion = theParsedResult.theNumber;
+            document.getElementById(choosy.constants.tagPercentageElementID).value = theParsedResult.theString;
 
-            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            //  const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value) / 100.0;
+
+            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tag"
 
             //  construct the array of value objects, one for each case.
 

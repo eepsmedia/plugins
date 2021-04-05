@@ -5,18 +5,16 @@ const notify = {
      */
     setUpNotifications: async function () {
 
-        /*
-                const tResource = `dataContext[${choosy.state.datasetName}].attribute`;
+                const tResource = `documentChangeNotice`;
                 codapInterface.on(
                     'notify',
                     tResource,
-                    'updateAttribute',
-                    notify.handleAttributeChange
+                    //  'updateAttribute',
+                    notify.handleDocumentChange
                 );
                 console.log(`Asked for notify on [${tResource}]`);
-        */
 
-        //  register to receive notifications about selection
+        //  register to receive notifications about changes to the data context (including selection)
 
         const sResource = `dataContextChangeNotice[${choosy.state.datasetName}]`;
         codapInterface.on(
@@ -25,7 +23,7 @@ const notify = {
             //'selectCases',
             notify.handleDataContextChangeNotice
         );
-        console.log(`Asked for getting selectCases on [${sResource}]`);
+        console.log(`Asked for getting notices on [${sResource}]`);
 
         //  try using the selection list resource idea because the result from dataContextChangeNotice
         //  contains all the data of all the cases.
@@ -44,10 +42,12 @@ const notify = {
         return choosy.state.datasetName;
     },
 
+/*
     handleAttributeChange: async function (iCommand, iCallback) {
         console.log(`handling attribute change`);
 
     },
+*/
 
     handleDataContextChangeNotice: function (iMessage) {
         const theValues = iMessage.values;
@@ -66,6 +66,7 @@ const notify = {
                 choosy_ui.update();
                 break;
             case `deleteCollection`:
+            case `updateDataContext`:
                 choosy.refresh();
                 break;
             case `updateAttributes`:
@@ -76,6 +77,12 @@ const notify = {
             default:
                 break;
         }
+    },
+
+    handleDocumentChange : function(iMessage) {
+        const theValues = iMessage.values;
+        console.log(`handleDocumentChange operation: ${theValues.operation}`);
+        choosy.refresh();
     },
 
     handleSelectionListChangeNotice: function (iMessage) {

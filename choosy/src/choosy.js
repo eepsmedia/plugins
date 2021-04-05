@@ -76,9 +76,9 @@ const choosy = {
     },
 
     refresh : async function() {
+        choosy.notificationsAreSetUp = false;
+        choosy_ui.initialize();
         await choosy.setTargetDataset();
-        //  choosy_ui.update();
-
     },
 
     setTargetDataset : async function() {
@@ -340,8 +340,40 @@ const choosy = {
 
     },
 
+    utilities : {
+        stringFractionDecimalOrPercentToNumber : function(iString) {
+            let out = {theNumber : 0, theString : '0'};
+            let theNumber = 0;
+            let theString = "";
+
+            const wherePercent = iString.indexOf("%");
+            const whereSlash = iString.indexOf("/");
+            if (wherePercent !== -1) {
+                const thePercentage = parseFloat(iString.substring(0, wherePercent));
+                theString = `${thePercentage}%`;
+                theNumber = thePercentage/100.0;
+            } else if (whereSlash !== -1) {
+                const beforeSlash = iString.substring(0, whereSlash);
+                const afterSlash = iString.substring(whereSlash + 1);
+                const theNumerator = parseFloat(beforeSlash);
+                const theDenominator = parseFloat(afterSlash);
+                theNumber = theNumerator / theDenominator;
+                theString = `${theNumerator}/${theDenominator}`;
+            } else {
+                theNumber = parseFloat(iString);
+                theString = `${theNumber}`;
+            }
+
+            if (!isNaN(theNumber)) {
+                return {theNumber: theNumber, theString: theString};
+            } else {
+                return {theNumber: 0, theString: ""};
+            }
+        },
+    },
+
     constants : {
-        version : '2021d',
+        version : '2021e',
         datasetSummaryEL : 'summaryInfo',
         selectionStatusElementID : 'selection-status',
         tagValueElementID : "tag-value-input",
@@ -350,7 +382,7 @@ const choosy = {
         tagValueGroupAElementID : "tag-value-group-A",
         tagValueGroupBElementID : "tag-value-group-B",
         tagPercentageElementID : "tag-percentage",
-        tagsAttributeName : "Tags",
+        tagsAttributeName : "Tag",
         noClumpString : "none",
     }
 }
