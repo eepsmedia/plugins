@@ -30,19 +30,46 @@ limitations under the License.
 /* global codapInterface        */
 
 const choosy = {
-    state : {},             //  stores the dataset name. To be saved.
-    datasetInfo : {},       //  from the API, has name, collections, attribute names. Do not save!
-    notificationsAreSetUp : null,    //  the name of the ds that we used to set up notifications
-    theData : {},           //  case-ID-keyed object containing objects with non-formula values for all cases
-    selectedCaseIDs : [],   //  the case IDs of the selected cases
+    state: null,             //  stores the dataset ID. To be saved.
+    datasetList: null,     //  list of all datasets
+    datasetInfo: {},       //  from the API, has name, collections, attribute names. Do not save!
+    notificationsAreSetUp: null,    //  the name of the ds that we used to set up notifications
+    theData: {},           //  case-ID-keyed object containing objects with non-formula values for all cases
+    selectedCaseIDs: [],   //  the case IDs of the selected cases
 
-    currentTagValue : "foo",
+    currentTagValue: "foo",
 
-    initialize : async function() {
+    initialize: async function () {
         await connect.initialize();
+        await this.refreshDatasetList();
         choosy.state = await codapInterface.getInteractiveState();
 
-        //  Note: if there is only one dataset, the state.datasetName gets set to that DS
+        await this.refresh();
+
+        if (Object.keys(choosy.state).length === 0 && choosy.state.constructor === Object) {
+            await codapInterface.updateInteractiveState(choosy.freshState);
+            console.log("choosy: getting a fresh state");
+        }
+
+        choosy_ui.update();
+    },
+
+    /**
+     * Provides a fresh, empty version of `choosy.state`.
+     * @returns {{dsID: null, datasetName: string}}
+     */
+    freshState: function () {
+        console.log(`called choosy.freshState()`);
+        return {
+            dsID: null,
+        };
+    },
+
+    refresh: async function () {
+        await this.refreshDatasetList();
+
+        choosy.notificationsAreSetUp = false;
+        //  Note: if there is only one dataset, the state.dsID gets set to that DS
         //  Therefore _ui.initialize() must follow the call to getInteractiveState.
         try {
             console.log(`choosy --- ui.initialize --- try`);
@@ -53,71 +80,68 @@ const choosy = {
 
         //  Do we have a DS name?
 
-        if (choosy.state.datasetName) {
-            console.log(`choosy --- initialize --- about to set to [${choosy.state.datasetName}]`);
+        if (choosy.state.dsID) {
+            console.log(`choosy --- initialize --- about to set to ds [${choosy.state.dsID}]`);
             try {
                 await choosy.setTargetDataset();
             } catch (e) {
                 console.log(`choosy --- initialize.setTargetDatabase --- catch [${e}]`);
             }
         }
+    },
 
-        if (Object.keys(choosy.state).length === 0 && choosy.state.constructor === Object) {
-            await codapInterface.updateInteractiveState(choosy.freshState);
-            console.log("choosy: getting a fresh state");
+    refreshDatasetList: async function () {
+        try {
+            this.datasetList = await connect.getListOfDatasets();
+            console.log(`ds  found ${this.datasetList.length} dataset(s)`);
+        } catch (msg) {
+            console.log(`ds  could not get list of datasets: ${msg}`);
         }
     },
 
-    freshState: function () {
-        console.log(`called choosy.freshState()`);
-        return {
-            datasetName: "",
-        };
-    },
+    getNameOfCurrentDataset: function () {
 
-    refresh : async function() {
-        choosy.notificationsAreSetUp = false;
-        choosy_ui.initialize();
-        await choosy.setTargetDataset();
-    },
-
-    setTargetDataset : async function() {
-        if (this.state.datasetName) {
-            this.setTargetDatasetByName(this.state.datasetName);
-        } else {
-            console.log(`∂  tried to set a dataset without a dataset name`);
-        }
-    },
-
-    setTargetDatasetByName: async function (iName) {
-
-        //  get all the information on this dataset
-        if (iName) {
-            choosy.state.datasetName = iName;
-            await choosy_ui.update();
-
-            if (this.datasetInfo) {
-                console.log(`∂   loaded [${iName}] structure`);
-                await this.loadCurrentData(iName);
-                //  connect.makeTagsAttributeIn(iName);
-
-                //  now with a new dataset, we need to set up notifications and get all the attributes
-                if (!choosy.notificationsAreSetUp) {
-                    choosy.notificationsAreSetUp = notify.setUpNotifications();
-                }
+        for (let i = 0; i < choosy.datasetList.length; i++) {
+            const theSet = choosy.datasetList[i];
+            if (Number(theSet.id) === Number(choosy.state.dsID)) {
+                return theSet.name;
             }
+        }
+        return null;
+    },
 
+    setTargetDataset: async function () {
+        if (this.state.dsID) {
+            await this.setTargetDatasetByID(this.state.dsID);
         } else {
-            console.log(`?   called setTargetDatasetByName without a dataset name`);
+            console.log(`∂  tried to set a dataset without a dataset ID`);
         }
     },
 
-    loadCurrentData: async function (iDatasetName) {
-        const theCases = await connect.getAllCasesFrom(iDatasetName);
+    setTargetDatasetByID: async function (iDsID) {
+
+        if (iDsID) {
+            if (iDsID !== choosy.state.dsID) {   //      there has been a change in dataset ID; either it's new or an actual change
+
+                choosy.state.dsID = iDsID;
+                // await choosy_ui.update();       //  sets datasetInfo
+                // await this.loadCurrentData();       //  todo: used only to get number of cases? Necessary??
+                await notify.setUpNotifications();
+                console.log(`now looking at dataset ${iDsID} (choosy.setTargetDatasetByID())`);
+            } else {
+                console.log(`still looking at dataset ${iDsID} (choosy.setTargetDatasetByID())`);
+            }
+        } else {
+            console.log(`?   called setTargetDatasetByID without a dataset ID`);
+        }
+    },
+
+    loadCurrentData: async function () {
+        const theCases = await connect.getAllCasesFrom(this.getNameOfCurrentDataset());
         this.theData = theCases;       //  fresh!
     },
 
-    getLastCollectionName : function() {
+    getLastCollectionName: function () {
         //  get the name of the last collection...
         const colls = this.datasetInfo.collections;
         const nCollections = colls.length;
@@ -125,15 +149,15 @@ const choosy = {
         return lastCollName;
     },
 
-    getChoosyAttributeAndCollectionByAttributeName : function (iName) {
+    getChoosyAttributeAndCollectionByAttributeName: function (iName) {
         for (let i = 0; i < choosy.datasetInfo.collections.length; i++) {       //  loop over collections
             const coll = choosy.datasetInfo.collections[i];
             for (let j = 0; j < coll.attrs.length; j++) {       //  loop over attributes within collection
                 const att = coll.attrs[j];
                 if (att.name === iName) {
                     return {
-                        att : att,
-                        coll : coll
+                        att: att,
+                        coll: coll
                     }
                 }
             }
@@ -141,8 +165,8 @@ const choosy = {
         return null;
     },
 
-    addAttributeToClump : async function(iAttName, iClumpName) {
-        await connect.setAttributeClump(choosy.state.datasetName, iAttName, iClumpName);
+    addAttributeToClump: async function (iAttName, iClumpName) {
+        await connect.setAttributeClump(choosy.datasetInfo.name, iAttName, iClumpName);
         await choosy_ui.update();
     },
 
@@ -169,32 +193,32 @@ const choosy = {
      * @param iAttArray
      */
 
-/*
-    updateAttributes: async function(iAttArray) {
-        //  update choosy.datasetInfo. This is our internal list
-        const theDSName = choosy.state.datasetName;
-        if (theDSName) {
-            this.datasetInfo = await connect.refreshDatasetInfoFor(theDSName);
-            //  await this.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
+    /*
+        updateAttributes: async function(iAttArray) {
+            //  update choosy.datasetInfo. This is our internal list
+            const theDSName = choosy.state.datasetName;
+            if (theDSName) {
+                this.datasetInfo = await connect.refreshDatasetInfoFor(theDSName);
+                //  await this.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
 
-            //  now go fix the DOM.
-            iAttArray.forEach(att => {
+                //  now go fix the DOM.
+                iAttArray.forEach(att => {
 
-                const newElement = document.createElement('div');
-                newElement.id = choosy.attributeStripeID(att.name);
-                newElement.classList.add("attribute-control-stripe");
+                    const newElement = document.createElement('div');
+                    newElement.id = choosy.attributeStripeID(att.name);
+                    newElement.classList.add("attribute-control-stripe");
 
-                newElement.innerHTML = choosy_ui.attributeControls.makeOneAttCode(att);
+                    newElement.innerHTML = choosy_ui.attributeControls.makeOneAttCode(att);
 
-                const oldElement = document.getElementById(newElement.id);
-                oldElement.replaceWith(newElement);
+                    const oldElement = document.getElementById(newElement.id);
+                    oldElement.replaceWith(newElement);
 
-            })
-        } else {
-            Swal.fire({icon : "error", text : "No dataset name in updateAttribute"});
-        }
-    },
-*/
+                })
+            } else {
+                Swal.fire({icon : "error", text : "No dataset name in updateAttribute"});
+            }
+        },
+    */
 
     /**
      * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
@@ -227,7 +251,7 @@ const choosy = {
                 }
 
                 //  if we're clumping "byLevel", use the collection name as the clump name
-                const theGroupName =  (whichWayToClump === "byLevel") ? coll.name : theClump;   //  todo: really should be title
+                const theGroupName = (whichWayToClump === "byLevel") ? coll.name : theClump;   //  todo: really should be title
 
                 //  change the `att` field to include fields for `clump` and `collection`
                 att["clump"] = theGroupName
@@ -237,7 +261,7 @@ const choosy = {
                 //  add an element to the object for this clump if it's not there already
 
                 if (!choosy_ui.clumpRecord[theGroupName]) {
-                    choosy_ui.clumpRecord[theGroupName] = {open : true, attrs : [], mode : ""};
+                    choosy_ui.clumpRecord[theGroupName] = {open: true, attrs: [], mode: ""};
                 }
                 choosy_ui.clumpRecord[theGroupName].attrs.push(att.name);
                 choosy_ui.clumpRecord[theGroupName].mode = whichWayToClump;
@@ -245,9 +269,9 @@ const choosy = {
         })
     },
 
-    handlers : {
+    handlers: {
 
-        changeSearchText : async function () {
+        changeSearchText: async function () {
 
         },
 
@@ -255,31 +279,31 @@ const choosy = {
          * todo: do we need this? We call it but we don't need it, right?
          * @returns {Promise<void>}
          */
-/*
-        changeTagValue : async function () {
-            this.currentTagValue = document.getElementById("tag-value-input").value;
-            console.log(`    tag is now ${this.currentTagValue}`);
-        },
-*/
+        /*
+                changeTagValue : async function () {
+                    this.currentTagValue = document.getElementById("tag-value-input").value;
+                    console.log(`    tag is now ${this.currentTagValue}`);
+                },
+        */
 
-        changeTagMode : function() {
+        changeTagMode: function () {
             choosy_ui.update();
         },
 
-        applyTagToSelection : async function (iMode) {
+        applyTagToSelection: async function (iMode) {
             //  lens.state.datasetInfo =  await connect.refreshDatasetInfoFor(lens.state.datasetInfo.name);
             await connect.tagging.tagSelectedCases(iMode);
         },
 
-        applyBinaryTags : async function() {
+        applyBinaryTags: async function () {
             await connect.tagging.doBinaryTag();
         },
 
-        applyRandomTags : async function() {
+        applyRandomTags: async function () {
             await connect.tagging.doRandomTag();
         },
 
-        clearAllTags : async function() {
+        clearAllTags: async function () {
             const theTagName = choosy.constants.tagsAttributeName;
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
@@ -291,19 +315,19 @@ const choosy = {
          * @param iHidden       are we hiding this?
          * @returns {Promise<void>}
          */
-        oneAttributeVisibilityButton: async function(iAttName, iHidden) {
-            await connect.showHideAttribute(choosy.state.datasetName, iAttName, !iHidden);
-            choosy_ui.update();
+        oneAttributeVisibilityButton: async function (iAttName, iHidden) {
+            await connect.showHideAttribute(choosy.datasetInfo.name, iAttName, !iHidden);
+            //  choosy_ui.update();   //  not needed here; called from the notification handler
 
         },
 
-        clumpVisibilityButton : async function(event) {
+        clumpVisibilityButton: async function (event) {
 
             event.stopPropagation();
             event.preventDefault();
 
             const theID = event.target.id;
-            const theType = theID.substring(0,4);
+            const theType = theID.substring(0, 4);
             const theClumpName = theID.substring(5);
             const toHide = theType === "hide";
 
@@ -312,23 +336,23 @@ const choosy = {
             let theAttNames = [];
 
             choosy.datasetInfo.collections.forEach(coll => {
-                coll.attrs.forEach( att => {
+                coll.attrs.forEach(att => {
                     if (att.clump === theClumpName) {
                         theAttNames.push(att.name);    //  collect all these names
                     }
                 })
             })
-            const goodAttributes = await connect.showHideAttributeList(choosy.state.datasetName, theAttNames, toHide);
+            const goodAttributes = await connect.showHideAttributeList(choosy.datasetInfo.name, theAttNames, toHide);
             //  choosy.updateAttributes(goodAttributes);
-            choosy_ui.update();
+            //          choosy_ui.update    //  not needed here; called from the notification handler
         },
 
-        toggleDetail : function(event) {
+        toggleDetail: function (event) {
             const theClumpName = event.target.id.substring(8);
 
             console.log(`clump toggle! ${theClumpName}`);
             document.getElementById("clump-name-text-input").value = theClumpName;
-           // choosy_ui.setCurrentClumpTo(theClumpName);
+            // choosy_ui.setCurrentClumpTo(theClumpName);
         },
 
         //  todo: decide if we really need this
@@ -340,9 +364,9 @@ const choosy = {
 
     },
 
-    utilities : {
-        stringFractionDecimalOrPercentToNumber : function(iString) {
-            let out = {theNumber : 0, theString : '0'};
+    utilities: {
+        stringFractionDecimalOrPercentToNumber: function (iString) {
+            let out = {theNumber: 0, theString: '0'};
             let theNumber = 0;
             let theString = "";
 
@@ -351,7 +375,7 @@ const choosy = {
             if (wherePercent !== -1) {
                 const thePercentage = parseFloat(iString.substring(0, wherePercent));
                 theString = `${thePercentage}%`;
-                theNumber = thePercentage/100.0;
+                theNumber = thePercentage / 100.0;
             } else if (whereSlash !== -1) {
                 const beforeSlash = iString.substring(0, whereSlash);
                 const afterSlash = iString.substring(whereSlash + 1);
@@ -372,17 +396,17 @@ const choosy = {
         },
     },
 
-    constants : {
-        version : '2021e',
-        datasetSummaryEL : 'summaryInfo',
-        selectionStatusElementID : 'selection-status',
-        tagValueElementID : "tag-value-input",
-        tagValueSelectedElementID : "tag-value-selected",
-        tagValueNotSelectedElementID : "tag-value-not-selected",
-        tagValueGroupAElementID : "tag-value-group-A",
-        tagValueGroupBElementID : "tag-value-group-B",
-        tagPercentageElementID : "tag-percentage",
-        tagsAttributeName : "Tag",
-        noClumpString : "none",
+    constants: {
+        version: '2021f',
+        datasetSummaryEL: 'summaryInfo',
+        selectionStatusElementID: 'selection-status',
+        tagValueElementID: "tag-value-input",
+        tagValueSelectedElementID: "tag-value-selected",
+        tagValueNotSelectedElementID: "tag-value-not-selected",
+        tagValueGroupAElementID: "tag-value-group-A",
+        tagValueGroupBElementID: "tag-value-group-B",
+        tagPercentageElementID: "tag-percentage",
+        tagsAttributeName: "Tag",
+        noClumpString: "none",
     }
 }

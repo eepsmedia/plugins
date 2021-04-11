@@ -106,10 +106,19 @@ fieldset {
     height: 20px;
 }
 
+.visible-stripe {
+    background-color: #fff;
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+}
+
+.invisible-stripe {
+    font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
+    background-color: #ffffff;
+}
 .attribute-clump-summary {
     font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue Condensed', Verdana, sans-serif;
     font-size: small;
-    background-color: #cde;
+    background-color: #abc;
 
 }
 

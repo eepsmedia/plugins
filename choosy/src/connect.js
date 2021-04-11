@@ -36,7 +36,7 @@ const connect = {
 
 
     /**
-     * used by xxx-ui.js to get a list of datasets, so it can make a menu.
+     * used by choosy-ui.js to get a list of datasets, so it can make a menu.
      *
      * @returns {Promise<*>}
      */
@@ -55,24 +55,43 @@ const connect = {
      * Get "dataset info" for the dataset from CODAP
      * This includes all attribute names in all collections, as returned by `get...dataContext`.
      *
-     * @param iName         dataset name
+     * @param iDsID         dataset id
      * @returns {Promise<null|*>}
      */
-    refreshDatasetInfoFor: async function (iName) {
-        //  console.log(`choosy --- connect --- refreshing dataset info for [${iName}]`);
-        const tMessage = {
-            "action": "get",
-            "resource": `dataContext[${iName}]`
-        }
-        const dsInfoResult = await codapInterface.sendRequest(tMessage);
-        if (dsInfoResult.success) {
-            await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
-            return dsInfoResult.values;
+    refreshDatasetInfoFor: async function (iDsID) {
+        let theName = choosy.getNameOfCurrentDataset();
+
+        if (theName) {
+            const tMessage = {
+                "action": "get",
+                "resource": `dataContext[${theName}]`
+            }
+            const dsInfoResult = await codapInterface.sendRequest(tMessage);
+            if (dsInfoResult.success) {
+                await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
+                return dsInfoResult.values;
+            } else {
+                Swal.fire({icon: "error", title: "Drat!", text: `Problem getting information for dataset [${theName}]`});
+                return null;
+            }
         } else {
-            Swal.fire({icon: "error", title: "Drat!", text: `Problem getting information for dataset [${iName}]`});
+            Swal.fire({icon: "error", title: "Drat!", text: `Dataset #[${iDsID}] -- couldn't find its name`});
             return null;
+
         }
     },
+
+    getItemCountFrom : async function(iName) {
+        const tMessage = {
+            action : "get",
+            resource : `dataContext[${iName}].itemCount`,
+        };
+
+        const tItemCountResult = await codapInterface.sendRequest(tMessage);
+
+        return (tItemCountResult.success) ? tItemCountResult.values : null;
+    },
+
 
     /**
      * Get all of the cases from the named dataset.
@@ -305,19 +324,19 @@ const connect = {
          */
         ensureTagsAttributeExists: async function () {
 
-            await connect.refreshDatasetInfoFor(choosy.state.datasetName);
+            await connect.refreshDatasetInfoFor(choosy.state.dsID);
             let theTagsCollectionName = connect.utilities.collectionNameFromAttributeName(
                 choosy.constants.tagsAttributeName,
                 choosy.datasetInfo
             );
 
-            if (choosy.state.datasetName) {
+            if (choosy.state.dsID) {
                 if (!theTagsCollectionName) {       //  we don't have this attribute yet
                     //  for new tags attributes, we'll make it at the bottom level.
                     const bottomLevel = choosy.datasetInfo.collections.length - 1;
                     const theFirstCollection = choosy.datasetInfo.collections[bottomLevel];
                     theTagsCollectionName = theFirstCollection.name;
-                    const tResource = `dataContext[${choosy.state.datasetName}].collection[${theTagsCollectionName}].attribute`;
+                    const tResource = `dataContext[${choosy.datasetInfo.name}].collection[${theTagsCollectionName}].attribute`;
                     const tValues = {
                         "name": choosy.constants.tagsAttributeName,
                         "type": "nominal",
@@ -371,7 +390,7 @@ const connect = {
          * @returns {Promise<[]>}
          */
         getCODAPSelectedCaseIDs: async function () {
-            const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
+            const selectionListResource = `dataContext[${choosy.datasetInfo.name}].selectionList`;
             //  now get all the currently selected caseIDs.
             const gMessage = {
                 "action": "get", "resource": selectionListResource
@@ -399,7 +418,7 @@ const connect = {
          * @returns {Promise<void>}
          */
         setCODAPSelectionToCaseIDs: async function (iList) {
-            const selectionListResource = `dataContext[${choosy.state.datasetName}].selectionList`;
+            const selectionListResource = `dataContext[${choosy.datasetInfo.name}].selectionList`;
             const tMessage = {
                 "action": "create",
                 "resource": selectionListResource,
@@ -472,7 +491,7 @@ const connect = {
 
             //  construct the array of value objects, one for each case.
 
-            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+            const allData = await connect.getAllCasesFrom(choosy.datasetInfo.name);
             let valuesArray = [];
 
             Object.keys(allData).forEach(caseID => {
@@ -516,7 +535,7 @@ const connect = {
 
             //  construct the array of value objects, one for each case.
 
-            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+            const allData = await connect.getAllCasesFrom(choosy.datasetInfo.name);
             let valuesArray = [];
 
             Object.keys(allData).forEach(caseID => {
@@ -544,7 +563,7 @@ const connect = {
         clearAllTagsFrom: async function (iTag) {
             let valuesArray = [];
 
-            const allData = await connect.getAllCasesFrom(choosy.state.datasetName);
+            const allData = await connect.getAllCasesFrom(choosy.datasetInfo.name);
 
             Object.keys(allData).forEach(caseID => {
                 let valuesObject = {};
@@ -575,7 +594,7 @@ const connect = {
     updateTagValues: async function (iTagAttName, iValues) {
         const tagCollection = await connect.tagging.ensureTagsAttributeExists();
 
-        const theResource = `dataContext[${choosy.state.datasetName}].collection[${tagCollection}].case`;
+        const theResource = `dataContext[${choosy.datasetInfo.name}].collection[${tagCollection}].case`;
         const theRequest = {
             "action": "update",
             "resource": theResource,

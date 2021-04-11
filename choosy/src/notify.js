@@ -5,18 +5,20 @@ const notify = {
      */
     setUpNotifications: async function () {
 
-                const tResource = `documentChangeNotice`;
-                codapInterface.on(
-                    'notify',
-                    tResource,
-                    //  'updateAttribute',
-                    notify.handleDocumentChange
-                );
-                console.log(`Asked for notify on [${tResource}]`);
+        //  receive notifications about doc changes, especially number of datasets
+        //  (user has added or deleted a dataset)
+        const tResource = `documentChangeNotice`;
+        codapInterface.on(
+            'notify',
+            tResource,
+            //  'updateAttribute',
+            notify.handleDocumentChangeNotice
+        );
+        console.log(`Asked for notify on [${tResource}]`);
 
         //  register to receive notifications about changes to the data context (including selection)
-
-        const sResource = `dataContextChangeNotice[${choosy.state.datasetName}]`;
+        const theCurrentDSName = choosy.getNameOfCurrentDataset();
+        const sResource = `dataContextChangeNotice[${theCurrentDSName}]`;
         codapInterface.on(
             'notify',
             sResource,
@@ -25,34 +27,21 @@ const notify = {
         );
         console.log(`Asked for getting notices on [${sResource}]`);
 
-        //  try using the selection list resource idea because the result from dataContextChangeNotice
-        //  contains all the data of all the cases.
-
-        /*
-                const ssResource = `dataContext[${choosy.state.datasetName}].selectionList`;
-                codapInterface.on(
-                    'notify',
-                    ssResource,
-                    'selectCases',
-                    notify.handleSelectionListChangeNotice
-                    // choosy.handlers.handleSelectionChangeFromCODAP
-                );
-                console.log(`Asked for getting selectCases on [${ssResource}]`);
-        */
         return choosy.state.datasetName;
     },
 
-/*
-    handleAttributeChange: async function (iCommand, iCallback) {
-        console.log(`handling attribute change`);
 
-    },
-*/
+    notificationsHandled : 0,
 
     handleDataContextChangeNotice: function (iMessage) {
+        this.notificationsHandled++;
+        if (this.notificationsHandled % 50 === 0) {
+            console.log(`fyi     ${this.notificationsHandled} notifications handled. `)
+        }
+
         const theValues = iMessage.values;
 
-        console.log(`handleDataContextChangeNotice operation: ${theValues.operation}`);
+        //  console.log(`handleDataContextChangeNotice operation: ${theValues.operation}`);
         switch (theValues.operation) {
             case `selectCases`:
                 const theSelectedCases = (theValues.result.cases) ? theValues.result.cases : [];
@@ -60,13 +49,15 @@ const notify = {
 
                 break;
             case `moveAttribute`:
+            case `deleteAttributes` :
+            case `createAttributes` :
             case `updateCases`:
             case `updateCollection`:
             case `createCollection`:
                 choosy_ui.update();
                 break;
             case `deleteCollection`:
-            case `updateDataContext`:
+            case `updateDataContext`:       //  includes renaming
                 choosy.refresh();
                 break;
             case `updateAttributes`:
@@ -79,13 +70,14 @@ const notify = {
         }
     },
 
-    handleDocumentChange : function(iMessage) {
+    handleDocumentChangeNotice: function (iMessage) {
+        this.notificationsHandled++;
+        if (this.notificationsHandled % 50 === 0) {
+            console.log(`fyi     ${this.notificationsHandled} notifications handled. `)
+        }
         const theValues = iMessage.values;
-        console.log(`handleDocumentChange operation: ${theValues.operation}`);
+        //  console.log(`handleDocumentChange operation: ${theValues.operation}`);
         choosy.refresh();
     },
 
-    handleSelectionListChangeNotice: function (iMessage) {
-
-    },
 }

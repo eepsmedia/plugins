@@ -73,6 +73,7 @@ limitations under the License.
     </script>
 
 </head>
+
 <body>
 
 <div id="tabs">
@@ -115,11 +116,11 @@ limitations under the License.
     <div id="atts">
         <div class="stripe">
             <input id="byClumpButton" name="clumpingStrategyRadioGroup"
-                   onchange="choosy.refresh()"
+                   onchange="choosy_ui.update()"
                    value="byClump" type="radio" checked>
             <span>clump  | layer</span>
             <input id="byLevelButton" name="clumpingStrategyRadioGroup"
-                   onchange="choosy.refresh()"
+                   onchange="choosy_ui.update()"
                    value="byLevel" type="radio">
         </div>
 

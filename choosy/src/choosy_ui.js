@@ -38,16 +38,29 @@ const choosy_ui = {
 
     initialize: async function () {
         //  set up the dataset menu
-        await this.datasetMenu.install();      //  async but we can go on...
+        try {
+            await this.datasetMenu.install();      //  async but we can go on...
+            console.log(`ui initialize: dataset menu installed`);
+        } catch(msg) {
+            console.log(`ui initialize: caught trying to install the datasetMenu: ${msg}`);
+        }
         //  this.update();
     },
 
+    updateCount : 0,
     /**
-     * Main update routine --- redraws everything.
+     * Main update routine --- gets dataset structure from CODAP and redraws everything.
      * @returns {Promise<void>}
      */
     update: async function () {
-        choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.datasetName);
+        this.updateCount++;
+        if (this.updateCount % 50 === 0) {
+            console.log(`fyi     ${this.updateCount} calls to choosy_ui.update(). `);
+        }
+
+        choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.dsID);
+        //  console.log(`∂   ui.update(): loaded [${choosy.datasetInfo.name}] structure`);
+
         this.setClumpNameDefault();
         this.recordCurrentOpenDetailStates();
         this.attributeControls.install();
@@ -105,7 +118,7 @@ const choosy_ui = {
                 })
             })
         }
-        const nCases = Object.keys(choosy.theData).length;
+        const nCases = await connect.getItemCountFrom(choosy.datasetInfo.name);
 
         theText += `${nAttributes} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
 
@@ -164,7 +177,7 @@ const choosy_ui = {
                 if (theElement) {   //  there might be an empty clump, so no element to be open or closed
                     const isOpen = theElement.hasAttribute("open");
                     this.clumpRecord[clump].open = isOpen;
-                    console.log(`ç  recording that ${clump} is ${isOpen ? " open" : " closed"}`);
+                    //  console.log(`ç  recording that ${clump} is ${isOpen ? " open" : " closed"}`);
                 }
             }
         }
@@ -275,7 +288,9 @@ const choosy_ui = {
             let tGuts = "<div class='attribute-clump'>";
 
             iClumpOfAttributes.forEach(att => {
-                tGuts += `<div class="attribute-control-stripe" id="${choosy.attributeStripeID(att.name)}">`;
+                const theClasses = att.hidden ? "invisible-stripe attribute-control-stripe"
+                    : "visible-stripe attribute-control-stripe";
+                tGuts += `<div class="${theClasses}" id="${choosy.attributeStripeID(att.name)}">`;
                 tGuts += this.makeOneAttCode(att);
                 tGuts += `</div>`;
             })
@@ -324,10 +339,10 @@ const choosy_ui = {
         makeVisibilityButtons(iAttr) {
 
             const isHidden = iAttr.hidden;
-            const visibilityIconPath = isHidden ?
+            const visibilityIconPath = !isHidden ?
                 "../../common/art/blank.png" :
                 "../../common/art/visibility.png";
-            const invisibilityIconPath = isHidden ?
+            const invisibilityIconPath = !isHidden ?
                 "../../common/art/visibility-no.png" :
                 "../../common/art/blank.png";
 
@@ -335,18 +350,18 @@ const choosy_ui = {
                 `click to make ${iAttr.name} visible in the table` :     //  todo: should be title
                 `click to hide ${iAttr.name} in the table`;             //  todo: should be title
 
-            const theImage = `<img class="small-button-image" 
-                    src=${visibilityIconPath} title="${theHint}" 
-                    onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
-                    alt = "visibility image"  
-                    />
-                    <img class="small-button-image" 
+            const invisibility = `<img class="small-button-image" 
                     src=${invisibilityIconPath} title="${theHint}" 
                     onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "invisibility image"  
                     />`;
+            const visibility = `<img class="small-button-image" 
+                    src=${visibilityIconPath} title="${theHint}" 
+                    onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
+                    alt = "visibility image"  
+                    />`;
 
-            return theImage;
+            return `${visibility}${invisibility}`;
         },
 
         /**
@@ -376,7 +391,7 @@ const choosy_ui = {
             //  onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', true)"
             //  onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', false)"
 
-            return hidingImage + "&ensp;" + showingImage;
+            return showingImage + "&ensp;" + hidingImage;
         },
 
         /**
@@ -471,15 +486,6 @@ const choosy_ui = {
             this.registerForMoreNotifications();
         },
 
-/*
-        handle: function (iAtt) {
-            console.log(`=   handling a checkbox for [${iAtt}]`);
-
-            const domName = `att_${iAtt}`;
-            const isChecked = document.getElementById(domName).checked;
-            connect.showHideAttribute(choosy.state.datasetName, iAtt, !isChecked);
-        },
-*/
     },
 
 
@@ -496,46 +502,44 @@ const choosy_ui = {
             document.getElementById(this.stripeID).innerHTML = await this.make();
             const tDatasetMenu = document.getElementById(this.menuID);
             if (tDatasetMenu) {     //  set its value if we already have a dataset chosen, e.g., back from save
-                tDatasetMenu.value = choosy.state.datasetName;
+                tDatasetMenu.value = choosy.state.dsID;
             }
         },
 
         handle: async function () {
             const tElement = document.getElementById(this.menuID);
             if (tElement) {
-                const theName = tElement.value;
-                if (theName !== choosy.datasetInfo.title) {
-                    console.log(`∂  switching from [${choosy.datasetInfo.title}] to [${theName}]`);
-                    choosy.state.datasetName = theName;
-                    choosy.refresh();
-                }
+                const theChosenID = tElement.value;
+                await choosy.setTargetDatasetByID(theChosenID);   //  will set the new ID if necessary
+                choosy_ui.update();
             } else {
                 console.log(`NB: no dataset menu`);
             }
         },
 
         make: async function () {
-            const theList = await connect.getListOfDatasets();
+            const theList = choosy.datasetList;
             let tGuts = "";
 
-            if (theList.length === 0) {
+            if (choosy.datasetList.length === 0) {
                 tGuts = `<h3 class="stripe-hed">No datasets</h3>`;
 
             } else if (theList.length === 1) {
                 const theDataSet = theList[0];    //  the only one
-                await choosy.setTargetDatasetByName(theDataSet.name);
-                tGuts = `<h3 class="stripe-hed">Dataset: <strong>${choosy.datasetInfo.title}</strong></h3>`;
+                await choosy.setTargetDatasetByID(theDataSet.id);       //  if therre is only one DS, set the dsID!
+                tGuts = `<h3 class="stripe-hed">Dataset: <strong>${theDataSet.title}</strong></h3>`;
 
             } else {
                 tGuts = `<label for="dataset-menu">choose a dataset</label>`;
                 tGuts += `<select id="dataset-menu" onchange="choosy_ui.datasetMenu.handle()">`;
                 theList.forEach(ds => {
                     console.log(`making menu:  ds ${ds.id} named [${ds.name}] title [${ds.title}]`);
-                    tGuts += `<option value="${ds.name}">${ds.title}</option>`;
+                    tGuts += `<option value=${ds.id}>${ds.title}</option>`;
                 })
                 tGuts += `</select>`;
             }
 
+            console.log(`µ   made dataset menu with ${theList.length} dataset(s)`);
             return tGuts;
         },
     },
