@@ -324,13 +324,13 @@ const connect = {
          */
         ensureTagsAttributeExists: async function () {
 
-            await connect.refreshDatasetInfoFor(choosy.state.dsID);
+            await connect.refreshDatasetInfoFor(choosy.dsID);
             let theTagsCollectionName = connect.utilities.collectionNameFromAttributeName(
                 choosy.constants.tagsAttributeName,
                 choosy.datasetInfo
             );
 
-            if (choosy.state.dsID) {
+            if (choosy.dsID) {
                 if (!theTagsCollectionName) {       //  we don't have this attribute yet
                     //  for new tags attributes, we'll make it at the bottom level.
                     const bottomLevel = choosy.datasetInfo.collections.length - 1;
@@ -353,7 +353,6 @@ const connect = {
                     const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
 
                     if (makeTagsAttResult.success) {
-                        //  choosy.state.datasetInfo.attLocations.tagsCollection = theTagsCollectionName;
                         console.log(`µ   Yay! Made [${choosy.constants.tagsAttributeName}] in collection [${theTagsCollectionName}]!`);
                         Swal.fire({
                             icon: "success",

@@ -30,7 +30,7 @@ limitations under the License.
 /* global codapInterface        */
 
 const choosy = {
-    state: null,             //  stores the dataset ID. To be saved.
+    dsID: null,             //  stores the dataset ID. To be saved.
     datasetList: null,     //  list of all datasets
     datasetInfo: {},       //  from the API, has name, collections, attribute names. Do not save!
     notificationsAreSetUp: null,    //  the name of the ds that we used to set up notifications
@@ -41,15 +41,16 @@ const choosy = {
 
     initialize: async function () {
         await connect.initialize();
-        await this.refreshDatasetList();
-        choosy.state = await codapInterface.getInteractiveState();
+        await this.setUpDatasets();
 
-        await this.refresh();
+        //choosy.state = await codapInterface.getInteractiveState();
 
-        if (Object.keys(choosy.state).length === 0 && choosy.state.constructor === Object) {
-            await codapInterface.updateInteractiveState(choosy.freshState);
-            console.log("choosy: getting a fresh state");
-        }
+        /*
+                if (Object.keys(choosy.state).length === 0 && choosy.state.constructor === Object) {
+                    await codapInterface.updateInteractiveState(choosy.freshState);
+                    console.log("choosy: getting a fresh state");
+                }
+        */
 
         choosy_ui.update();
     },
@@ -65,37 +66,17 @@ const choosy = {
         };
     },
 
-    refresh: async function () {
-        await this.refreshDatasetList();
-
-        choosy.notificationsAreSetUp = false;
-        //  Note: if there is only one dataset, the state.dsID gets set to that DS
-        //  Therefore _ui.initialize() must follow the call to getInteractiveState.
+    setUpDatasets: async function () {
         try {
-            console.log(`choosy --- ui.initialize --- try`);
-            await choosy_ui.initialize();
-        } catch (msg) {
-            console.log(`choosy --- ui.initialize --- catch [${msg}]`);
-        }
+            console.log(`ds  choosy --- setUpDatasets --- try`);
 
-        //  Do we have a DS name?
-
-        if (choosy.state.dsID) {
-            console.log(`choosy --- initialize --- about to set to ds [${choosy.state.dsID}]`);
-            try {
-                await choosy.setTargetDataset();
-            } catch (e) {
-                console.log(`choosy --- initialize.setTargetDatabase --- catch [${e}]`);
-            }
-        }
-    },
-
-    refreshDatasetList: async function () {
-        try {
             this.datasetList = await connect.getListOfDatasets();
-            console.log(`ds  found ${this.datasetList.length} dataset(s)`);
+            console.log(`ds      found ${this.datasetList.length} dataset(s)`);
+
+            const tdsID = await choosy_ui.datasetMenu.install();
+            await this.setTargetDatasetByID(tdsID);
         } catch (msg) {
-            console.log(`ds  could not get list of datasets: ${msg}`);
+            console.log(`ds  choosy --- setUpDatasets --- catch [${msg}]`);
         }
     },
 
@@ -103,33 +84,22 @@ const choosy = {
 
         for (let i = 0; i < choosy.datasetList.length; i++) {
             const theSet = choosy.datasetList[i];
-            if (Number(theSet.id) === Number(choosy.state.dsID)) {
+            if (Number(theSet.id) === Number(choosy.dsID)) {
                 return theSet.name;
             }
         }
         return null;
     },
 
-    setTargetDataset: async function () {
-        if (this.state.dsID) {
-            await this.setTargetDatasetByID(this.state.dsID);
-        } else {
-            console.log(`∂  tried to set a dataset without a dataset ID`);
-        }
-    },
-
     setTargetDatasetByID: async function (iDsID) {
 
         if (iDsID) {
-            if (iDsID !== choosy.state.dsID) {   //      there has been a change in dataset ID; either it's new or an actual change
-
-                choosy.state.dsID = iDsID;
-                // await choosy_ui.update();       //  sets datasetInfo
-                // await this.loadCurrentData();       //  todo: used only to get number of cases? Necessary??
+            if (iDsID !== choosy.dsID) {   //      there has been a change in dataset ID; either it's new or an actual change
+                console.log(`ds      now looking at dataset ${iDsID} (choosy.setTargetDatasetByID())`);
+                choosy.dsID = iDsID;
                 await notify.setUpNotifications();
-                console.log(`now looking at dataset ${iDsID} (choosy.setTargetDatasetByID())`);
             } else {
-                console.log(`still looking at dataset ${iDsID} (choosy.setTargetDatasetByID())`);
+                console.log(`ds      still looking at dataset ${iDsID} (choosy.setTargetDatasetByID())`);
             }
         } else {
             console.log(`?   called setTargetDatasetByID without a dataset ID`);
@@ -179,46 +149,6 @@ const choosy = {
         return `att-${iName}`;
     },
 
-    /**
-     * Some attributes have changed. We need to update their entries in choosy.datasetInfo AND
-     * update their appearance in the UI.
-     *
-     * Why not just hide or show them (in CODAP) and then read everything from CODAP?
-     * Because then that invokes a re-read and redraw of everything, which would be fine
-     * except that when we hide or show a clump, we get a notification and a DOM event for every. Frigging. Attribute.
-     *
-     * Also, we get ontoggle events in the <detail> clump header(s) because we restore their open/closed state.
-     * So this avoids the redraw and all its attendant peril.
-     *
-     * @param iAttArray
-     */
-
-    /*
-        updateAttributes: async function(iAttArray) {
-            //  update choosy.datasetInfo. This is our internal list
-            const theDSName = choosy.state.datasetName;
-            if (theDSName) {
-                this.datasetInfo = await connect.refreshDatasetInfoFor(theDSName);
-                //  await this.processDatasetInfoForAttributeClumps(choosy.datasetInfo); //  get clumps and add the collection
-
-                //  now go fix the DOM.
-                iAttArray.forEach(att => {
-
-                    const newElement = document.createElement('div');
-                    newElement.id = choosy.attributeStripeID(att.name);
-                    newElement.classList.add("attribute-control-stripe");
-
-                    newElement.innerHTML = choosy_ui.attributeControls.makeOneAttCode(att);
-
-                    const oldElement = document.getElementById(newElement.id);
-                    oldElement.replaceWith(newElement);
-
-                })
-            } else {
-                Swal.fire({icon : "error", text : "No dataset name in updateAttribute"});
-            }
-        },
-    */
 
     /**
      * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
@@ -291,7 +221,6 @@ const choosy = {
         },
 
         applyTagToSelection: async function (iMode) {
-            //  lens.state.datasetInfo =  await connect.refreshDatasetInfoFor(lens.state.datasetInfo.name);
             await connect.tagging.tagSelectedCases(iMode);
         },
 
@@ -397,7 +326,7 @@ const choosy = {
     },
 
     constants: {
-        version: '2021f',
+        version: '2021g',
         datasetSummaryEL: 'summaryInfo',
         selectionStatusElementID: 'selection-status',
         tagValueElementID: "tag-value-input",
