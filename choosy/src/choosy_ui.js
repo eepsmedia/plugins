@@ -38,16 +38,29 @@ const choosy_ui = {
 
     initialize: async function () {
         //  set up the dataset menu
-        await this.datasetMenu.install();      //  async but we can go on...
+        try {
+            await this.datasetMenu.install();      //  async but we can go on...
+            console.log(`ui initialize: dataset menu installed`);
+        } catch(msg) {
+            console.log(`ui initialize: caught trying to install the datasetMenu: ${msg}`);
+        }
         //  this.update();
     },
 
+    updateCount : 0,
     /**
-     * Main update routine --- redraws everything.
+     * Main update routine --- gets dataset structure from CODAP and redraws everything.
      * @returns {Promise<void>}
      */
     update: async function () {
-        choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.state.datasetName);
+        this.updateCount++;
+        if (this.updateCount % 50 === 0) {
+            console.log(`fyi     ${this.updateCount} calls to choosy_ui.update(). `);
+        }
+
+        choosy.datasetInfo = await connect.refreshDatasetInfoFor(choosy.dsID);
+        //  console.log(`∂   ui.update(): loaded [${choosy.datasetInfo.name}] structure`);
+
         this.setClumpNameDefault();
         this.recordCurrentOpenDetailStates();
         this.attributeControls.install();
@@ -105,7 +118,11 @@ const choosy_ui = {
                 })
             })
         }
-        const nCases = Object.keys(choosy.theData).length;
+        //  const nCases = await connect.getItemCountFrom(choosy.datasetInfo.name);
+        const nCases = await connect.getLastCollectionCaseCount(
+            choosy.datasetInfo.name,
+            choosy.getLastCollectionName()
+            );
 
         theText += `${nAttributes} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
 
@@ -124,26 +141,6 @@ const choosy_ui = {
         this.attributeControls.install();
     },
 
-    /**
-     * Sets `this.currentClumpName` and also puts that name into the clump-choice text box.
-     * Then re-installs the attribute clumps (so that if we changed to or from no clump in the box, the (+) icons adjust)
-     *
-     * Called on `onclick` from the clump's `<details>` DOM object.
-     *
-     * @param iName     name of the clump to set
-     * @returns {Promise<void>}
-     */
-/*
-    setCurrentClumpTo : async function (iName) {
-        console.log(`˙  setting clump name to ${iName}`);
-        this.recordCurrentOpenDetailStates();
-        this.currentClumpName = iName;
-        const theNameBox = document.getElementById("clump-name-text-input");
-        theNameBox.value = this.currentClumpName;
-       //this.clumpRecord[iName].open = !this.clumpRecord[iName].open;
-        await this.attributeControls.install();
-    },
-*/
 
     /**
      * Look at the UI to tell whether we're clumping "by clump" or using the hierarchy (byLayer)
@@ -164,7 +161,7 @@ const choosy_ui = {
                 if (theElement) {   //  there might be an empty clump, so no element to be open or closed
                     const isOpen = theElement.hasAttribute("open");
                     this.clumpRecord[clump].open = isOpen;
-                    console.log(`ç  recording that ${clump} is ${isOpen ? " open" : " closed"}`);
+                    //  console.log(`ç  recording that ${clump} is ${isOpen ? " open" : " closed"}`);
                 }
             }
         }
@@ -275,7 +272,9 @@ const choosy_ui = {
             let tGuts = "<div class='attribute-clump'>";
 
             iClumpOfAttributes.forEach(att => {
-                tGuts += `<div class="attribute-control-stripe" id="${choosy.attributeStripeID(att.name)}">`;
+                const theClasses = att.hidden ? "invisible-stripe attribute-control-stripe"
+                    : "visible-stripe attribute-control-stripe";
+                tGuts += `<div class="${theClasses}" id="${choosy.attributeStripeID(att.name)}">`;
                 tGuts += this.makeOneAttCode(att);
                 tGuts += `</div>`;
             })
@@ -324,29 +323,29 @@ const choosy_ui = {
         makeVisibilityButtons(iAttr) {
 
             const isHidden = iAttr.hidden;
-            const visibilityIconPath = isHidden ?
+            const visibilityIconPath = isHidden ?       //      reverse !isHidden to show destiny instead of state
                 "../../common/art/blank.png" :
-                "../../common/art/visibility.png";
-            const invisibilityIconPath = isHidden ?
-                "../../common/art/visibility-no.png" :
+                "../../common/art/check-box.png";      //  "../../common/art/visibility.png";
+            const invisibilityIconPath = isHidden ?     //      reverse !isHidden
+                "../../common/art/blank-check-box.png" :  //  "../../common/art/visibility-no.png"
                 "../../common/art/blank.png";
 
             const theHint = isHidden ?
                 `click to make ${iAttr.name} visible in the table` :     //  todo: should be title
                 `click to hide ${iAttr.name} in the table`;             //  todo: should be title
 
-            const theImage = `<img class="small-button-image" 
-                    src=${visibilityIconPath} title="${theHint}" 
-                    onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
-                    alt = "visibility image"  
-                    />
-                    <img class="small-button-image" 
+            const invisibility = `<img class="small-button-image" 
                     src=${invisibilityIconPath} title="${theHint}" 
                     onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "invisibility image"  
                     />`;
+            const visibility = `<img class="small-button-image" 
+                    src=${visibilityIconPath} title="${theHint}" 
+                    onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
+                    alt = "visibility image"  
+                    />`;
 
-            return theImage;
+            return `${visibility}${invisibility}`;
         },
 
         /**
@@ -376,7 +375,7 @@ const choosy_ui = {
             //  onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', true)"
             //  onclick="choosy_ui.attributeControls.handleClumpVisibilityButton('${iClumpName}', false)"
 
-            return hidingImage + "&ensp;" + showingImage;
+            return showingImage + "&ensp;" + hidingImage;
         },
 
         /**
@@ -471,15 +470,6 @@ const choosy_ui = {
             this.registerForMoreNotifications();
         },
 
-/*
-        handle: function (iAtt) {
-            console.log(`=   handling a checkbox for [${iAtt}]`);
-
-            const domName = `att_${iAtt}`;
-            const isChecked = document.getElementById(domName).checked;
-            connect.showHideAttribute(choosy.state.datasetName, iAtt, !isChecked);
-        },
-*/
     },
 
 
@@ -489,52 +479,67 @@ const choosy_ui = {
 
     datasetMenu: {
         divID: "chooseDatasetDIV",
-        menuID: "chooseDatasetControl",
+        stripeID : "chooseDatasetControl",
+        menuID: "dataset-menu",
+        nHandles : 0,
 
         install: async function () {
-            document.getElementById(this.menuID).innerHTML = await this.make();
-            const tDatasetMenu = document.getElementById(this.menuID);
-            if (tDatasetMenu) {     //  set its value if we already have a dataset chosen, e.g., back from save
-                tDatasetMenu.value = choosy.state.datasetName;
-            }
+            const menuInfo = await this.make();
+            document.getElementById(this.stripeID).innerHTML = menuInfo.guts;
+            return menuInfo.chosen;
         },
 
         handle: async function () {
+            this.nHandles++;
             const tElement = document.getElementById(this.menuID);
             if (tElement) {
-                const theName = tElement.value;
-                if (theName !== choosy.datasetInfo.title) {
-                    console.log(`∂  switching from [${choosy.datasetInfo.title}] to [${theName}]`);
-                    await choosy.setTargetDatasetByName(theName);
-                }
+                const theChosenID = tElement.value;
+                await choosy.setTargetDatasetByID(theChosenID);   //  will set the new ID if necessary
+                choosy_ui.update();
+                console.log(`handling dataset change to ${theChosenID} number ${this.nHandles}`);
             } else {
                 console.log(`NB: no dataset menu`);
             }
         },
 
         make: async function () {
-            const theList = await connect.getListOfDatasets();
+            const theList = choosy.datasetList;
             let tGuts = "";
+            let chosen = null;
 
-            if (theList.length === 0) {
+            if (choosy.datasetList.length === 0) {
                 tGuts = `<h3 class="stripe-hed">No datasets</h3>`;
 
             } else if (theList.length === 1) {
                 const theDataSet = theList[0];    //  the only one
-                await choosy.setTargetDatasetByName(theDataSet.name);
-                tGuts = `<h3 class="stripe-hed">Dataset: <strong>${choosy.datasetInfo.title}</strong></h3>`;
+                chosen = theDataSet.id;
+                await choosy.setTargetDatasetByID(theDataSet.id);       //  if therre is only one DS, set the dsID!
+                tGuts = `<h3 class="stripe-hed">Dataset: <strong>${theDataSet.title}</strong></h3>`;
 
             } else {
-                tGuts = `<label for="dataset-menu">choose a dataset</label>`;
+                //      in this case (2 or more datasets) we have to make a menu
+
+                //  which item will be selected when we're done?
+                //  the one that was chosen before, OR the first one in the list if that's gone.
+                chosen = theList[0].id;
+                theList.forEach(ds => {
+                    if (choosy.dsID === ds.id) {
+                        chosen = ds.id;
+                    }
+                })
+
+                tGuts = `<label for="dataset-menu">choose a dataset&ensp;</label>`;
                 tGuts += `<select id="dataset-menu" onchange="choosy_ui.datasetMenu.handle()">`;
                 theList.forEach(ds => {
+                    const selectedGuts = (chosen === ds.id) ? "selected" : "";
                     console.log(`making menu:  ds ${ds.id} named [${ds.name}] title [${ds.title}]`);
-                    tGuts += `<option value="${ds.name}">${ds.title}</option>`;
+                    tGuts += `<option value=${ds.id} ${selectedGuts}>${ds.title} </option>`;
                 })
                 tGuts += `</select>`;
             }
 
-            return tGuts;
+            console.log(`µ   made dataset menu with ${theList.length} dataset(s)`);
+            return {guts : tGuts, chosen : chosen};
         },
     },
 }

@@ -1,6 +1,6 @@
 # Choosy
 
-## Attribute tab
+## attributes tab
 
 Use the visibility icons (eyes) to hide or show attributes. 
 This is the same as choosing hide or show attribute from the attribute's menu in CODAP...
@@ -19,9 +19,9 @@ At that point it goes back to the "no-clump" zone at the top of the list.
 
 ### levels
 Instead of using clumps to group attributes, you can use their position in the hierarchy.
-Choose this mode by picking **levels** instead of **clumps** at th etop of the **attributes** tab.
+Choose this mode by picking **levels** instead of **clumps** at the top of the **attributes** tab.
 
-## Tag cases tab
+## tag cases tab
 
 You can "tag" cases with a label that you type into the box.
 
@@ -30,8 +30,11 @@ The basic idea is to select the cases in CODAP, then tag them in `choosy`. There
 * **simple**: You tag the selection with the string in the box.
 * **binary**: You tag the selection with the string in the first box, and also tag everything that is *not* selected with the string in the second box.
 Use this to divide the dataset into two complementary groups, e.g., `tall` and `short` or `$` and `$$`.
-* **random**: Enter the percentage of cases that will be in "group A" and give labels to group A and group B. Use this to create a training set.
+* **random**: Enter the proportion of cases that will be in "group A" and give labels to group A and group B. 
+Enter this proportion as a percentage (e.g., `20%`), a fraction (`1/5`) or a decimal (`0.4`).
+  You could use this feature to create a training set.
 
 ## Credits!
 
-The **visibility** and **hidden** icons are from [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect) at [www.flaticon.com](http://www.flaticon.com/)</a>
+* The **visibility** and **hidden** icons are from [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect) at [www.flaticon.com](https://www.flaticon.com/)
+* The checkbox icons are from [Google](https://www.flaticon.com/authors/google) from [www.flaticon.com](https://www.flaticon.com/)

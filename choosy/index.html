@@ -54,7 +54,7 @@ limitations under the License.
     <script src="../../common/src/iframe-phone.js"></script>
     <script src="../../common/src/codapInterface.js"></script>
     <script src="../../common/src/pluginHelper.js"></script>
-    <script src="../../common/src/TEEUtils.js"></script>
+    <script type="module" src="../../common/src/TEEUtils.js"></script>
 
 
     <script src="src/choosy.js"></script>
@@ -73,6 +73,7 @@ limitations under the License.
     </script>
 
 </head>
+
 <body>
 
 <div id="tabs">
@@ -88,7 +89,7 @@ limitations under the License.
             <h1 class="stripe-hed">Choosy</h1>&emsp;
             <img class="stripe-element"
                  src="../../common/art/refresh-empty.png"
-                 onclick="choosy.refresh()"
+                 onclick="choosy.setUpDatasets()"
                  style="cursor: pointer"
                  height="16"
                  title="refresh"
@@ -115,11 +116,11 @@ limitations under the License.
     <div id="atts">
         <div class="stripe">
             <input id="byClumpButton" name="clumpingStrategyRadioGroup"
-                   onchange="choosy.refresh()"
+                   onchange="choosy_ui.update()"
                    value="byClump" type="radio" checked>
             <span>clump  | layer</span>
             <input id="byLevelButton" name="clumpingStrategyRadioGroup"
-                   onchange="choosy.refresh()"
+                   onchange="choosy_ui.update()"
                    value="byLevel" type="radio">
         </div>
 
@@ -200,13 +201,13 @@ limitations under the License.
             </div>
 
             <div id="random-tag">
-                <p>Randomly put a percentage of the cases into "Group A."
-                    The rest are "Group B."
+                <p>Randomly put a proportion of the cases into "Group A."
+                    The rest are "Group B."<br>
                     Enter how you want them tagged.</p>
 
-                <label class="selection-text-input-label" for="tag-value-selected">percentage in group A: </label>
-                <input id="tag-percentage" type="number" class="tag-number-box"
-                       max="100" min="0">
+                <label class="selection-text-input-label" for="tag-value-selected">proportion in group A: </label>
+                <input id="tag-percentage" type="text" class="tag-number-box" value = "20%">
+                <br>(Enter a fraction, decimal, or percentage)
                 <br>
 
                 <label class="selection-text-input-label" for="tag-value-group-A">Call group A: </label>

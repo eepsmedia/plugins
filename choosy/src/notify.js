@@ -5,80 +5,79 @@ const notify = {
      */
     setUpNotifications: async function () {
 
-        /*
-                const tResource = `dataContext[${choosy.state.datasetName}].attribute`;
-                codapInterface.on(
-                    'notify',
-                    tResource,
-                    'updateAttribute',
-                    notify.handleAttributeChange
-                );
-                console.log(`Asked for notify on [${tResource}]`);
-        */
+        //  receive notifications about doc changes, especially number of datasets
+        //  (user has added or deleted a dataset)
+        const tResource = `documentChangeNotice`;
+        codapInterface.on(
+            'notify',
+            tResource,
+            //  'updateAttribute',
+            notify.handleDocumentChangeNotice
+        );
 
-        //  register to receive notifications about selection
-
-        const sResource = `dataContextChangeNotice[${choosy.state.datasetName}]`;
+        //  register to receive notifications about changes to the data context (including selection)
+        const theCurrentDSName = choosy.getNameOfCurrentDataset();
+        const sResource = `dataContextChangeNotice[${theCurrentDSName}]`;
         codapInterface.on(
             'notify',
             sResource,
             //'selectCases',
             notify.handleDataContextChangeNotice
         );
-        console.log(`Asked for getting selectCases on [${sResource}]`);
-
-        //  try using the selection list resource idea because the result from dataContextChangeNotice
-        //  contains all the data of all the cases.
-
-        /*
-                const ssResource = `dataContext[${choosy.state.datasetName}].selectionList`;
-                codapInterface.on(
-                    'notify',
-                    ssResource,
-                    'selectCases',
-                    notify.handleSelectionListChangeNotice
-                    // choosy.handlers.handleSelectionChangeFromCODAP
-                );
-                console.log(`Asked for getting selectCases on [${ssResource}]`);
-        */
-        return choosy.state.datasetName;
+        console.log(`˜  notifications on [${sResource}] and [${tResource}]`);
     },
 
-    handleAttributeChange: async function (iCommand, iCallback) {
-        console.log(`handling attribute change`);
-
-    },
+    nHandled : 0,
 
     handleDataContextChangeNotice: function (iMessage) {
+        this.nHandled++;
+        if (this.nHandled % 50 === 0) {
+            console.log(`fyi     ${this.nHandled} notifications handled. `)
+        }
+
         const theValues = iMessage.values;
 
-        console.log(`handleDataContextChangeNotice operation: ${theValues.operation}`);
+        console.log(`˜  handleDataContextChangeNotice operation ${this.nHandled}: ${theValues.operation}`);
         switch (theValues.operation) {
             case `selectCases`:
+            case `updateCases`:
                 const theSelectedCases = (theValues.result.cases) ? theValues.result.cases : [];
                 choosy.handlers.handleSelectionChangeFromCODAP();
-
                 break;
-            case `moveAttribute`:
-            case `updateCases`:
+
             case `updateCollection`:
             case `createCollection`:
-                choosy_ui.update();
-                break;
             case `deleteCollection`:
-                choosy.refresh();
-                break;
+            case `moveAttribute`:
+            case `deleteAttributes` :
+            case `createAttributes` :
             case `updateAttributes`:
-                //  todo: remove for performance if it's a problem until JS fixes the bug about
-                //  not issuing notifications for plugin-initiated changes.
-                choosy_ui.update();
+                choosy_ui.update();     //  which reads the database structure (colls, atts) from CODAP
                 break;
+                //  todo: alter when JS fixes the bug about not issuing notifications for plugin-initiated changes.
+
+            case `updateDataContext`:       //  includes renaming dataset, so we have to redo the menu
+                choosy.setUpDatasets();
+                choosy_ui.update();
+
+            case 'createCases':
+            case 'createItems':
+                break;
+
             default:
+                console.log(`?  handleDataContextChangeNotice unhandled operation: ${theValues.operation}`);
                 break;
         }
     },
 
-    handleSelectionListChangeNotice: function (iMessage) {
-
+    handleDocumentChangeNotice: function (iMessage) {
+        this.nHandled++;
+        if (this.nHandled % 50 === 0) {
+            console.log(`fyi     ${this.nHandled} notifications handled. `)
+        }
+        const theValues = iMessage.values;
+        //  console.log(`handleDocumentChange operation: ${theValues.operation}`);
+        choosy.setUpDatasets();
     },
+
 }
