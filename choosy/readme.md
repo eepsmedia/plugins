@@ -36,4 +36,5 @@ Enter this proportion as a percentage (e.g., `20%`), a fraction (`1/5`) or a dec
 
 ## Credits!
 
-The **visibility** and **hidden** icons are from [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect) at [www.flaticon.com](http://www.flaticon.com/)
+* The **visibility** and **hidden** icons are from [Pixel Perfect](https://www.flaticon.com/authors/pixel-perfect) at [www.flaticon.com](https://www.flaticon.com/)
+* The checkbox icons are from [Google](https://www.flaticon.com/authors/google) from [www.flaticon.com](https://www.flaticon.com/)
