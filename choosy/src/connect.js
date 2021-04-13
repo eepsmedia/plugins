@@ -92,6 +92,17 @@ const connect = {
         return (tItemCountResult.success) ? tItemCountResult.values : null;
     },
 
+    getLastCollectionCaseCount : async function(iDataset, iCollection) {
+        const tMessage = {
+            action : "get",
+            resource : `dataContext[${iDataset}].collection[${iCollection}].caseCount`,
+        };
+
+        const tItemCountResult = await codapInterface.sendRequest(tMessage);
+
+        return (tItemCountResult.success) ? tItemCountResult.values : null;
+    },
+
 
     /**
      * Get all of the cases from the named dataset.

@@ -118,7 +118,11 @@ const choosy_ui = {
                 })
             })
         }
-        const nCases = await connect.getItemCountFrom(choosy.datasetInfo.name);
+        //  const nCases = await connect.getItemCountFrom(choosy.datasetInfo.name);
+        const nCases = await connect.getLastCollectionCaseCount(
+            choosy.datasetInfo.name,
+            choosy.getLastCollectionName()
+            );
 
         theText += `${nAttributes} attributes, ${nCases} cases. ${selectedCases.length} selected.`;
 
@@ -319,11 +323,11 @@ const choosy_ui = {
         makeVisibilityButtons(iAttr) {
 
             const isHidden = iAttr.hidden;
-            const visibilityIconPath = !isHidden ?
+            const visibilityIconPath = isHidden ?       //      reverse !isHidden to show destiny instead of state
                 "../../common/art/blank.png" :
-                "../../common/art/visibility.png";
-            const invisibilityIconPath = !isHidden ?
-                "../../common/art/visibility-no.png" :
+                "../../common/art/check-box.png";      //  "../../common/art/visibility.png";
+            const invisibilityIconPath = isHidden ?     //      reverse !isHidden
+                "../../common/art/blank-check-box.png" :  //  "../../common/art/visibility-no.png"
                 "../../common/art/blank.png";
 
             const theHint = isHidden ?
