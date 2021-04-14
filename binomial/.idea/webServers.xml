@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b24f08bd-cc4a-410a-9825-9d1053893639" name="codapxyz//binomial" url="http://184.154.47.42">
+        <fileTransfer rootFolder="/public_html/plugins/binomial" host="184.154.47.42" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
