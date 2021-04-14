@@ -323,29 +323,36 @@ const choosy_ui = {
         makeVisibilityButtons(iAttr) {
 
             const isHidden = iAttr.hidden;
+/*
             const visibilityIconPath = isHidden ?       //      reverse !isHidden to show destiny instead of state
                 "../../common/art/blank.png" :
                 "../../common/art/check-box.png";      //  "../../common/art/visibility.png";
             const invisibilityIconPath = isHidden ?     //      reverse !isHidden
                 "../../common/art/blank-check-box.png" :  //  "../../common/art/visibility-no.png"
                 "../../common/art/blank.png";
+*/
+            const visibilityIconPath = isHidden
+                ? "../../common/art/slide-off-simplest.png"
+                : "../../common/art/slide-on-simplest.png";   //  only one icon in this scheme
 
             const theHint = isHidden ?
                 `click to make ${iAttr.name} visible in the table` :     //  todo: should be title
                 `click to hide ${iAttr.name} in the table`;             //  todo: should be title
 
-            const invisibility = `<img class="small-button-image" 
+/*
+            const invisibility = `<img class="small-button-image"
                     src=${invisibilityIconPath} title="${theHint}" 
                     onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
                     alt = "invisibility image"  
                     />`;
-            const visibility = `<img class="small-button-image" 
+*/
+            const visibility = `<img class="slide-switch" 
                     src=${visibilityIconPath} title="${theHint}" 
                     onclick="choosy.handlers.oneAttributeVisibilityButton('${iAttr.name}', ${isHidden})" 
-                    alt = "visibility image"  
+                    alt = "visibility switch"  
                     />`;
 
-            return `${visibility}${invisibility}`;
+            return `${visibility}`;   /*${invisibility}*/
         },
 
         /**
