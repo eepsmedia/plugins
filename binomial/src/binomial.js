@@ -137,9 +137,8 @@ const binomial = {
 
     utilities: {
         stringFractionDecimalOrPercentToNumber: function (iString) {
-            let out = {theNumber: 0, theString: '0'};
-            let theNumber = 0;
-            let theString = "";
+            let theNumber;
+            let theString;
 
             const wherePercent = iString.indexOf("%");
             const whereSlash = iString.indexOf("/");
