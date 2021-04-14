@@ -39,7 +39,7 @@ binomial.ui = {
 
         descriptionDiv.innerHTML = this.makeDescription();
         probabilityLabel.innerHTML =
-            `probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.successProbability}</b>.`
+            `probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.parsedProbability.theString}</b>.`
 
         let experimentsLabelText = `${TEEUtils.pluralize(binomial.state.words.experimentName)} per run. `;
         experimentsLabelText += `<span class="fine-print">This should be large. ≥100.</span>`
@@ -68,7 +68,7 @@ binomial.ui = {
                 <b>${binomial.state.words.eventFailure}</b>.
                 <br/>
                 The probability of <b>${binomial.state.words.eventSuccess}</b> 
-                is <b>${binomial.state.successProbability}</b>.
+                is <b>${binomial.state.parsedProbability.theString}</b>.
                 <br/>
                 One ${binomial.state.words.experimentName} 
                 consists of <b>${binomial.state.atomicEventsPerExperiment}</b> 
@@ -89,7 +89,7 @@ binomial.ui = {
         document.getElementById("experimentNameInput").value = binomial.state.words.experimentName;
 
         //  the values
-        document.getElementById("probabilityOfSuccessInput").value = binomial.state.successProbability;
+        document.getElementById("probabilityOfSuccessInput").value = binomial.state.parsedProbability.theString;
         document.getElementById("numberOfAtomicEventsInput").value = binomial.state.atomicEventsPerExperiment;
         document.getElementById("numberOfExperimentsInput").value = binomial.state.experimentsPerRun;
 

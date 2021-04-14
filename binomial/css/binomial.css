@@ -65,6 +65,9 @@ b {
 .name-input {
     width : 6em;
 }
+.number-input {
+    width : 4em;
+}
 
 #constant {
     position: absolute;
