@@ -59,6 +59,7 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
     <script src="src/binomial.ui.js"></script>
     <script src="src/connect.js"></script>
 
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
 </head>
 <body>
@@ -79,7 +80,8 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
             <div>
                 <input type="text" class="number-input"
                        id="probabilityOfSuccessInput"
-                       oninput="binomial.update()"
+                       onchange="binomial.update()"
+                       title="enter a fraction, decimal, or percent as your probability"
                 >
                 <label for="probabilityOfSuccessInput" id="probabilityOfSuccessInputLabel">foo</label>
 
@@ -90,12 +92,12 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
                 -->
             </div>
             <div>
-                <input type="number" id="numberOfAtomicEventsInput" value="10"  class="number-input
+                <input type="number" id="numberOfAtomicEventsInput" value="10"  class="number-input"
                        min="1" max="20000" onchange="binomial.update()">
                 <label for="numberOfAtomicEventsInput" id="numberOfAtomicEventsInputLabel">bar</label>
             </div>
             <div>
-                <input type="number" id="numberOfExperimentsInput" value="100"  class="number-input
+                <input type="number" id="numberOfExperimentsInput" value="100"  class="number-input"
                        min="1" max="400" onchange="binomial.update()">
                 <label for="numberOfExperimentsInput" id="numberOfExperimentsInputLabel">baz</label>
             </div>

@@ -38,15 +38,21 @@ binomial.ui = {
         const experimentNameLabel = document.getElementById("experimentNameInputLabel");
 
         descriptionDiv.innerHTML = this.makeDescription();
-        probabilityLabel.innerHTML =
-            `probability of <b>${binomial.state.words.eventSuccess}</b> is <b>${binomial.state.parsedProbability.theString}</b>.`
+
+        let probabilityLabelText = `probability of <b>${binomial.state.words.eventSuccess}</b> 
+            is <b>${binomial.state.parsedProbability.theString}</b>.
+           `;
+        probabilityLabel.innerHTML = probabilityLabelText;
+
 
         let experimentsLabelText = `${TEEUtils.pluralize(binomial.state.words.experimentName)} per run. `;
-        experimentsLabelText += `<span class="fine-print">This should be large. ≥100.</span>`
+        experimentsLabelText += `<span class="fine-print">Probably between 100 and 400.</span>`
         numberOfExperimentsLabel.innerHTML = experimentsLabelText;
 
         numberOfAtomicEventsLabel.innerHTML =
-            `${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}`;
+            `${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}
+             <span class="fine-print">Not more than 20000.</span>
+            `;
 
         eventFailureLabel.innerHTML =
             `the alternative to <b>${binomial.state.words.eventSuccess}</b>`;

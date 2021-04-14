@@ -89,11 +89,31 @@ const binomial = {
     update : function () {
         const probabilityString = document.getElementById("probabilityOfSuccessInput").value;
         binomial.state.parsedProbability = binomial.utilities.stringFractionDecimalOrPercentToNumber(probabilityString);
-        this.state.atomicEventsPerExperiment = Number(document.getElementById("numberOfAtomicEventsInput").value);
-        this.state.experimentsPerRun = Number(document.getElementById("numberOfExperimentsInput").value);
-        if (this.state.experimentsPerRun > binomial.constants.kMaxExperimentsPerRun) {
-            this.state.experimentsPerRun = binomial.constants.kMaxExperimentsPerRun;
-            document.getElementById("numberOfExperimentsInput").value = binomial.constants.kMaxExperimentsPerRun;
+        const theProb = binomial.state.parsedProbability.theNumber;
+
+        if (binomial.state.parsedProbability.theString !== "") {
+            if (theProb >= 0 && theProb <= 1) {
+                this.state.atomicEventsPerExperiment = Number(document.getElementById("numberOfAtomicEventsInput").value);
+                this.state.experimentsPerRun = Number(document.getElementById("numberOfExperimentsInput").value);
+                if (this.state.experimentsPerRun > binomial.constants.kMaxExperimentsPerRun) {
+                    this.state.experimentsPerRun = binomial.constants.kMaxExperimentsPerRun;
+                    document.getElementById("numberOfExperimentsInput").value = binomial.constants.kMaxExperimentsPerRun;
+                }
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "dang!",
+                    text: `${binomial.state.parsedProbability.theString} is not a good number for a probability. 
+                     It should be between 0 and 1 inclusive.`
+                })
+            }
+        } else {
+            Swal.fire({
+                icon : "warning",
+                title : "oops",
+                text : `"${probabilityString}" is not a good probability.
+                 Enter a fraction (like 1/5), a decimal (like 0.2), or a percentage (like 20%).`
+            })
         }
 
         binomial.ui.update();
