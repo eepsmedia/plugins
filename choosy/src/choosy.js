@@ -37,7 +37,7 @@ const choosy = {
     theData: {},           //  case-ID-keyed object containing objects with non-formula values for all cases
     selectedCaseIDs: [],   //  the case IDs of the selected cases
 
-    currentTagValue: "foo",
+    tagsAttributeName: "Tag",
 
     initialize: async function () {
         await connect.initialize();
@@ -52,6 +52,7 @@ const choosy = {
                 }
         */
 
+        document.getElementById("tag-attribute-name-text").value = choosy.tagsAttributeName;
         choosy_ui.update();
     },
 
@@ -199,29 +200,29 @@ const choosy = {
         })
     },
 
+    getTagAttributeName : function() {
+        let tagAttributeName = document.getElementById("tag-attribute-name-text").value;
+
+        if (!tagAttributeName) {
+            tagAttributeName = choosy.constants.defaultTagName;
+            document.getElementById("tag-attribute-name-text").value = tagAttributeName;
+        }
+
+        return tagAttributeName;
+    },
+
     handlers: {
 
         changeSearchText: async function () {
 
         },
 
-        /**
-         * todo: do we need this? We call it but we don't need it, right?
-         * @returns {Promise<void>}
-         */
-        /*
-                changeTagValue : async function () {
-                    this.currentTagValue = document.getElementById("tag-value-input").value;
-                    console.log(`    tag is now ${this.currentTagValue}`);
-                },
-        */
-
         changeTagMode: function () {
             choosy_ui.update();
         },
 
         applyTagToSelection: async function (iMode) {
-            await connect.tagging.tagSelectedCases(iMode);
+            await connect.tagging.doSimpleTag(iMode);
         },
 
         applyBinaryTags: async function () {
@@ -233,7 +234,7 @@ const choosy = {
         },
 
         clearAllTags: async function () {
-            const theTagName = choosy.constants.tagsAttributeName;
+            const theTagName = choosy.getTagAttributeName();
             await connect.tagging.clearAllTagsFrom(theTagName);
         },
 
@@ -326,7 +327,7 @@ const choosy = {
     },
 
     constants: {
-        version: '2021g',
+        version: '2021h',
         datasetSummaryEL: 'summaryInfo',
         selectionStatusElementID: 'selection-status',
         tagValueElementID: "tag-value-input",
@@ -335,7 +336,7 @@ const choosy = {
         tagValueGroupAElementID: "tag-value-group-A",
         tagValueGroupBElementID: "tag-value-group-B",
         tagPercentageElementID: "tag-percentage",
-        tagsAttributeName: "Tag",
         noClumpString: "none",
+        defaultTagName : "Tag",
     }
 }

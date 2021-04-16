@@ -92,7 +92,7 @@ limitations under the License.
                  onclick="choosy.setUpDatasets()"
                  style="cursor: pointer"
                  height="16"
-                 title="refresh"
+                 title="refresh" alt="refresh button"
             >
             <a class="stripe-element"
                target="_blank" href="https://github.com/eepsmedia/plugins/blob/master/choosy/readme.md#choosy">
@@ -125,7 +125,7 @@ limitations under the License.
         </div>
 
         <div id="clumpNameDIV" class="stripe">
-            Click&nbsp;<img src="../../common/art/add.png" width="14"> &nbsp;to add to clump&ensp;
+            Click&nbsp;<img src="../../common/art/add.png" width="14" alt="add button"> &nbsp;to add to clump&ensp;
             <input type="text" id="clump-name-text-input"
                    placeholder="clump name"
                    style="width : 122px;"
@@ -166,11 +166,13 @@ limitations under the License.
                 <div id="select-buttons" class="tag-button-cluster stripe">
                     &emsp;
                     <img id="add-button" class="medium-button-image" src="../../common/art/add.png"
+                         alt="add button"
                          onclick='choosy.handlers.applyTagToSelection("add")'>
                     &ensp;
                     <label for="add-button">tag selection</label>
                     &emsp;
                     <img id="subtract-button" class="medium-button-image" src="../../common/art/subtract.png"
+                         alt="subtract button"
                          onclick='choosy.handlers.applyTagToSelection("remove")'>
                     &ensp;
                     <label for="subtract-button">un-tag</label>
@@ -192,7 +194,7 @@ limitations under the License.
                 <div id="binary-select-buttons" class="tag-button-cluster stripe">
                     &emsp;
                     <img id="binary-tag-button" class="medium-button-image" src="../../common/art/add.png"
-                         width="24"
+                         width="24" alt="add button"
                          onclick='choosy.handlers.applyBinaryTags()'>
                     &ensp;
                     <label for="binary-tag-button">tag the selection and the rest</label>
@@ -205,8 +207,9 @@ limitations under the License.
                     The rest are "Group B."<br>
                     Enter how you want them tagged.</p>
 
-                <label class="selection-text-input-label" for="tag-value-selected">proportion in group A: </label>
-                <input id="tag-percentage" type="text" class="tag-number-box" value = "20%">
+                <label class="selection-text-input-label" for="tag-value-selected">proportion in group A:
+                <input id="tag-percentage" type="text" class="tag-number-box" value="20%">
+                </label>
                 <br>(Enter a fraction, decimal, or percentage)
                 <br>
 
@@ -219,7 +222,7 @@ limitations under the License.
                 <div id="random-select-buttons" class="tag-button-cluster stripe">
                     &emsp;
                     <img id="random-tag-button" class="medium-button-image" src="../../common/art/add.png"
-                         width="24"
+                         width="24" alt="add button"
                          onclick='choosy.handlers.applyRandomTags()'>
                     &ensp;
                     <label for="random-tag-button">apply tags</label>
@@ -228,11 +231,20 @@ limitations under the License.
             </div>
 
         </fieldset>
-        <br>
+
+        <div class="tag-button-cluster stripe">
+            &emsp;
+            <label for="tag-attribute-name-text" class="stripe-element">Name for tag attribute:
+                <input id="tag-attribute-name-text" class="tag-name-box"
+                       type="text">
+                &ensp;&ensp;
+            </label>
+        </div>
+
         <div class="tag-button-cluster stripe">
             &emsp;
             <img id="clear-button" class="medium-button-image"
-                 src="../../common/art/clear.png"
+                 src="../../common/art/clear.png" alt="press to clear tags"
                  onclick='choosy.handlers.clearAllTags()'>
             &ensp;&ensp;
             <label for="clear-button" class="stripe-element">clear all tags
