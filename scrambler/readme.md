@@ -2,7 +2,7 @@
 
 2021-03-08
 
-Here we describe the current (still early) version of the **Scrambler** plugin, also known as **elmcrabs**.
+Here we describe the current (still early) version of the **Scrambler** plugin, also known as **scrambler**.
 
 * Drag the URL for this plugin into your document.
 * Prepare your dataset for scrambling--see below

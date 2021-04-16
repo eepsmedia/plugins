@@ -1,148 +1,106 @@
-/*
-==========================================================================
-
- * Created by tim on 5/23/20.
- 
- 
- ==========================================================================
-scrambler in scrambler
-
-Author:   Tim Erickson
-
-Copyright (c) 2018 by The Concord Consortium, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-==========================================================================
-
-*/
-
 const scrambler = {
-
-    constants: {
-        version: "001c",
-        pluginName: "scrambler",
-        dimensions: {height: 244, width: 244},
-        scrambledTopLevelCollectionName: "scrit",
-        scrambledIterationAttributeName: "scrit",
-    },
-
-    situation : null,
-
-    datasetName: "",
-    scrambledDatasetName: "scrambled",
-    attributes: {},
-    needFreshOutputDataset: true,
+    constants: {},
+    sourceDataset: null,
+    scrambledDataset: null,
+    measuresDataset: null,
+    iteration : 0,
 
     initialize: async function () {
-        await connect.initialize();
-        this.scrambleFew = document.getElementById("doScrambleDivFew");
-        this.scrambleMany = document.getElementById("doScrambleDivMany");
+        connect.initialize();
 
-        this.refresh();
+        await this.refreshAllData();
     },
 
-    refresh: async function () {
-        const datasetMenuGuts = await connect.makeDatasetMenuGuts(this.datasetName);
-        document.getElementById("datasetMenu").innerHTML = datasetMenuGuts;
-        this.datasetName = document.getElementById("datasetMenu").value;
-        //  this.scrambledDatasetName = `scram_${this.datasetName}`;
+    refreshAllData: async function () {
+        const iName = await this.initUI();
+        this.iteration = 0;
 
-        if (this.datasetName) {
-            this.situation = await connect.getStructure(this.datasetName);
-            const attributeMenuGuts = await connect.makeAttributeMenuGuts(this.situation);
-            document.getElementById("attributeMenu").innerHTML = attributeMenuGuts;
-        }
+        if (iName) {
+            await this.setSourceDataset(iName);
+            await this.sourceDataset.retrieveAllDataFromCODAP();
 
-        if (document.getElementById("saveContentsCheckbox").checked) {
-            this.scrambleFew.style.display = "block";
-            this.scrambleMany.style.display = "none";
+            await this.makeNewClone();
+            await this.makeNewMeasuresDataset();
         } else {
-            this.scrambleFew.style.display = "none";
-            this.scrambleMany.style.display = "block";
+            console.log(`need a dataset name`);
         }
+        this.refresh();
+
+    },
+
+    makeNewClone: async function () {
+        this.scrambledDataset = this.sourceDataset.clone("scrambled_");
+        await this.scrambledDataset.emitDatasetStructureOnly();
+        await this.scrambledDataset.emitCasesFromDataset();
+        await this.scrambledDataset.retrieveAllDataFromCODAP(); //  redo to get IDs right
+    },
+
+    makeNewMeasuresDataset: async function () {
+        this.measuresDataset = this.sourceDataset.clone("measures_");
+        this.measuresDataset.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
+        await this.measuresDataset.emitDatasetStructureOnly();
     },
 
     doScramble: async function (iReps) {
-        await this.loadCurrentData();
+        this.iteration++;
 
-        if (this.needFreshOutputDataset) {
-            await connect.createFreshOutputDataset();
+        if (!iReps) {
+            iReps = document.getElementById("howManyBox").value;
         }
+        if (await connect.needFreshOutputDataset()) {
+
+        }
+        const sAttribute = document.getElementById("attributeMenu").value;
+
+        let newItems = [];
 
         for (let i = 0; i < iReps; i++) {
-            this.scrambleTheSituation();
-            const theItems = this.turnSituationToItems(i+1);
-            await connect.emitScrambledData(this.scrambledDatasetName, theItems);
-        }
-    },
-
-    scrambleTheSituation() {
-        let valuesOut = [];
-        //  scramble the data hidden in this structure
-        this.situation.values.collections.forEach(col => {
-            col.attrs.forEach(att => {
-                const theDataArray = att.data;
-                theDataArray.scramble();
-            })
-        })
-    },
-
-    turnSituationToItems: function (iterationNumber) {
-        let allTheData = {};
-
-        const theItems = [];  //  to be an array of "item" objects
-
-        this.situation.values.collections.forEach(col => {
-            col.attrs.forEach(att => {
-                let ix = 0;             //  the index into theItems
-                att.data.forEach(datum => {
-                    if (!theItems[ix]) {
-                        theItems[ix] = {};
-                        theItems[ix][this.constants.scrambledIterationAttributeName] =  iterationNumber;
-                    }
-                    const thisItem = theItems[ix];
-                    thisItem[att.name] = datum;
-                    ix++;
-                })
-            })
-        });
-
-        return theItems;
-    },
-
-    /**
-     * Put the current data from the dataset into arrays in the "this.structure" object.
-     * These are in attributes called `data` in the attributes.
-     *
-     */
-    loadCurrentData: async function () {
-        this.datasetName = document.getElementById("datasetMenu").value;
-        this.situation = await connect.getStructure(this.datasetName);
-        const theItems = await connect.getAllItems(this.datasetName);
-
-        //  populate the structure with the data
-        this.situation.values.collections.forEach(
-            col => {
-                col.attrs.forEach( att => {
-                    const theDataArray = [];
-                    theItems.forEach(item => {theDataArray.push(item[att.name]);})
-                    att["data"] = theDataArray;
-                })
+            await this.scrambledDataset.scrambleInPlace(sAttribute);
+            const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.scrambledDataset);
+            if (oneRepItems) {
+                newItems = newItems.concat(oneRepItems);
+            } else {
+                return null;
             }
-        );
+        }
+
+        this.measuresDataset.emitItems(true, newItems);
+        connect.showTable(this.measuresDataset.datasetName);
     },
 
-};
+    initUI: async function () {
+        const datasetMenuGuts = await connect.makeDatasetMenuGuts(this.datasetName);
+        document.getElementById("datasetMenuBlock").innerHTML = datasetMenuGuts;
+        const theDatasetMenu = document.getElementById("datasetMenu");
+        const startingName = theDatasetMenu ? theDatasetMenu.value : null;
+
+        return startingName;
+    },
+
+    refresh: async function () {
+        const domStatus = document.getElementById("status");
+        domStatus.innerHTML = this.sourceDataset;
+
+        const howMany = document.getElementById("howManyBox").value;
+        document.getElementById("howManyButton").innerHTML
+            = howMany + "x";
+
+        const currentAttName = document.getElementById("attributeMenu").value;
+        document.getElementById("attributeMenu").innerHTML
+            = scrambler.sourceDataset.makeAttributeMenuGuts(currentAttName);
+    },
+
+    setSourceDataset: async function (iName) {
+        this.sourceDataset = new CODAPDataset(iName);
+    },
+
+    constants: {
+        pluginName: "scrambler",
+        version: "2021a",
+        dimensions: {height: 178, width: 344},      //      dimensions,
+
+    },
+}
 
 Array.prototype.scramble = function () {
     const N = this.length;

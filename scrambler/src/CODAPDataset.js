@@ -90,7 +90,7 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
 
         thisCollection.cases.forEach( aCase => {
             const newData = this.dataFromCase(aCase, iLevel, zLevel);
-            //  newData["scrit"] = elmcrabs.iteration;
+            //  newData["scrit"] = scrambler.iteration;
             theItems = theItems.concat(newData);
         });
 
@@ -100,7 +100,7 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
     dataFromCase(iCase, iLevel, zLevel) {
         if (iLevel === zLevel) {
             let leafValues = iCase.values;
-            leafValues["scrit"] = elmcrabs.iteration;
+            leafValues["scrit"] = scrambler.iteration;
             return [leafValues];  //  array of an object
         } else {
             let childrenData = [];
