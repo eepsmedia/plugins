@@ -1,14 +1,14 @@
 const elmcrabs = {
     constants: {},
     sourceDataset: null,
-    cloneDataset: null,
+    scrambledDataset: null,
     measuresDataset: null,
     iteration : 0,
 
     initialize: async function () {
         connect.initialize();
 
-        this.refreshAllData();
+        await this.refreshAllData();
     },
 
     refreshAllData: async function () {
@@ -29,10 +29,10 @@ const elmcrabs = {
     },
 
     makeNewClone: async function () {
-        this.cloneDataset = this.sourceDataset.clone("cloned_");
-        await this.cloneDataset.emitDatasetStructureOnly();
-        await this.cloneDataset.emitCasesFromDataset();
-        await this.cloneDataset.retrieveAllDataFromCODAP(); //  redo to get IDs right
+        this.scrambledDataset = this.sourceDataset.clone("scrambled_");
+        await this.scrambledDataset.emitDatasetStructureOnly();
+        await this.scrambledDataset.emitCasesFromDataset();
+        await this.scrambledDataset.retrieveAllDataFromCODAP(); //  redo to get IDs right
     },
 
     makeNewMeasuresDataset: async function () {
@@ -55,8 +55,8 @@ const elmcrabs = {
         let newItems = [];
 
         for (let i = 0; i < iReps; i++) {
-            await this.cloneDataset.scrambleInPlace(sAttribute);
-            const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.cloneDataset);
+            await this.scrambledDataset.scrambleInPlace(sAttribute);
+            const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.scrambledDataset);
             if (oneRepItems) {
                 newItems = newItems.concat(oneRepItems);
             } else {

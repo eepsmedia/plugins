@@ -25,10 +25,15 @@ connect = {
         const tListResult = await codapInterface.sendRequest(tMessage);
         if (tListResult.success) {
             tListResult.values.forEach((ds) => {
-                this.listOfDataSetNames.push({
-                    name: ds.name,
-                    title: ds.title,
-                });
+                const theName = ds.name;
+                if (theName.startsWith("measures_") || theName.startsWith("scrambled_")) {
+
+                } else {
+                    this.listOfDataSetNames.push({
+                        name: theName,
+                        title: ds.title,
+                    });
+                }
             });
         }
         return this.listOfDataSetNames;
