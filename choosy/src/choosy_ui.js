@@ -517,6 +517,14 @@ const choosy_ui = {
                     const theElement = document.getElementById(theClumpID);
                     theElement.addEventListener('dragover',
                         event => {
+                        const theElement = document.getElementById(event.target.id);
+                        theElement.style.backgroundColor = "yellow";
+                            event.preventDefault();
+                        })
+                    theElement.addEventListener('dragleave',
+                        event => {
+                            const theElement = document.getElementById(event.target.id);
+                            theElement.style.backgroundColor = "#abc";  //  todo: use a constant somewhere?
                             event.preventDefault();
                         })
                     theElement.addEventListener('drop',
