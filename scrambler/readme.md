@@ -1,20 +1,20 @@
 # Scrambler
 
-2021-03-08
+2021-04-16
 
-Here we describe the current (still early) version of the **Scrambler** plugin, also known as **scrambler**.
+Here we describe the current version of the **Scrambler** plugin.
 
 * Drag the URL for this plugin into your document.
-* Prepare your dataset for scrambling--see below
-* Make sure the dataset you want to scramble is selected in the menu
+* Prepare your dataset for scrambling--see below.
+* Make sure the dataset you want to scramble is selected in the menu.
 * Choose what attribute you want to scramble.
-* Click buttons and ajust the number to create as many "scrambles" as you wish.
+* Click buttons and adjust the number to create as many "scrambles" as you wish.
 
 ## Preparing a Dataset for Scrambling
 
 * Make a measure (a new attribute with a formula) that describes the effect you're studying.
 * Drag it left so that it's at a higher level in the hierarchy.
-* (For now) **Press the Refresh** button (it's a circular arrow). 
+* (For now) Press the **Refresh** button (it's a circular arrow). 
 
 ## Background
 
@@ -48,8 +48,27 @@ Because the data are randomly assigned, sometimes the difference will be positiv
 
 But is it plausible that 4.54 could appear by chance?
 
-Repeat this prcess a few hundred times and see.
+Repeat this process a few hundred times and see.
 In this case, no: even though it's _possible_ that the data could be that extreme
 (after all, the real data _could_ come up when you scramble),
 it doesn't happen very often.
+
+## Analyzing your results
+
+Make a graph of the measure from the "measures" table.
+You'll see the sampling distribution.
+You want to know what proportion of those measures are more extreme than your "test statistic" 
+(which in our case is 4.54, the difference in mean heights).
+
+Here's the trick:
+
+* In the graph, go to the "ruler" palette and press the **Movable Value** button. 
+* Click "Add." A movable line appears on the plot.
+* in the "ruler" palette again, click "percent."
+
+Now you can see what percentage are on each side of the line.
+
+Set the line to 4.54 (you might need to rescale) to see how unusual it is!
+(Chances are, none of your measures, positive or negative, are that large.)
+
 
