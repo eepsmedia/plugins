@@ -279,10 +279,8 @@ const choosy = {
 
         toggleDetail: function (event) {
             const theClumpName = event.target.id.substring(8);
-
+            choosy_ui.recordCurrentOpenDetailStates();
             console.log(`clump toggle! ${theClumpName}`);
-            document.getElementById("clump-name-text-input").value = theClumpName;
-            // choosy_ui.setCurrentClumpTo(theClumpName);
         },
 
         //  todo: decide if we really need this
@@ -327,7 +325,7 @@ const choosy = {
     },
 
     constants: {
-        version: '2021h',
+        version: '2021j',
         datasetSummaryEL: 'summaryInfo',
         selectionStatusElementID: 'selection-status',
         tagValueElementID: "tag-value-input",

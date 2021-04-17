@@ -67,7 +67,7 @@ const connect = {
             }
             const dsInfoResult = await codapInterface.sendRequest(tMessage);
             if (dsInfoResult.success) {
-                await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
+                // await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
                 return dsInfoResult.values;
             } else {
                 Swal.fire({

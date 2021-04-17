@@ -132,6 +132,10 @@ fieldset {
     border: none;
 }
 
+.clumped-attribute {
+    cursor: pointer;
+}
+
 .tag-number-box {
     width: 44px;
 }
