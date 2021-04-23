@@ -67,7 +67,7 @@ const connect = {
             }
             const dsInfoResult = await codapInterface.sendRequest(tMessage);
             if (dsInfoResult.success) {
-                // await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
+                // await choosy.processDatasetInfoForAttributeBatchs(dsInfoResult.values);
                 return dsInfoResult.values;
             } else {
                 Swal.fire({
@@ -184,20 +184,20 @@ const connect = {
     },
 */
     /**
-     * Assign the given attribute (by name) to the clump (also by name).
+     * Assign the given attribute (by name) to the batch (also by name).
      * This actually updates the dataset, altering the description (!), so that the next time we process it,
-     * choosy will read the clump assignment properly.
+     * choosy will read the batch assignment properly.
      *
      * @param iDSName   the string name of the dataset
      * @param iAttName  the string name of the attribute
-     * @param iClump    the string name of the clump
+     * @param iBatch    the string name of the batch
      * @returns {Promise<void>}
      */
-    setAttributeClump: async function (iDSName, iAttName, iClump) {
+    setAttributeBatch: async function (iDSName, iAttName, iBatch) {
         const theCollection = this.utilities.collectionNameFromAttributeName(iAttName, choosy.datasetInfo);
         let theDescription = this.utilities.descriptionFromAttributeName(iAttName, choosy.datasetInfo);
 
-        theDescription = "{" + iClump + "}" + theDescription;
+        theDescription = "{" + iBatch + "}" + theDescription;
 
         if (theCollection) {
             const theResource = `dataContext[${iDSName}].collection[${theCollection}].attribute[${iAttName}]`;
@@ -209,8 +209,8 @@ const connect = {
                     "description": theDescription,
                 }
             }
-            const addClumpResult = await codapInterface.sendRequest(tMessage);
-            console.log(`    ∂    ${addClumpResult.success ? "success" : "failure"} adding ${iAttName} to clump ${iClump}`);
+            const addBatchResult = await codapInterface.sendRequest(tMessage);
+            console.log(`    ∂    ${addBatchResult.success ? "success" : "failure"} adding ${iAttName} to batch ${iBatch}`);
         } else {
             Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttName}]`});
         }
@@ -265,7 +265,7 @@ const connect = {
     /**
      * Ask CODAP to show or hide the attributes named in the argument Array, en masse.
      *
-     * called in `choosy.handlers.clumpVisibilityButton()`
+     * called in `choosy.handlers.batchVisibilityButton()`
      *
      * Note: Tim thinks the use of `goodAttributes` is no longer necessary.
      *
@@ -635,12 +635,12 @@ const connect = {
 
     utilities: {
 
-        clumpNameFromAttributeName: function (iName, info) {
+        batchNameFromAttributeName: function (iName, info) {
             let out = "";
             info.collections.forEach(coll => {
                 coll.attrs.forEach(att => {
                     if (att.name === iName) {
-                        out = att.clump;
+                        out = att.batch;
                     }
                 })
             })

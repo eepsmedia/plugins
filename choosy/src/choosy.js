@@ -38,8 +38,10 @@ const choosy = {
     selectedCaseIDs: [],   //  the case IDs of the selected cases
 
     tagsAttributeName: "Tag",
+    attributeGroupingMode : null,
 
     initialize: async function () {
+        this.attributeGroupingMode = this.constants.kGroupAttributeByBatchMode;
         await connect.initialize();
         await this.setUpDatasets();
 
@@ -136,8 +138,8 @@ const choosy = {
         return null;
     },
 
-    addAttributeToClump: async function (iAttName, iClumpName) {
-        await connect.setAttributeClump(choosy.datasetInfo.name, iAttName, iClumpName);
+    addAttributeToBatch: async function (iAttName, iBatchName) {
+        await connect.setAttributeBatch(choosy.datasetInfo.name, iAttName, iBatchName);
         await choosy_ui.update();
     },
 
@@ -152,50 +154,50 @@ const choosy = {
 
 
     /**
-     * Parse the attribute "clumps" indicated by bracketed clump names in the attribute descriptions.
+     * Parse the attribute "batchs" indicated by bracketed batch names in the attribute descriptions.
      *
      * For example, `{work}Percent of people working in agriculture`
-     * puts the attribute in a clump called "work" and then strips that tag from the description.
+     * puts the attribute in a batch called "work" and then strips that tag from the description.
      *
-     * Does this by adding a `clump` key to the attribute data --- which does not exist in CODAP.
+     * Does this by adding a `batch` key to the attribute data --- which does not exist in CODAP.
      *
      * @param theInfo   the information on all collections and attributes
      */
-    processDatasetInfoForAttributeClumps: function (theInfo) {
+    processDatasetInfoForAttributeBatchs: function (theInfo) {
 
-        const whichWayToClump = choosy_ui.getClumpingStrategy();
+        const whichWayToBatch = choosy_ui.getBatchingStrategy();
 
-        for (let clump in choosy_ui.clumpRecord) {
-            let theRecord = choosy_ui.clumpRecord[clump];
+        for (let batch in choosy_ui.batchRecord) {
+            let theRecord = choosy_ui.batchRecord[batch];
             theRecord["attrs"] = [];
         }
 
         theInfo.collections.forEach(coll => {
             coll.attrs.forEach(att => {
                 let theDescription = att.description;
-                let theClump = choosy.constants.noClumpString;
+                let theBatch = choosy.constants.noBatchString;
                 const leftB = theDescription.indexOf("{");
                 const rightB = theDescription.indexOf("}");
                 if (rightB > leftB) {
-                    theClump = theDescription.substring(leftB + 1, rightB);
-                    att["description"] = theDescription.substring(rightB + 1);  //  strip the bracketed clump name from the description
+                    theBatch = theDescription.substring(leftB + 1, rightB);
+                    att["description"] = theDescription.substring(rightB + 1);  //  strip the bracketed batch name from the description
                 }
 
-                //  if we're clumping "byLevel", use the collection name as the clump name
-                const theGroupName = (whichWayToClump === "byLevel") ? coll.name : theClump;   //  todo: really should be title
+                //  if we're batching "byLevel", use the collection name as the batch name
+                const theGroupName = (whichWayToBatch === "byLevel") ? coll.name : theBatch;   //  todo: really should be title
 
-                //  change the `att` field to include fields for `clump` and `collection`
-                att["clump"] = theGroupName
+                //  change the `att` field to include fields for `batch` and `collection`
+                att["batch"] = theGroupName
                 att["collection"] = coll.name;  //  need this as part of the resource so we can change hidden
 
-                //  this is where choosy_ui.clumpRecord gets set!
-                //  add an element to the object for this clump if it's not there already
+                //  this is where choosy_ui.batchRecord gets set!
+                //  add an element to the object for this batch if it's not there already
 
-                if (!choosy_ui.clumpRecord[theGroupName]) {
-                    choosy_ui.clumpRecord[theGroupName] = {open: true, attrs: [], mode: ""};
+                if (!choosy_ui.batchRecord[theGroupName]) {
+                    choosy_ui.batchRecord[theGroupName] = {open: true, attrs: [], mode: ""};
                 }
-                choosy_ui.clumpRecord[theGroupName].attrs.push(att.name);
-                choosy_ui.clumpRecord[theGroupName].mode = whichWayToClump;
+                choosy_ui.batchRecord[theGroupName].attrs.push(att.name);
+                choosy_ui.batchRecord[theGroupName].mode = whichWayToBatch;
             })
         })
     },
@@ -239,7 +241,7 @@ const choosy = {
         },
 
         /**
-         * Handles user press of a visibility button for a single attribute (not a clump)
+         * Handles user press of a visibility button for a single attribute (not a batch)
          *
          * @param iAttName
          * @param iHidden       are we hiding this?
@@ -251,23 +253,23 @@ const choosy = {
 
         },
 
-        clumpVisibilityButton: async function (event) {
+        batchVisibilityButton: async function (event) {
 
             event.stopPropagation();
             event.preventDefault();
 
             const theID = event.target.id;
             const theType = theID.substring(0, 4);
-            const theClumpName = theID.substring(5);
+            const theBatchName = theID.substring(5);
             const toHide = theType === "hide";
 
-            console.log(`${toHide ? "Hiding" : "Showing"} all attributes in [${theClumpName}]`);
+            console.log(`${toHide ? "Hiding" : "Showing"} all attributes in [${theBatchName}]`);
 
             let theAttNames = [];
 
             choosy.datasetInfo.collections.forEach(coll => {
                 coll.attrs.forEach(att => {
-                    if (att.clump === theClumpName) {
+                    if (att.batch === theBatchName) {
                         theAttNames.push(att.name);    //  collect all these names
                     }
                 })
@@ -277,10 +279,18 @@ const choosy = {
             //          choosy_ui.update    //  not needed here; called from the notification handler
         },
 
+        toggleAttributeGroupingMode: function() {
+            const newMode = (choosy.attributeGroupingMode === choosy.constants.kGroupAttributeByBatchMode) ?
+                choosy.constants.kGroupAttributeByLevelMode : choosy.constants.kGroupAttributeByBatchMode;
+
+            choosy.attributeGroupingMode = newMode;
+            choosy_ui.update();
+        },
+
         toggleDetail: function (event) {
-            const theClumpName = event.target.id.substring(8);
+            const theBatchName = event.target.id.substring(8);
             choosy_ui.recordCurrentOpenDetailStates();
-            console.log(`clump toggle! ${theClumpName}`);
+            console.log(`batch toggle! ${theBatchName}`);
         },
 
         //  todo: decide if we really need this
@@ -325,7 +335,7 @@ const choosy = {
     },
 
     constants: {
-        version: '2021j',
+        version: '2021k',
         datasetSummaryEL: 'summaryInfo',
         selectionStatusElementID: 'selection-status',
         tagValueElementID: "tag-value-input",
@@ -334,7 +344,9 @@ const choosy = {
         tagValueGroupAElementID: "tag-value-group-A",
         tagValueGroupBElementID: "tag-value-group-B",
         tagPercentageElementID: "tag-percentage",
-        noClumpString: "none",
+        noBatchString: "--",
+        kGroupAttributeByBatchMode : "byBatch",
+        kGroupAttributeByLevelMode : "byLevel",
         defaultTagName : "Tag",
     }
 }

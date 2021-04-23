@@ -115,21 +115,28 @@ limitations under the License.
 
     <div id="atts">
         <div class="stripe">
-            <input id="byClumpButton" name="clumpingStrategyRadioGroup"
+            <div>Group attributes by: </div>
+            <div
+                    id="attribute-grouping-mode-control"
+                    onmousedown="choosy.handlers.toggleAttributeGroupingMode()">
+            </div>
+<!--
+            <input id="byBatchButton" name="batchingStrategyRadioGroup"
                    onchange="choosy_ui.update()"
-                   value="byClump" type="radio" checked>
-            <span>clump  | layer</span>
-            <input id="byLevelButton" name="clumpingStrategyRadioGroup"
+                   value="byBatch" type="radio" checked>
+            <span>batch  | layer</span>
+            <input id="byLevelButton" name="batchingStrategyRadioGroup"
                    onchange="choosy_ui.update()"
                    value="byLevel" type="radio">
+-->
         </div>
 
-        <div id="clumpNameDIV" class="stripe">
-            New clump name: &ensp;
-            <input type="text" id="clump-name-text-input"
-                   placeholder="clump name"
+        <div id="batchNameDIV" class="stripe">
+            New batch name: &ensp;
+            <input type="text" id="batch-name-text-input"
+                   placeholder="batch name"
                    style="width : 99px;"
-                   onchange="choosy_ui.changeAttributeClumpNameInput()">
+                   onchange="choosy_ui.changeAttributeBatchNameInput()">
 
         </div>
         <div id="chooseAttributeDiv"></div>

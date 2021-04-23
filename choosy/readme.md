@@ -6,26 +6,26 @@ Use the little sliders hide or show attributes. Green means visible.
 This is the same as choosing hide or show attribute from the attribute's menu in CODAP...
 except that you can show single attributes instead of showing "all hidden."
 
-### clumps
-You can also group attributes into "clumps."
+### batches
+You can also group attributes into "batches."
 For example, in a dataset about people, 
 you might have five different attributes about work and income;
-you can group them together by putting them in a clump.
+you can group them together by putting them in a batch.
 
-You can expand and collapse clumps using the disclosure triangles. 
+You can expand and collapse batchs using the disclosure triangles. 
 You can also make the whole group visible or invisible in CODAP using visibiity "eyes."
 
-You can move an attribute to a different clump: 
-drag its name to the **gray title bar** of the clump you want.
+You can move an attribute to a different batch: 
+drag its name to the **gray title bar** of the batch you want.
 
-To make a new clump (suppose it's going to be called `work`), 
-type "work" into the **New clump name** text box in the **attributes** tab. 
-When you press enter or tab, a new (empty) clump appears at the bottom.
+To make a new batch (suppose it's going to be called `work`), 
+type "work" into the **New batch name** text box in the **attributes** tab. 
+When you press enter or tab, a new (empty) batch appears at the bottom.
 
 
 ### levels
-Instead of using clumps to group attributes, you can use their position in the hierarchy.
-Choose this mode by picking **levels** instead of **clumps** at the top of the **attributes** tab.
+Instead of using batches to group attributes, you can use their position in the hierarchy.
+Choose this mode by picking **level** instead of **batch** at the top of the **attributes** tab.
 
 You can't drag attributes to different levels in `choosy`. 
 But of course you can drag them wherever you want in CODAP itself!
