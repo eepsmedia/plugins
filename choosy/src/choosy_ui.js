@@ -243,7 +243,7 @@ const choosy_ui = {
                 let possibleNewBatch = theNameBox.value.trim();
 
 
-                //  loop over all the batchs (or collections, if we're doing this by level)
+                //  loop over all the batches (or collections, if we're doing this by level)
                 for (let theBatchName in this.mungedAttributes) {
                     if (theBatchName === possibleNewBatch) {
                         possibleNewBatch = null;
@@ -252,11 +252,13 @@ const choosy_ui = {
                     const theArrayOfAttributes = this.mungedAttributes[theBatchName];
                     tGuts += this.makeEntireBatchWithContents(theBatchName, theArrayOfAttributes);
 
-                }       //  end of for-in loop over batchs
-                if (possibleNewBatch) {
-                    choosy_ui.batchRecord[possibleNewBatch] = {open : true};
-                    this.mungedAttributes[possibleNewBatch] = [];   //  empty array of attributes
-                    tGuts += this.makeEntireBatchWithContents(possibleNewBatch, []);
+                }       //  end of for-in loop over batches
+                if (choosy.attributeGroupingMode === choosy.constants.kGroupAttributeByBatchMode) {
+                    if (possibleNewBatch) {
+                        choosy_ui.batchRecord[possibleNewBatch] = {open: true};
+                        this.mungedAttributes[possibleNewBatch] = [];   //  empty array of attributes
+                        tGuts += this.makeEntireBatchWithContents(possibleNewBatch, []);
+                    }
                 }
             } else {
                 tGuts = "No attributes to work with here";
