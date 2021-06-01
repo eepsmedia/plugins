@@ -16,7 +16,9 @@
     <script src="src/scrambler.js"></script>
     <script src="src/connect.js"></script>
     <script src="src/CODAPDataset.js"></script>
+    <script src="src/notifications.js"></script>
 
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
 </head>
 
@@ -52,7 +54,8 @@
     <label class="stripe-element" for="attributeMenu">scramble: </label>
     <select class="stripe-element" id="attributeMenu"></select>
 </div>
-<div class="scrambler-stripe">
+
+<div class="scrambler-stripe" id="how-many-stripe">
     <label class="stripe-element" for="howManyBox">how many? </label>
     <input type="number"
            class="stripe-element"
@@ -71,6 +74,10 @@
             onclick="scrambler.doScramble(1)">1x
     </button>
 
+</div>
+
+<div class="scrambler-stripe" id="how-many-stripe-disabled">
+    Make a measure in a new column and drag it to the left.
 </div>
 
 </body>
