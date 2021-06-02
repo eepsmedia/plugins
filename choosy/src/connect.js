@@ -50,7 +50,6 @@ const connect = {
     },
 
 
-
     /**
      * Get "dataset info" for the dataset from CODAP
      * This includes all attribute names in all collections, as returned by `get...dataContext`.
@@ -68,10 +67,14 @@ const connect = {
             }
             const dsInfoResult = await codapInterface.sendRequest(tMessage);
             if (dsInfoResult.success) {
-                await choosy.processDatasetInfoForAttributeClumps(dsInfoResult.values);
+                // await choosy.processDatasetInfoForAttributeBatchs(dsInfoResult.values);
                 return dsInfoResult.values;
             } else {
-                Swal.fire({icon: "error", title: "Drat!", text: `Problem getting information for dataset [${theName}]`});
+                Swal.fire({
+                    icon: "error",
+                    title: "Drat!",
+                    text: `Problem getting information for dataset [${theName}]`
+                });
                 return null;
             }
         } else {
@@ -81,10 +84,10 @@ const connect = {
         }
     },
 
-    getItemCountFrom : async function(iName) {
+    getItemCountFrom: async function (iName) {
         const tMessage = {
-            action : "get",
-            resource : `dataContext[${iName}].itemCount`,
+            action: "get",
+            resource: `dataContext[${iName}].itemCount`,
         };
 
         const tItemCountResult = await codapInterface.sendRequest(tMessage);
@@ -92,10 +95,10 @@ const connect = {
         return (tItemCountResult.success) ? tItemCountResult.values : null;
     },
 
-    getLastCollectionCaseCount : async function(iDataset, iCollection) {
+    getLastCollectionCaseCount: async function (iDataset, iCollection) {
         const tMessage = {
-            action : "get",
-            resource : `dataContext[${iDataset}].collection[${iCollection}].caseCount`,
+            action: "get",
+            resource: `dataContext[${iDataset}].collection[${iCollection}].caseCount`,
         };
 
         const tItemCountResult = await codapInterface.sendRequest(tMessage);
@@ -181,20 +184,20 @@ const connect = {
     },
 */
     /**
-     * Assign the given attribute (by name) to the clump (also by name).
+     * Assign the given attribute (by name) to the batch (also by name).
      * This actually updates the dataset, altering the description (!), so that the next time we process it,
-     * choosy will read the clump assignment properly.
+     * choosy will read the batch assignment properly.
      *
      * @param iDSName   the string name of the dataset
      * @param iAttName  the string name of the attribute
-     * @param iClump    the string name of the clump
+     * @param iBatch    the string name of the batch
      * @returns {Promise<void>}
      */
-    setAttributeClump: async function (iDSName, iAttName, iClump) {
+    setAttributeBatch: async function (iDSName, iAttName, iBatch) {
         const theCollection = this.utilities.collectionNameFromAttributeName(iAttName, choosy.datasetInfo);
         let theDescription = this.utilities.descriptionFromAttributeName(iAttName, choosy.datasetInfo);
 
-        theDescription = "{" + iClump + "}" + theDescription;
+        theDescription = "{" + iBatch + "}" + theDescription;
 
         if (theCollection) {
             const theResource = `dataContext[${iDSName}].collection[${theCollection}].attribute[${iAttName}]`;
@@ -206,8 +209,8 @@ const connect = {
                     "description": theDescription,
                 }
             }
-            const addClumpResult = await codapInterface.sendRequest(tMessage);
-            console.log(`    ∂    ${addClumpResult.success ? "success" : "failure"} adding ${iAttName} to clump ${iClump}`);
+            const addBatchResult = await codapInterface.sendRequest(tMessage);
+            console.log(`    ∂    ${addBatchResult.success ? "success" : "failure"} adding ${iAttName} to batch ${iBatch}`);
         } else {
             Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttName}]`});
         }
@@ -250,7 +253,11 @@ const connect = {
 
             //  return   goodAttributes;   //  the ARRAY of affected attributes, in this case, the one named `iAttrName`.
         } else {
-            Swal.fire({icon: "error", title: "Drat!", text: `Could not find a collection for attribute [${iAttrName}]`});
+            Swal.fire({
+                icon: "error",
+                title: "Drat!",
+                text: `Could not find a collection for attribute [${iAttrName}]`
+            });
             //  return null;
         }
     },
@@ -258,7 +265,7 @@ const connect = {
     /**
      * Ask CODAP to show or hide the attributes named in the argument Array, en masse.
      *
-     * called in `choosy.handlers.clumpVisibilityButton()`
+     * called in `choosy.handlers.batchVisibilityButton()`
      *
      * Note: Tim thinks the use of `goodAttributes` is no longer necessary.
      *
@@ -267,7 +274,7 @@ const connect = {
      * @param toHide    Should we hide all of these? (Otherwise, make all visible)
      * @returns {Promise<[]>}
      */
-    showHideAttributeList : async function(iDSName, iList, toHide) {
+    showHideAttributeList: async function (iDSName, iList, toHide) {
         let messageList = [];
         let problemAttributes = [];
         let goodAttributes = [];
@@ -306,22 +313,22 @@ const connect = {
 
         if (problemAttributes.length > 0) {
             Swal.fire({
-                icon : "warning",
-                title : "look out!",
-                text : `Couldn't find a collection for these attributes: ${problemAttributes.join(', ')}`,
+                icon: "warning",
+                title: "look out!",
+                text: `Couldn't find a collection for these attributes: ${problemAttributes.join(', ')}`,
             })
         }
 
-/*
-//  this was here from when we were updating the attributes separately in the DOM.
+        /*
+        //  this was here from when we were updating the attributes separately in the DOM.
 
-        let outAttributes = [];
-        goodAttributes.forEach( att => {
-            const cat = choosy.getChoosyAttributeAndCollectionByAttributeName(att.name).att;
-            outAttributes.push(cat);
-        })
-        return outAttributes;
-*/
+                let outAttributes = [];
+                goodAttributes.forEach( att => {
+                    const cat = choosy.getChoosyAttributeAndCollectionByAttributeName(att.name).att;
+                    outAttributes.push(cat);
+                })
+                return outAttributes;
+        */
     },
 
     /**
@@ -335,9 +342,11 @@ const connect = {
          */
         ensureTagsAttributeExists: async function () {
 
+            let tagAttributeName = choosy.getTagAttributeName();
+
             await connect.refreshDatasetInfoFor(choosy.dsID);
             let theTagsCollectionName = connect.utilities.collectionNameFromAttributeName(
-                choosy.constants.tagsAttributeName,
+                tagAttributeName,
                 choosy.datasetInfo
             );
 
@@ -349,11 +358,11 @@ const connect = {
                     theTagsCollectionName = theFirstCollection.name;
                     const tResource = `dataContext[${choosy.datasetInfo.name}].collection[${theTagsCollectionName}].attribute`;
                     const tValues = {
-                        "name": choosy.constants.tagsAttributeName,
+                        "name": tagAttributeName,
                         "type": "nominal",
-                        "title": "Tags",
+                        "title": tagAttributeName,
                         "description": "user-made tags for sets of cases",
-                        "editable": false,
+                        "editable": true,
                         //  "hidden" : "true",
                     }
 
@@ -364,18 +373,18 @@ const connect = {
                     const makeTagsAttResult = await codapInterface.sendRequest(tMessage);
 
                     if (makeTagsAttResult.success) {
-                        console.log(`µ   Yay! Made [${choosy.constants.tagsAttributeName}] in collection [${theTagsCollectionName}]!`);
+                        console.log(`µ   Yay! Made "${tagAttributeName}" in collection "${theTagsCollectionName}"!`);
                         Swal.fire({
                             icon: "success",
                             title: "Yay!",
-                            text: `The new [${choosy.constants.tagsAttributeName}] attribute 
-                            is in collection [${theTagsCollectionName}]!`,
+                            text: `The new "${tagAttributeName}" attribute 
+                            is in collection "${theTagsCollectionName}"!`,
                         });
                     } else {
                         Swal.fire({
                             icon: "error",
                             title: "Dagnabbit!",
-                            text: `Trouble making the Tags attribute in ${iDSname}|${theTagsCollectionName}:`
+                            text: `Trouble making the "${tagAttributeName}" attribute in ${iDSname}|${theTagsCollectionName}:`
                                 + ` ${makeTagsAttResult.values.error}.`,
                         });
                     }
@@ -386,11 +395,12 @@ const connect = {
                 Swal.fire({
                     icon: "error",
                     title: "Dagnabbit!",
-                    text: `we apparently don't have a dataset defined: ${makeTagsAttResult.values.error}.`,
+                    text: `We apparently don't have a dataset defined: ${makeTagsAttResult.values.error}.`,
                 })
             }
 
             return theTagsCollectionName;
+
         },
 
         /**
@@ -455,12 +465,12 @@ const connect = {
          * @param iMode
          * @returns {Promise<void>}
          */
-        tagSelectedCases: async function (iMode = "clear") {
+        doSimpleTag: async function (iMode = "clear") {
 
             const tagLabel = (iMode === "add") ?
                 document.getElementById(choosy.constants.tagValueElementID).value :
                 "";
-            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            const tTagAttributeName = choosy.getTagAttributeName();     //      probably "Tags"
             const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
 
             let valuesArray = [];
@@ -494,9 +504,8 @@ const connect = {
             const yesTag = document.getElementById(choosy.constants.tagValueSelectedElementID).value;
             const noTag = document.getElementById(choosy.constants.tagValueNotSelectedElementID).value;
 
-            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tags"
+            const tTagAttributeName = choosy.getTagAttributeName();     //      probably "Tags"
             const selectedCases = await connect.tagging.getCODAPSelectedCaseIDs();
-
 
 
             //  construct the array of value objects, one for each case.
@@ -541,7 +550,7 @@ const connect = {
 
             //  const theProportion = Number(document.getElementById(choosy.constants.tagPercentageElementID).value) / 100.0;
 
-            const tTagAttributeName = choosy.constants.tagsAttributeName;     //      probably "Tag"
+            const tTagAttributeName = choosy.getTagAttributeName();     //      probably "Tag"
 
             //  construct the array of value objects, one for each case.
 
@@ -626,12 +635,12 @@ const connect = {
 
     utilities: {
 
-        clumpNameFromAttributeName : function(iName, info) {
+        batchNameFromAttributeName: function (iName, info) {
             let out = "";
             info.collections.forEach(coll => {
                 coll.attrs.forEach(att => {
                     if (att.name === iName) {
-                        out = att.clump;
+                        out = att.batch;
                     }
                 })
             })

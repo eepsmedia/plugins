@@ -34,6 +34,7 @@ const binomial = {
      */
     dirty : false,
 
+
     initialize : async function() {
         await connect.connectToCODAP();
         binomial.state = await codapInterface.getInteractiveState();
@@ -65,7 +66,7 @@ const binomial = {
         for (let ex = 0; ex < binomial.state.experimentsPerRun; ex++) {
             let nSuccesses = 0;
             for (let ev = 0; ev < binomial.state.atomicEventsPerExperiment; ev++) {
-                const successP = Math.random() < binomial.state.successProbability;
+                const successP = Math.random() < binomial.state.parsedProbability.theNumber;
                 if (successP) {
                     nSuccesses++;
                 }
@@ -76,7 +77,7 @@ const binomial = {
             aResult[binomial.state.words.eventFailure] = (binomial.state.atomicEventsPerExperiment) - nSuccesses;
             aResult[TEEUtils.pluralize(binomial.state.words.atomicEventName)] = binomial.state.atomicEventsPerExperiment;
             aResult[TEEUtils.pluralize(binomial.state.words.experimentName)] = binomial.state.experimentsPerRun;
-            aResult["trueP"] = binomial.state.successProbability;
+            aResult["trueP"] = binomial.state.parsedProbability.theNumber;
 
             results.push(aResult);
         }
@@ -86,12 +87,33 @@ const binomial = {
     },
 
     update : function () {
-        this.state.successProbability = Number(document.getElementById("probabilityOfSuccessInput").value);
-        this.state.atomicEventsPerExperiment = Number(document.getElementById("numberOfAtomicEventsInput").value);
-        this.state.experimentsPerRun = Number(document.getElementById("numberOfExperimentsInput").value);
-        if (this.state.experimentsPerRun > binomial.constants.kMaxExperimentsPerRun) {
-            this.state.experimentsPerRun = binomial.constants.kMaxExperimentsPerRun;
-            document.getElementById("numberOfExperimentsInput").value = binomial.constants.kMaxExperimentsPerRun;
+        const probabilityString = document.getElementById("probabilityOfSuccessInput").value;
+        binomial.state.parsedProbability = binomial.utilities.stringFractionDecimalOrPercentToNumber(probabilityString);
+        const theProb = binomial.state.parsedProbability.theNumber;
+
+        if (binomial.state.parsedProbability.theString !== "") {
+            if (theProb >= 0 && theProb <= 1) {
+                this.state.atomicEventsPerExperiment = Number(document.getElementById("numberOfAtomicEventsInput").value);
+                this.state.experimentsPerRun = Number(document.getElementById("numberOfExperimentsInput").value);
+                if (this.state.experimentsPerRun > binomial.constants.kMaxExperimentsPerRun) {
+                    this.state.experimentsPerRun = binomial.constants.kMaxExperimentsPerRun;
+                    document.getElementById("numberOfExperimentsInput").value = binomial.constants.kMaxExperimentsPerRun;
+                }
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    title: "dang!",
+                    text: `${binomial.state.parsedProbability.theString} is not a good number for a probability. 
+                     It should be between 0 and 1 inclusive.`
+                })
+            }
+        } else {
+            Swal.fire({
+                icon : "warning",
+                title : "oops",
+                text : `"${probabilityString}" is not a good probability.
+                 Enter a fraction (like 1/5), a decimal (like 0.2), or a percentage (like 20%).`
+            })
         }
 
         binomial.ui.update();
@@ -125,15 +147,48 @@ const binomial = {
             experimentName : "experiment",
         },
 
-        successProbability : 0.5,
+        parsedProbability : {theNumber : 0.5, theString : "1/2",},
+
         atomicEventsPerExperiment : 10,
         experimentsPerRun : 100,
 
         runNumber : 0,
     },
 
+    utilities: {
+        stringFractionDecimalOrPercentToNumber: function (iString) {
+            let theNumber;
+            let theString;
+
+            const wherePercent = iString.indexOf("%");
+            const whereSlash = iString.indexOf("/");
+            if (wherePercent !== -1) {
+                const thePercentage = parseFloat(iString.substring(0, wherePercent));
+                theString = `${thePercentage}%`;
+                theNumber = thePercentage / 100.0;
+            } else if (whereSlash !== -1) {
+                const beforeSlash = iString.substring(0, whereSlash);
+                const afterSlash = iString.substring(whereSlash + 1);
+                const theNumerator = parseFloat(beforeSlash);
+                const theDenominator = parseFloat(afterSlash);
+                theNumber = theNumerator / theDenominator;
+                theString = `${theNumerator}/${theDenominator}`;
+            } else {
+                theNumber = parseFloat(iString);
+                theString = `${theNumber}`;
+            }
+
+            if (!isNaN(theNumber)) {
+                return {theNumber: theNumber, theString: theString};
+            } else {
+                return {theNumber: 0, theString: ""};
+            }
+        },
+    },
+
+
     constants : {
-        kVersion : "000c",
+        kVersion : "001a",
         kBinomialDataSetName : "binData",
         kBinomialDataSetTitle : "binomial data",
         kRunCollectionName : "runs",

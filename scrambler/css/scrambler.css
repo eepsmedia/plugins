@@ -37,7 +37,7 @@ button {
     border-radius: 0.5em;
 }
 
-.elmcrabs-stripe {
+.scrambler-stripe {
     padding: .3em 0 .3em 1em;
     min-height: 1.5em;
     display: flex;
@@ -47,6 +47,10 @@ button {
 
 .stripe-element {
     margin-right: 1em;
+}
+
+.scrambler-swal {
+    height : 166px,
 }
 
 #howManyBox {

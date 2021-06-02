@@ -4,15 +4,15 @@ connect = {
 
     initialize: async function () {
         await codapInterface.init(this.iFrameDescriptor, null);
-
-        this.allowReorg();
+        await this.allowReorg();
+        notificatons.registerForDocumentChanges();
     },
 
     iFrameDescriptor: {
-        name: elmcrabs.constants.pluginName,
-        title: elmcrabs.constants.pluginName,
-        version: elmcrabs.constants.version,
-        dimensions: elmcrabs.constants.dimensions,      //      dimensions,
+        name: scrambler.constants.pluginName,
+        title: scrambler.constants.pluginName,
+        version: scrambler.constants.version,
+        dimensions: scrambler.constants.dimensions,      //      dimensions,
     },
 
 
@@ -25,10 +25,15 @@ connect = {
         const tListResult = await codapInterface.sendRequest(tMessage);
         if (tListResult.success) {
             tListResult.values.forEach((ds) => {
-                this.listOfDataSetNames.push({
-                    name: ds.name,
-                    title: ds.title,
-                });
+                const theName = ds.name;
+                if (theName.startsWith(scrambler.constants.measuresPrefix) || theName.startsWith(scrambler.constants.scrambledPrefix)) {
+
+                } else {
+                    this.listOfDataSetNames.push({
+                        name: theName,
+                        title: ds.title,
+                    });
+                }
             });
         }
         return this.listOfDataSetNames;
@@ -37,9 +42,10 @@ connect = {
     /**
      * Construct and return the <option> tags in the menu of all datasets
      *
+     * @param   If this name is in the list, make it the current (selected) value.
      * @returns {Promise<string>}
      */
-    makeDatasetMenuGuts: async function () {
+    makeDatasetMenuGuts: async function (iDefaultName) {
         const theNames = await this.getListOfDataSetNames();
         let out = "";
         let theOptions;
@@ -56,20 +62,44 @@ connect = {
             default:
                 theOptions = "";
                 theNames.forEach(ds => {
-                    theOptions += `<option value="${ds.name}">${ds.title}</option>`;
+                    const selectedText = (ds.name === iDefaultName) ? "selected" : "";
+                    theOptions += `<option value="${ds.name}" ${selectedText}>${ds.title}</option>`;
                 });
-                out = `<select id="datasetMenu">${theOptions}</select>`;
+                out = `<select id="datasetMenu" onchange="scrambler.handleSourceDatasetChange(this)">${theOptions}</select>`;
                 break;
         }
 
         return out;
     },
 
-    needFreshOutputDataset : async function() {
+    /**
+     * Does the named dataset already exist?
+     * @param iName
+     * @returns {Promise<void>}
+     */
+    datasetExists: async function (iName) {
+        let out = false;
+
+        const existMessage = {
+            action: "get",
+            resource: `dataContextList`,
+        }
+        const tListResult = await codapInterface.sendRequest(existMessage);
+        if (tListResult.success) {
+            tListResult.values.forEach((ds) => {
+                if (ds.name === iName) {
+                    out = true;
+                }
+            })
+        }
+        return out;
+    },
+
+    needFreshOutputDataset: async function () {
         return false;
     },
 
-    allowReorg : function( ) {
+    allowReorg: async function () {
         const tMutabilityMessage = {
             "action": "update",
             "resource": "interactiveFrame",
@@ -82,7 +112,7 @@ connect = {
         codapInterface.sendRequest(tMutabilityMessage);
     },
 
-    showTable : function(iName) {
+    showTable: function (iName) {
         codapInterface.sendRequest({
             "action": "create",
             "resource": "component",

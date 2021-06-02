@@ -1,89 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!--
-==========================================================================
-
- * Created by tim on 5/23/20.
-
- ==========================================================================
-index in scrambler
-
-    Author:   Tim Erickson
-
-Copyright (c) 2020 by Epistemological Engineering. All rights reserved.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-limitations under the License.
-==========================================================================
-
-local: http://localhost/plugins/scrambler/
-local in local CODAP: http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/scrambler
-
-
--->
-
 <head>
     <meta charset="UTF-8">
-    <title>Scrambler</title>
+    <title>Scrambler 2021</title>
 
-    <link rel='stylesheet' type='text/css' href='scrambler.css'/>
+
+    <link rel='stylesheet' type='text/css' href='css/scrambler.css'/>
 
     <!-- These scripts take care of the communication with CODAP  -->
 
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
 
-    <script src="scrambler.js"></script>
-    <script src="connect.js"></script>
+    <script src="src/scrambler.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/CODAPDataset.js"></script>
+    <script src="src/notifications.js"></script>
+
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
 </head>
+
+<!--
+    local just this: http://localhost/plugins/scrambler/
+    local in local codap :
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/scrambler
+
+-->
+
 <body>
-<h1>scrambler  </h1>
+<div class="scrambler-stripe">
+    <div class="stripe-element"><h1>scrambler</h1></div>
+    <div>
+        <img class="stripe-element"
+             src="../../common/art/refresh-empty.png"
+             onclick="scrambler.refreshAllData()"
+             style="cursor: pointer"
+             height="16"
+             title="refresh"
+        >
+    </div>
+    <div class="stripe-element">
+        press refresh after you make any changes to the dataset!
+    </div>
+</div>
+<div class="scrambler-stripe">
+    <div class="stripe-element" id="datasetMenuBlock"></div>
+    <div class="stripe-element" id="status"></div>
+</div>
 
-<div id="chooseDatasetDiv">
-    <label for="datasetMenu">dataset: </label>
-    <select id="datasetMenu"></select>
-    <button onclick="scrambler.refresh()">
-        <img src="art/refresh.png" height="14" width="16">
+<div class="scrambler-stripe">
+    <label class="stripe-element" for="attributeMenu">scramble: </label>
+    <select class="stripe-element" id="attributeMenu"></select>
+</div>
+
+<div class="scrambler-stripe" id="how-many-stripe">
+    <label class="stripe-element" for="howManyBox">how many? </label>
+    <input type="number"
+           class="stripe-element"
+           id="howManyBox"
+           value="10"
+           min="1"
+           max="1000"
+           onchange="scrambler.refresh()">
+    </input>
+
+    <button class="stripe-element" id="howManyButton"
+            onclick="scrambler.doScramble()">I
     </button>
+
+    <button class="stripe-element"
+            onclick="scrambler.doScramble(1)">1x
+    </button>
+
 </div>
 
-<div id="chooseAttributeDiv">
-    <label for="attributeMenu">scramble: </label>
-    <select id="attributeMenu"></select>
-</div>
-
-<div id="doScrambleDivFew">
-    how many?
-    <button class="scrambleButton" onclick="scrambler.doScramble(1)">1</button>
-    <button class="scrambleButton" onclick="scrambler.doScramble(10)">10</button>
-    <button class="scrambleButton" onclick="scrambler.doScramble(50)">50</button>
-</div>
-
-<div id="doScrambleDivMany">
-    how many?
-    <button class="scrambleButton" onclick="scrambler.doScramble(50)">40</button>
-    <button class="scrambleButton" onclick="scrambler.doScramble(100)">100</button>
-    <button class="scrambleButton" onclick="scrambler.doScramble(400)">400</button>
-</div>
-
-<div id="optionsDiv">
-    <input type="checkbox" id="eraseOldDataCheckbox" checked></input>
-    <label for="eraseOldDataCheckbox">erase old data</label>
-    <br>
-    <input type="checkbox" id="saveContentsCheckbox" onchange="scrambler.refresh()"></input>
-    <label for="saveContentsCheckbox">save contents</label>
+<div class="scrambler-stripe" id="how-many-stripe-disabled">
+    Make a measure in a new column and drag it to the left.
 </div>
 
 </body>

@@ -1,6 +1,12 @@
-
-
-
+/**
+ * In-plugin representation of a CODAP dataset.
+ * Takes care of all dataset operations including communication with CODAP.
+ *
+ * Importantly, has a `structure` member that mimics the `values` field in a "get data context" call,
+ * that is, it contains `collections`, each of which has an array of attributes.
+ *
+ * In addition, each collection has a `cases` field containing data.
+ */
 class CODAPDataset {
 
     structure = null;
@@ -46,7 +52,7 @@ class CODAPDataset {
                 values: theValues,
             });
         } catch (msg) {
-            alert(`Error updating a scramble! ${msg}`);
+            scrambler.doAlert("oops!", `Error updating a scramble! ${msg}`, "error");
         }
     }
 
@@ -74,9 +80,10 @@ class CODAPDataset {
         const nCollections = iSource.structure.collections.length;
         const lastCollectionLevel = nCollections - 2;
         if (nCollections <= 1) {
-            alert(`You're using ${nCollections} level(s) of collection. You need at least two.
-            
-Maybe you didn't press the refresh circle after changing the dataset?`);
+            const theAlertText = `You're using ${nCollections} level(s) of collection. 
+                You need at least two.
+                Maybe you didn't press the refresh circle after changing the dataset?`;
+            scrambler.doAlert("Watch out!", theAlertText);
             return null;
         }
         const theItems = iSource.scrapeCollections(0, lastCollectionLevel);
@@ -90,7 +97,6 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
 
         thisCollection.cases.forEach( aCase => {
             const newData = this.dataFromCase(aCase, iLevel, zLevel);
-            //  newData["scrit"] = elmcrabs.iteration;
             theItems = theItems.concat(newData);
         });
 
@@ -100,7 +106,8 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
     dataFromCase(iCase, iLevel, zLevel) {
         if (iLevel === zLevel) {
             let leafValues = iCase.values;
-            leafValues["scrit"] = elmcrabs.iteration;
+            leafValues[scrambler.constants.iterationAttName] = scrambler.state.iteration;
+            leafValues[scrambler.constants.scrambledAttAttName] = scrambler.state.scrambleAttributeName;
             return [leafValues];  //  array of an object
         } else {
             let childrenData = [];
@@ -137,7 +144,7 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
         try {
             const newScrambledItemsResult = await codapInterface.sendRequest(newItemsMessage);
         } catch (msg) {
-            alert(`Problem emitting scrambled measures from ${this.datasetName}: ${msg}`);
+            scrambler.doAlert("Hmmm.", `Problem emitting scrambled measures from ${this.datasetName}: ${msg}`)
         }
     }
 
@@ -147,7 +154,11 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
         const thePromises = [];
 
         this.structure.collections.forEach( coll=> {
-            thePromises.push(this.getAllCasesInCollection(coll));
+            try {
+                thePromises.push(this.getAllCasesInCollection(coll));
+            } catch(msg) {
+                console.log(`trouble getting all cases in "${coll}: ${msg}`);
+            }
         })
 
         await Promise.all(thePromises);
@@ -163,7 +174,7 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
             this.structure = getDatasetResult.values;
 
         } else {
-            //  error: no dataset name
+            scrambler.doAlert("Dang!", "No dataset name", "error");
         }
     }
 
@@ -203,7 +214,7 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
         if (casesAreOK) {
             iCollection.cases = theCases;
         } else {
-            alert(`Error getting cases from collection [${iCollection.name}]`);
+            scrambler.doAlert("Dang!", `Error getting cases from collection [${iCollection.name}]`, "error");
         }
 
        // return theCaseResults;
@@ -355,11 +366,14 @@ Maybe you didn't press the refresh circle after changing the dataset?`);
 
         const scritCollection = {
             name : "iterations",
-            //  attrs : [{name : "scrit", formula : "caseIndex" }],
             attrs : [{
-                name : "scrit",
+                name : scrambler.constants.iterationAttName,
                 type : "categorical",
                 description : `Which "run" of data. Increases every time you scramble.`,
+            },{
+                name : scrambler.constants.scrambledAttAttName,
+                type : "categorical",
+                description : `Which attribute was scrambled.`,
             }],
         }
 
