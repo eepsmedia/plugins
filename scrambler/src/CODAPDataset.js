@@ -14,7 +14,6 @@ class CODAPDataset {
 
     constructor( iName ) {
         this.datasetName = iName;
-
     }
 
     async scrambleInPlace( iAttName ) {
@@ -22,7 +21,7 @@ class CODAPDataset {
         const lastCollection = this.structure.collections[nCollections - 1]
 
         const theCases = lastCollection.cases;
-        let valueArray = [];
+        let valueArray = [];        //  array that just holds the values of this attribute, one per case
 
         theCases.forEach( aCase => {
             valueArray.push(aCase.values[iAttName]);
@@ -30,10 +29,11 @@ class CODAPDataset {
 
         valueArray.scramble();
 
-        //  now construct a "values" array (`theValues`) for an update.case message
-
-        let theValues = [];
+        //  construct a request to CODAP to push these values into this dataset
         const theResource = `dataContext[${this.datasetName}].collection[${lastCollection.name}].case`;
+
+        //  construct a "values" array (`theValues`) for an update.case message
+        let theValues = [];
 
         for (let i = 0; i < valueArray.length; i++) {
             const thisCase = lastCollection.cases[i];
@@ -67,15 +67,7 @@ class CODAPDataset {
      * @param iSource  the source dataset, namely, the "cloned" dataset.
      */
     async makeMeasuresFrom(iSource) {
-/*
-        const then = new Date();
-        */
         await iSource.retrieveAllDataFromCODAP();
-        /*
-        const now = new Date();
-        const dur = now - then;
-        console.log(`getting data from codap for ${iSource.datasetName} in ${dur} ms`);
-*/
 
         const nCollections = iSource.structure.collections.length;
         const lastCollectionLevel = nCollections - 2;
@@ -148,18 +140,27 @@ class CODAPDataset {
         }
     }
 
+    /**
+     * Ask CODAP for all cases in all collections, calling `getAllCasesInCollection()`
+     *
+     * @returns {Promise<void>}
+     */
     async retrieveAllDataFromCODAP() {
         await this.loadStructureFromCODAP();
 
         const thePromises = [];
 
-        this.structure.collections.forEach( coll=> {
-            try {
-                thePromises.push(this.getAllCasesInCollection(coll));
-            } catch(msg) {
-                console.log(`trouble getting all cases in "${coll}: ${msg}`);
-            }
-        })
+        try {
+            this.structure.collections.forEach(coll => {
+                try {
+                    thePromises.push(this.getAllCasesInCollection(coll));
+                } catch (msg) {
+                    console.log(`trouble getting all cases in "${coll}: ${msg}`);
+                }
+            })
+        } catch(msg) {
+            scrambler.doAlert("Dang!", `No structure: ${msg}`, "error");
+        }
 
         await Promise.all(thePromises);
     }
@@ -174,7 +175,7 @@ class CODAPDataset {
             this.structure = getDatasetResult.values;
 
         } else {
-            scrambler.doAlert("Dang!", "No dataset name", "error");
+            scrambler.doAlert("Dang!", "Can't load a structure without a dataset name", "error");
         }
     }
 
@@ -380,13 +381,25 @@ class CODAPDataset {
         this.structure.collections.splice(0, 0, scritCollection);
     }
 
-    makeAttributeMenuGuts( iDefault ) {
+    findSelectedAttribute(iSuggestion) {
+        const lastCollection = this.structure.collections[this.structure.collections.length-1];
+        let found = false;
+        lastCollection.attrs.forEach( attr => {
+            if (attr.name === iSuggestion) {
+                found = true;
+            }
+        })
+        return (found ? iSuggestion : lastCollection.attrs[0].name);
+    }
+
+    makeAttributeMenuGuts( iSuggestion ) {
+        const theSelectedOne = this.findSelectedAttribute(iSuggestion)
         const nColls = this.structure.collections.length;
         const lastCollection = this.structure.collections[nColls-1];
 
         let out = "";
         lastCollection.attrs.forEach( attr => {
-            let selectedText = (iDefault === attr.name) ? "selected" : "";
+            let selectedText = (theSelectedOne === attr.name) ? "selected" : "";
             out += `<option value="${attr.name}" ${selectedText}>${attr.name}</option>`;
         })
         // out = `<select id="attributeMenu">${out}</select>`;

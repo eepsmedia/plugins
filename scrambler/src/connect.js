@@ -99,6 +99,20 @@ connect = {
         return false;
     },
 
+    deleteDataset : async function(iName) {
+        if (iName) {
+            const tDeleteMessage = {
+                action: "delete",
+                resource: `dataContext[${iName}]`,
+            }
+
+            const dResult = await codapInterface.sendRequest(tDeleteMessage);
+            console.log(`    deleting [${iName}]: (${dResult.success ? "success" : "failure"})`);
+        } else {
+            console.log(`    no measures daatset to delete!`);
+        }
+    },
+
     allowReorg: async function () {
         const tMutabilityMessage = {
             "action": "update",
