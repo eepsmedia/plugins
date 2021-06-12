@@ -14,7 +14,6 @@ Here we describe the current version of the **Scrambler** plugin.
 
 * Make a measure (a new attribute with a formula) that describes the effect you're studying.
 * Drag it left so that it's at a higher level in the hierarchy.
-* (For now) Press the **Refresh** button (it's a circular arrow). 
 
 ## Background
 
@@ -71,4 +70,8 @@ Now you can see what percentage are on each side of the line.
 Set the line to 4.54 (you might need to rescale) to see how unusual it is!
 (Chances are, none of your measures, positive or negative, are that large.)
 
+## When Things Go Wrong
+
+If CODAP and the Scrambler get confused, pressing the "refresh" arrow can help (it's a circular,. recyle-y arrow). 
+That will basically restart the scrambler.
 
