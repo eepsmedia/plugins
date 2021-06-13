@@ -14,8 +14,9 @@ Here we describe the current version of the **Scrambler** plugin.
 * Choose what attribute you want to scramble (we've set it up to scramble `Gender`).
 * Adjust the number and then click the buttons to create as many "scrambles" as you wish.
 
-## Background and an Example
+You can try all this yourself in [this sample document](https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=https%3A%2F%2Fcfm-shared.concord.org%2FjEeBNIbK29v5XwtZdmhy%2Ffile.json)
 
+## Background and an Example
 
 The point of scrambling is to create a _sampling distribution_ of some _measure_. 
 For example, suppose that in your dataset it appears that 13-year-old boys are taller than 13-year-old girls.
@@ -54,6 +55,7 @@ Repeat this process a few hundred times and see.
 In this case, no: even though it's _possible_ that the data could be that extreme
 (after all, the real data _could_ come up when you scramble),
 it doesn't happen very often.
+
 
 ## Analyzing your results
 
