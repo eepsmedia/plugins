@@ -50,9 +50,16 @@ button {
 }
 
 .scrambler-swal {
-    height : 166px,
+    height : 100%;
 }
 
 #howManyBox {
     width : 3em;
+}
+
+.roundButton  {
+    width:  16px;
+    height: 16px;
+    cursor: pointer;
+
 }

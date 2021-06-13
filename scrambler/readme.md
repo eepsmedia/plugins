@@ -5,17 +5,14 @@
 Here we describe the current version of the **Scrambler** plugin.
 
 * Drag the URL for this plugin into your document.
-* Prepare your dataset for scrambling--see below.
+* Prepare your dataset for scrambling:
+    * Make a measure (a new attribute with a formula) that describes the effect you're studying.
+    * Drag it left so that it's at a higher level in the hierarchy.
 * Make sure the dataset you want to scramble is selected in the menu.
 * Choose what attribute you want to scramble.
 * Click buttons and adjust the number to create as many "scrambles" as you wish.
 
-## Preparing a Dataset for Scrambling
-
-* Make a measure (a new attribute with a formula) that describes the effect you're studying.
-* Drag it left so that it's at a higher level in the hierarchy.
-
-## Background
+## Background and an Example
 
 The point of scrambling is to create a _sampling distribution_ of some _measure_. 
 For example, suppose that in your dataset it appears that 13-year-old boys are taller than 13-year-old girls.
