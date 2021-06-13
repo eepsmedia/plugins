@@ -1,16 +1,22 @@
 # Scrambler
 
+
+![scrambler data](doc-art/scrambler-data-table.png)
+
 2021-04-16
 
 Here we describe the current version of the **Scrambler** plugin.
 
 * Drag the URL for this plugin into your document.
-* Prepare your dataset for scrambling:
+* Prepare your dataset for scrambling, as shown in the illustration above:
     * Make a measure (a new attribute with a formula) that describes the effect you're studying.
     * Drag it left so that it's at a higher level in the hierarchy.
-* Make sure the dataset you want to scramble is selected in the menu.
-* Choose what attribute you want to scramble.
-* Click buttons and adjust the number to create as many "scrambles" as you wish.
+* Make sure the dataset you want to scramble is selected in the menu (**heights** is there by default, and that's correct).
+* Choose what attribute you want to scramble (we've set it up to scramble `Gender`).
+* Adjust the number and then click the buttons to create as many "scrambles" as you wish.
+
+![scrambler picture](doc-art/scrambler-plugin-basic.png)
+
 
 ## Background and an Example
 
