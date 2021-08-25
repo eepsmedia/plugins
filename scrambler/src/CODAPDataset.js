@@ -16,9 +16,20 @@ class CODAPDataset {
         this.datasetName = iName;
     }
 
+    /**
+     * Scrambles the indicated attribute's values. Called from `scrambler.doScramble()`.
+     *
+     * This is typically called on the cloned dataset (titled "scrambled_whatever"),
+     * after which the results (with computed measures) are collected
+     *
+     * Note that this attribute must be in the "last", most leafy collection.
+     *
+     * @param iAttName  the name of the attribute to be scrambled
+     * @returns {Promise<void>}
+     */
     async scrambleInPlace( iAttName ) {
         const nCollections = this.structure.collections.length;
-        const lastCollection = this.structure.collections[nCollections - 1]
+        const lastCollection = this.structure.collections[nCollections - 1];
 
         const theCases = lastCollection.cases;
         let valueArray = [];        //  array that just holds the values of this attribute, one per case
@@ -88,8 +99,8 @@ class CODAPDataset {
         let theItems = [];
 
         thisCollection.cases.forEach( aCase => {
-            const newData = this.dataFromCase(aCase, iLevel, zLevel);
-            theItems = theItems.concat(newData);
+            const newData = this.dataFromCase(aCase, iLevel, zLevel);   //  an array of objects
+            theItems = theItems.concat(newData);    //  put those items into the `theItems` array
         });
 
         return theItems;
@@ -100,7 +111,7 @@ class CODAPDataset {
             let leafValues = iCase.values;
             leafValues[scrambler.constants.iterationAttName] = scrambler.state.iteration;
             leafValues[scrambler.constants.scrambledAttAttName] = scrambler.state.scrambleAttributeName;
-            return [leafValues];  //  array of an object
+            return [leafValues];  //  array of a single object
         } else {
             let childrenData = [];
             iCase.children.forEach( childID => {

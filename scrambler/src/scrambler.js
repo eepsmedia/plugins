@@ -189,7 +189,7 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "2021c",
+        version: "2021d",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             scrambleAttributeName: null,
@@ -199,6 +199,7 @@ const scrambler = {
         },
         measuresPrefix: "measures_",
         scrambledPrefix: "scrambled_",
+        scrambleSetName: "scrset",
         iterationAttName: "scrit",
         scrambledAttAttName: "scratt",
     },
