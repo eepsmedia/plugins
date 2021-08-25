@@ -16,6 +16,8 @@ Here we describe the current version of the **Scrambler** plugin.
 
 You can try all this yourself in [this sample document](https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=https%3A%2F%2Fcfm-shared.concord.org%2FjEeBNIbK29v5XwtZdmhy%2Ffile.json)
 
+(Want a task? That document is set up to compare 13-year-olds. Set it up to do 10-year-olds!)
+
 ## Background and an Example
 
 The point of scrambling is to create a _sampling distribution_ of some _measure_. 
