@@ -71,7 +71,7 @@
            value="10"
            min="1"
            max="1000"
-           onchange="scrambler.handleUIChoice()">
+           oninput="scrambler.handleUIChoice()">
     </input>
 
     <button class="stripe-element" id="howManyButton"
@@ -81,6 +81,8 @@
     <button class="stripe-element"
             onclick="scrambler.doScramble(1)">1x
     </button>
+
+    <div id="progress"></div>
 
 </div>
 

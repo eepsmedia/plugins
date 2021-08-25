@@ -43,13 +43,18 @@ const scrambler = {
     },
 
     setSourceDataset: async function (iName) {
-        console.log(`Setting source to [${iName}], incoming scrattribute: [${scrambler.state.scrambleAttributeName}]`);
+        const scrin = scrambler.state.scrambleAttributeName;
+        console.log(`Setting source to [${iName}], incoming scrattribute: [${scrin}]`);
         this.sourceDataset = await new CODAPDataset(iName);
         await notificatons.registerForDatasetChanges(iName);
         await this.sourceDataset.retrieveAllDataFromCODAP();    //  todo need this?
-        scrambler.state.scrambleAttributeName = this.sourceDataset.findSelectedAttribute(scrambler.state.scrambleAttributeName);
-        console.log(`    outgoing scrattribute: [${scrambler.state.scrambleAttributeName}]`);
+        const scrout = this.sourceDataset.findSelectedAttribute(scrambler.state.scrambleAttributeName);
+        scrambler.state.scrambleAttributeName = scrout;
+        console.log(`    outgoing scrattribute: [${scrout}]`);
 
+        if (scrin !== scrout) {
+            this.refreshUIDisplay();    //  fix the displayed scramble attribute
+        }
     },
 
     /**
@@ -63,8 +68,8 @@ const scrambler = {
         this.refreshUIDisplay();
     },
 
-    handleSourceDatasetChange: async function () {
-        const theName = this.value;
+    handleSourceDatasetChange: async function (theMenu) {
+        const theName = theMenu.value;
         scrambler.setSourceDataset(theName);
     },
 
@@ -82,7 +87,7 @@ const scrambler = {
 
         let theMeasures = null;
 
-        const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.datasetName}`;
+        const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
         if (await connect.datasetExists(tMeasuresDatasetName)) {
             theMeasures = await new CODAPDataset(tMeasuresDatasetName);
             await theMeasures.retrieveAllDataFromCODAP();
@@ -141,12 +146,18 @@ const scrambler = {
             } else {
                 return null;
             }
+            this.showProgress(i, nReps);
         }
 
         this.measuresDataset.emitItems(true, newItems);
         connect.showTable(this.measuresDataset.datasetName);
+        this.showProgress(-1,-1);
     },
 
+    showProgress: function(howMany, outOf) {
+        theProgressBox = document.getElementById("progress");
+        theProgressBox.innerHTML = howMany > 0 ? `${howMany}/${outOf}` : "";
+    },
     /**
      * Set the values in the UI (menu choices, number in a box) to match the state.
      * Also sets the text on the scramble button to **42x** or whatever.

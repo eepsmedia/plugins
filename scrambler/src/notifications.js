@@ -54,6 +54,7 @@ notificatons = {
 
     handleDocumentChangeNotice : function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
+        scrambler.initUI();
         scrambler.refreshUIDisplay();
     },
 

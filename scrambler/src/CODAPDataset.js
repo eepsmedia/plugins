@@ -343,7 +343,11 @@ class CODAPDataset {
      * @returns {CODAPDataset}
      */
     clone(iPrefix) {
-        const theNewName = `${iPrefix}${this.datasetName}`
+
+        const theNewName = this.structure.title ?
+            `${iPrefix}${this.structure.title}` :
+            `${iPrefix}${this.datasetName}`;
+
         let out = new CODAPDataset(theNewName);
 
         let newCollections = [];
@@ -364,17 +368,8 @@ class CODAPDataset {
 
 
     makeIntoMeasuresDataset() {
-        //  get rid of "leaf" collection
-        this.structure.collections.pop();
 
-        //  get rid of any formulas
-        this.structure.collections.forEach(aCollection => {
-            aCollection.attrs.forEach( attr => {
-                if (attr.formula) {
-                    delete attr.formula;
-                }
-            })
-        })
+        //  define the top-level "iterations" collection
 
         const scritCollection = {
             name : "iterations",
@@ -389,7 +384,35 @@ class CODAPDataset {
             }],
         }
 
-        this.structure.collections.splice(0, 0, scritCollection);
+        //  define the other collection (which will contain all non-leaf attributes)
+        //  we will add them in shortly
+
+        const measuresCollection = {
+            name : "measures",
+            attrs : [ ],
+        }
+
+        //  get rid of "leaf" collection
+        this.structure.collections.pop();
+
+        //  get rid of any formulas
+        this.structure.collections.forEach(aCollection => {
+            aCollection.attrs.forEach( attr => {
+                if (attr.formula) {
+                    attr.deletedFormula = attr.formula;
+                    delete attr.formula;
+                }
+                measuresCollection.attrs.push(attr);
+            })
+        })
+
+        //  make the new structure
+
+        this.structure = {
+            collections : [scritCollection, measuresCollection],
+            name : this.structure.name,
+            title : this.structure.title,
+        };
     }
 
     findSelectedAttribute(iSuggestion) {
@@ -410,8 +433,11 @@ class CODAPDataset {
 
         let out = "";
         lastCollection.attrs.forEach( attr => {
-            let selectedText = (theSelectedOne === attr.name) ? "selected" : "";
-            out += `<option value="${attr.name}" ${selectedText}>${attr.name}</option>`;
+            //  can't scramble a formula attribute....
+            if (!attr.formula) {
+                let selectedText = (theSelectedOne === attr.name) ? "selected" : "";
+                out += `<option value="${attr.name}" ${selectedText}>${attr.name}</option>`;
+            }
         })
         // out = `<select id="attributeMenu">${out}</select>`;
 
