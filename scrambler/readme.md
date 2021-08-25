@@ -7,7 +7,7 @@
 Here we describe the current version of the **Scrambler** plugin.
 
 * Drag the URL for this plugin into your document.
-* Prepare your dataset for scrambling (see th example below...):
+* Prepare your dataset for scrambling (see the example below...):
     * Make a measure (a new attribute with a formula) that describes the effect you're studying.
     * Drag it left so that it's at a higher level in the hierarchy.
 * Make sure the dataset you want to scramble is selected in the menu (**heights** is there by default, and that's correct).
