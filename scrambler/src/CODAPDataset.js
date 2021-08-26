@@ -14,15 +14,25 @@ class CODAPDataset {
 
     constructor( iName ) {
         this.datasetName = iName;
-
     }
 
+    /**
+     * Scrambles the indicated attribute's values. Called from `scrambler.doScramble()`.
+     *
+     * This is typically called on the cloned dataset (titled "scrambled_whatever"),
+     * after which the results (with computed measures) are collected
+     *
+     * Note that this attribute must be in the "last", most leafy collection.
+     *
+     * @param iAttName  the name of the attribute to be scrambled
+     * @returns {Promise<void>}
+     */
     async scrambleInPlace( iAttName ) {
         const nCollections = this.structure.collections.length;
-        const lastCollection = this.structure.collections[nCollections - 1]
+        const lastCollection = this.structure.collections[nCollections - 1];
 
         const theCases = lastCollection.cases;
-        let valueArray = [];
+        let valueArray = [];        //  array that just holds the values of this attribute, one per case
 
         theCases.forEach( aCase => {
             valueArray.push(aCase.values[iAttName]);
@@ -30,10 +40,11 @@ class CODAPDataset {
 
         valueArray.scramble();
 
-        //  now construct a "values" array (`theValues`) for an update.case message
-
-        let theValues = [];
+        //  construct a request to CODAP to push these values into this dataset
         const theResource = `dataContext[${this.datasetName}].collection[${lastCollection.name}].case`;
+
+        //  construct a "values" array (`theValues`) for an update.case message
+        let theValues = [];
 
         for (let i = 0; i < valueArray.length; i++) {
             const thisCase = lastCollection.cases[i];
@@ -67,15 +78,7 @@ class CODAPDataset {
      * @param iSource  the source dataset, namely, the "cloned" dataset.
      */
     async makeMeasuresFrom(iSource) {
-/*
-        const then = new Date();
-        */
         await iSource.retrieveAllDataFromCODAP();
-        /*
-        const now = new Date();
-        const dur = now - then;
-        console.log(`getting data from codap for ${iSource.datasetName} in ${dur} ms`);
-*/
 
         const nCollections = iSource.structure.collections.length;
         const lastCollectionLevel = nCollections - 2;
@@ -96,8 +99,8 @@ class CODAPDataset {
         let theItems = [];
 
         thisCollection.cases.forEach( aCase => {
-            const newData = this.dataFromCase(aCase, iLevel, zLevel);
-            theItems = theItems.concat(newData);
+            const newData = this.dataFromCase(aCase, iLevel, zLevel);   //  an array of objects
+            theItems = theItems.concat(newData);    //  put those items into the `theItems` array
         });
 
         return theItems;
@@ -108,7 +111,7 @@ class CODAPDataset {
             let leafValues = iCase.values;
             leafValues[scrambler.constants.iterationAttName] = scrambler.state.iteration;
             leafValues[scrambler.constants.scrambledAttAttName] = scrambler.state.scrambleAttributeName;
-            return [leafValues];  //  array of an object
+            return [leafValues];  //  array of a single object
         } else {
             let childrenData = [];
             iCase.children.forEach( childID => {
@@ -148,18 +151,27 @@ class CODAPDataset {
         }
     }
 
+    /**
+     * Ask CODAP for all cases in all collections, calling `getAllCasesInCollection()`
+     *
+     * @returns {Promise<void>}
+     */
     async retrieveAllDataFromCODAP() {
         await this.loadStructureFromCODAP();
 
         const thePromises = [];
 
-        this.structure.collections.forEach( coll=> {
-            try {
-                thePromises.push(this.getAllCasesInCollection(coll));
-            } catch(msg) {
-                console.log(`trouble getting all cases in "${coll}: ${msg}`);
-            }
-        })
+        try {
+            this.structure.collections.forEach(coll => {
+                try {
+                    thePromises.push(this.getAllCasesInCollection(coll));
+                } catch (msg) {
+                    console.log(`trouble getting all cases in "${coll}: ${msg}`);
+                }
+            })
+        } catch(msg) {
+            scrambler.doAlert("Dang!", `No structure: ${msg}`, "error");
+        }
 
         await Promise.all(thePromises);
     }
@@ -174,7 +186,7 @@ class CODAPDataset {
             this.structure = getDatasetResult.values;
 
         } else {
-            scrambler.doAlert("Dang!", "No dataset name", "error");
+            scrambler.doAlert("Dang!", "Can't load a structure without a dataset name", "error");
         }
     }
 
@@ -331,7 +343,11 @@ class CODAPDataset {
      * @returns {CODAPDataset}
      */
     clone(iPrefix) {
-        const theNewName = `${iPrefix}${this.datasetName}`
+
+        const theNewName = this.structure.title ?
+            `${iPrefix}${this.structure.title}` :
+            `${iPrefix}${this.datasetName}`;
+
         let out = new CODAPDataset(theNewName);
 
         let newCollections = [];
@@ -352,17 +368,8 @@ class CODAPDataset {
 
 
     makeIntoMeasuresDataset() {
-        //  get rid of "leaf" collection
-        this.structure.collections.pop();
 
-        //  get rid of any formulas
-        this.structure.collections.forEach(aCollection => {
-            aCollection.attrs.forEach( attr => {
-                if (attr.formula) {
-                    delete attr.formula;
-                }
-            })
-        })
+        //  define the top-level "iterations" collection
 
         const scritCollection = {
             name : "iterations",
@@ -377,17 +384,60 @@ class CODAPDataset {
             }],
         }
 
-        this.structure.collections.splice(0, 0, scritCollection);
+        //  define the other collection (which will contain all non-leaf attributes)
+        //  we will add them in shortly
+
+        const measuresCollection = {
+            name : "measures",
+            attrs : [ ],
+        }
+
+        //  get rid of "leaf" collection
+        this.structure.collections.pop();
+
+        //  get rid of any formulas
+        this.structure.collections.forEach(aCollection => {
+            aCollection.attrs.forEach( attr => {
+                if (attr.formula) {
+                    attr.deletedFormula = attr.formula;
+                    delete attr.formula;
+                }
+                measuresCollection.attrs.push(attr);
+            })
+        })
+
+        //  make the new structure
+
+        this.structure = {
+            collections : [scritCollection, measuresCollection],
+            name : this.structure.name,
+            title : this.structure.title,
+        };
     }
 
-    makeAttributeMenuGuts( iDefault ) {
+    findSelectedAttribute(iSuggestion) {
+        const lastCollection = this.structure.collections[this.structure.collections.length-1];
+        let found = false;
+        lastCollection.attrs.forEach( attr => {
+            if (attr.name === iSuggestion) {
+                found = true;
+            }
+        })
+        return (found ? iSuggestion : lastCollection.attrs[0].name);
+    }
+
+    makeAttributeMenuGuts( iSuggestion ) {
+        const theSelectedOne = this.findSelectedAttribute(iSuggestion)
         const nColls = this.structure.collections.length;
         const lastCollection = this.structure.collections[nColls-1];
 
         let out = "";
         lastCollection.attrs.forEach( attr => {
-            let selectedText = (iDefault === attr.name) ? "selected" : "";
-            out += `<option value="${attr.name}" ${selectedText}>${attr.name}</option>`;
+            //  can't scramble a formula attribute....
+            if (!attr.formula) {
+                let selectedText = (theSelectedOne === attr.name) ? "selected" : "";
+                out += `<option value="${attr.name}" ${selectedText}>${attr.name}</option>`;
+            }
         })
         // out = `<select id="attributeMenu">${out}</select>`;
 

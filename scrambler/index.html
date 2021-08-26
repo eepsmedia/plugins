@@ -33,17 +33,25 @@
 <div class="scrambler-stripe">
     <div class="stripe-element"><h1>scrambler</h1></div>
     <div>
-        <img class="stripe-element"
+        <img class="stripe-element roundButton"
              src="../../common/art/refresh-empty.png"
              onclick="scrambler.refreshAllData()"
-             style="cursor: pointer"
-             height="16"
-             title="refresh"
+             title="Click to refresh the data"
         >
+        <a class="stripe-element"
+           target="_blank"
+           href="https://github.com/eepsmedia/plugins/blob/master/scrambler/readme.md">
+           <img src="../../common/art/info.png"
+           alt="info"  title="Click for detailed help"
+           class="roundButton">
+        </a>
+
     </div>
+<!--
     <div class="stripe-element">
         press refresh after you make any changes to the dataset!
     </div>
+-->
 </div>
 <div class="scrambler-stripe">
     <div class="stripe-element" id="datasetMenuBlock"></div>
@@ -52,7 +60,7 @@
 
 <div class="scrambler-stripe">
     <label class="stripe-element" for="attributeMenu">scramble: </label>
-    <select class="stripe-element" id="attributeMenu"></select>
+    <select class="stripe-element" id="attributeMenu" onchange="scrambler.handleUIChoice()"></select>
 </div>
 
 <div class="scrambler-stripe" id="how-many-stripe">
@@ -63,7 +71,7 @@
            value="10"
            min="1"
            max="1000"
-           onchange="scrambler.refresh()">
+           oninput="scrambler.handleUIChoice()">
     </input>
 
     <button class="stripe-element" id="howManyButton"
@@ -73,6 +81,8 @@
     <button class="stripe-element"
             onclick="scrambler.doScramble(1)">1x
     </button>
+
+    <div id="progress"></div>
 
 </div>
 

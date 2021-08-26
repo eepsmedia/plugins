@@ -1,12 +1,16 @@
 notificatons = {
 
+    documentSubscriberIndex: null,
+    datasetSubscriberIndex: null,
+
     registerForDocumentChanges : function() {
         const tResource = `documentChangeNotice`;
-        codapInterface.on(
+        this.documentSubscriberIndex = codapInterface.on(
             'notify',
             tResource,
             notificatons.handleDocumentChangeNotice
         );
+        console.log(`registered for changes to document. index ${this.documentSubscriberIndex}`);
     },
 
     /**
@@ -14,13 +18,18 @@ notificatons = {
      */
     registerForDatasetChanges : function(iName)
     {
+        if (this.datasetSubscriberIndex) {        //  zero is a valid index... :P but it should be the "get"
+            codapInterface.off(this.datasetSubscriberIndex);    //  blank that subscription.
+        }
+
         const sResource = `dataContextChangeNotice[${iName}]`;
-        codapInterface.on(
+        this.datasetSubscriberIndex =  codapInterface.on(
             'notify',
             sResource,
             //'selectCases',
             notificatons.handleDatasetChangeNotice
         );
+        console.log(`registered for changes to ${iName}. index ${this.datasetSubscriberIndex}`);
     },
 
     handleDatasetChangeNotice : function(iMessage) {
@@ -29,7 +38,14 @@ notificatons = {
         switch(iMessage.values.operation)  {
             case "moveAttribute":       //  drag left or right
             case "updateAttributes":    //  includes renaming
-                scrambler.refresh();
+            case "createCollection":    //  dragged an attribute left
+                scrambler.state.dirtyMeasures = true;
+                scrambler.refreshAllData();
+                break;
+            case "createAttributes":
+                scrambler.state.dirtyMeasures = true;
+                const firstAtt = iMessage.values.result.attrs[0];
+                console.log(`    resource: ${iMessage.resource} attrs[0]: ${firstAtt.name} ${firstAtt.guid}`);
                 break;
             default:
                 break;
@@ -38,7 +54,8 @@ notificatons = {
 
     handleDocumentChangeNotice : function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
-        scrambler.refresh();
+        scrambler.initUI();
+        scrambler.refreshUIDisplay();
     },
 
 
