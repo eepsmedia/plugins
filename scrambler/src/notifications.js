@@ -32,6 +32,16 @@ notificatons = {
         console.log(`registered for changes to ${iName}. index ${this.datasetSubscriberIndex}`);
     },
 
+    /**
+     * We have detected a change in a dataset.
+     *
+     * If the user has changed things like the structure, we mark the state
+     * as "dirty" and refresh the data.
+     * That will eventually mean that when the user scrambles,
+     * the entire measures datset will be replaced.
+     *
+     * @param iMessage
+     */
     handleDatasetChangeNotice : function(iMessage) {
         console.log(`ds change notice: ${iMessage.values.operation}`);
 
@@ -52,9 +62,16 @@ notificatons = {
         }
     },
 
+    /**
+     * We have detected that the document has changed.
+     * This includes additions and removals of datasets!
+     * That means we need to recreate the dataset menu.
+     *
+     * @param iMessage
+     */
     handleDocumentChangeNotice : function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
-        scrambler.initUI();
+        scrambler.initDatasetUI();
         scrambler.refreshUIDisplay();
     },
 

@@ -20,19 +20,26 @@ const scrambler = {
     },
 
     refreshAllData: async function () {
-        const iName = await this.initUI();
+        const tName = await this.initDatasetUI();
         this.iteration = 0;
 
-        if (iName) {
-            await this.setSourceDataset(iName);
+        if (tName) {
+            await this.setSourceDataset(tName);
         } else {
             scrambler.doAlert("oops", `You need a dataset name`);
         }
         this.refreshUIDisplay();
-
     },
 
-    initUI: async function () {
+    /**
+     * Start up the dataset UI correctly by adjusting the dataset menu.
+     *
+     * Called by `refreshAllData()` and from the document change handler,
+     * `handleDocumentChangeNotice()` in `notifications.js`.
+     *
+     * @returns {Promise<*>}    the name of the current dataset
+     */
+    initDatasetUI: async function () {
         const theDefaultName = (this.sourceDataset) ? this.sourceDataset.datasetName : "";
         const datasetMenuGuts = await connect.makeDatasetMenuGuts(theDefaultName);
         document.getElementById("datasetMenuBlock").innerHTML = datasetMenuGuts;
@@ -42,18 +49,41 @@ const scrambler = {
         return startingName;
     },
 
+    /**
+     * Makes a `CODAPDataset` filled with the information from the CODAP dataset of the given name.
+     * This thing will be the root of the scrambling we do.
+     *
+     * Also sets a good value for the scrambling attribute.
+     *
+     * @param iName     the name of the dataset
+     * @returns {Promise<void>}
+     */
     setSourceDataset: async function (iName) {
-        const scrin = scrambler.state.scrambleAttributeName;
-        console.log(`Setting source to [${iName}], incoming scrattribute: [${scrin}]`);
+        //  make the source dataset object!
         this.sourceDataset = await new CODAPDataset(iName);
         await notificatons.registerForDatasetChanges(iName);
         await this.sourceDataset.retrieveAllDataFromCODAP();    //  todo need this?
+
+        //  cope with the scramble attributes
+        const scrin = scrambler.state.scrambleAttributeName;
+        console.log(`Setting source to [${iName}], incoming scrattribute: [${scrin}]`);
         const scrout = this.sourceDataset.findSelectedAttribute(scrambler.state.scrambleAttributeName);
         scrambler.state.scrambleAttributeName = scrout;
         console.log(`    outgoing scrattribute: [${scrout}]`);
 
         if (scrin !== scrout) {
             this.refreshUIDisplay();    //  fix the displayed scramble attribute
+        }
+    },
+
+    /**
+     * Handler when user clicks the big refresh arrow.
+     */
+    handleBigRefresh : async function() {
+        this.refreshAllData();
+
+        if (this.measuresDataset) {
+            await connect.deleteDataset(this.measuresDataset.datasetName);
         }
     },
 
@@ -68,26 +98,45 @@ const scrambler = {
         this.refreshUIDisplay();
     },
 
+    /**
+     * Handles the notification that the user has chosen something from the dataset menu.
+     *
+     * @param theMenu       the menu (DOM object) that the user selected from
+     * @returns {Promise<void>}
+     */
     handleSourceDatasetChange: async function (theMenu) {
         const theName = theMenu.value;
         scrambler.setSourceDataset(theName);
     },
 
-    makeNewClone: async function () {
-        const theClone = this.sourceDataset.clone(scrambler.constants.scrambledPrefix);
-        await theClone.emitDatasetStructureOnly();
-        await theClone.emitCasesFromDataset();
-        await theClone.retrieveAllDataFromCODAP(); //  redo to get IDs right
-        console.log(`cloned to get [${theClone.datasetName}]`);
+    /**
+     * Clone the "source" dataset to make a new one, which will get scrambled.
+     *
+     * @returns {Promise<*>}
+     */
+    makeNewScrambledDataset: async function () {
+        const theScrambledOne = this.sourceDataset.clone(scrambler.constants.scrambledPrefix);
+        await theScrambledOne.emitDatasetStructureOnly();
+        await theScrambledOne.emitCasesFromDataset();
+        await theScrambledOne.retrieveAllDataFromCODAP(); //  redo to get IDs right
+        console.log(`cloned to get [${theScrambledOne.datasetName}] for scrambling`);
 
-        return theClone;
+        return theScrambledOne;
     },
 
+    /**
+     * Makes a new "measures" dataset if necessary. If the dataset already exists,
+     * get an "internal" object with its information.
+     * If not, make a fresh one with the right structure (but no data).
+     *
+     * @returns {Promise<*>}    of a CODAPDataset, which is the Measures dataset
+     */
     makeNewMeasuresDataset: async function () {
 
         let theMeasures = null;
 
         const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+
         if (await connect.datasetExists(tMeasuresDatasetName)) {
             theMeasures = await new CODAPDataset(tMeasuresDatasetName);
             await theMeasures.retrieveAllDataFromCODAP();
@@ -102,6 +151,9 @@ const scrambler = {
         return theMeasures;
     },
 
+    /**
+     * Sets UI values for the scramble attribute and the number of scrambles to match the `state`.
+     */
     matchUItoState: function () {
         document.getElementById("howManyBox").value = Number(scrambler.state.numberOfScrambles);
         document.getElementById("attributeMenu").value = scrambler.state.scrambleAttributeName;
@@ -131,7 +183,7 @@ const scrambler = {
             await connect.deleteDataset(this.measuresDataset.datasetName);
             console.log(`    deleted a dirty measures dataset`);
         }
-        this.scrambledDataset = await this.makeNewClone();
+        this.scrambledDataset = await this.makeNewScrambledDataset();
         this.measuresDataset = await this.makeNewMeasuresDataset();
         scrambler.state.dirtyMeasures = false;
 
@@ -154,6 +206,14 @@ const scrambler = {
         this.showProgress(-1,-1);
     },
 
+    /**
+     * Display progress text showing how many scrambles have been done out of how many.
+     *
+     * Called from `scramble.doScramble()`.
+     *
+     * @param howMany   which scramble we're on
+     * @param outOf     how many scrambles we're doing
+     */
     showProgress: function(howMany, outOf) {
         theProgressBox = document.getElementById("progress");
         theProgressBox.innerHTML = howMany > 0 ? `${howMany}/${outOf}` : "";
@@ -200,7 +260,7 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "2021e",
+        version: "2021f",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             scrambleAttributeName: null,
