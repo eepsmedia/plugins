@@ -2,7 +2,7 @@
 
 ![scrambler picture](doc-art/scrambler-plugin-basic.png)
 
-2021-06-12
+2021-09-11
 
 Here we describe the current version of the **Scrambler** plugin.
 
@@ -16,7 +16,7 @@ Here we describe the current version of the **Scrambler** plugin.
 
 You can try all this yourself in [this sample document](https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=https%3A%2F%2Fcfm-shared.concord.org%2FjEeBNIbK29v5XwtZdmhy%2Ffile.json)
 
-(Want a task? That document is set up to compare 13-year-olds. Set it up to do 10-year-olds!)
+(Want a task? That document is set up to compare 13-year-olds. Make it compare 10-year-olds!)
 
 ## Background and an Example
 
@@ -26,7 +26,7 @@ You want to assess whether it's _plausible_ that the difference in means that yo
 
 To do that, you will make the "null hypothesis" real: 
 you will break any association between `Gender` and `Height` by scrambling the values for one of those attributes.
-Then you would look to see how different the boys and girls seem to be when the difference _is_ just chance.
+Then you look to see how different the boys and girls seem to be when the difference _is_ just chance.
 
 But one trial is not enough. Furthermore, you have to decide what, specifically, to look at to say that the boys are taller.
 In this situation, that means coming up with a number that represents how much taller the boys are. 
@@ -40,14 +40,14 @@ This is very important, and bears highlighting:
 ![scrambler data](doc-art/scrambler-data-table.png)
 
 In our example, we used the difference of means and called it `dMeanHeights` ---
-and dragged it leftwards in th table.
+and dragged it leftwards in the table.
 The CODAP formula looks like this:
 
 ```
 mean(Height, Gender="Male") - mean(Height, Gender="Female")
 ```
 
-We see how much taller boys are in the data (in our case, 5.87 cm in the mean).
+We see how much taller boys are in the actual data (in our case, 5.87 cm in the mean).
 Then we will see how much taller they are when the data have been all scrambled. 
 Because the data are randomly assigned, sometimes the difference will be positive, sometimes negative (the "girls" will be taller).
 
