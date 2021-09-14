@@ -3,7 +3,7 @@
 
 
  ==========================================================================
- reTree.js in reTree.
+ arbor.js in arbor.
 
  Author:   Tim Erickson
 
@@ -50,8 +50,9 @@ for testing: http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://
  * @type {{analysis: null, treePanelView: null, attsInBaum: Array, focusNode: null, focusSplit: null, panelWidthInView: null, state: {}, dependentVariableBoolean: [string], informalDVBoolean: string, informalDVBooleanReversed: string, dependentVariableSplit: null, iFrameDescription: {version: string, name: string, title: string, dimensions: {width: number, height: number}, preventDataContextReorg: boolean}, initialize: arbor.initialize, refreshBaum: arbor.refreshBaum, emitTreeData: arbor.emitTreeData, handleTreeChange: arbor.handleTreeChange, freshState: arbor.freshState, getAndRestoreModel: arbor.getAndRestoreModel, doBaumRestoration: arbor.doBaumRestoration, parseState: arbor.parseState, restoreTree: arbor.restoreTree, restoreNode: arbor.restoreNode, restoreSplit: arbor.restoreSplit, resizeWindow: arbor.resizeWindow, repopulate: arbor.repopulate, redisplay: arbor.redisplay, setDependentVariableByName: arbor.setDependentVariableByName, changeToNewDependentVariable: arbor.changeToNewDependentVariable, changeCurrentSplitTypeUsingMenu: arbor.changeCurrentSplitTypeUsingMenu, setFocusNode: arbor.setFocusNode, setFocusSplit: arbor.setFocusSplit, changeFocusSplitValues: arbor.changeFocusSplitValues, swapFocusSplit: arbor.swapFocusSplit, changeAttributeConfiguration: arbor.changeAttributeConfiguration, displayAttributeConfiguration: arbor.displayAttributeConfiguration, fixDependentVariableMechanisms: arbor.fixDependentVariableMechanisms, gotDataContextList: arbor.gotDataContextList, gotCollectionList: arbor.gotCollectionList, gotAttributeList: arbor.gotAttributeList, getAttributeByName: arbor.getAttributeByName, changeDataContext: arbor.changeDataContext, changeCollection: arbor.changeCollection, changeTreeTypeUsingMenu: arbor.changeTreeTypeUsingMenu, setTreeTypeByString: arbor.setTreeTypeByString, forceChangeFocusAttribute: arbor.forceChangeFocusAttribute, displayStatus: arbor.displayStatus, displayResults: arbor.displayResults, assembleAttributeAndCategoryNames: arbor.assembleAttributeAndCategoryNames, dispatchTreeEvent: arbor.dispatchTreeEvent}}
  */
 
-var arbor = {
+const arbor = {
 
+    strings : null,         //  the actual strings
     analysis: null,        //      connects to CODAP
     treePanelView: null,
     corralView: null,
@@ -69,7 +70,7 @@ var arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '002d',
+        version: '2021a',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -80,6 +81,8 @@ var arbor = {
      * Start up. Called from HTML.
      */
     initialize: async function () {
+
+        arbor.strings = await strings.initializeStrings("en");
 
         focusSplitMgr.showHideAttributeConfigurationSection("hide");
 
@@ -136,6 +139,7 @@ var arbor = {
         arbor.redisplay();
     },
 
+
     getAndRestoreViews: async function () {
         window.addEventListener("resize", this.resizeWindow);
         await arbor.redisplay();
@@ -183,7 +187,7 @@ var arbor = {
 
         var tStateAsString = JSON.stringify(arbor.state);
         var tValues = {
-            predict: arbor.informalDVBoolean,    //  the infomal expression of what is being predicted.
+            predict: arbor.informalDVBoolean,    //  the informal expression of what is being predicted.
             N: N,
             base: (tRes.TP + tRes.FN + tRes.PU) / N,
             state: tStateAsString,
@@ -232,7 +236,7 @@ var arbor = {
     freshState: function () {
 
         return {
-            foo: 42,
+            lang : "en",
             treeType: "classification",
             latestNodeID: 42,
             dependentVariableName: null,
@@ -585,6 +589,11 @@ var arbor = {
 
     changeCollection: function () {
         this.analysis.specifyCurrentCollection($("#collectionMenu").find('option:selected').val());
+    },
+
+    changeLanguage : function() {
+        arbor.state.lang = strings.nextLanguage(arbor.state.lang);
+        strings.initializeStrings(arbor.state.lang);
     },
 
     changeTreeTypeUsingMenu: function () {
