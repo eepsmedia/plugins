@@ -56,6 +56,7 @@ class CODAPDataset {
             })
         }
 
+        //  finally, issue the request
         try {
             const updateScrambleResult = await codapInterface.sendRequest({
                 action: "update",
