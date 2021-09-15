@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/arbor.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-    </list>
+    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="Work on German and internationalization" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +13,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="ProjectId" id="1yBf7WeMrPiNuxsXf6phXSr4oWQ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
@@ -43,7 +36,16 @@
       <option name="presentableId" value="Default" />
       <updated>1631657060993</updated>
       <workItem from="1631657062758" duration="3645000" />
+      <workItem from="1631729742519" duration="919000" />
     </task>
+    <task id="LOCAL-00001" summary="Work on German and internationalization">
+      <created>1631730398036</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1631730398036</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -59,5 +61,10 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Work on German and internationalization" />
+    <option name="LAST_COMMIT_MESSAGE" value="Work on German and internationalization" />
   </component>
 </project>
