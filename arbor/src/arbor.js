@@ -591,9 +591,10 @@ const arbor = {
         this.analysis.specifyCurrentCollection($("#collectionMenu").find('option:selected').val());
     },
 
-    changeLanguage : function() {
+    changeLanguage : async function() {
         arbor.state.lang = strings.nextLanguage(arbor.state.lang);
-        strings.initializeStrings(arbor.state.lang);
+        arbor.strings = await strings.initializeStrings(arbor.state.lang);
+        this.redisplay();
     },
 
     changeTreeTypeUsingMenu: function () {

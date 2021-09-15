@@ -4,92 +4,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee18b2bd-2ef3-452f-a676-823eaf6f4687" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/help/help.de.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/help/help.en.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/arbor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Analysis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ArborTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborTree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttInTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttInTree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ConfusionMatrix.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConfusionMatrix.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor.newCases.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.newCases.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor.selectionManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.selectionManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arborCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arborCODAPConnector.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focusSplitMgr.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/focusSplitMgr.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/CorralAttView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/CorralAttView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/CorralView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/CorralView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/DiagnosisView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/DiagnosisView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/Leaf.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Leaf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeZoneView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/Stripe.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Stripe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/TreePanelView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/TreePanelView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/CODAPDataset.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="HTML File" />
-        <option value="JavaScript File" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$/.." value="master" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1rB1qKjbXa11PtHrXy80s52FsSE" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/help" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/help" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src" />
-    </key>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ee18b2bd-2ef3-452f-a676-823eaf6f4687" name="Default Changelist" comment="" />
-      <created>1618434858711</created>
+      <changelist id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="" />
+      <created>1631657060993</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1618434858711</updated>
-      <workItem from="1618434859968" duration="1342000" />
-      <workItem from="1631543925634" duration="9041000" />
+      <updated>1631657060993</updated>
+      <workItem from="1631657062758" duration="3645000" />
     </task>
     <servers />
   </component>

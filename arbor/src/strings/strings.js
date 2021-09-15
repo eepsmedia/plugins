@@ -27,6 +27,7 @@ strings = {
         es : "Español",
     },
 
+
     nextLanguage: function(iLang = "en") {
         let out = "en";
         if (iLang === "en") {
@@ -51,7 +52,16 @@ strings = {
             emitDataButton2: `emit data`,
             changeLanguageButton : "English",
         },
+        sThenWeAskAbout : `Then we ask about`,
 
+        sfPositiveNegativeNodeDescription : function() {
+            const tSplit = arbor.state.dependentVariableSplit;
+
+            let out = "In this scenario, <br>";
+            out += "'Positive' means " + tSplit.leftLabel + " and 'negative' means " + tSplit.rightLabel + ".";
+
+            return out;
+        },
 
     },
 
@@ -70,6 +80,16 @@ strings = {
             emitDataButton2: `Daten ausgeben`,
             changeLanguageButton : "Deutsch",
 
+        },
+        sThenWeAskAbout : `Dann fragen wir über`,
+
+        sfPositiveNegativeNodeDescription : function() {
+            const tSplit = arbor.state.dependentVariableSplit;
+
+            let out = "In diesem Szenario, <br>";
+            out += "'positiv' bedeutet " + tSplit.leftLabel + " und 'negativ' bedeutet " + tSplit.rightLabel + ".";
+
+            return out;
         },
 
 
