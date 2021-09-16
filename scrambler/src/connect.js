@@ -69,7 +69,7 @@ connect = {
                 break;
         }
 
-        return out;
+        return {number : theNames.length, guts: out};
     },
 
     /**

@@ -3,6 +3,9 @@ const scrambler = {
     scrambledDataset: null,     //      a CODAPDataset.
     measuresDataset: null,      //      a CODAPDataset.
 
+    nDatasets : 0,
+    currentlyScrambling : false,
+
     state: {},
 
     initialize: async function () {
@@ -41,7 +44,10 @@ const scrambler = {
      */
     initDatasetUI: async function () {
         const theDefaultName = (this.sourceDataset) ? this.sourceDataset.datasetName : "";
-        const datasetMenuGuts = await connect.makeDatasetMenuGuts(theDefaultName);
+        const datasetMenuResult = await connect.makeDatasetMenuGuts(theDefaultName);
+        const datasetMenuGuts = datasetMenuResult.guts;
+        this.nDatasets = datasetMenuResult.number;
+
         document.getElementById("datasetMenuBlock").innerHTML = datasetMenuGuts;
         const theDatasetMenu = document.getElementById("datasetMenu");
         const startingName = theDatasetMenu ? theDatasetMenu.value : null;
@@ -84,7 +90,9 @@ const scrambler = {
 
         if (this.measuresDataset) {
             await connect.deleteDataset(this.measuresDataset.datasetName);
+            this.state.iteration = 0;
         }
+
     },
 
     /**
@@ -168,6 +176,9 @@ const scrambler = {
      */
     doScramble: async function (iReps) {
 
+        this.currentlyScrambling = true;
+        this.refreshUIDisplay();
+
         const nReps = iReps ? iReps : scrambler.state.numberOfScrambles;
         const sAttribute = scrambler.state.scrambleAttributeName;  //  name of the attribute to scramble
         scrambler.state.iteration++;
@@ -206,6 +217,8 @@ const scrambler = {
         this.measuresDataset.emitItems(true, newItems);
         connect.showTable(this.measuresDataset.datasetName);
         this.showProgress(-1,-1);
+        this.currentlyScrambling = false;
+        this.refreshUIDisplay();
     },
 
     /**
@@ -227,19 +240,33 @@ const scrambler = {
      */
     refreshUIDisplay: function () {
         console.log(`    refreshing UI display`);
-        const domStatus = document.getElementById("status");
-        domStatus.innerHTML = this.sourceDataset;   //      calls toString(), displays name and number of collections
+        //  const domStatus = document.getElementById("status");
+        //  domStatus.innerHTML = this.sourceDataset;   //      calls toString(), displays name and number of collections
 
         //  set the number of scrambles in the box
         document.getElementById("howManyButton").innerHTML = this.state.numberOfScrambles + "x";
 
         //  set the attribute name in the menu
-        document.getElementById("attributeMenu").innerHTML
-            = scrambler.sourceDataset.makeAttributeMenuGuts(this.state.scrambleAttributeName);
+        const attributeStripe =  document.getElementById("attribute-stripe");
+
+        if (this.nDatasets > 0) {
+            document.getElementById("attributeMenu").innerHTML
+                = scrambler.sourceDataset.makeAttributeMenuGuts(this.state.scrambleAttributeName);
+            attributeStripe.style.display = "flex";
+        } else {
+            attributeStripe.style.display = "none";
+        }
+
+        const buttons = document.getElementById("scramble-buttons-stripe-element");
+        const progress = document.getElementById("progress");
+
+        buttons.style.display = this.currentlyScrambling ? "none" : "flex";
+        progress.style.display = this.currentlyScrambling ? "flex" : "none";
+
 
         //  visibility; shows appropriate message if scrambling is impossible
 
-        const canScramble = this.sourceDataset.structure.collections.length > 1;
+        const canScramble = this.sourceDataset && this.sourceDataset.structure.collections.length > 1;
         const canDoScrambleStripe = document.getElementById("how-many-stripe");
         const cantDoScrambleStripe = document.getElementById("how-many-stripe-disabled");
 
@@ -262,7 +289,7 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "2021f",
+        version: "1.0",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             scrambleAttributeName: null,
@@ -273,8 +300,8 @@ const scrambler = {
         measuresPrefix: "measures_",
         scrambledPrefix: "scrambled_",
         scrambleSetName: "scrset",
-        iterationAttName: "scrit",
-        scrambledAttAttName: "scratt",
+        iterationAttName: "batch",
+        scrambledAttAttName: "scrambled att",
     },
 }
 

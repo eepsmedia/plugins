@@ -442,8 +442,10 @@ class CODAPDataset {
     }
 
     toString() {
-        let out = `${this.structure.title} • `;
-        out += `${this.structure.collections.length} collection(s)`;
+        let out = `${this.structure.title} `;
+        out += (this.structure.collections.length < 2) ?
+            `needs a measure` :
+            `is the dataset name`;
         return out;
     }
 

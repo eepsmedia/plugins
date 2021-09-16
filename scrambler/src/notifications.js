@@ -69,9 +69,16 @@ notificatons = {
      *
      * @param iMessage
      */
-    handleDocumentChangeNotice : function (iMessage) {
+    handleDocumentChangeNotice : async function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
-        scrambler.initDatasetUI();
+
+        const tName = await scrambler.initDatasetUI();
+        if (tName) {
+            await scrambler.setSourceDataset(tName);
+        }  else {
+            scrambler.sourceDataset = null;
+        }
+
         scrambler.refreshUIDisplay();
     },
 
