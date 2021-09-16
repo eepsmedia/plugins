@@ -86,3 +86,5 @@ Set the line to 5.87 (you might need to rescale) to see how unusual it is!
 If CODAP and the Scrambler get confused, pressing the "refresh" arrow can help (it's a circular, recyle-y arrow). 
 That will basically restart the scrambler.
 
+## Blame
+Tim Erickson, Senior Scientist, Epistemological Engineering.
