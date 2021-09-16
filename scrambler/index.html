@@ -37,10 +37,15 @@
              src="../../common/art/refresh-empty.png"
              onclick="scrambler.handleBigRefresh()"
              title="Click to refresh the data"
+             alt="refresh icon"
         >
+<!--
+Help is also here, but I have also rendered is as an html file in the help/ folder
+        href="https://github.com/eepsmedia/plugins/blob/master/scrambler/readme.md"
+-->
         <a class="stripe-element"
            target="_blank"
-           href="https://github.com/eepsmedia/plugins/blob/master/scrambler/readme.md">
+           href="help/">
            <img src="../../common/art/info.png"
            alt="info"  title="Click for detailed help"
            class="roundButton">
@@ -72,7 +77,6 @@
            min="1"
            max="1000"
            oninput="scrambler.handleUIChoice()">
-    </input>
 
     <button class="stripe-element" id="howManyButton"
             onclick="scrambler.doScramble()">I

@@ -111,6 +111,8 @@ const scrambler = {
 
     /**
      * Clone the "source" dataset to make a new one, which will get scrambled.
+     * Note: it doesn't get scrambled in this method!
+     * (called from `doScramble()`)
      *
      * @returns {Promise<*>}
      */
