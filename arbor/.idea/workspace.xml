@@ -4,13 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="Work on German and internationalization" />
+    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="Work on German and internationalization">
+      <change afterPath="$PROJECT_DIR$/../choosy/.idea/choosy.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/runConfigurations.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arbor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/arbor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../choosy/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../choosy/.idea/modules.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1yBf7WeMrPiNuxsXf6phXSr4oWQ" />

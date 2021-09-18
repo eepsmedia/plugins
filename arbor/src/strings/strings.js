@@ -53,6 +53,7 @@ strings = {
             changeLanguageButton : "English",
         },
         sThenWeAskAbout : `Then we ask about`,
+        sAllCasesText : `all of the cases`,
 
         sfPositiveNegativeNodeDescription : function() {
             const tSplit = arbor.state.dependentVariableSplit;
@@ -61,6 +62,14 @@ strings = {
             out += "'Positive' means " + tSplit.leftLabel + " and 'negative' means " + tSplit.rightLabel + ".";
 
             return out;
+        },
+
+        sfNodeCasesDescription : function(iNode) {
+            const tDependentClause = arbor.informalDVBoolean;
+            return `This node represents ${iNode.denominator} cases. <br>` +
+                `These are ${iNode.friendlySubsetDescription()}. <br> ` +
+                `Of these, ${iNode.numerator } are (${tDependentClause}). `;
+
         },
 
     },
@@ -82,6 +91,7 @@ strings = {
 
         },
         sThenWeAskAbout : `Dann fragen wir über`,
+        sAllCasesText : `alle Fälle`,
 
         sfPositiveNegativeNodeDescription : function() {
             const tSplit = arbor.state.dependentVariableSplit;
@@ -91,6 +101,14 @@ strings = {
 
             return out;
         },
+
+        sfNodeCasesDescription : function(iNode) {
+            const tDependentClause = arbor.informalDVBoolean;
+            return `Dieser Knoten repräsentiert ${iNode.denominator} Fälle. <br>` +
+                `Das sind ${iNode.friendlySubsetDescription()}. <br>` +
+                `Von diesen, ${iNode.numerator } sind (${tDependentClause}). `;
+
+        }
 
 
 

@@ -440,7 +440,7 @@ Node.prototype.toString = function () {
 
 Node.prototype.friendlySubsetDescription = function () {
     let out = "";
-    const tAllCasesText = "all of the cases";
+    const tAllCasesText = arbor.strings.sAllCasesText;
     const tParent = this.parentNode();
     if (tParent) {
         const tDesc = tParent.friendlySubsetDescription();
@@ -463,7 +463,6 @@ Node.prototype.friendlySubsetDescription = function () {
 
 Node.prototype.longDescription = function () {
 
-    const tDependentClause = arbor.informalDVBoolean;
 
     /*
         const tResultCounts = this.getResultCounts();
@@ -476,9 +475,7 @@ Node.prototype.longDescription = function () {
     if (!this.parentNode()) {   //  dependent variable only
         out += arbor.strings.sfPositiveNegativeNodeDescription() + "<br>&mdash;&mdash;<br>";
     }
-    out += "This node represents " + this.denominator + " cases. <br>";
-    out += "These are " + this.friendlySubsetDescription() + ". <br> ";
-    out += "Of these, " + this.numerator + " are (" + tDependentClause + "). ";
+    out += arbor.strings.sfNodeCasesDescription(this);
 
     //  out += (arbor.state.dependentVariableSplit.isCategorical ? tProportionText : (tMeanText + " " + tMSDtext));
 
