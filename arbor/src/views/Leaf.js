@@ -55,7 +55,7 @@ Leaf.prototype.refreshLeaf = function () {
     this.setLeafColor();        //  set the color for this leaf
     this.setToolTip();
 
-    var tAtts = this.leafDimensions();
+    const tAtts = this.leafDimensions();
 
     this.paper.attr(tAtts);
     this.bg.attr(tAtts);
@@ -67,8 +67,8 @@ Leaf.prototype.refreshLeaf = function () {
 };
 
 Leaf.prototype.leafDimensions = function () {
-    var labelSize = this.leafLabel.getBBox();
-    var leafWidth = labelSize.width + 2 * arbor.constants.treeObjectPadding;
+    const labelSize = this.leafLabel.getBBox();
+    const leafWidth = labelSize.width + 2 * arbor.constants.treeObjectPadding;
 
     return {
         width: leafWidth,
@@ -79,7 +79,7 @@ Leaf.prototype.leafDimensions = function () {
 };
 
 Leaf.prototype.setLeafColor = function () {
-    var tColor = "gray";
+    let tColor = "gray";
     switch( this.myNode.stopSign ) {
         case arbor.constants.diagnosisPlus:
             tColor = arbor.constants.leafColorPositive;
@@ -96,17 +96,17 @@ Leaf.prototype.setLeafColor = function () {
 
 Leaf.prototype.setToolTip = function() {
 
-    var tText = "";
+    let tText = "";
 
     switch( this.myNode.stopSign ) {
         case arbor.constants.diagnosisPlus:
-            tText = "Your best guess for these cases: " + arbor.state.dependentVariableSplit.branchDescription("L");
+            tText = `${arbor.strings.sYourBestGuess} ${arbor.state.dependentVariableSplit.branchDescription("L")}`;
             break;
         case arbor.constants.diagnosisMinus:
-            tText = "Your best guess for these cases: " + arbor.state.dependentVariableSplit.branchDescription("R");
+            tText = `${arbor.strings.sYourBestGuess} ${arbor.state.dependentVariableSplit.branchDescription("R")}`;
             break;
         default:
-            tText = "You have not assigned a diagnosis yet. Click to assign!"
+            tText = arbor.strings.sLeafNoDiagnosis;
             break;
     }
 

@@ -398,7 +398,7 @@ const arbor = {
     },
 
     redisplay: function () {
-        console.log("Redisplay (in arbor.js) ------------------------");
+        console.log(`Redisplay (in arbor.js, ${arbor.strings.staticStrings.changeLanguageButton}) ------------------------`);
 
         this.fixDependentVariableMechanisms();  //  sets appropriate label text
         focusSplitMgr.displayAttributeConfiguration();   //  the HTML on the main page

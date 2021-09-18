@@ -1,4 +1,3 @@
-
 strings = {
 
     initializeStrings: async function (iLang = "en") {
@@ -13,22 +12,27 @@ strings = {
         const theStrings = strings[iLang];
 
         for (const theID in theStrings.staticStrings) {
-            if(theStrings.staticStrings.hasOwnProperty(theID)) {
+            if (theStrings.staticStrings.hasOwnProperty(theID)) {
                 const theValue = theStrings.staticStrings[theID];
-                document.getElementById(theID).innerHTML = theValue
+                try {
+                    document.getElementById(theID).innerHTML = theValue;
+                    console.log(`Set string for ${theID} in ${iLang}`);
+                } catch (msg) {
+                    console.log(msg + ` on ID = ${theID}`);
+                }
             }
         }
         return theStrings;
     },
 
-    languageNames : {
-        en : "English",
-        de : "Deutsch",
-        es : "Español",
+    languageNames: {
+        en: "English",
+        de: "Deutsch",
+        es: "Español",
     },
 
 
-    nextLanguage: function(iLang = "en") {
+    nextLanguage: function (iLang = "en") {
         let out = "en";
         if (iLang === "en") {
             out = "de"
@@ -37,8 +41,8 @@ strings = {
         return out;
     },
 
-    en : {
-        staticStrings : {
+    en: {
+        staticStrings: {
             sShowPredictionLeaves: `show prediction "leaves"`,
             sTreeTab: `tree`,
             sTableTab: `table`,
@@ -50,12 +54,29 @@ strings = {
             refreshAllButton2: `refresh all`,
             refreshDataButton2: `refresh data`,
             emitDataButton2: `emit data`,
-            changeLanguageButton : "English",
+            changeLanguageButton: "English",
+            "truth-head": "truth",
+            "pred-head": "prediction",
+            "no-pred-head": "no prediction",
         },
-        sThenWeAskAbout : `Then we ask about`,
-        sAllCasesText : `all of the cases`,
+        sIs: "is",
+        sOr: "or",
+        sAnd: "and",
+        sThenWeAskAbout: `Then we ask about`,
+        sAllCasesText: `all of the cases`,
+        sPredict: `Predict`,
+        sNoPrediction: `no prediction`,
+        sNoCasesToProcess: `no cases to process`,
+        sYourBestGuess: `your best guess for these cases:`,
+        sLeafNoDiagnosis: `You have not assigned a diagnosis yet. Click to assign!`,
+        sMoreCategories: `more categories`,    //  used in the labels for links
+        sNoCategories: `no categories`,    //  used in the labels for links
 
-        sfPositiveNegativeNodeDescription : function() {
+        sfIsAre : function(howMany) {
+            return (howMany === 1) ? "is" : "are";
+        },
+
+        sfPositiveNegativeNodeDescription: function () {
             const tSplit = arbor.state.dependentVariableSplit;
 
             let out = "In this scenario, <br>";
@@ -64,18 +85,34 @@ strings = {
             return out;
         },
 
-        sfNodeCasesDescription : function(iNode) {
+        sfNodeCasesDescription: function (iNode) {
             const tDependentClause = arbor.informalDVBoolean;
-            return `This node represents ${iNode.denominator} cases. <br>` +
-                `These are ${iNode.friendlySubsetDescription()}. <br> ` +
-                `Of these, ${iNode.numerator } are (${tDependentClause}). `;
-
+            return (`
+This node represents ${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.
+These are ${iNode.friendlySubsetDescription()}.
+Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${tDependentClause}). 
+`
+            );
         },
 
+        sfGetStripeToolTipText: function (iStripe) {
+            var tVariableName = "";
+            if (iStripe.parent.myNode.attributeSplit) {
+                tVariableName = iStripe.parent.myNode.attributeSplit.attName;
+            }
+
+            return {
+                "plusMinus": `change the diagnosis in this 'leaf' node from + to – or vice versa`,
+                "leftRight": `swap the labels for ${iStripe.sText}`,
+                "trash": `remove the children of this node (get rid of ${iStripe.sText} here)`,
+                "configure": `configure this attribute: ${tVariableName}`,
+                "dependent": `change positive diagnoses to negative and vice versa`,
+            }
+        },
     },
 
-    de : {
-        staticStrings : {
+    de: {
+        staticStrings: {
             sShowPredictionLeaves: `zeigen die "Blätter"`,
             sTreeTab: `Baum`,
             sTableTab: `Tabelle`,
@@ -87,13 +124,30 @@ strings = {
             refreshAllButton2: `alle erfrischen`,
             refreshDataButton2: `Daten erfrischen`,
             emitDataButton2: `Daten ausgeben`,
-            changeLanguageButton : "Deutsch",
+            changeLanguageButton: "Deutsch",
+            "truth-head": "Wahrheit",
+            "pred-head": "Vorhersage",
+            "no-pred-head": "keine Vorhersage",        //  todo: 2021-09-18 not appearing. Why not?
 
         },
-        sThenWeAskAbout : `Dann fragen wir über`,
-        sAllCasesText : `alle Fälle`,
+        sIs: "ist",
+        sOr: "oder",
+        sAnd: "und",
+        sThenWeAskAbout: `Dann fragen wir über`,
+        sAllCasesText: `alle Fälle`,
+        sPredict: `Vorhersagen`,
+        sNoPrediction: `keine Vorhersage`,
+        sNoCasesToProcess: `keine Fälle zu bearbeiten`,
+        sYourBestGuess: `Ihre beste Vermutung für diese Fälle:`,
+        sLeafNoDiagnosis: `Sie haben noch keine Diagnose zugeordnet. Zum Zuweisen klicken!`,
+        sMoreCategories: `weitere Kategorien`,
+        sNoCategories: `keine Kategorien`,
 
-        sfPositiveNegativeNodeDescription : function() {
+        sfIsAre : function(howMany) {
+            return (howMany === 1) ? "ist" : "sind";
+        },
+
+        sfPositiveNegativeNodeDescription: function () {
             const tSplit = arbor.state.dependentVariableSplit;
 
             let out = "In diesem Szenario, <br>";
@@ -102,20 +156,35 @@ strings = {
             return out;
         },
 
-        sfNodeCasesDescription : function(iNode) {
+        sfNodeCasesDescription: function (iNode) {
             const tDependentClause = arbor.informalDVBoolean;
-            return `Dieser Knoten repräsentiert ${iNode.denominator} Fälle. <br>` +
-                `Das sind ${iNode.friendlySubsetDescription()}. <br>` +
-                `Von diesen, ${iNode.numerator } sind (${tDependentClause}). `;
+            return (`
+Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. <br>
+Das sind ${iNode.friendlySubsetDescription()}. <br>
+Von diesen, ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${tDependentClause}). 
+`
+            );
 
-        }
+        },
 
+        sfGetStripeToolTipText: function (iStripe) {
+            var tVariableName = "";
+            if (iStripe.parent.myNode.attributeSplit) {
+                tVariableName = iStripe.parent.myNode.attributeSplit.attName;
+            }
+
+            return {
+                "plusMinus": `Ändere die Diagnose in diesem 'Blatt'-Knoten von + auf – oder umgekehrt`,
+                "leftRight": `tausche die Etiketten gegen ${iStripe.sText}`,
+                "trash": `entferne die Kinder dieses Knotens (werde ${iStripe.sText} hier los)`,
+                "configure": `dieses Attribut konfigurieren: ${tVariableName}`,
+                "dependent": `positive Diagnosen in negative umwandeln und umgekehrt`,
+            }
+        },
 
 
     },
 
-    es : {
-
-    },
+    es: {},
 
 }

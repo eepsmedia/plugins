@@ -9,7 +9,7 @@ AttributeSplit = function( iAtt ) {
     this.oneMissingBoolean = this.makeMissingFilter(this.attName);
 
     this.cutpoint = null;       //  if continuous, the numeric value separating left values from right
-    this.operator = "<";        //  if countinuous, the operator expressing which values are "left" relative to the cutpoint
+    this.operator = "<";        //  if continuous, the operator expressing which values are "left" relative to the cutpoint
     this.leftCategories = [];   //  if categorical, the (text) category values that define the "left" output
 
     this.leftLabel = "low";     //  text representing the "Left" value
@@ -199,16 +199,17 @@ AttributeSplit.prototype.branchDescription = function( iLorR ) {
         var theCategories = this.getListOfCategories(iLorR);
         switch (theCategories.length) {
             case 0:
-                out = "no categories";
+                out = arbor.strings.sNoCategories;
                 break;
             case 1:
-                out = this.attName + " is " + theCategories[0];
+                out = `${this.attName} ${arbor.strings.sIs} ${theCategories[0]}`;
                 break;
             case 2:
-                out = this.attName + " is " + theCategories[0] + " or " + theCategories[1];
+                out = `${this.attName} ${arbor.strings.sIs} ${theCategories[0]} ${arbor.strings.sOr} ${theCategories[1]}`;
                 break;
             default:
-                out = this.attName + " is " + theCategories[0] + " or " + (theCategories.length - 1) + " more categories";
+                out = `${this.attName} ${arbor.strings.sIs} ${theCategories[0]} 
+                ${arbor.strings.sOr} ${theCategories.length - 1} ${arbor.strings.sMoreCategories}`;
                 break;
         }
     } else {    //  must be numerical/continuous
