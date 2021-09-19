@@ -48,9 +48,13 @@ let sentimento = {
 
     analyze: function () {
         sentimento.state.sampleNumber++;
+        const stop = document.getElementById("doStopWords").checked;
 
         sentimento.state.theText = sentimento.preprocessText();
+
+        //  convert to an array
         const theWords = sentimento.state.theText.split(" ");
+        let wordCount = 0;
         let tSentimentWords = [];
         theWords.forEach((w) => {
             const foundSentimentWord = sentimentWordList.find(swobject => {
@@ -59,12 +63,19 @@ let sentimento = {
             if (foundSentimentWord) {
                 tSentimentWords.push(foundSentimentWord)
             }
+            if (stop) {
+                if (!stopWords.includes(w)) {
+                    wordCount++;
+                }
+            } else {
+                wordCount++
+            }
         });
 
         const theTextValues = {
             textNumber: sentimento.state.sampleNumber,
             text: sentimento.state.theText,
-            nWords: theWords.length,
+            nWords: wordCount,
         };
 
         if (tSentimentWords.length !== 0) {
@@ -82,7 +93,12 @@ let sentimento = {
     },
 
     /**
-     * Convert the string in the textarea into an ARRAY of suitable characters
+     * Convert the string in the textarea by
+     *   * removing apostrophes
+     *   * removing accents
+     *   * removing punctuation
+     *   * removing double spaces
+     *   * transforming everything to lower case
      */
     preprocessText : function( ) {
         const punct =  /[!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~]/g;

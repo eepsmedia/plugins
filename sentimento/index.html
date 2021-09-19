@@ -46,9 +46,9 @@ LOCAL, TESTING:     http://localhost:8888/plugins/sentimento/
     <script src="../common/pluginHelper.js"></script>
     <script src="../common/TEEUtils.js"></script>
 
-    <script src="senti.js"></script>
-    <script src="sentiConnect.js"></script>
-    <script src="sentimentWordList.js"></script>
+    <script src="src/senti.js"></script>
+    <script src="src/sentiConnect.js"></script>
+    <script src="src/sentimentWordList.js"></script>
 
 
 </head>
@@ -59,6 +59,9 @@ LOCAL, TESTING:     http://localhost:8888/plugins/sentimento/
     <textarea id="theText" ></textarea>
     <br>
     <input type="button" value="analyze" onclick="sentimento.analyze()">
+    <br>
+    <input type="checkbox" id="doStopWords">
+    <label for="doStopWords">process stop words</label>
     <p>Only letters and spaces are saved; accents are removed.
         <a href="https://docs.google.com/document/d/1rxLi9qTfOzomVrwMcfRQNifMsBnnirsIhlIGeIzjxzk/edit?usp=sharing"
         target="_blank">
