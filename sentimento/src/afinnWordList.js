@@ -1,4 +1,4 @@
-sentimentWordList = 
+const afinnWordList =
 [
 {"word":"abandon","sentiment":-2},
 {"word":"abandoned","sentiment":-2},

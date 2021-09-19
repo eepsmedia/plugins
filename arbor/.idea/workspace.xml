@@ -5,20 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="Work on German and internationalization">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../choosy/.idea/choosy.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/runConfigurations.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sentimento/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sentimento/.idea/runConfigurations.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sentimento/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../sentimento/src/vaderWordList.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ArborTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborTree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Leaf.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Leaf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Stripe.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Stripe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../choosy/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../choosy/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sentimento/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../sentimento/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sentimento/src/senti.js" beforeDir="false" afterPath="$PROJECT_DIR$/../sentimento/src/senti.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sentimento/src/sentimentWordList.js" beforeDir="false" afterPath="$PROJECT_DIR$/../sentimento/src/afinnWordList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sentimento/src/vaderSentimentWords.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
