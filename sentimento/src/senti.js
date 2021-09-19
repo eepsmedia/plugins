@@ -30,7 +30,7 @@ LOCAL: http://localhost:8000/plugins/sentimento/
 let sentimento = {
 
     constants: {
-        version: "001a",
+        version: "2021a",
         kSentiDataSetName: "text",
         kSentiDataSetTitle: "text data",
         kSentiTextCollectionName: "texts",
@@ -56,6 +56,7 @@ let sentimento = {
         const theWords = sentimento.state.theText.split(" ");
         let wordCount = 0;
         let tSentimentWords = [];
+        let tStoppedWords = [];
         theWords.forEach((w) => {
             const foundSentimentWord = sentimentWordList.find(swobject => {
                 return swobject.word === w
@@ -64,13 +65,21 @@ let sentimento = {
                 tSentimentWords.push(foundSentimentWord)
             }
             if (stop) {
-                if (!stopWords.includes(w)) {
+                if (stopWords.includes(w)) {
+                    if (!tStoppedWords.includes(w)) {
+                        tStoppedWords.push(w);
+                    }
+                    console.log(`    stopped ${w}`)
+                } else {
+                    console.log(`    OK ${w}`)
                     wordCount++;
                 }
             } else {
                 wordCount++
             }
         });
+
+        this.displayStoppedWords(tStoppedWords);
 
         const theTextValues = {
             textNumber: sentimento.state.sampleNumber,
@@ -108,5 +117,14 @@ let sentimento = {
         const punctuationToSpace = noAccents.replace(punct," ");
         const removeDoubleSpaces = punctuationToSpace.replace(/\s\s+/g," ");
         return removeDoubleSpaces.toLowerCase();
-    }
+    },
+
+    displayStoppedWords : function(iWords) {
+        const stopText = iWords.join(`, `);
+        const stoppedWordsDisplay = document.getElementById("stoppedWordsDisplay");
+
+        stoppedWordsDisplay.style.display = (stopText.length > 0) ? "flex" : "none";
+
+        stoppedWordsDisplay.innerHTML = `stopped words: ${stopText}`;
+    },
 };

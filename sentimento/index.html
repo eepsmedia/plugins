@@ -27,8 +27,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 limitations under the License.
 ==========================================================================
 
-LOCAL, TESTING:     http://localhost:8888/plugins/sentimento/
-                    http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/sentimento/
+LOCAL, TESTING:     https://localhost/plugins/sentimento/
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/sentimento
 
 -->
 
@@ -49,6 +49,7 @@ LOCAL, TESTING:     http://localhost:8888/plugins/sentimento/
     <script src="src/senti.js"></script>
     <script src="src/sentiConnect.js"></script>
     <script src="src/sentimentWordList.js"></script>
+    <script src="src/stopWords.js"></script>
 
 
 </head>
@@ -59,9 +60,10 @@ LOCAL, TESTING:     http://localhost:8888/plugins/sentimento/
     <textarea id="theText" ></textarea>
     <br>
     <input type="button" value="analyze" onclick="sentimento.analyze()">
-    <br>
     <input type="checkbox" id="doStopWords">
-    <label for="doStopWords">process stop words</label>
+    <label for="doStopWords">skip over stop words</label>
+    <br>
+    <div id="stoppedWordsDisplay"></div>
     <p>Only letters and spaces are saved; accents are removed.
         <a href="https://docs.google.com/document/d/1rxLi9qTfOzomVrwMcfRQNifMsBnnirsIhlIGeIzjxzk/edit?usp=sharing"
         target="_blank">
