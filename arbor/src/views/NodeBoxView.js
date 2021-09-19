@@ -209,9 +209,10 @@ NodeBoxView.prototype.makeRootStripe = function () {
     let tText;
 
     if (arbor.state.treeType === "classification") {
-        tText = "Predict " + arbor.state.dependentVariableSplit.attName + " = " + arbor.state.dependentVariableSplit.leftLabel;
+        tText = `${arbor.strings.sPredict} ${arbor.state.dependentVariableSplit.attName} 
+        = ${arbor.state.dependentVariableSplit.leftLabel}`;
     } else {
-        tText = "Predict " + arbor.constants.kMu + "(" + arbor.state.dependentVariableSplit.attName + ")";
+        tText = `${arbor.strings.sPredict} ${arbor.constants.kMu}(${arbor.state.dependentVariableSplit.attName})`;
     }
 
     const tStripe = new Stripe(

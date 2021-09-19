@@ -1,0 +1,321 @@
+<!--
+==========================================================================
+
+ * Created by tim on 9/26/16.
+ 
+ 
+ ==========================================================================
+ index.html in arbor.
+
+HTML wrapper for ....
+
+    Author:   Tim Erickson
+
+Copyright (c) 2016 by The Concord Consortium, Inc. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<!--
+Global: IMPORT THIS:
+
+    local just this: http://localhost/plugins/arbor/
+    local in local codap :
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/arbor
+
+
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=25898  //  breast cancer, not local
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=24691  //  problem data set with cars
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=24624  //  small NHANES with missings, but LOCAL tree
+https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22505       //  local soccer
+https://localhost/~tim/codap/static/dg/en/cert/index.html#file=googleDrive:0B7REdgmgslRzS0RiOTdSREJwTGs   //     same data, original.
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=22505  //  has red card data
+https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS used for developing save state
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Arbor</title>
+
+    <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.min.css">
+    <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
+    <link rel='stylesheet' type='text/css' href='css/confusion-matrix.css'/>
+
+    <!-- These two scripts take care of the communication with CODAP  -->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codap_helper_newAPI.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+
+    <!--    other common files          -->
+    <script src="../common/snap.svg-min.js"></script>
+    <script src="../common/events.js"></script>
+    <script src="../common/TEEUtils.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
+
+    <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    -->
+
+    <!--
+        Models and Controllers
+    -->
+    <script src="src/arbor.js"></script>
+    <script src="src/arbor-ui.js"></script>
+    <script src="src/arborCODAPConnector.js"></script>
+    <script src="src/arbor.selectionManager.js"></script>
+    <script src="src/focusSplitMgr.js"></script>
+    <script src="src/arbor.newCases.js"></script>
+    <script src="src/AttInTree.js"></script>
+    <script src="src/Analysis.js"></script>
+    <script src="src/ArborTree.js"></script>
+    <script src="src/ArborNode.js"></script>
+    <script src="src/AttributeSplit.js"></script>
+
+    <script src="src/strings/strings.js"></script>
+
+    <!--
+        Views
+    -->
+    <script src="src/views/Stripe.js"></script>
+    <script src="src/views/Leaf.js"></script>
+    <script src="src/views/CorralView.js"></script>
+    <script src="src/views/TreePanelView.js"></script>
+    <script src="src/views/NodeZoneView.js"></script>
+    <script src="src/views/NodeBoxView.js"></script>
+    <script src="src/views/CorralAttView.js"></script>
+    <script src="src/views/DiagnosisView.js"></script>
+
+    <!--
+        Set up JQUERY-UI stuff
+    -->
+    <script>
+        $(function () {
+            $("#tabs").tabs();
+        });
+    </script>
+</head>
+<body>
+
+<div id="tabs">
+    <ul>
+        <li><a id="sTreeTab" href="#tree">T</a></li>
+        <li><a id="sTableTab" href="#table">Ta</a></li>
+        <li><a id="sSettingsTab" href="#settings">Se</a></li>
+        <li><a id="sHelpTab" href="#help">?!?!</a></li>
+    </ul>
+
+<!--
+    Table tab
+-->
+    <div id="table">
+        <div id="confusion-matrix">
+            <div id="table-head" class="box">foo-title</div>
+            <div id="truth-head" class="box">truth</div>
+            <div id="truth-positive-head" class="box">sick</div>
+            <div id="truth-negative-head" class="box">well</div>
+            <div id="pred-head" class="box">prediction</div>
+            <div id="pred-positive-head" class="box">sick</div>
+            <div id="pred-negative-head" class="box">well</div>
+            <div id="TP" class="cell">30</div>
+            <div id="TN" class="cell">40</div>
+            <div id="FP" class="cell">10</div>
+            <div id="FN" class="cell">20</div>
+
+            <div id="no-pred-head" class="no-pred">no prediction</div>
+            <div id="PU" class="no-pred">44</div>
+            <div id="NU" class="no-pred">66</div>
+        </div>
+        <div class="hBox" style="padding-top : 2em;">
+            <div>
+                <button id="refreshAllButton2" onclick="arbor.refreshBaum('all')">refresh everything</button>
+                <button id="refreshDataButton2" onclick="arbor.refreshBaum('data')">refresh data</button>
+            </div>
+            &nbsp;&nbsp;&nbsp;
+            <div>
+                <button id="emitDataButton2" onclick="arbor.emitTreeData()">emit data</button>
+            </div>
+
+        </div>
+
+    </div>
+
+<!--
+    Tree tab
+-->
+    <div id="tree">
+
+        <div>
+            <input id="showDiagnosisLeaves" type="checkbox" onchange="arbor.refreshBaum('views')">
+            <label for="showDiagnosisLeaves" id="sShowPredictionLeaves">leaves?</label>
+        </div>
+
+        <svg id="treePaper" class="noselect" width="100%" height="300">
+            <rect height="100%" width="100%" fill="dodgerblue"></rect>
+        </svg>
+        <svg id="corral" class="noselect" width="100%" height="40"></svg>
+
+        <div class="vBox">
+            <div id="statusDiv">
+                <span id="resultsText">No results yet</span>
+            </div>
+            <div class="hBox">
+                <div>
+                    <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
+                    <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                <div>
+                    <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--
+    Attribute configuration section
+    (not a tab)
+         -->
+
+    <div id="attributeConfigurationSection" visibility="hidden">
+
+        <div class="attributeConfigurationHead">
+            Configure "<span id="splitVariableName"></span>"
+            <button class="attributeConfigurationDoneButton"
+                    onclick="focusSplitMgr.showHideAttributeConfigurationSection()">
+                Done!
+            </button>
+
+        </div>
+
+        <table>
+            <tr>
+                <th class="leftSide" id="leftHeaderText">Left branch</th>
+                <th class="rightSide" id="rightHeaderText">Right branch</th>
+            </tr>
+            <tr>
+                <td class="leftSide">
+                    <label for="leftLabelText">Label:</label>
+                    <input id="leftLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
+                </td>
+                <td class="rightSide">
+                    <label for="rightLabelText">Label:</label>
+                    <input id="rightLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
+                </td>
+            </tr>
+
+            <tr id="continuousAttributeConfiguration">
+                <td class="leftSide">
+                    <span id="continuousAttributeName">Variable</span>
+                    <select id="operatorMenu" onchange="focusSplitMgr.changeAttributeConfiguration()">
+                        <option value="<"> <</option>
+                        <option value=">"> ></option>
+                        <option value=">="> >=</option>
+                        <option value="<="> <=</option>
+                        <option value="=="> ==</option>
+                    </select>
+                    <input id="cutpointText" type="number" onchange="focusSplitMgr.changeAttributeConfiguration()">
+                </td>
+                <td class="rightSide" width="300px">
+                    <span id="continuousAttributeReverseExpression">x ≤ 3</span>
+                </td>
+            </tr>
+
+            <tr id="categoricalAttributeConfiguration">
+                <td class="leftSide">
+                    <div id="leftCategoryButtons"></div>
+                </td>
+                <td class="rightSide">
+                    <div id="rightCategoryButtons"></div>
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="attributeConfigurationFooter">
+            <label for="currentSplitTypeMenu">Variable type:</label>
+            <select id="currentSplitTypeMenu" onchange="focusSplitMgr.changeCurrentSplitTypeUsingMenu()">
+                <option value="continuous">Continuous</option>
+                <option value="categorical">Categorical</option>
+            </select>
+            &nbsp;&nbsp;
+            <label for="swapImage">Swap left and right: </label>
+            <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="18"/>
+        </div>
+
+    </div>
+
+<!--    Settings tab       -->
+
+    <div id="settings">
+        <div class="baumControlGroup" onclick="arbor.changeLanguage()">
+            <button id="changeLanguageButton" type="button" name="Language">Language</button>
+        </div>
+        <div class="baumControlGroup">
+            <!-- <p>Laura Martignon probably doesn't want you to use this. But Frieda Reichsman does.</p> -->
+            <input id="usePercentOption" type="checkbox" checked>
+            <label for="usePercentOption">use percentages in node boxes</label>
+
+        </div>
+        <div class="baumControlGroup">
+            <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
+            <label for="treeTypeMenu">Tree type</label>
+            <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
+                <option value="classification" selected>classification</option>
+                <option value="regression">regression</option>
+            </select>
+        </div>
+        <div class="baumControlGroup">
+            <p> Change these at your peril.</p>
+
+            <label for="dataContextMenu">Dataset: </label>
+            <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
+            <!--
+                        <label for="collectionMenu">Collection: </label>
+                        <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
+            -->
+        </div>
+        <div class="baumControlGroup">
+            Credits! Gear icon made by <a href="https://www.flaticon.com/authors/tutsplus" title="TutsPlus">TutsPlus</a>
+            from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+            is licensed (<a href="http://creativecommons.org/licenses/by/3.0/"
+                            title="Creative Commons BY 3.0" target="_blank">CC 3.0</a>) by eeps media
+            <br><br>
+            Thanks to many people, including Joachim Engel, Laura Martignon, Bill Finzer, Joan Heller, Frieda Reichsman,
+            Suzanne Podworny, Thomas Wassong, and
+            Michael Schlichtig.
+        </div>
+    </div>
+
+
+    <div id="help">
+        <p>You should never see this! A language-specific help file should be here.</p>
+
+    </div>
+</div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        arbor.initialize();
+    }
+</script>
+</html>

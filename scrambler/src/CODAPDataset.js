@@ -32,21 +32,15 @@ class CODAPDataset {
         const lastCollection = this.structure.collections[nCollections - 1];
 
         const theCases = lastCollection.cases;
+        let valueArray = [];        //  array that just holds the values of this attribute, one per case
 
-        /**
-         * `valueArray` holds the values of this attribute (`iAttName`).
-         *  There is one element of the array for every case in the collection.
-         * @type {*[]}
-         */
-        let valueArray = [];        //
         theCases.forEach(aCase => {
             valueArray.push(aCase.values[iAttName]);
         })
 
-        valueArray.scramble();  //  this is an extension of `Array` at the bottom of `scrambler.js`
+        valueArray.scramble();
 
         //  construct a request to CODAP to push these values into this dataset
-        //  this way, CODAP will compute the measures using its own formula.
         const theResource = `dataContext[${this.datasetName}].collection[${lastCollection.name}].case`;
 
         //  construct a "values" array (`theValues`) for an update.case message
@@ -57,12 +51,11 @@ class CODAPDataset {
             const oneValuesObject = {};
             oneValuesObject[iAttName] = valueArray[i];
             theValues.push({
-                id: thisCase.id,        //  note: the `id` values have to be right! That's why we use dictionaries.
+                id: thisCase.id,
                 values: oneValuesObject,
             })
         }
 
-        //  finally, issue the request
         try {
             const updateScrambleResult = await codapInterface.sendRequest({
                 action: "update",
@@ -366,47 +359,21 @@ class CODAPDataset {
 
     }
 
-    /**
-     * This gets called when we're setting up for a scramble, in `scrambler.makeNewScrambledDataset`.
-     * The simple purpose is to make a copy of the original dataset so we can scramble it without
-     * messing up the data.
-     *
-     * But the hidden kludge is to ensure that the parentIDs in our copy of the dataset
-     * match the ones in CODAP, so that we can output the scrambled data to the right cases.
-     * This is the reason for the "dictionaries" that you will see.
-     *
-     * @returns {Promise<void>}
-     */
     async emitCasesFromDataset() {
 
         let theNextDictionary = null;
 
-        //  emit the data one collection at a time
         for (let i = 0; i < this.structure.collections.length; i++) {
             const theCollection = this.structure.collections[i];
             theNextDictionary = await this.emitCasesFromCollection(theCollection, theNextDictionary);
         }
     }
 
-    /**
-     * Emit the cases from one collection.
-     *
-     * Constructs the dictionary we need in order to make ParentIDs work right.
-     *
-     * @param iColl     the collection (an array member in `this.collections`)
-     * @param parentDictionary
-     * @returns {Promise<{}>}  an ID dictionary for the next lower level of the hierarchy
-     */
     async emitCasesFromCollection(iColl, parentDictionary) {
         const theResource = `dataContext[${this.datasetName}].collection[${iColl.name}].case`;
         const theValues = [];       //  array of key/value pairs
         const theOldIDs = [];
 
-        /**
-         * `internalCaseData` is what we have stored internally, which we are going to send to CODAP.
-         *  `outputCase` is what we send to CODAP. Nearly identical, except for parent IDs, which
-         *      CODAP changed when we output the previous level (if any).
-         */
         for (let i = 0; i < iColl.cases.length; i++) {
             const internalCaseData = iColl.cases[i];
             const outputCase = {};
@@ -430,9 +397,6 @@ class CODAPDataset {
         const theCreateCasesResults = await codapInterface.sendRequest(theMessage);
         const theIDDictionary = {};
 
-        //  construct a "dictionary" of the case IDs so we can translate the old
-        //  case IDs to the new ones.
-
         for (let i = 0; i < theCreateCasesResults.values.length; i++) {
             theIDDictionary[theOldIDs[i]] = theCreateCasesResults.values[i].id;
             iColl.cases[i].id = theCreateCasesResults.values[i].id;
@@ -442,10 +406,8 @@ class CODAPDataset {
     }
 
     toString() {
-        let out = `${this.structure.title} `;
-        out += (this.structure.collections.length < 2) ?
-            `needs a measure` :
-            `is the dataset name`;
+        let out = `${this.structure.title} • `;
+        out += `${this.structure.collections.length} collection(s)`;
         return out;
     }
 
@@ -482,12 +444,6 @@ class CODAPDataset {
     }
 
 
-    /**
-     * Take an existing internal dataset, a `CODAPDataset`, and make it a measures
-     * dataset.
-     *
-     * Note that this only operates internally, not on any CODAP data.
-     */
     makeIntoMeasuresDataset() {
 
         //  define the top-level "iterations" collection
@@ -536,15 +492,6 @@ class CODAPDataset {
         };
     }
 
-    /**
-     * If the suggested name is in the set of attributes, return it.
-     * Otherwise, return the first one in the list.
-     *
-     * Used to decide what attribute will be selected in a menu.
-     *
-     * @param iSuggestion
-     * @returns {*}
-     */
     findSelectedAttribute(iSuggestion) {
         const lastCollection = this.structure.collections[this.structure.collections.length - 1];
         let found = false;
@@ -556,12 +503,6 @@ class CODAPDataset {
         return (found ? iSuggestion : lastCollection.attrs[0].name);
     }
 
-    /**
-     * construct the `<options>` tags for an appropriate list of attributes
-     *
-     * @param iSuggestion   the attribute we want to be selected if it's here
-     * @returns {string}
-     */
     makeAttributeMenuGuts(iSuggestion) {
         const theSelectedOne = this.findSelectedAttribute(iSuggestion)
         const nColls = this.structure.collections.length;

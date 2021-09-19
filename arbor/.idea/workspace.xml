@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee18b2bd-2ef3-452f-a676-823eaf6f4687" name="Default Changelist" comment="" />
+    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="Work on German and internationalization">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../choosy/.idea/choosy.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/runConfigurations.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ArborTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborTree.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/Leaf.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Leaf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/Stripe.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Stripe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../choosy/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../choosy/.idea/modules.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1rB1qKjbXa11PtHrXy80s52FsSE" />
+  <component name="ProjectId" id="1yBf7WeMrPiNuxsXf6phXSr4oWQ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -29,13 +52,29 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ee18b2bd-2ef3-452f-a676-823eaf6f4687" name="Default Changelist" comment="" />
-      <created>1618434858711</created>
+      <changelist id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="" />
+      <created>1631657060993</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1618434858711</updated>
-      <workItem from="1618434859968" duration="1342000" />
+      <updated>1631657060993</updated>
+      <workItem from="1631657062758" duration="3645000" />
+      <workItem from="1631729742519" duration="919000" />
     </task>
+    <task id="LOCAL-00001" summary="Work on German and internationalization">
+      <created>1631730398036</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1631730398036</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Work on German and internationalization">
+      <created>1631995295470</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1631995295470</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -52,5 +91,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Work on German and internationalization" />
+    <option name="LAST_COMMIT_MESSAGE" value="Work on German and internationalization" />
   </component>
 </project>
