@@ -24,18 +24,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==========================================================================
 
-LOCAL: http://localhost:8000/plugins/sentimento/
+https://localhost/plugins/sentimento
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/sentimento
 */
 
 let sentimento = {
 
     constants: {
-        version: "2021a",
+        version: "2021b",
         kSentiDataSetName: "text",
         kSentiDataSetTitle: "text data",
         kSentiTextCollectionName: "texts",
         kSentiWordCollectionName: "words",
     },
+
+    sentimentWordList : [],
 
     state: {
         sampleNumber: 0,
@@ -43,7 +46,13 @@ let sentimento = {
     },
 
     initialize: function () {
+        this.setWordList("vader");
         sentimento.connect.initialize();
+    },
+
+    setWordList : function() {
+        const theListName = document.getElementById("dictionaryChoice").value;
+        this.sentimentWordList =  (theListName === "afinn") ? afinnWordList : vaderWordList;
     },
 
     analyze: function () {
@@ -58,24 +67,27 @@ let sentimento = {
         let tSentimentWords = [];
         let tStoppedWords = [];
         theWords.forEach((w) => {
-            const foundSentimentWord = sentimentWordList.find(swobject => {
-                return swobject.word === w
-            });
-            if (foundSentimentWord) {
-                tSentimentWords.push(foundSentimentWord)
-            }
-            if (stop) {
-                if (stopWords.includes(w)) {
-                    if (!tStoppedWords.includes(w)) {
-                        tStoppedWords.push(w);
-                    }
-                    console.log(`    stopped ${w}`)
-                } else {
-                    console.log(`    OK ${w}`)
-                    wordCount++;
+            w = w.trim();
+            if (w) {
+                const foundSentimentWord = this.sentimentWordList.find(swobject => {
+                    return swobject.word === w
+                });
+                if (foundSentimentWord) {
+                    tSentimentWords.push(foundSentimentWord)
                 }
-            } else {
-                wordCount++
+                if (stop) {
+                    if (stopWords.includes(w)) {
+                        if (!tStoppedWords.includes(w)) {
+                            tStoppedWords.push(w);
+                        }
+                        console.log(`    stopped ${w}`)
+                    } else {
+                        console.log(`    OK ${w}`)
+                        wordCount++;
+                    }
+                } else {
+                    wordCount++
+                }
             }
         });
 
