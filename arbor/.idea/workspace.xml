@@ -4,16 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="Work on German and internationalization">
-      <change afterPath="$PROJECT_DIR$/../sentimento/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sentimento/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sentimento/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../sentimento/src/vaderWordList.js" afterDir="false" />
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/arbor.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arbor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/arbor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ArborTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborTree.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sentimento/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../sentimento/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sentimento/src/senti.js" beforeDir="false" afterPath="$PROJECT_DIR$/../sentimento/src/senti.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sentimento/src/sentimentWordList.js" beforeDir="false" afterPath="$PROJECT_DIR$/../sentimento/src/afinnWordList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sentimento/src/vaderSentimentWords.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,24 +21,17 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$/.." value="master" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1yBf7WeMrPiNuxsXf6phXSr4oWQ" />
+  <component name="ProjectId" id="1ySaHIlVsvUeFsYFYQt1JUETOoL" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -47,48 +40,16 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="59bac2d1-c5bb-478a-9356-c37373859a2a" name="Changes" comment="" />
-      <created>1631657060993</created>
+      <changelist id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="" />
+      <created>1632247355629</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1631657060993</updated>
-      <workItem from="1631657062758" duration="3645000" />
-      <workItem from="1631729742519" duration="919000" />
+      <updated>1632247355629</updated>
+      <workItem from="1632247357171" duration="8034000" />
     </task>
-    <task id="LOCAL-00001" summary="Work on German and internationalization">
-      <created>1631730398036</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1631730398036</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Work on German and internationalization">
-      <created>1631995295470</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1631995295470</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Work on German and internationalization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Work on German and internationalization" />
   </component>
 </project>

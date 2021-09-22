@@ -16,7 +16,7 @@ strings = {
                 const theValue = theStrings.staticStrings[theID];
                 try {
                     document.getElementById(theID).innerHTML = theValue;
-                    console.log(`Set string for ${theID} in ${iLang}`);
+                    //  console.log(`Set string for ${theID} in ${iLang}`);
                 } catch (msg) {
                     console.log(msg + ` on ID = ${theID}`);
                 }
@@ -63,7 +63,7 @@ strings = {
         sOr: "or",
         sAnd: "and",
         sThenWeAskAbout: `Then we ask about`,
-        sAllCasesText: `all of the cases`,
+        sAllCasesText: ` of the cases`,
         sPredict: `Predict`,
         sNoPrediction: `no prediction`,
         sNoCasesToProcess: `no cases to process`,
@@ -86,11 +86,12 @@ strings = {
         },
 
         sfNodeCasesDescription: function (iNode) {
-            const tDependentClause = arbor.informalDVBoolean;
+            const theRest = iNode.denominator - iNode.numerator;
             return (`
 This node represents ${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.
-These are ${iNode.friendlySubsetDescription()}.
-Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${tDependentClause}). 
+These are all ${iNode.friendlySubsetDescription()}.
+Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
+The rest (${theRest}) ${this.sfIsAre(theRest)}  (${arbor.informalDVBooleanReversed}).
 `
             );
         },
@@ -108,6 +109,10 @@ Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${tDependentClaus
                 "configure": `configure this attribute: ${tVariableName}`,
                 "dependent": `change positive diagnoses to negative and vice versa`,
             }
+        },
+
+        sfClassificationSummary : function( iRes ) {
+            return `TP = ${iRes.TP}, TN = ${iRes.TN}, FP = ${iRes.FP}, FN = ${iRes.FN}`;
         },
     },
 
@@ -134,7 +139,7 @@ Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${tDependentClaus
         sOr: "oder",
         sAnd: "und",
         sThenWeAskAbout: `Dann fragen wir über`,
-        sAllCasesText: `alle Fälle`,
+        sAllCasesText: `Fälle`,
         sPredict: `Vorhersagen`,
         sNoPrediction: `keine Vorhersage`,
         sNoCasesToProcess: `keine Fälle zu bearbeiten`,
@@ -157,11 +162,12 @@ Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${tDependentClaus
         },
 
         sfNodeCasesDescription: function (iNode) {
-            const tDependentClause = arbor.informalDVBoolean;
+            const theRest = iNode.denominator - iNode.numerator;
             return (`
-Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. <br>
-Das sind ${iNode.friendlySubsetDescription()}. <br>
-Von diesen, ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${tDependentClause}). 
+Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. 
+Das sind alle ${iNode.friendlySubsetDescription()}.
+Von diesen, ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
+Die anderen (${theRest}) ${this.sfIsAre(theRest)}  (${arbor.informalDVBooleanReversed}).
 `
             );
 
@@ -182,6 +188,9 @@ Von diesen, ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${tDependentCl
             }
         },
 
+        sfClassificationSummary : function( iRes ) {
+            return  `RP = ${iRes.TP}, RN = ${iRes.TN}, FP = ${iRes.FP}, FN = ${iRes.FN}`;
+        },
 
     },
 

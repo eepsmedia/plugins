@@ -173,7 +173,7 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
 
         //  data stripes
 
-        if (arbor.state.treeType === "classification") {
+        if (arbor.state.treeType === arbor.constants.kClassTreeType) {
             this.makeAndAddClassificationDataStripes({text: tDataTextColor, bg: tDataBackgroundColor});
         } else {    //  this is a regression tree
             this.makeAndAddRegressionDataStripes({text: tDataTextColor, bg: tDataBackgroundColor});
@@ -208,7 +208,7 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
 NodeBoxView.prototype.makeRootStripe = function () {
     let tText;
 
-    if (arbor.state.treeType === "classification") {
+    if (arbor.state.treeType === arbor.constants.kClassTreeType) {
         tText = `${arbor.strings.sPredict} ${arbor.state.dependentVariableSplit.attName} 
         = ${arbor.state.dependentVariableSplit.leftLabel}`;
     } else {
@@ -227,15 +227,17 @@ NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
     let tText = "";
     let tProportion = (this.myNode.denominator === 0) ? "null" : this.myNode.numerator / this.myNode.denominator;
     let tStripe = null;
-    let tProportionText = (this.myNode.denominator !== 0) ? "p = " + tProportion.newFixed(4) : "n/a";
+    let tProportionText = (this.myNode.denominator !== 0) ? `p = ${tProportion.newFixed(4)}` : "n/a";
 
-    if (arbor.options.usePercentages()) {
-        tProportionText = (this.myNode.denominator !== 0) ? "(" + (tProportion * 100).toFixed(1) + "%)" : "n/a";
+    if (arbor.state.nodeDisplayProportion === arbor.constants.kUsePercentageInNodeBox) {
+        tProportionText = (this.myNode.denominator !== 0) ? `(${(tProportion * 100).toFixed(1)}%)` : "n/a";
     }
 
     if (this.myNode.branches.length > 0) {    //  non-terminal, classification tree
 
-        tText = this.myNode.numerator + " of " + this.myNode.denominator + ", " + tProportionText;
+        tText = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox) ?
+            `${this.myNode.numerator} of ${this.myNode.denominator}, ${tProportionText}` :
+            `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}, ${tProportionText}`;
 
         tStripe = new Stripe(
             this,
@@ -246,7 +248,9 @@ NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
 
     } else {            //  this is a terminal node, classification tree
         //  data stripe
-        tText = this.myNode.numerator + " of " + this.myNode.denominator;
+        tText = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox) ?
+            `${this.myNode.numerator} of ${this.myNode.denominator}` :
+            `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}`;
 
         tStripe = new Stripe(
             this,
