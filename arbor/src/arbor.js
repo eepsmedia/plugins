@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '2021a',
+        version: '2021b',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -81,8 +81,6 @@ const arbor = {
      * Start up. Called from HTML.
      */
     initialize: async function () {
-
-        arbor.strings = await strings.initializeStrings("en");
 
         focusSplitMgr.showHideAttributeConfigurationSection("hide");
 
@@ -241,7 +239,9 @@ const arbor = {
             latestNodeID: 42,
             dependentVariableName: null,
             dependentVariableSplit: null,
-            tree: null
+            tree: null,
+            nodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
+            nodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
         }
     },
 
@@ -261,7 +261,7 @@ const arbor = {
             a.latestSplit = new AttributeSplit(a);  //  set all defaults
         });
 
-        /* FIRST call to getInteractiveState */
+        /* FIRST call to getInteractiveState, this is to restore any saved state */
 
         arbor.state = codapInterface.getInteractiveState();
 
@@ -269,6 +269,9 @@ const arbor = {
             codapInterface.updateInteractiveState(arbor.freshState());
             console.log("getting a fresh state");
         }
+
+        await this.matchUItoState();
+
         console.log("arbor.state is " + JSON.stringify(arbor.state).length + " chars");
 
         arbor.doBaumRestoration(arbor.state);   //  restore the arbor data. Still all model.
@@ -282,6 +285,16 @@ const arbor = {
             'selectCases',
             arbor.selectionManager.processCodapSelectionOfDataCase
         );
+    },
+
+    matchUItoState : async function() {
+        arbor.strings =  await strings.initializeStrings(arbor.state.lang);
+
+        //  now set the options
+        document.getElementById("usePercentOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUsePercentageInNodeBox);
+        document.getElementById("useProportionOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUseProportionInNodeBox);
+        document.getElementById("useOutOfOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox);
+        document.getElementById("useRatioOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseRatioInNodeBox);
     },
 
     /**
@@ -490,7 +503,6 @@ const arbor = {
      * Make sure all the various values associated with the dependent variable are set correctly,
      * especially the Boolean expression; we use it to test cases
      */
-
     fixDependentVariableMechanisms: function () {
         this.dependentVariableBoolean = this.state.dependentVariableSplit.oneBoolean;
 
@@ -611,18 +623,19 @@ const arbor = {
         }
     },
 
-    /*
-        /!**
-         * For some reason other than the user choosing the attribute in the menu,
-         * (e.g., a mouse down in a CorralAttView)
-         * we are changing which attribute we are configuring.
-         * @param iAttInBaum
-         *!/
-        forceChangeFocusAttribute: function (iAttInBaum) {
-            $("#attributeMenu").val(iAttInBaum.attributeName);    //  force the menu to change
-            this.changeFocusAttribute();
-        },
-    */
+    /**
+     * Find the values in the radio buttons on the options tab that control the numeric display in nodes;
+     * record those in the corresponding `state` members,
+     * and redisplay.
+     */
+    recordNodeDisplayParams : function() {
+        arbor.state.nodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
+        arbor.state.nodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
+
+        console.log(`   display params: ${arbor.state.nodeDisplayProportion} and ${arbor.state.nodeDisplayNumber}`);
+
+        arbor.redisplay();
+    },
 
 
     displayStatus: function (iHTML) {
@@ -630,7 +643,8 @@ const arbor = {
     },
 
     displayResults: function (iHTML) {
-        $("#resultsText").html(iHTML);
+        const theTextThing = document.getElementById("resultsText");
+        theTextThing.innerHTML = iHTML;
     },
 
     /**
@@ -728,6 +742,7 @@ arbor.constants = {
     kName: "arbor",
     kTitle: "Diagnostic Trees",
 
+    kClassTreeType : "classification",
     kClassTreeDataSetName: "classTrees",
     kClassTreeCollectionName: "classTrees",
     kClassTreeDataSetTitle: "Classification Tree Records",
@@ -735,6 +750,11 @@ arbor.constants = {
     kRegressTreeDataSetName: "regressTrees",
     kRegressTreeCollectionName: "regressTrees",
     kRegressTreeDataSetTitle: "Regression Tree Records",
+
+    kUsePercentageInNodeBox : "percent",
+    kUseProportionInNodeBox : "proportion",
+    kUseOutOfInNodeBox : "outOf",
+    kUseRatioInNodeBox : "ratio",
 
     buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",

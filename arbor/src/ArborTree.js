@@ -105,10 +105,11 @@ Tree.prototype.resultString = function () {
 
     var tRes = this.rootNode.getResultCounts();
     if (tRes.sampleSize > 0) {
-        tClassificationSummary = `TP = ${tRes.TP}, TN = ${tRes.TN}, FP = ${tRes.FP}, FN = ${tRes.FN}`;
-        if (tRes.undiagDenominator) {}
-            tClassificationSummary += ` | ${arbor.strings.sNoPrediction}: ${tRes.PU + tRes.NU}`;
-        tRegressionSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
+        tClassificationSummary = arbor.strings.sfClassificationSummary(tRes);
+        if (tRes.undiagDenominator) {
+            tClassificationSummary += `<br>${arbor.strings.sNoPrediction}: ${tRes.PU + tRes.NU}`;
+            tRegressionSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
+        }
     } else {
         tClassificationSummary = arbor.strings.sNoCasesToProcess;
         tRegressionSummary = arbor.strings.sNoCasesToProcess;

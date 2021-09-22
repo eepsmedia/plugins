@@ -121,9 +121,9 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <li><a id="sHelpTab" href="#help">?!?!</a></li>
     </ul>
 
-<!--
-    Table tab
--->
+    <!--
+        Table tab
+    -->
     <div id="table">
         <div id="confusion-matrix">
             <div id="table-head" class="box">foo-title</div>
@@ -156,9 +156,9 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
     </div>
 
-<!--
-    Tree tab
--->
+    <!--
+        Tree tab
+    -->
     <div id="tree">
 
         <div>
@@ -262,18 +262,43 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
     </div>
 
-<!--    Settings tab       -->
+    <!--    Settings/Options tab       -->
 
     <div id="settings">
         <div class="baumControlGroup" onclick="arbor.changeLanguage()">
             <button id="changeLanguageButton" type="button" name="Language">Language</button>
         </div>
-        <div class="baumControlGroup">
-            <!-- <p>Laura Martignon probably doesn't want you to use this. But Frieda Reichsman does.</p> -->
-            <input id="usePercentOption" type="checkbox" checked>
-            <label for="usePercentOption">use percentages in node boxes</label>
 
+        <!--    control whether we use proportion or percentage, p = 0.6 or (60%) -->
+
+        <div class="baumControlGroup">
+
+            <p>How do you want to display...
+                <svg height="16">
+                    <circle r="8" cx="20" cy="8" fill="dodgerblue"></circle>
+                    <circle r="8" cx="40" cy="8" fill="dodgerblue"></circle>
+                    <circle r="8" cx="60" cy="8" fill="dodgerblue"></circle>
+                    <circle r="8" cx="80" cy="8" fill="red"></circle>
+                    <circle r="8" cx="100" cy="8" fill="red"></circle>
+                </svg>
+                <br>
+                ...the proportion of "successes" in a node?
+                <input id="usePercentOption" type="radio" name="proportionOrPercentage"
+                       value="percent" onchange="arbor.recordNodeDisplayParams()" checked>
+                <label for="usePercentOption">(60%)</label>
+                <input id="useProportionOption" type="radio" name="proportionOrPercentage"
+                       value="proportion" onchange="arbor.recordNodeDisplayParams()" >
+                <label for="useProportionOption">p = 0.60</label>
+            <br>...how many cases are successes?
+                <input id="useOutOfOption" type="radio" name="outOfOrRatio"
+                       value="outOf" onchange="arbor.recordNodeDisplayParams()" checked>
+                <label for="usePercentOption">3 of 5</label>
+                <input id="useRatioOption" type="radio" name="outOfOrRatio"
+                       value="ratio" onchange="arbor.recordNodeDisplayParams()">
+                <label for="useProportionOption">3 : 2</label>
+            </p>
         </div>
+
         <div class="baumControlGroup">
             <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
             <label for="treeTypeMenu">Tree type</label>
@@ -298,9 +323,10 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             is licensed (<a href="http://creativecommons.org/licenses/by/3.0/"
                             title="Creative Commons BY 3.0" target="_blank">CC 3.0</a>) by eeps media
             <br><br>
-            Thanks to many people, including Joachim Engel, Laura Martignon, Bill Finzer, Joan Heller, Frieda Reichsman,
-            Suzanne Podworny, Thomas Wassong, and
-            Michael Schlichtig.
+            Thanks to many people, including Joachim Engel, Laura Martignon, Bill Finzer,
+            Joan Heller, Frieda Reichsman,
+            Suzanne Podworny, Yannik Fleischer, Thomas Wassong, Michael Schlichtig,
+            and many students in Germany and the USA.
         </div>
     </div>
 
