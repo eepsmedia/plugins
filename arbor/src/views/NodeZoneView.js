@@ -42,23 +42,13 @@ NodeZoneView = function (iNode, iParent) {
     this.nodeBoxLocation = {x: 0, y: 0};   //  x, y, width, height, xc, yc ... for the NodeBoxView
 
     this.myPanel = iParent.myPanel; //  is the panel for the root view, everybody gets this from the TreePanelView.
-    //  this.myParentZoneView = iParent;
     this.myLocation = {x: 0, y: 0};   //      my coordinates in the parent view. Possibly redundant. Set in moveTo().
-
-    //  make the subNodeZones.
-    //  this.subNodeZones = [];     //  begin empty.
 
     if (this.myParentZoneView === this.myPanel) {
         this.myParentZoneView = null;       //      we are the top NodeZoneView
     }
 
     this.paper = Snap(100, 100).attr({"id" : "initial-NZV-" + iNode.arborNodeID});  // to be reset
-
-    //  this.myBoxView = new NodeBoxView(this.myNode, this);  //  create, not draw
-
-    //  this.leaf = (this.myNode.branches.length === 0 && arbor.options.showLeaves()) ? new Leaf({node: this.myNode}) : null;          //  our leaf
-
-    //  this.myPanel.nodeSet.push(this.myBoxView.paper);
 
     this.myNode.branches.forEach(function (iBranchZone) {
         //  makes a view of a subtree, as a NodeZoneView. Create, not draw!
@@ -96,7 +86,7 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
     this.paper.clear();
 
     this.myBoxView = new NodeBoxView(this.myNode, this);  //  create, not draw
-    this.leaf = (this.myNode.branches.length === 0 && arbor.options.showLeaves()) ? new Leaf({node: this.myNode}) : null;          //  our leaf
+    this.leaf = (this.myNode.branches.length === 0 && arbor.state.showDiagnosisLeaves) ? new Leaf({node: this.myNode}) : null;          //  our leaf
 
     const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created just above
     this.paper.append(boxPaper);    //  attach it, but it's not yet in the right place.
@@ -151,7 +141,7 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
         case 0:     //  update and position the leaf
             tCurrentY +=  arbor.constants.treeObjectPadding;     //  top of leaf
 
-            if (arbor.options.showLeaves()) {
+            if (arbor.state.showDiagnosisLeaves) {
                 this.paper.append(this.leaf.paper);
                 const tLeafDimensions = this.leaf.refreshLeaf();
                 //  todo: make a leaf move-to method

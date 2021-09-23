@@ -62,6 +62,7 @@ strings = {
         sIs: "is",
         sOr: "or",
         sAnd: "and",
+        sOf : "of",
         sThenWeAskAbout: `Then we ask about`,
         sAllCasesText: ` of the cases`,
         sPredict: `Predict`,
@@ -77,22 +78,21 @@ strings = {
         },
 
         sfPositiveNegativeNodeDescription: function () {
-            const tSplit = arbor.state.dependentVariableSplit;
-
-            let out = "In this scenario, <br>";
-            out += "'Positive' means " + tSplit.leftLabel + " and 'negative' means " + tSplit.rightLabel + ".";
-
-            return out;
+            return(
+`In this scenario, we call 
+${arbor.informalDVBoolean} 'positive' and 
+${arbor.informalDVBooleanReversed} 'negative'.`
+            );
         },
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
-            return (`
+            return (
+`
 This node represents ${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.
 These are all ${iNode.friendlySubsetDescription()}.
 Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
-The rest (${theRest}) ${this.sfIsAre(theRest)}  (${arbor.informalDVBooleanReversed}).
-`
+The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
             );
         },
 
@@ -138,6 +138,7 @@ The rest (${theRest}) ${this.sfIsAre(theRest)}  (${arbor.informalDVBooleanRevers
         sIs: "ist",
         sOr: "oder",
         sAnd: "und",
+        sOf : "von",
         sThenWeAskAbout: `Dann fragen wir über`,
         sAllCasesText: `Fälle`,
         sPredict: `Vorhersagen`,
@@ -153,22 +154,21 @@ The rest (${theRest}) ${this.sfIsAre(theRest)}  (${arbor.informalDVBooleanRevers
         },
 
         sfPositiveNegativeNodeDescription: function () {
-            const tSplit = arbor.state.dependentVariableSplit;
-
-            let out = "In diesem Szenario, <br>";
-            out += "'positiv' bedeutet " + tSplit.leftLabel + " und 'negativ' bedeutet " + tSplit.rightLabel + ".";
-
-            return out;
+            return(
+`In diesem Szenario, wir nennen 
+(${arbor.informalDVBoolean}) 'positiv' und 
+(${arbor.informalDVBooleanReversed}) 'negativ'.`
+            );
         },
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
-            return (`
+            return (
+`
 Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. 
 Das sind alle ${iNode.friendlySubsetDescription()}.
 Von diesen, ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
-Die anderen (${theRest}) ${this.sfIsAre(theRest)}  (${arbor.informalDVBooleanReversed}).
-`
+Die anderen, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
             );
 
         },

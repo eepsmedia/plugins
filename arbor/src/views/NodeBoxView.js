@@ -233,10 +233,12 @@ NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
         tProportionText = (this.myNode.denominator !== 0) ? `(${(tProportion * 100).toFixed(1)}%)` : "n/a";
     }
 
+    const ofClause = `${this.myNode.numerator} ${arbor.strings.sOf} ${this.myNode.denominator}`;
+
     if (this.myNode.branches.length > 0) {    //  non-terminal, classification tree
 
         tText = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox) ?
-            `${this.myNode.numerator} of ${this.myNode.denominator}, ${tProportionText}` :
+            `${ofClause}, ${tProportionText}` :
             `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}, ${tProportionText}`;
 
         tStripe = new Stripe(
@@ -249,7 +251,7 @@ NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
     } else {            //  this is a terminal node, classification tree
         //  data stripe
         tText = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox) ?
-            `${this.myNode.numerator} of ${this.myNode.denominator}` :
+            `${ofClause}` :
             `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}`;
 
         tStripe = new Stripe(

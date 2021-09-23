@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '2021b',
+        version: '2021c',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -223,6 +223,11 @@ const arbor = {
     },
 
 
+    handleShowHideDiagnosisLeaves : function() {
+        arbor.state.showDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
+        arbor.refreshBaum('views');
+    },
+
     /**
      * A good State for a NEW, FRESH run of the tree,
      * given that all of the data exist.
@@ -287,6 +292,11 @@ const arbor = {
         );
     },
 
+    /**
+     * Set various controls in the UI to match the `arbor.state` values.
+     *
+     * @returns {Promise<void>}
+     */
     matchUItoState : async function() {
         arbor.strings =  await strings.initializeStrings(arbor.state.lang);
 
@@ -295,6 +305,8 @@ const arbor = {
         document.getElementById("useProportionOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUseProportionInNodeBox);
         document.getElementById("useOutOfOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox);
         document.getElementById("useRatioOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseRatioInNodeBox);
+
+        document.getElementById("showDiagnosisLeaves").checked = arbor.state.showDiagnosisLeaves;
     },
 
     /**
@@ -414,7 +426,7 @@ const arbor = {
         console.log(`Redisplay (in arbor.js, ${arbor.strings.staticStrings.changeLanguageButton}) ------------------------`);
 
         this.fixDependentVariableMechanisms();  //  sets appropriate label text
-        focusSplitMgr.displayAttributeConfiguration();   //  the HTML on the main page
+        focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
         this.corralView = new CorralView();
         this.treePanelView = new TreePanelView();  //  the main view.
         this.corralView.refreshCorral();
@@ -634,7 +646,7 @@ const arbor = {
 
         console.log(`   display params: ${arbor.state.nodeDisplayProportion} and ${arbor.state.nodeDisplayNumber}`);
 
-        arbor.redisplay();
+        arbor.refreshBaum('views');
     },
 
 
@@ -768,16 +780,4 @@ arbor.constants = {
 
 
 };
-
-arbor.options = {
-
-    usePercentages: function () {
-        return document.getElementById("usePercentOption").checked;
-    },
-
-    showLeaves: function () {
-        return document.getElementById("showDiagnosisLeaves").checked;
-    }
-
-}
 
