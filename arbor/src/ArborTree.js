@@ -105,13 +105,14 @@ Tree.prototype.resultString = function () {
 
     var tRes = this.rootNode.getResultCounts();
     if (tRes.sampleSize > 0) {
-        tClassificationSummary = "TP = " + tRes.TP + ", TN = " + tRes.TN + ", FP = " + tRes.FP + ", FN = " + tRes.FN;
-        if (tRes.undiagDenominator) {}
-            tClassificationSummary += " | no prediction: " + (tRes.PU + tRes.NU) ;
-        tRegressionSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
+        tClassificationSummary = arbor.strings.sfClassificationSummary(tRes);
+        if (tRes.undiagDenominator) {
+            tClassificationSummary += `<br>${arbor.strings.sNoPrediction}: ${tRes.PU + tRes.NU}`;
+            tRegressionSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
+        }
     } else {
-        tClassificationSummary = "no cases to process";
-        tRegressionSummary = "no cases to process";
+        tClassificationSummary = arbor.strings.sNoCasesToProcess;
+        tRegressionSummary = arbor.strings.sNoCasesToProcess;
     }
     return (arbor.state.treeType === "classification") ? tClassificationSummary : tRegressionSummary;
 };

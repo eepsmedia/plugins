@@ -25,18 +25,7 @@ Stripe = function (iParent, iTextParams, iRole) {
     this.leftButtonImage = null;
     this.rightButtonImage = null;
 
-    var tVariableName = "";
-    if (this.parent.myNode.attributeSplit) {
-        tVariableName = this.parent.myNode.attributeSplit.attName;
-    }
-
-    var toolTipTexts = {
-        "plusMinus": "change the diagnosis in this 'leaf' node from + to – or vice versa",
-        "leftRight": "swap the labels for " + this.sText,
-        "trash": "remove the children of this node (get rid of " + this.sText + " here)",
-        "configure": "configure this attribute: " + tVariableName,
-        "dependent": "change positive diagnoses to negative and vice versa"
-    };
+    const toolTipTexts = arbor.strings.sfGetStripeToolTipText(this);
 
     switch (this.role) {
         case "terminal":

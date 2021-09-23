@@ -3,7 +3,7 @@
 
 
  ==========================================================================
- reTree.js in reTree.
+ arbor.js in arbor.
 
  Author:   Tim Erickson
 
@@ -50,8 +50,9 @@ for testing: http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://
  * @type {{analysis: null, treePanelView: null, attsInBaum: Array, focusNode: null, focusSplit: null, panelWidthInView: null, state: {}, dependentVariableBoolean: [string], informalDVBoolean: string, informalDVBooleanReversed: string, dependentVariableSplit: null, iFrameDescription: {version: string, name: string, title: string, dimensions: {width: number, height: number}, preventDataContextReorg: boolean}, initialize: arbor.initialize, refreshBaum: arbor.refreshBaum, emitTreeData: arbor.emitTreeData, handleTreeChange: arbor.handleTreeChange, freshState: arbor.freshState, getAndRestoreModel: arbor.getAndRestoreModel, doBaumRestoration: arbor.doBaumRestoration, parseState: arbor.parseState, restoreTree: arbor.restoreTree, restoreNode: arbor.restoreNode, restoreSplit: arbor.restoreSplit, resizeWindow: arbor.resizeWindow, repopulate: arbor.repopulate, redisplay: arbor.redisplay, setDependentVariableByName: arbor.setDependentVariableByName, changeToNewDependentVariable: arbor.changeToNewDependentVariable, changeCurrentSplitTypeUsingMenu: arbor.changeCurrentSplitTypeUsingMenu, setFocusNode: arbor.setFocusNode, setFocusSplit: arbor.setFocusSplit, changeFocusSplitValues: arbor.changeFocusSplitValues, swapFocusSplit: arbor.swapFocusSplit, changeAttributeConfiguration: arbor.changeAttributeConfiguration, displayAttributeConfiguration: arbor.displayAttributeConfiguration, fixDependentVariableMechanisms: arbor.fixDependentVariableMechanisms, gotDataContextList: arbor.gotDataContextList, gotCollectionList: arbor.gotCollectionList, gotAttributeList: arbor.gotAttributeList, getAttributeByName: arbor.getAttributeByName, changeDataContext: arbor.changeDataContext, changeCollection: arbor.changeCollection, changeTreeTypeUsingMenu: arbor.changeTreeTypeUsingMenu, setTreeTypeByString: arbor.setTreeTypeByString, forceChangeFocusAttribute: arbor.forceChangeFocusAttribute, displayStatus: arbor.displayStatus, displayResults: arbor.displayResults, assembleAttributeAndCategoryNames: arbor.assembleAttributeAndCategoryNames, dispatchTreeEvent: arbor.dispatchTreeEvent}}
  */
 
-var arbor = {
+const arbor = {
 
+    strings : null,         //  the actual strings
     analysis: null,        //      connects to CODAP
     treePanelView: null,
     corralView: null,
@@ -69,7 +70,7 @@ var arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '002d',
+        version: '2021c',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -136,6 +137,7 @@ var arbor = {
         arbor.redisplay();
     },
 
+
     getAndRestoreViews: async function () {
         window.addEventListener("resize", this.resizeWindow);
         await arbor.redisplay();
@@ -183,7 +185,7 @@ var arbor = {
 
         var tStateAsString = JSON.stringify(arbor.state);
         var tValues = {
-            predict: arbor.informalDVBoolean,    //  the infomal expression of what is being predicted.
+            predict: arbor.informalDVBoolean,    //  the informal expression of what is being predicted.
             N: N,
             base: (tRes.TP + tRes.FN + tRes.PU) / N,
             state: tStateAsString,
@@ -221,6 +223,11 @@ var arbor = {
     },
 
 
+    handleShowHideDiagnosisLeaves : function() {
+        arbor.state.showDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
+        arbor.refreshBaum('views');
+    },
+
     /**
      * A good State for a NEW, FRESH run of the tree,
      * given that all of the data exist.
@@ -232,12 +239,14 @@ var arbor = {
     freshState: function () {
 
         return {
-            foo: 42,
+            lang : "en",
             treeType: "classification",
             latestNodeID: 42,
             dependentVariableName: null,
             dependentVariableSplit: null,
-            tree: null
+            tree: null,
+            nodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
+            nodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
         }
     },
 
@@ -257,7 +266,7 @@ var arbor = {
             a.latestSplit = new AttributeSplit(a);  //  set all defaults
         });
 
-        /* FIRST call to getInteractiveState */
+        /* FIRST call to getInteractiveState, this is to restore any saved state */
 
         arbor.state = codapInterface.getInteractiveState();
 
@@ -265,6 +274,9 @@ var arbor = {
             codapInterface.updateInteractiveState(arbor.freshState());
             console.log("getting a fresh state");
         }
+
+        await this.matchUItoState();
+
         console.log("arbor.state is " + JSON.stringify(arbor.state).length + " chars");
 
         arbor.doBaumRestoration(arbor.state);   //  restore the arbor data. Still all model.
@@ -278,6 +290,23 @@ var arbor = {
             'selectCases',
             arbor.selectionManager.processCodapSelectionOfDataCase
         );
+    },
+
+    /**
+     * Set various controls in the UI to match the `arbor.state` values.
+     *
+     * @returns {Promise<void>}
+     */
+    matchUItoState : async function() {
+        arbor.strings =  await strings.initializeStrings(arbor.state.lang);
+
+        //  now set the options
+        document.getElementById("usePercentOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUsePercentageInNodeBox);
+        document.getElementById("useProportionOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUseProportionInNodeBox);
+        document.getElementById("useOutOfOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox);
+        document.getElementById("useRatioOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseRatioInNodeBox);
+
+        document.getElementById("showDiagnosisLeaves").checked = arbor.state.showDiagnosisLeaves;
     },
 
     /**
@@ -394,10 +423,10 @@ var arbor = {
     },
 
     redisplay: function () {
-        console.log("Redisplay (in arbor.js) ------------------------");
+        console.log(`Redisplay (in arbor.js, ${arbor.strings.staticStrings.changeLanguageButton}) ------------------------`);
 
         this.fixDependentVariableMechanisms();  //  sets appropriate label text
-        focusSplitMgr.displayAttributeConfiguration();   //  the HTML on the main page
+        focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
         this.corralView = new CorralView();
         this.treePanelView = new TreePanelView();  //  the main view.
         this.corralView.refreshCorral();
@@ -486,7 +515,6 @@ var arbor = {
      * Make sure all the various values associated with the dependent variable are set correctly,
      * especially the Boolean expression; we use it to test cases
      */
-
     fixDependentVariableMechanisms: function () {
         this.dependentVariableBoolean = this.state.dependentVariableSplit.oneBoolean;
 
@@ -587,6 +615,12 @@ var arbor = {
         this.analysis.specifyCurrentCollection($("#collectionMenu").find('option:selected').val());
     },
 
+    changeLanguage : async function() {
+        arbor.state.lang = strings.nextLanguage(arbor.state.lang);
+        arbor.strings = await strings.initializeStrings(arbor.state.lang);
+        this.redisplay();
+    },
+
     changeTreeTypeUsingMenu: function () {
         var tType = $("#treeTypeMenu").find('option:selected').val();
         this.setTreeTypeByString(tType);
@@ -601,18 +635,19 @@ var arbor = {
         }
     },
 
-    /*
-        /!**
-         * For some reason other than the user choosing the attribute in the menu,
-         * (e.g., a mouse down in a CorralAttView)
-         * we are changing which attribute we are configuring.
-         * @param iAttInBaum
-         *!/
-        forceChangeFocusAttribute: function (iAttInBaum) {
-            $("#attributeMenu").val(iAttInBaum.attributeName);    //  force the menu to change
-            this.changeFocusAttribute();
-        },
-    */
+    /**
+     * Find the values in the radio buttons on the options tab that control the numeric display in nodes;
+     * record those in the corresponding `state` members,
+     * and redisplay.
+     */
+    recordNodeDisplayParams : function() {
+        arbor.state.nodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
+        arbor.state.nodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
+
+        console.log(`   display params: ${arbor.state.nodeDisplayProportion} and ${arbor.state.nodeDisplayNumber}`);
+
+        arbor.refreshBaum('views');
+    },
 
 
     displayStatus: function (iHTML) {
@@ -620,7 +655,8 @@ var arbor = {
     },
 
     displayResults: function (iHTML) {
-        $("#resultsText").html(iHTML);
+        const theTextThing = document.getElementById("resultsText");
+        theTextThing.innerHTML = iHTML;
     },
 
     /**
@@ -718,6 +754,7 @@ arbor.constants = {
     kName: "arbor",
     kTitle: "Diagnostic Trees",
 
+    kClassTreeType : "classification",
     kClassTreeDataSetName: "classTrees",
     kClassTreeCollectionName: "classTrees",
     kClassTreeDataSetTitle: "Classification Tree Records",
@@ -725,6 +762,11 @@ arbor.constants = {
     kRegressTreeDataSetName: "regressTrees",
     kRegressTreeCollectionName: "regressTrees",
     kRegressTreeDataSetTitle: "Regression Tree Records",
+
+    kUsePercentageInNodeBox : "percent",
+    kUseProportionInNodeBox : "proportion",
+    kUseOutOfInNodeBox : "outOf",
+    kUseRatioInNodeBox : "ratio",
 
     buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",
@@ -738,16 +780,4 @@ arbor.constants = {
 
 
 };
-
-arbor.options = {
-
-    usePercentages: function () {
-        return document.getElementById("usePercentOption").checked;
-    },
-
-    showLeaves: function () {
-        return document.getElementById("showDiagnosisLeaves").checked;
-    }
-
-}
 
