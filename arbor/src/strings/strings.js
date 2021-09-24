@@ -58,6 +58,8 @@ strings = {
             "truth-head": "truth",
             "pred-head": "prediction",
             "no-pred-head": "no prediction",
+            sOmitProportionLabel : `(none)`,
+            sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
         },
         sIs: "is",
         sOr: "or",
@@ -114,6 +116,10 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         sfClassificationSummary : function( iRes ) {
             return `TP = ${iRes.TP}, TN = ${iRes.TN}, FP = ${iRes.FP}, FN = ${iRes.FN}`;
         },
+
+        sfConfusionCaseCount : function( iResults) {
+            return `<span class='confusionHed'> ${arbor.state.dependentVariableName}</span><br> ${iResults.sampleSize} cases`
+        },
     },
 
     de: {
@@ -133,6 +139,8 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             "truth-head": "Wahrheit",
             "pred-head": "Vorhersage",
             "no-pred-head": "keine Vorhersage",        //  todo: 2021-09-18 not appearing. Why not?
+            sOmitProportionLabel : `(keine)`,
+            sAutoOpenAttributeSplitLabel : `Attributkonfiguration automatisch öffnen`,
 
         },
         sIs: "ist",
@@ -190,6 +198,10 @@ Die anderen, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReve
 
         sfClassificationSummary : function( iRes ) {
             return  `RP = ${iRes.TP}, RN = ${iRes.TN}, FP = ${iRes.FP}, FN = ${iRes.FN}`;
+        },
+
+        sfConfusionCaseCount : function( iResults) {
+            return `<span class='confusionHed'> ${arbor.state.dependentVariableName}</span><br> ${iResults.sampleSize} Fälle`
         },
 
     },

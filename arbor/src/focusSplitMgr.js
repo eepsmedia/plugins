@@ -41,12 +41,6 @@ var focusSplitMgr = {
     setFocusSplit: function (iSplit) {
         this.theSplit = iSplit;
 
-        //  set name of button
-        /*
-                var tButton = document.getElementById("configureButton");
-                tButton.textContent = "Configure " + iSplit.attName;
-        */
-
         //  set visibility of relevant DOM elements in the configuration section
 
         var el_cont = document.getElementById("continuousAttributeConfiguration");

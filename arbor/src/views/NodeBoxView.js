@@ -23,6 +23,7 @@
  ==========================================================================
  */
 
+/* global Snap */
 
 NodeBoxView = function (iNode, iZoneView) {
     this.myNode = iNode;
@@ -35,13 +36,16 @@ NodeBoxView = function (iNode, iZoneView) {
     //  e.g., changes in number or text.
     arbor.eventDispatcher.addEventListener("changeNode", this.handleNodeChange, this);
 
-    var tPad = arbor.constants.treeObjectPadding;
     this.kStripeHeight = 20;
 
     this.stripes = [];  //  the box is made up of a variable number of "Stripes"
 
     //  the tool tip
-    this.paper.append(Snap.parse("<title>" + this.myNode.longDescription() + "</title>"));
+    try {
+        this.paper.append(Snap.parse("<title>" + this.myNode.longDescription() + "</title>"));
+    } catch (msg) {
+        console.log(`problem with setting the node tool tip: ${msg}`);
+    }
 
     //  handlers
 
@@ -74,8 +78,8 @@ NodeBoxView.prototype.mouseUpHandler = function (iEvent) {
         //  dragged in from another node, so we branch it by THAT node's attribute, if it exists
         else if (tMouseDownPlace instanceof NodeBoxView) {
             if (tMouseDownPlace.myNode.attributeSplit) {
-                var tName = tMouseDownPlace.myNode.attributeSplit.attName;
-                var tAtt = arbor.getAttributeByName(tName);
+                const tName = tMouseDownPlace.myNode.attributeSplit.attName;
+                const tAtt = arbor.getAttributeByName(tName);
                 this.myNode.branchThisNode(tAtt);
             }
         }
@@ -119,9 +123,9 @@ NodeBoxView.prototype.adjustPaperSize = function () {
 
     //  find the maximum width of the stripes
 
-    var tMaxWidthStripe = this.stripes.reduce(function (a, v) {
-        var vCurrentWidth = v.minimumWidth();
-        var aCurrentWidth = a.minimumWidth();
+    const tMaxWidthStripe = this.stripes.reduce(function (a, v) {
+        const vCurrentWidth = v.minimumWidth();
+        const aCurrentWidth = a.minimumWidth();
 
         return (vCurrentWidth > aCurrentWidth) ? v : a;
     });
@@ -135,7 +139,6 @@ NodeBoxView.prototype.adjustPaperSize = function () {
 NodeBoxView.prototype.drawNodeBoxView = function () {
 
     //      console.log("Redraw node box: " + this.myNode.arborNodeID);
-    let tStripe = null;
     this.paper.clear(); //  nothing on this paper
     this.theGroup = this.paper.g();     //  fresh group
 
@@ -159,8 +162,6 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
         tDataBackgroundColor = arbor.constants.onTraceColor;
     }
     const tDataTextColor = "#474";
-
-    let tText;
 
     if (this.isRoot()) {
         this.stripes.push(this.makeRootStripe());    //  make root node stripe
@@ -224,22 +225,46 @@ NodeBoxView.prototype.makeRootStripe = function () {
 };
 
 NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
-    let tText = "";
-    let tProportion = (this.myNode.denominator === 0) ? "null" : this.myNode.numerator / this.myNode.denominator;
-    let tStripe = null;
-    let tProportionText = (this.myNode.denominator !== 0) ? `p = ${tProportion.newFixed(4)}` : "n/a";
+    let tStripe;
 
-    if (arbor.state.nodeDisplayProportion === arbor.constants.kUsePercentageInNodeBox) {
-        tProportionText = (this.myNode.denominator !== 0) ? `(${(tProportion * 100).toFixed(1)}%)` : "n/a";
+    /**
+     * Create the string that describes the "count" of cases in the node,
+     * format depends on options
+     */
+    let tCountText = `tCount foo`;
+    switch (arbor.state.oNodeDisplayNumber) {
+        case arbor.constants.kUseOutOfInNodeBox:
+            tCountText = `${this.myNode.numerator} ${arbor.strings.sOf} ${this.myNode.denominator}`;
+            break;
+        case arbor.constants.kUseRatioInNodeBox:
+            tCountText = `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}`;
+            break;
+        case arbor.constants.kUseFractionInNodeBox:
+            tCountText = `${this.myNode.numerator}/${this.myNode.denominator}`;
+            break;
     }
 
-    const ofClause = `${this.myNode.numerator} ${arbor.strings.sOf} ${this.myNode.denominator}`;
+    /**
+     * Create the string that describes the "proportion" of successes in the node,
+     * format depends on options
+     */
+    let tProportionText = `tProp foo`;
+    let tProportion = (this.myNode.denominator === 0) ? "null" : this.myNode.numerator / this.myNode.denominator;
+    switch (arbor.state.oNodeDisplayProportion) {
+        case arbor.constants.kUsePercentageInNodeBox:
+            tProportionText = (this.myNode.denominator !== 0) ? `${(tProportion * 100).toFixed(1)}%` : "n/a";
+            break;
+        case arbor.constants.kUseProportionInNodeBox:
+            tProportionText = (this.myNode.denominator !== 0) ? `p = ${tProportion.newFixed(4)}` : "n/a";
+            break;
+        case arbor.constants.kOmitProportionInNodeBox:
+            tProportionText = ``;
+            break;
+    }
 
     if (this.myNode.branches.length > 0) {    //  non-terminal, classification tree
 
-        tText = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox) ?
-            `${ofClause}, ${tProportionText}` :
-            `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}, ${tProportionText}`;
+        const tText = (tProportionText) ? `${tCountText}, ${tProportionText}` : tCountText;
 
         tStripe = new Stripe(
             this,
@@ -250,29 +275,26 @@ NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
 
     } else {            //  this is a terminal node, classification tree
         //  data stripe
-        tText = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox) ?
-            `${ofClause}` :
-            `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}`;
-
         tStripe = new Stripe(
             this,
-            {text: tText, textColor: iColors.text, bgColor: iColors.bg},
+            {text: tCountText, textColor: iColors.text, bgColor: iColors.bg},
             "data"
         );
         this.stripes.push(tStripe);
 
-        tText = tProportionText;
-        tStripe = new Stripe(
-            this,
-            {text: tText, textColor: iColors.text, bgColor: iColors.bg},
-            "data"
-        );
-        this.stripes.push(tStripe);
+        if (tProportionText) {
+            const tProportionStripe = new Stripe(
+                this,
+                {text: tProportionText, textColor: iColors.text, bgColor: iColors.bg},
+                "data"
+            );
+            this.stripes.push(tProportionStripe);
+        }
     }
 };
 
 NodeBoxView.prototype.makeAndAddRegressionDataStripes = function (iColors) {
-    let tText = "";
+    let tText;
     let tStripe = null;
     let tMeanText = arbor.state.dependentVariableSplit.isCategorical ?
         "p = " + this.myNode.mean.newFixed(3) :

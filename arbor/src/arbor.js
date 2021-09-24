@@ -70,11 +70,11 @@ const arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '2021c',
+        version: '2021d',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
-        preventDataContextReorg: false
+        preventDataContextReorg: false,
     },
 
     /**
@@ -224,7 +224,7 @@ const arbor = {
 
 
     handleShowHideDiagnosisLeaves : function() {
-        arbor.state.showDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
+        arbor.state.oShowDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
         arbor.refreshBaum('views');
     },
 
@@ -245,8 +245,10 @@ const arbor = {
             dependentVariableName: null,
             dependentVariableSplit: null,
             tree: null,
-            nodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
-            nodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
+            oNodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
+            oNodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
+            oAlwaysShowConfigurationOnSplit : false,
+            oShowDiagnosisLeaves : false,
         }
     },
 
@@ -301,12 +303,40 @@ const arbor = {
         arbor.strings =  await strings.initializeStrings(arbor.state.lang);
 
         //  now set the options
-        document.getElementById("usePercentOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUsePercentageInNodeBox);
-        document.getElementById("useProportionOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUseProportionInNodeBox);
-        document.getElementById("useOutOfOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox);
-        document.getElementById("useRatioOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseRatioInNodeBox);
+        switch (arbor.state.oNodeDisplayNumber) {
+            case arbor.constants.kUseOutOfInNodeBox:
+                document.getElementById("useOutOfOption").checked = true;
+                break;
+            case arbor.constants.kUseRatioInNodeBox:
+                document.getElementById("useRatioOption").checked = true;
+                break;
+            case arbor.constants.kUseFractionInNodeBox:
+                document.getElementById("useFractionOption").checked = true;
+                break;
+            default:    //  the constant is not set, set it to "outOf"
+                document.getElementById("useOutOfOption").checked = true;
+                arbor.state.oNodeDisplayNumber = arbor.constants.kUseOutOfInNodeBox;
+                break;
+        }
 
-        document.getElementById("showDiagnosisLeaves").checked = arbor.state.showDiagnosisLeaves;
+        switch (arbor.state.oNodeDisplayProportion) {
+            case arbor.constants.kUsePercentageInNodeBox:
+                document.getElementById("usePercentOption").checked = true;
+                break;
+            case arbor.constants.kUseProportionInNodeBox:
+                document.getElementById("useProportionOption").checked = true;
+                break;
+            case arbor.constants.kOmitProportionInNodeBox:
+                document.getElementById("omitProportionOption").checked = true;
+                break;
+            default:
+                arbor.state.oNodeDisplayProportion = arbor.constants.kUseProportionInNodeBox;
+                document.getElementById("useProportionOption").checked = true;
+                break;
+        }
+
+        document.getElementById("autoOpenAttributeSplitOnDrop").checked = arbor.state.oAlwaysShowConfigurationOnSplit;
+        document.getElementById("showDiagnosisLeaves").checked = arbor.state.oShowDiagnosisLeaves;
     },
 
     /**
@@ -474,7 +504,7 @@ const arbor = {
 
     /**
      * Set which node we are focusing on in the display.
-     * If this node hosts a split, display the appropriate attribute-split stuff in the conficuation section
+     * If this node hosts a split, display the appropriate attribute-split stuff in the configuration section
      *
      * @param iNode
      */
@@ -640,11 +670,12 @@ const arbor = {
      * record those in the corresponding `state` members,
      * and redisplay.
      */
-    recordNodeDisplayParams : function() {
-        arbor.state.nodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
-        arbor.state.nodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
+    recordDisplayParams : function() {
+        arbor.state.oNodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
+        arbor.state.oNodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
 
-        console.log(`   display params: ${arbor.state.nodeDisplayProportion} and ${arbor.state.nodeDisplayNumber}`);
+        arbor.state.oAlwaysShowConfigurationOnSplit = document.getElementById("autoOpenAttributeSplitOnDrop").checked;
+        console.log(`   display params: ${arbor.state.oNodeDisplayNumber} and ${arbor.state.oNodeDisplayProportion}`);
 
         arbor.refreshBaum('views');
     },
@@ -750,7 +781,6 @@ arbor.constants = {
 
     closeIconURI: "art/closeAttributeIcon.png",
 
-    //  kVersion: "001M",       //  version is in the iFrameDesciption member, way up above.
     kName: "arbor",
     kTitle: "Diagnostic Trees",
 
@@ -765,8 +795,10 @@ arbor.constants = {
 
     kUsePercentageInNodeBox : "percent",
     kUseProportionInNodeBox : "proportion",
+    kOmitProportionInNodeBox : "noProportion",
     kUseOutOfInNodeBox : "outOf",
     kUseRatioInNodeBox : "ratio",
+    kUseFractionInNodeBox : "fraction",
 
     buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",
