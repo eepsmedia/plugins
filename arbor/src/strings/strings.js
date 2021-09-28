@@ -43,6 +43,7 @@ strings = {
 
     en: {
         staticStrings: {
+            changeLanguageButton: "English",
             sShowPredictionLeaves: `show prediction "leaves"`,
             sTreeTab: `tree`,
             sTableTab: `table`,
@@ -54,12 +55,23 @@ strings = {
             refreshAllButton2: `refresh all`,
             refreshDataButton2: `refresh data`,
             emitDataButton2: `emit data`,
-            changeLanguageButton: "English",
             "truth-head": "truth",
             "pred-head": "prediction",
-            "no-pred-head": "no prediction",
+            "no-pred-head": `no prediction`,
             sOmitProportionLabel : `(none)`,
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
+
+            //  configuration panel
+            sConfConfigure : `Configure`,
+            sConfDoneButton : `Done`,
+            sConfLeftHeaderText : `left branch`,
+            sConfRightHeaderText : `right branch`,
+            sConfLeftLabelLabel : `label:`,
+            sConfRightLabelLabel : `label:`,
+            sConfVariableTypeLabel : `attribute type:`,
+            sConfSwapLandRLabel : `swap left and right:`,
+            sConfContinuousOptionText : `continuous`,
+            sConfCategoricalOptionText : `categorical`,
         },
         sIs: "is",
         sOr: "or",
@@ -124,6 +136,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
 
     de: {
         staticStrings: {
+            changeLanguageButton: "Deutsch",
             sShowPredictionLeaves: `zeigen die "Blätter"`,
             sTreeTab: `Baum`,
             sTableTab: `Tabelle`,
@@ -135,12 +148,23 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             refreshAllButton2: `alle erfrischen`,
             refreshDataButton2: `Daten erfrischen`,
             emitDataButton2: `Daten ausgeben`,
-            changeLanguageButton: "Deutsch",
             "truth-head": "Wahrheit",
             "pred-head": "Vorhersage",
-            "no-pred-head": "keine Vorhersage",        //  todo: 2021-09-18 not appearing. Why not?
+            "no-pred-head": `keine Vorhersage`,        //  todo: 2021-09-18 not appearing. Why not?
             sOmitProportionLabel : `(keine)`,
             sAutoOpenAttributeSplitLabel : `Attributkonfiguration automatisch öffnen`,
+
+            //  configuration panel
+            sConfConfigure : `Konfigurieren`,
+            sConfDoneButton : `Fertig!`,
+            sConfLeftHeaderText : `linker Zweig`,
+            sConfRightHeaderText : `rechter Zweig`,
+            sConfLeftLabelLabel : `Etikett:`,
+            sConfRightLabelLabel : `Etikett:`,
+            sConfVariableTypeLabel : `Art des Attributs:`,
+            sConfSwapLandRLabel : `links und rechts tauschen:`,
+            sConfContinuousOptionText : `kontinuierlich`,
+            sConfCategoricalOptionText : `kategorisch`,
 
         },
         sIs: "ist",

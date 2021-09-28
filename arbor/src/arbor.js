@@ -216,7 +216,9 @@ const arbor = {
      */
     handleTreeChange: function (iEvent) {
         if (typeof iEvent.why !== 'undefined') {
-            console.log("changeTree event -- " + iEvent.why);
+            console.log(`handleTreeChange event to ${iEvent.why}`);
+        } else {
+            console.log(`handleTreeChange event for no discernible reason`);
         }
         this.repopulate();
         this.redisplay();
@@ -444,11 +446,11 @@ const arbor = {
      * That is, we believe that the allocation of attributes to nodes should be preserved.
      */
     repopulate: function () {
-        console.log("   repopulate begins");
+        console.log("   repopulate the model! Begin...");
         this.state.tree.populateTree();               //  count up how many are in what bin throughout the tree, leaving structure intact
-        //  console.log("       populated with " + this.analysis.cases.length + " cases");
+        console.log("       ... populated with " + this.analysis.cases.length + " cases");
         focusSplitMgr.theSplit.updateSplitStats(this.analysis.cases);    //  update these stats based on all cases
-        //  console.log("       splitStats updated");
+        console.log("       ... splitStats updated");
         console.log("   repopulate ends");
     },
 

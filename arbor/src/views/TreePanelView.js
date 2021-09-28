@@ -54,12 +54,23 @@ TreePanelView = function ( ) {
     this.draggingAttribute = null;
     this.rootNodeZoneView = null;
 
-    this.panelPaper.mouseup(function (e) {
-        //  this.dragSVGPaper.remove();     //  remove it from the DOM
+    treePanelMouseUpHandler = function(e) {
         const dragStatus = this.draggingAttribute ? "dragging" : "not dragging";
-        console.log(`    mouse up in tree panel view: ${dragStatus}`);
-    }.bind(this));
+        console.log(` ...mouse up in tree panel view handler: ${dragStatus}`);
+    }.bind(this)
 
+    if (this.panelPaper.events !== undefined) {
+        console.log(`     ...making TPV, ${this.panelPaper.events.length} events`);
+        this.panelPaper.events = [];
+    }
+    // this.panelPaper.unmouseup(treePanelMouseUpHandler);
+    if (this.panelPaper.events !== undefined) {
+        console.log(`     ...after unmouseup, ${this.panelPaper.events.length} events`);
+    }
+    // this.panelPaper.mouseup(treePanelMouseUpHandler);
+    if (this.panelPaper.events !== undefined) {
+        console.log(`     ...make TPV, handlers set, ${this.panelPaper.events.length} events`);
+    }
     this.redrawEntirePanel();
 };
 

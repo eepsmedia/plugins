@@ -134,7 +134,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <div id="FP" class="cell">10</div>
             <div id="FN" class="cell">20</div>
 
-            <div id="no-pred-head" class="no-pred">no prediction</div>
+            <div id="no-pred-head" class="no-pred">pas de predicion</div>
             <div id="PU" class="no-pred">44</div>
             <div id="NU" class="no-pred">66</div>
         </div>
@@ -193,26 +193,26 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <div id="attributeConfigurationSection" visibility="hidden">
 
         <div class="attributeConfigurationHead">
-            Configure "<span id="splitVariableName"></span>"
+            <span id="sConfConfigure"></span> "<span id="splitVariableName"></span>"
             <button class="attributeConfigurationDoneButton"
+                    id = "sConfDoneButton"
                     onclick="focusSplitMgr.showHideAttributeConfigurationSection()">
-                Done!
             </button>
 
         </div>
 
         <table>
             <tr>
-                <th class="leftSide" id="leftHeaderText">Left branch</th>
-                <th class="rightSide" id="rightHeaderText">Right branch</th>
+                <th class="leftSide" id="sConfLeftHeaderText">Left branch</th>
+                <th class="rightSide" id="sConfRightHeaderText">Right branch</th>
             </tr>
             <tr>
                 <td class="leftSide">
-                    <label for="leftLabelText">Label:</label>
+                    <label for="leftLabelText" id="sConfLeftLabelLabel"></label>
                     <input id="leftLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
                 </td>
                 <td class="rightSide">
-                    <label for="rightLabelText">Label:</label>
+                    <label for="rightLabelText"  id="sConfRightLabelLabel"></label>
                     <input id="rightLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
                 </td>
             </tr>
@@ -246,14 +246,14 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         </table>
 
         <div class="attributeConfigurationFooter">
-            <label for="currentSplitTypeMenu">Variable type:</label>
+            <label for="currentSplitTypeMenu" id="sConfAttributeTypeLabel"></label>
             <select id="currentSplitTypeMenu" onchange="focusSplitMgr.changeCurrentSplitTypeUsingMenu()">
-                <option value="continuous">Continuous</option>
-                <option value="categorical">Categorical</option>
+                <option value="continuous" id="sConfContinuousOptionText"></option>
+                <option value="categorical" id="sConfCategoricalOptionText"></option>
             </select>
             &nbsp;&nbsp;
-            <label for="swapImage">Swap left and right: </label>
-            <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="18"/>
+            <label for="swapImage" id="sConfSwapLandRLabel"></label>
+            <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="22"/>
         </div>
 
     </div>

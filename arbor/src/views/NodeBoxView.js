@@ -28,8 +28,9 @@
 NodeBoxView = function (iNode, iZoneView) {
     this.myNode = iNode;
     this.myZoneView = iZoneView;        //  the view I am embedded in
-    this.paper = new Snap(133, 133).attr({"class": "NBV-" + iNode.arborNodeID});
+    this.paper = new Snap(133, 133).attr({"id": "NBV-" + iNode.arborNodeID});
 
+    this.paper.unmouseup(this.mouseUpHandler.bind(this));
     this.paper.mouseup(this.mouseUpHandler.bind(this));
 
     //  We watch this event for changes from the model,
@@ -51,6 +52,7 @@ NodeBoxView = function (iNode, iZoneView) {
 
     this.paper.mousedown(function (iEvent) {
         this.myZoneView.myPanel.lastMouseDownNodeView = this;
+        console.log(`... mouse down in NodeBoxView node ${this.myNode.arborNodeID}`)
     }.bind(this));
 
     this.drawNodeBoxView();
@@ -64,6 +66,7 @@ NodeBoxView.prototype.mouseUpHandler = function (iEvent) {
     if (tMouseDownPlace) {
         if (this === tMouseDownPlace) {     //  it's a click
             if (iEvent.shiftKey || iEvent.altKey || iEvent.ctrlKey) {
+                console.log(`Mouse up (after mouse down) in ${this.myNode}`);
                 this.myNode.stubThisNode();
             }
         }
