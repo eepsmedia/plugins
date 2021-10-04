@@ -68,10 +68,11 @@ strings = {
             sConfRightHeaderText : `right branch`,
             sConfLeftLabelLabel : `label:`,
             sConfRightLabelLabel : `label:`,
-            sConfVariableTypeLabel : `attribute type:`,
+            sConfAttributeTypeLabel : `attribute type:`,
             sConfSwapLandRLabel : `swap left and right:`,
             sConfContinuousOptionText : `continuous`,
             sConfCategoricalOptionText : `categorical`,
+
         },
         sIs: "is",
         sOr: "or",
@@ -86,6 +87,49 @@ strings = {
         sLeafNoDiagnosis: `You have not assigned a diagnosis yet. Click to assign!`,
         sMoreCategories: `more categories`,    //  used in the labels for links
         sNoCategories: `no categories`,    //  used in the labels for links
+
+        //  tree and collection names
+
+        sClassTreeCollectionName: "classTrees",
+        sClassTreeDataSetTitle: "Classification Tree Records",
+        sClassTreeDataSetDescription : `Data about classification trees`,
+
+        sRegressTreeCollectionName: "regressTrees",
+        sRegressTreeDataSetTitle: "Regression Tree Records",
+        sClassTreeDataSetDescription : `Data about regression trees`,
+
+        //  emitted data attribute names and descriptions. Prefixes; `san` and `sad`
+
+        sanPredict : `predict`,
+        sanN : `N`,
+        sanNodes : `nodes`,
+        sanDepth : `depth`,
+        sanBaseRate : `base`,
+        sanTP : `TP`,
+        sanFN : `FN`,
+        sanFP : `FP`,
+        sanTN : `TN`,
+        sanNPPos : `NPPos`,
+        sanNPNeg : `NPNeg`,
+        sanSensitivity : `sens`,
+        sanMisclassificationRate : `MCR`,
+        sanSumSSD : `sumSSD`,
+
+        sadPredict : `what does this tree try to predict?`,
+        sadN : `total number of cases`,
+        sadNodes : `total number of nodes`,
+        sadDepth : `depth of tree`,
+        sadBaseRate : `base rate`,
+        sadTP : `number of true positives`,
+        sadFN : `number of false negatives`,
+        sadFP : `number of false positives`,
+        sadTN : `number of true negatives`,
+        sadNPPos : `number of positives without a prediction`,
+        sadNPNeg : `number of negatives without a prediction`,
+        sadSensitivity : `sensitivity (calculated): the proportion of positive cases that are diagnosed positive`,
+        sadMisclassificationRate : `misclassification rate: the proportion of predictions we did not get correct`,
+        sadSumSSD : `total (normalized) sum of the squares of the deviations`,
+
 
         sfIsAre : function(howMany) {
             return (howMany === 1) ? "is" : "are";
@@ -161,7 +205,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             sConfRightHeaderText : `rechter Zweig`,
             sConfLeftLabelLabel : `Etikett:`,
             sConfRightLabelLabel : `Etikett:`,
-            sConfVariableTypeLabel : `Art des Attributs:`,
+            sConfAttributeTypeLabel : `Art des Attributs:`,
             sConfSwapLandRLabel : `links und rechts tauschen:`,
             sConfContinuousOptionText : `kontinuierlich`,
             sConfCategoricalOptionText : `kategorisch`,
@@ -180,6 +224,50 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         sLeafNoDiagnosis: `Sie haben noch keine Diagnose zugeordnet. Zum Zuweisen klicken!`,
         sMoreCategories: `weitere Kategorien`,
         sNoCategories: `keine Kategorien`,
+
+        //  tree and collection names
+
+        sClassTreeCollectionName: "klassBäume",
+        sClassTreeDataSetTitle: "Klassifikationsbaum Datensätze",
+        sClassTreeDataSetDescription : `Daten über Klassifikationsbäume`,
+
+        sRegressTreeCollectionName: "regressBäume",
+        sRegressTreeDataSetTitle: "Regressionsbaum Datensätze",
+        sRegressTreeDataSetDescription : `Daten über Regressionsbäume`,
+
+
+        //  emitted data attribute names and descriptions. Prefixes; `san` and `sad`
+
+        sanPredict : `Vorhersage`,
+        sanN : `N`,
+        sanNodes : `Knoten`,
+        sanDepth : `Tiefe`,
+        sanBaseRate : `Basissatz`,
+        sanTP : `RP`,
+        sanFN : `FN`,
+        sanFP : `FP`,
+        sanTN : `RN`,
+        sanNPPos : `PoV`,
+        sanNPNeg : `NoV`,
+        sanSensitivity : `sens`,
+        sanMisclassificationRate : `FKR`,
+        sanSumSSD: `GQA`,
+
+        sadPredict : `Was versucht dieser Baum vorherzusagen?`,
+        sadN : `Gesamtzahl der Fälle`,
+        sadNodes : `Gesamtzahl der Knotenpunkte`,
+        sadDepth : `Tiefe des Baumes`,
+        sadBaseRate : `der Basissatz`,
+        sadTP : `Anzahl der richtig positiv`,
+        sadFN : `Anzahl der falsch negativ`,
+        sadFP : `Anzahl der falsch positiv`,
+        sadTN : `Anzahl der richtig negativ`,
+        sadNPPos : `Anzahl der Positivmeldungen ohne Vorhersage`,
+        sadNPNeg : `Anzahl der Negativmeldungen ohne Vorhersage`,
+        sadSensitivity : `die (berechnete) Sensitivität ist der Anteil der positiven Fälle, die positiv diagnostiziert werden`,
+        sadMisclassificationRate : `Fehlklassifizierungsrate (berechnet): der Anteil der Vorhersagen, die nicht korrekt waren`,
+        sadSumSSD : `Gesamtsumme der (normierten) Quadrate der Abweichungen`,
+
 
         sfIsAre : function(howMany) {
             return (howMany === 1) ? "ist" : "sind";

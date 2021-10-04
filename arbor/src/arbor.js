@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '2021d',
+        version: '2021e',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -106,16 +106,42 @@ const arbor = {
             arbor.selectionManager.processCodapSelectionOfTreeCase
         );
 
-
         await codapInterface.init(this.iFrameDescription, null);
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
         await arbor.getAndRestoreViews();   //
 
+        await this.createOutputDatasets();
+
+        arbor.repopulate();
+        arbor.redisplay();
+    },
+
+    createOutputDatasets : async function() {
+
+        //  delete any existing ones
+
+        tDeleteRequest = [
+            {
+                action : "delete",
+                resource : `dataContext[${arbor.constants.kClassTreeDataSetName}]`,
+            },
+            {
+                action : "delete",
+                resource : `dataContext[${arbor.constants.kRegressTreeDataSetName}]`,
+            }
+        ]
+        try {
+            const deleteResult = await codapInterface.sendRequest(tDeleteRequest);
+            console.log(`deleted datasets ${arbor.constants.kClassTreeDataSetName} and ${arbor.constants.kRegressTreeDataSetName}`);
+        } catch (msg) {
+            console.log(`trouble deleting datasets: ${msg}`);
+        }
+
         //  now initialize the "output" data context(s)
 
         const tInitDatasetPromises = [
-            pluginHelper.initDataSet(arbor.codapConnector.regressionTreesDataContextSetupString),
-            pluginHelper.initDataSet(arbor.codapConnector.classificationTreesDataContextSetupString)
+            pluginHelper.initDataSet(arbor.codapConnector.regressionTreesDatasetSetupObject()),
+            pluginHelper.initDataSet(arbor.codapConnector.classificationTreesDatasetSetupObject())
         ];
 
         await Promise.all(tInitDatasetPromises)
@@ -133,10 +159,7 @@ const arbor = {
 
         const updateResult = await codapInterface.sendRequest(tMessage);
 
-        arbor.repopulate();
-        arbor.redisplay();
     },
-
 
     getAndRestoreViews: async function () {
         window.addEventListener("resize", this.resizeWindow);
@@ -176,34 +199,34 @@ const arbor = {
      * depending on the current type of tree.
      */
     emitTreeData: function () {
-        var tRes = arbor.state.tree.rootNode.getResultCounts();
-        var tSumSSD = tRes.sumOfSquaresOfDeviationsOfLeaves;
+        const tRes = arbor.state.tree.rootNode.getResultCounts();
+        const tSumSSD = tRes.sumOfSquaresOfDeviationsOfLeaves;
 
-        var N = tRes.sampleSize;        //  tRes.FP + tRes.TP + tRes.FN + tRes.TN;
-        var tNodes = arbor.state.tree.numberOfNodes();
-        var tDepth = arbor.state.tree.depth();
+        const N = tRes.sampleSize;        //  tRes.FP + tRes.TP + tRes.FN + tRes.TN;
+        const tNodes = arbor.state.tree.numberOfNodes();
+        const tDepth = arbor.state.tree.depth();
 
-        var tStateAsString = JSON.stringify(arbor.state);
-        var tValues = {
-            predict: arbor.informalDVBoolean,    //  the informal expression of what is being predicted.
-            N: N,
-            base: (tRes.TP + tRes.FN + tRes.PU) / N,
-            state: tStateAsString,
-            nodes: tNodes,
-            depth: tDepth
-        };
+        const tStateAsString = JSON.stringify(arbor.state);
 
-        if (arbor.state.treeType === "regression") {
-            tValues.sumSSD = tSumSSD;
+        let tValues = { state : tStateAsString};
+
+        tValues[arbor.strings.sanPredict] = arbor.informalDVBoolean;    //  the informal expression of what is being predicted
+            tValues[arbor.strings.sanN] =  N;
+            tValues[arbor.strings.sanBaseRate] = (tRes.TP + tRes.FN + tRes.PU) / N;
+            tValues[arbor.strings.sanNodes] = tNodes;
+            tValues[arbor.strings.sanDepth] = tDepth;
+
+        if (arbor.state.treeType === arbor.constants.kRegressTreeType) {
+            tValues[arbor.strings.sanSumSSD] = tSumSSD;
             arbor.codapConnector.createRegressionTreeItem(tValues);
 
         } else {
-            tValues.TP = tRes.TP;
-            tValues.TN = tRes.TN;
-            tValues.FP = tRes.FP;
-            tValues.FN = tRes.FN;
-            tValues.NPPos = tRes.PU;
-            tValues.NPNeg = tRes.NU;
+            tValues[arbor.strings.sanTP] = tRes.TP;
+            tValues[arbor.strings.sanTN] = tRes.TN;
+            tValues[arbor.strings.sanFP] = tRes.FP;
+            tValues[arbor.strings.sanFN] = tRes.FN;
+            tValues[arbor.strings.sanNPPos] = tRes.PU;
+            tValues[arbor.strings.sanNPNeg] = tRes.NU;
 
             arbor.codapConnector.createClassificationTreeItem(tValues);
         }
@@ -242,7 +265,7 @@ const arbor = {
 
         return {
             lang : "en",
-            treeType: "classification",
+            treeType: arbor.constants.kClassTreeType,
             latestNodeID: 42,
             dependentVariableName: null,
             dependentVariableSplit: null,
@@ -650,6 +673,9 @@ const arbor = {
     changeLanguage : async function() {
         arbor.state.lang = strings.nextLanguage(arbor.state.lang);
         arbor.strings = await strings.initializeStrings(arbor.state.lang);
+
+        await this.createOutputDatasets();
+
         this.redisplay();
     },
 
@@ -787,13 +813,9 @@ arbor.constants = {
     kTitle: "Diagnostic Trees",
 
     kClassTreeType : "classification",
+    kRegressTreeType : "regression",
     kClassTreeDataSetName: "classTrees",
-    kClassTreeCollectionName: "classTrees",
-    kClassTreeDataSetTitle: "Classification Tree Records",
-
     kRegressTreeDataSetName: "regressTrees",
-    kRegressTreeCollectionName: "regressTrees",
-    kRegressTreeDataSetTitle: "Regression Tree Records",
 
     kUsePercentageInNodeBox : "percent",
     kUseProportionInNodeBox : "proportion",
