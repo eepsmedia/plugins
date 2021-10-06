@@ -86,7 +86,7 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
     this.paper.clear();
 
     this.myBoxView = new NodeBoxView(this.myNode, this);  //  create, not draw
-    this.leaf = (this.myNode.branches.length === 0 && arbor.state.showDiagnosisLeaves) ? new Leaf({node: this.myNode}) : null;          //  our leaf
+    this.leaf = (this.myNode.branches.length === 0 && arbor.state.oShowDiagnosisLeaves) ? new Leaf({node: this.myNode}) : null;          //  our leaf
 
     const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created just above
     this.paper.append(boxPaper);    //  attach it, but it's not yet in the right place.
@@ -141,7 +141,7 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
         case 0:     //  update and position the leaf
             tCurrentY +=  arbor.constants.treeObjectPadding;     //  top of leaf
 
-            if (arbor.state.showDiagnosisLeaves) {
+            if (arbor.state.oShowDiagnosisLeaves) {
                 this.paper.append(this.leaf.paper);
                 const tLeafDimensions = this.leaf.refreshLeaf();
                 //  todo: make a leaf move-to method

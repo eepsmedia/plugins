@@ -81,15 +81,15 @@ var pluginHelper = {
         return new Promise( function(resolve, reject) {
             iValuesArray = pluginHelper.arrayify( iValuesArray );
 
-            var tResourceString = iDataContextName ? "dataContext[" + iDataContextName + "].item" : "item";
+            const tResourceString = iDataContextName ? "dataContext[" + iDataContextName + "].item" : "item";
 
-            var tMessage = {
+            const tMessage = {
                 action : 'create',
                 resource : tResourceString,
                 values : iValuesArray
             };
 
-            var tCreateItemsPromise = codapInterface.sendRequest( tMessage, iCallback );
+            const  tCreateItemsPromise =  codapInterface.sendRequest( tMessage, iCallback );
             resolve( tCreateItemsPromise );
         })
     },

@@ -68,10 +68,6 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <script src="../common/jqueryFolder/jquery.min.js"></script>
     <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
 
-    <!--
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    -->
 
     <!--
         Models and Controllers
@@ -138,7 +134,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <div id="FP" class="cell">10</div>
             <div id="FN" class="cell">20</div>
 
-            <div id="no-pred-head" class="no-pred">no prediction</div>
+            <div id="no-pred-head" class="no-pred">pas de predicion</div>
             <div id="PU" class="no-pred">44</div>
             <div id="NU" class="no-pred">66</div>
         </div>
@@ -197,26 +193,26 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <div id="attributeConfigurationSection" visibility="hidden">
 
         <div class="attributeConfigurationHead">
-            Configure "<span id="splitVariableName"></span>"
+            <span id="sConfConfigure"></span> "<span id="splitVariableName"></span>"
             <button class="attributeConfigurationDoneButton"
+                    id = "sConfDoneButton"
                     onclick="focusSplitMgr.showHideAttributeConfigurationSection()">
-                Done!
             </button>
 
         </div>
 
         <table>
             <tr>
-                <th class="leftSide" id="leftHeaderText">Left branch</th>
-                <th class="rightSide" id="rightHeaderText">Right branch</th>
+                <th class="leftSide" id="sConfLeftHeaderText">Left branch</th>
+                <th class="rightSide" id="sConfRightHeaderText">Right branch</th>
             </tr>
             <tr>
                 <td class="leftSide">
-                    <label for="leftLabelText">Label:</label>
+                    <label for="leftLabelText" id="sConfLeftLabelLabel"></label>
                     <input id="leftLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
                 </td>
                 <td class="rightSide">
-                    <label for="rightLabelText">Label:</label>
+                    <label for="rightLabelText"  id="sConfRightLabelLabel"></label>
                     <input id="rightLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
                 </td>
             </tr>
@@ -250,14 +246,14 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         </table>
 
         <div class="attributeConfigurationFooter">
-            <label for="currentSplitTypeMenu">Variable type:</label>
+            <label for="currentSplitTypeMenu" id="sConfAttributeTypeLabel"></label>
             <select id="currentSplitTypeMenu" onchange="focusSplitMgr.changeCurrentSplitTypeUsingMenu()">
-                <option value="continuous">Continuous</option>
-                <option value="categorical">Categorical</option>
+                <option value="continuous" id="sConfContinuousOptionText"></option>
+                <option value="categorical" id="sConfCategoricalOptionText"></option>
             </select>
             &nbsp;&nbsp;
-            <label for="swapImage">Swap left and right: </label>
-            <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="18"/>
+            <label for="swapImage" id="sConfSwapLandRLabel"></label>
+            <img id="swapImage" onclick="focusSplitMgr.swapFocusSplit()" src="art/left-right.png" width="22"/>
         </div>
 
     </div>
@@ -267,6 +263,14 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <div id="settings">
         <div class="baumControlGroup" onclick="arbor.changeLanguage()">
             <button id="changeLanguageButton" type="button" name="Language">Language</button>
+
+                <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
+                <label for="treeTypeMenu">Tree type</label>
+                <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
+                    <option value="classification" selected>classification</option>
+                    <option value="regression">regression</option>
+                </select>
+
         </div>
 
         <!--    control whether we use proportion or percentage, p = 0.6 or (60%) -->
@@ -282,31 +286,38 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                     <circle r="8" cx="100" cy="8" fill="red"></circle>
                 </svg>
                 <br>
-                ...the proportion of "successes" in a node?
-                <input id="usePercentOption" type="radio" name="proportionOrPercentage"
-                       value="percent" onchange="arbor.recordNodeDisplayParams()" checked>
-                <label for="usePercentOption">(60%)</label>
-                <input id="useProportionOption" type="radio" name="proportionOrPercentage"
-                       value="proportion" onchange="arbor.recordNodeDisplayParams()" >
-                <label for="useProportionOption">p = 0.60</label>
-            <br>...how many cases are successes?
+                ...how many cases are successes?
                 <input id="useOutOfOption" type="radio" name="outOfOrRatio"
-                       value="outOf" onchange="arbor.recordNodeDisplayParams()" checked>
+                       value="outOf" onchange="arbor.recordDisplayParams()" checked>
                 <label for="usePercentOption">3 of 5</label>
+                <input id="useFractionOption" type="radio" name="outOfOrRatio"
+                       value="fraction" onchange="arbor.recordDisplayParams()">
+                <label for="useFractionOption">3/5</label>
                 <input id="useRatioOption" type="radio" name="outOfOrRatio"
-                       value="ratio" onchange="arbor.recordNodeDisplayParams()">
+                       value="ratio" onchange="arbor.recordDisplayParams()">
                 <label for="useProportionOption">3 : 2</label>
+                <br>
+                ...the proportion of "successes"?
+                <input id="usePercentOption" type="radio" name="proportionOrPercentage"
+                       value="percent" onchange="arbor.recordDisplayParams()" checked>
+                <label for="usePercentOption">60%</label>
+                <input id="useProportionOption" type="radio" name="proportionOrPercentage"
+                       value="proportion" onchange="arbor.recordDisplayParams()">
+                <label for="useProportionOption">p = 0.60</label>
+                <input id="omitProportionOption" type="radio" name="proportionOrPercentage"
+                       value="noProportion" onchange="arbor.recordDisplayParams()">
+                <label id="sOmitProportionLabel" for="omitProportionOption">(none)</label>
             </p>
         </div>
 
+<!--
+        automatically open the configuration box?
+-->
         <div class="baumControlGroup">
-            <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
-            <label for="treeTypeMenu">Tree type</label>
-            <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
-                <option value="classification" selected>classification</option>
-                <option value="regression">regression</option>
-            </select>
+            <input type="checkbox" id="autoOpenAttributeSplitOnDrop" onchange="arbor.recordDisplayParams()">
+            <label for="autoOpenAttributeSplitOnDrop" id="sAutoOpenAttributeSplitLabel"></label>
         </div>
+
         <div class="baumControlGroup">
             <p> Change these at your peril.</p>
 

@@ -103,13 +103,17 @@ Node.prototype.parentSplit = function (iParent) {
 
 /**
  * Called when the user drops an attribute in a node.
- * The NodeBoxView sends the data from the "mouse down place" to this (mouse up) node.
- * @param iAttribute    the AttInBaum that branches at this node
+ * The `NodeBoxView` sends the data from the "mouse down place"
+ * (in the corral) to this (mouse up) node.
+ *
+ * @param iAttribute    the `AttInBaum` that branches at this node, just dropped on it
  */
 Node.prototype.branchThisNode = function (iAttribute) {
     this.attributeSplit = iAttribute.getSplit();    //  gets the latest split
 
-    arbor.focusSplit = this.attributeSplit;
+    //  now this node has the right split. Make it the focus
+
+    arbor.setFocusNode(this);
 
     this.branches = [];     //  reset
 
@@ -122,6 +126,9 @@ Node.prototype.branchThisNode = function (iAttribute) {
     const uNewNode = new Node(this, "R"); //
     this.branches.push(uNewNode);     //  array now holds LEFT and RIGHT branches
 
+    if (arbor.state.oAlwaysShowConfigurationOnSplit ) {
+        focusSplitMgr.showHideAttributeConfigurationSection(true);
+    }
     /*
         var tEvent = new Event("changeTree");
         tEvent.why = "node branching";

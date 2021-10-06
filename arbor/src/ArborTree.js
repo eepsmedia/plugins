@@ -114,7 +114,7 @@ Tree.prototype.resultString = function () {
         tClassificationSummary = arbor.strings.sNoCasesToProcess;
         tRegressionSummary = arbor.strings.sNoCasesToProcess;
     }
-    return (arbor.state.treeType === "classification") ? tClassificationSummary : tRegressionSummary;
+    return (arbor.state.treeType === arbor.constants.kClassTreeType) ? tClassificationSummary : tRegressionSummary;
 };
 
 Tree.prototype.nodeFromID = function (id) {

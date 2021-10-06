@@ -186,8 +186,13 @@ AttributeSplit.prototype.reverseContinuousExpression = function(iUseC) {
  * @returns {string}
  */
 AttributeSplit.prototype.toString = function() {
-    var out = this.isCategorical ? "Categorical" : "Continuous";
-    out += " split for " + this.attName;
+    let out;
+
+    if (this.isCategorical) {
+        out = `Categorical split for ${this.attName}: left is [${this.leftCategories.join(", ")}]`;
+    } else {
+        out = `Continuous split for ${this.attName}: left is [${this.operator} ${this.cutpoint}]`;
+    }
 
     return out;
 };

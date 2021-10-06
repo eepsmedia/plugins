@@ -70,11 +70,11 @@ const arbor = {
     dependentVariableSplit: null,
 
     iFrameDescription: {
-        version: '2021c',
+        version: '2021e',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
-        preventDataContextReorg: false
+        preventDataContextReorg: false,
     },
 
     /**
@@ -106,16 +106,42 @@ const arbor = {
             arbor.selectionManager.processCodapSelectionOfTreeCase
         );
 
-
         await codapInterface.init(this.iFrameDescription, null);
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
         await arbor.getAndRestoreViews();   //
 
+        await this.createOutputDatasets();
+
+        arbor.repopulate();
+        arbor.redisplay();
+    },
+
+    createOutputDatasets : async function() {
+
+        //  delete any existing ones
+
+        tDeleteRequest = [
+            {
+                action : "delete",
+                resource : `dataContext[${arbor.constants.kClassTreeDataSetName}]`,
+            },
+            {
+                action : "delete",
+                resource : `dataContext[${arbor.constants.kRegressTreeDataSetName}]`,
+            }
+        ]
+        try {
+            const deleteResult = await codapInterface.sendRequest(tDeleteRequest);
+            console.log(`deleted datasets ${arbor.constants.kClassTreeDataSetName} and ${arbor.constants.kRegressTreeDataSetName}`);
+        } catch (msg) {
+            console.log(`trouble deleting datasets: ${msg}`);
+        }
+
         //  now initialize the "output" data context(s)
 
         const tInitDatasetPromises = [
-            pluginHelper.initDataSet(arbor.codapConnector.regressionTreesDataContextSetupString),
-            pluginHelper.initDataSet(arbor.codapConnector.classificationTreesDataContextSetupString)
+            pluginHelper.initDataSet(arbor.codapConnector.regressionTreesDatasetSetupObject()),
+            pluginHelper.initDataSet(arbor.codapConnector.classificationTreesDatasetSetupObject())
         ];
 
         await Promise.all(tInitDatasetPromises)
@@ -133,10 +159,7 @@ const arbor = {
 
         const updateResult = await codapInterface.sendRequest(tMessage);
 
-        arbor.repopulate();
-        arbor.redisplay();
     },
-
 
     getAndRestoreViews: async function () {
         window.addEventListener("resize", this.resizeWindow);
@@ -176,34 +199,34 @@ const arbor = {
      * depending on the current type of tree.
      */
     emitTreeData: function () {
-        var tRes = arbor.state.tree.rootNode.getResultCounts();
-        var tSumSSD = tRes.sumOfSquaresOfDeviationsOfLeaves;
+        const tRes = arbor.state.tree.rootNode.getResultCounts();
+        const tSumSSD = tRes.sumOfSquaresOfDeviationsOfLeaves;
 
-        var N = tRes.sampleSize;        //  tRes.FP + tRes.TP + tRes.FN + tRes.TN;
-        var tNodes = arbor.state.tree.numberOfNodes();
-        var tDepth = arbor.state.tree.depth();
+        const N = tRes.sampleSize;        //  tRes.FP + tRes.TP + tRes.FN + tRes.TN;
+        const tNodes = arbor.state.tree.numberOfNodes();
+        const tDepth = arbor.state.tree.depth();
 
-        var tStateAsString = JSON.stringify(arbor.state);
-        var tValues = {
-            predict: arbor.informalDVBoolean,    //  the informal expression of what is being predicted.
-            N: N,
-            base: (tRes.TP + tRes.FN + tRes.PU) / N,
-            state: tStateAsString,
-            nodes: tNodes,
-            depth: tDepth
-        };
+        const tStateAsString = JSON.stringify(arbor.state);
 
-        if (arbor.state.treeType === "regression") {
-            tValues.sumSSD = tSumSSD;
+        let tValues = { state : tStateAsString};
+
+        tValues[arbor.strings.sanPredict] = arbor.informalDVBoolean;    //  the informal expression of what is being predicted
+            tValues[arbor.strings.sanN] =  N;
+            tValues[arbor.strings.sanBaseRate] = (tRes.TP + tRes.FN + tRes.PU) / N;
+            tValues[arbor.strings.sanNodes] = tNodes;
+            tValues[arbor.strings.sanDepth] = tDepth;
+
+        if (arbor.state.treeType === arbor.constants.kRegressTreeType) {
+            tValues[arbor.strings.sanSumSSD] = tSumSSD;
             arbor.codapConnector.createRegressionTreeItem(tValues);
 
         } else {
-            tValues.TP = tRes.TP;
-            tValues.TN = tRes.TN;
-            tValues.FP = tRes.FP;
-            tValues.FN = tRes.FN;
-            tValues.NPPos = tRes.PU;
-            tValues.NPNeg = tRes.NU;
+            tValues[arbor.strings.sanTP] = tRes.TP;
+            tValues[arbor.strings.sanTN] = tRes.TN;
+            tValues[arbor.strings.sanFP] = tRes.FP;
+            tValues[arbor.strings.sanFN] = tRes.FN;
+            tValues[arbor.strings.sanNPPos] = tRes.PU;
+            tValues[arbor.strings.sanNPNeg] = tRes.NU;
 
             arbor.codapConnector.createClassificationTreeItem(tValues);
         }
@@ -216,7 +239,9 @@ const arbor = {
      */
     handleTreeChange: function (iEvent) {
         if (typeof iEvent.why !== 'undefined') {
-            console.log("changeTree event -- " + iEvent.why);
+            console.log(`handleTreeChange event to ${iEvent.why}`);
+        } else {
+            console.log(`handleTreeChange event for no discernible reason`);
         }
         this.repopulate();
         this.redisplay();
@@ -224,7 +249,7 @@ const arbor = {
 
 
     handleShowHideDiagnosisLeaves : function() {
-        arbor.state.showDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
+        arbor.state.oShowDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
         arbor.refreshBaum('views');
     },
 
@@ -240,13 +265,15 @@ const arbor = {
 
         return {
             lang : "en",
-            treeType: "classification",
+            treeType: arbor.constants.kClassTreeType,
             latestNodeID: 42,
             dependentVariableName: null,
             dependentVariableSplit: null,
             tree: null,
-            nodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
-            nodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
+            oNodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
+            oNodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
+            oAlwaysShowConfigurationOnSplit : false,
+            oShowDiagnosisLeaves : false,
         }
     },
 
@@ -301,12 +328,40 @@ const arbor = {
         arbor.strings =  await strings.initializeStrings(arbor.state.lang);
 
         //  now set the options
-        document.getElementById("usePercentOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUsePercentageInNodeBox);
-        document.getElementById("useProportionOption").checked = (arbor.state.nodeDisplayProportion === arbor.constants.kUseProportionInNodeBox);
-        document.getElementById("useOutOfOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseOutOfInNodeBox);
-        document.getElementById("useRatioOption").checked = (arbor.state.nodeDisplayNumber === arbor.constants.kUseRatioInNodeBox);
+        switch (arbor.state.oNodeDisplayNumber) {
+            case arbor.constants.kUseOutOfInNodeBox:
+                document.getElementById("useOutOfOption").checked = true;
+                break;
+            case arbor.constants.kUseRatioInNodeBox:
+                document.getElementById("useRatioOption").checked = true;
+                break;
+            case arbor.constants.kUseFractionInNodeBox:
+                document.getElementById("useFractionOption").checked = true;
+                break;
+            default:    //  the constant is not set, set it to "outOf"
+                document.getElementById("useOutOfOption").checked = true;
+                arbor.state.oNodeDisplayNumber = arbor.constants.kUseOutOfInNodeBox;
+                break;
+        }
 
-        document.getElementById("showDiagnosisLeaves").checked = arbor.state.showDiagnosisLeaves;
+        switch (arbor.state.oNodeDisplayProportion) {
+            case arbor.constants.kUsePercentageInNodeBox:
+                document.getElementById("usePercentOption").checked = true;
+                break;
+            case arbor.constants.kUseProportionInNodeBox:
+                document.getElementById("useProportionOption").checked = true;
+                break;
+            case arbor.constants.kOmitProportionInNodeBox:
+                document.getElementById("omitProportionOption").checked = true;
+                break;
+            default:
+                arbor.state.oNodeDisplayProportion = arbor.constants.kUseProportionInNodeBox;
+                document.getElementById("useProportionOption").checked = true;
+                break;
+        }
+
+        document.getElementById("autoOpenAttributeSplitOnDrop").checked = arbor.state.oAlwaysShowConfigurationOnSplit;
+        document.getElementById("showDiagnosisLeaves").checked = arbor.state.oShowDiagnosisLeaves;
     },
 
     /**
@@ -414,11 +469,11 @@ const arbor = {
      * That is, we believe that the allocation of attributes to nodes should be preserved.
      */
     repopulate: function () {
-        console.log("   repopulate begins");
+        console.log("   repopulate the model! Begin...");
         this.state.tree.populateTree();               //  count up how many are in what bin throughout the tree, leaving structure intact
-        //  console.log("       populated with " + this.analysis.cases.length + " cases");
+        console.log("       ... populated with " + this.analysis.cases.length + " cases");
         focusSplitMgr.theSplit.updateSplitStats(this.analysis.cases);    //  update these stats based on all cases
-        //  console.log("       splitStats updated");
+        console.log("       ... splitStats updated");
         console.log("   repopulate ends");
     },
 
@@ -474,7 +529,7 @@ const arbor = {
 
     /**
      * Set which node we are focusing on in the display.
-     * If this node hosts a split, display the appropriate attribute-split stuff in the conficuation section
+     * If this node hosts a split, display the appropriate attribute-split stuff in the configuration section
      *
      * @param iNode
      */
@@ -618,6 +673,9 @@ const arbor = {
     changeLanguage : async function() {
         arbor.state.lang = strings.nextLanguage(arbor.state.lang);
         arbor.strings = await strings.initializeStrings(arbor.state.lang);
+
+        await this.createOutputDatasets();
+
         this.redisplay();
     },
 
@@ -640,11 +698,12 @@ const arbor = {
      * record those in the corresponding `state` members,
      * and redisplay.
      */
-    recordNodeDisplayParams : function() {
-        arbor.state.nodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
-        arbor.state.nodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
+    recordDisplayParams : function() {
+        arbor.state.oNodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
+        arbor.state.oNodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
 
-        console.log(`   display params: ${arbor.state.nodeDisplayProportion} and ${arbor.state.nodeDisplayNumber}`);
+        arbor.state.oAlwaysShowConfigurationOnSplit = document.getElementById("autoOpenAttributeSplitOnDrop").checked;
+        console.log(`   display params: ${arbor.state.oNodeDisplayNumber} and ${arbor.state.oNodeDisplayProportion}`);
 
         arbor.refreshBaum('views');
     },
@@ -750,23 +809,20 @@ arbor.constants = {
 
     closeIconURI: "art/closeAttributeIcon.png",
 
-    //  kVersion: "001M",       //  version is in the iFrameDesciption member, way up above.
     kName: "arbor",
     kTitle: "Diagnostic Trees",
 
     kClassTreeType : "classification",
+    kRegressTreeType : "regression",
     kClassTreeDataSetName: "classTrees",
-    kClassTreeCollectionName: "classTrees",
-    kClassTreeDataSetTitle: "Classification Tree Records",
-
     kRegressTreeDataSetName: "regressTrees",
-    kRegressTreeCollectionName: "regressTrees",
-    kRegressTreeDataSetTitle: "Regression Tree Records",
 
     kUsePercentageInNodeBox : "percent",
     kUseProportionInNodeBox : "proportion",
+    kOmitProportionInNodeBox : "noProportion",
     kUseOutOfInNodeBox : "outOf",
     kUseRatioInNodeBox : "ratio",
+    kUseFractionInNodeBox : "fraction",
 
     buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",
