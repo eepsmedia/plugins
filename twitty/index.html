@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+==========================================================================
+
+ * Created by tim on 10/6/21.
+ 
+ 
+ ==========================================================================
+index in twitty
+
+    Authors:   Baturay Koyuncu, Tim Erickson
+
+Copyright (c) 2021 by Epistemological Engineering. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>twitty</title>
+
+    <link rel='stylesheet' type='text/css' href='css/twitty.css'/>
+
+    <script src="src/twitty.js"></script>
+    <script src="src/Tweet.js"></script>
+    <script src="data/med-tweets.js"></script>
+
+</head>
+<body>
+<h2>twitty</h2>
+<p>A CODAP plugin for getting tweets for analysis</p>
+
+<label for="startDateInput" id="startDateInputLabel">start: </label>
+<input type="date" id="startDateInput"
+min="2020-03-01" max="2021-04-30" value="2020-05-01">
+
+<label for="endDateInput" id="endDateInputLabel">end: </label>
+<input type="date" id="endDateInput"
+       min="2020-03-01" max="2021-04-30" value="2020-05-08">
+
+<button id="actionButton" onclick="twitty.handleActionButton()">action!</button>
+
+<div id="foundTweetList"></div>
+<textarea id="selectedTweet"></textarea>
+<div id="selectedTweetInfo"></div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        twitty.initialize();
+    }
+</script>
+
+
+</html>
