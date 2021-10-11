@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/twitty.iml" filepath="$PROJECT_DIR$/twitty.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../ids/twitty/twitty.iml" filepath="$PROJECT_DIR$/../../ids/twitty/twitty.iml" />
     </modules>
   </component>
 </project>
