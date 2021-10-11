@@ -6,6 +6,7 @@ connect = {
         await codapInterface.init(this.iFrameDescriptor, null);
         await this.allowReorg();
         notificatons.registerForDocumentChanges();
+        notificatons.registerForAttributeDrops();
     },
 
     iFrameDescriptor: {

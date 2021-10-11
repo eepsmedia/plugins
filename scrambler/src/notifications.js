@@ -32,6 +32,16 @@ notificatons = {
         console.log(`registered for changes to ${iName}. index ${this.datasetSubscriberIndex}`);
     },
 
+    registerForAttributeDrops : function() {
+        const tResource = `dragDrop[attribute]`;
+
+        this.attributeDropSubscriberIndex = codapInterface.on(
+            'notify', tResource, notificatons.handleAttributeDrop
+        )
+        console.log(`registered for drags and drops. Index ${this.attributeDropSubscriberIndex}`);
+
+    },
+
     /**
      * We have detected a change in a dataset.
      *
@@ -82,6 +92,8 @@ notificatons = {
         scrambler.refreshUIDisplay();
     },
 
-
+    handleAttributeDrop : async function (iMessage) {
+        console.log('drop!');
+    },
 
 }
