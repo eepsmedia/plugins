@@ -29,7 +29,7 @@
 
 -->
 
-<body>
+<body id="entire-scrambler" class="body-no-drag">
 <div class="scrambler-stripe">
     <div class="stripe-element"><h1>scrambler</h1></div>
     <div>
@@ -51,21 +51,18 @@
                  class="roundButton">
         </a>
 
+
     </div>
+    <div class="stripe-element" id="attributeReport"></div>
+
     <!--
         <div class="stripe-element">
             press refresh after you make any changes to the dataset!
         </div>
     -->
 </div>
-<div class="scrambler-stripe">
-    <div class="stripe-element" id="datasetMenuBlock"></div>
-    <div class="stripe-element" id="status"></div>
-</div>
 
-<div class="scrambler-stripe" id="attribute-stripe">
-    <label class="stripe-element" for="attributeMenu">scramble: </label>
-    <select class="stripe-element" id="attributeMenu" onchange="scrambler.handleUIChoice()"></select>
+<div class="scrambler-stripe" id="scramblerStatus">
 </div>
 
 <div class="scrambler-stripe" id="how-many-stripe">
@@ -93,7 +90,7 @@
 </div>
 
 <div class="scrambler-stripe" id="how-many-stripe-disabled">
-    Make a measure in a new column and drag it to the left.
+    Fix that problem and you can scramble!
 </div>
 
 </body>

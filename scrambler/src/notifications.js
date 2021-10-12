@@ -2,6 +2,7 @@ notificatons = {
 
     documentSubscriberIndex: null,
     datasetSubscriberIndex: null,
+    attributeDropSubscriberIndex: null,
 
     registerForDocumentChanges : function() {
         const tResource = `documentChangeNotice`;
@@ -10,7 +11,7 @@ notificatons = {
             tResource,
             notificatons.handleDocumentChangeNotice
         );
-        console.log(`registered for changes to document. index ${this.documentSubscriberIndex}`);
+        console.log(`registered for changes to document. Index ${this.documentSubscriberIndex}`);
     },
 
     /**
@@ -29,7 +30,7 @@ notificatons = {
             //'selectCases',
             notificatons.handleDatasetChangeNotice
         );
-        console.log(`registered for changes to ${iName}. index ${this.datasetSubscriberIndex}`);
+        console.log(`registered for changes to dataset ${iName}. Index ${this.datasetSubscriberIndex}`);
     },
 
     registerForAttributeDrops : function() {
@@ -65,7 +66,7 @@ notificatons = {
             case "createAttributes":
                 scrambler.state.dirtyMeasures = true;
                 const firstAtt = iMessage.values.result.attrs[0];
-                console.log(`    resource: ${iMessage.resource} attrs[0]: ${firstAtt.name} ${firstAtt.guid}`);
+                console.log(`    create attribute... resource: ${iMessage.resource} attrs[0]: ${firstAtt.name} ${firstAtt.guid}`);
                 break;
             default:
                 break;
@@ -74,26 +75,62 @@ notificatons = {
 
     /**
      * We have detected that the document has changed.
-     * This includes additions and removals of datasets!
-     * That means we need to recreate the dataset menu.
+     * We therefore need to check if the source dataset still exists.
      *
      * @param iMessage
      */
     handleDocumentChangeNotice : async function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
 
-        const tName = await scrambler.initDatasetUI();
-        if (tName) {
-            await scrambler.setSourceDataset(tName);
-        }  else {
-            scrambler.sourceDataset = null;
+        const doesItExist = connect.datasetExists(scrambler.state.datasetName);
+
+        if (!doesItExist) {
+            const tName = await connect.getSuitableDatasetName(scrambler.state.datasetName);
+            if (tName) {
+                await scrambler.setSourceDataset(tName);
+            } else {
+                scrambler.sourceDataset = null;
+            }
+            scrambler.refreshUIDisplay();
         }
 
-        scrambler.refreshUIDisplay();
     },
 
     handleAttributeDrop : async function (iMessage) {
-        console.log('drop!');
+        const positionString = iMessage.values.position ?
+            `(${iMessage.values.position.x} , ${iMessage.values.position.y})` :
+            `(no pos)`;
+        switch (iMessage.values.operation) {
+            case "dragstart":
+                //  console.log(`... start dragging ${iMessage.values.attribute.title}`);
+                scrambler.currentlyDraggingAnAttribute = true;
+                break;
+
+            case "drop":
+                console.log(`... drop ${iMessage.values.attribute.title} at ${positionString}`);
+                scrambler.copeWithAttributeDrop(iMessage.values.context.name, iMessage.values.attribute.name)
+                break;
+
+            case "dragend":
+                //  console.log(`... dragend ${iMessage.values.attribute.title} at ${positionString}`);
+                document.getElementById("entire-scrambler").className = "body-no-drag";
+                scrambler.currentlyDraggingAnAttribute = false;
+                break;
+
+            case "dragenter":
+                console.log(`... dragenter ${iMessage.values.attribute.title} at ${positionString}`);
+                document.getElementById("entire-scrambler").className = "body-drag";
+                break;
+
+            case "dragleave":
+                console.log(`... dragleave ${iMessage.values.attribute.title} at ${positionString}`);
+                document.getElementById("entire-scrambler").className = "body-no-drag";
+
+                break;
+
+            default:
+
+        }
     },
 
 }

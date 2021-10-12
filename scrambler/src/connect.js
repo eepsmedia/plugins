@@ -16,9 +16,14 @@ connect = {
         dimensions: scrambler.constants.dimensions,      //      dimensions,
     },
 
-
-    getListOfDataSetNames: async function () {
-        this.listOfDataSetNames = [];
+    /**
+     * Find a dataset that is not _scrambled or _measures, preferably the one we pass in!
+     *
+     * @param iName     Default name, typically the one we have been using all along or restored from save
+     * @returns {Promise<*>}
+     */
+    getSuitableDatasetName : async function(iName) {
+        let tDSNameList = [];
         const tMessage = {
             action: "get",
             resource: "dataContextList"
@@ -30,47 +35,11 @@ connect = {
                 if (theName.startsWith(scrambler.constants.measuresPrefix) || theName.startsWith(scrambler.constants.scrambledPrefix)) {
 
                 } else {
-                    this.listOfDataSetNames.push({
-                        name: theName,
-                        title: ds.title,
-                    });
+                    tDSNameList.push(theName);
                 }
             });
         }
-        return this.listOfDataSetNames;
-    },
-
-    /**
-     * Construct and return the <option> tags in the menu of all datasets
-     *
-     * @param   If this name is in the list, make it the current (selected) value.
-     * @returns {Promise<string>}
-     */
-    makeDatasetMenuGuts: async function (iDefaultName) {
-        const theNames = await this.getListOfDataSetNames();
-        let out = "";
-        let theOptions;
-
-        switch (theNames.length) {
-            case 0:
-                out = "no datasets";
-                break;
-            case 1:
-                const ds = theNames[0];
-                theOptions = `<option value="${ds.name}">${ds.title}</option>`;
-                out = `<select id="datasetMenu">${theOptions}</select>`;
-                break;
-            default:
-                theOptions = "";
-                theNames.forEach(ds => {
-                    const selectedText = (ds.name === iDefaultName) ? "selected" : "";
-                    theOptions += `<option value="${ds.name}" ${selectedText}>${ds.title}</option>`;
-                });
-                out = `<select id="datasetMenu" onchange="scrambler.handleSourceDatasetChange(this)">${theOptions}</select>`;
-                break;
-        }
-
-        return {number : theNames.length, guts: out};
+        return (tDSNameList.includes(iName)) ? iName : tDSNameList[0];
     },
 
     /**

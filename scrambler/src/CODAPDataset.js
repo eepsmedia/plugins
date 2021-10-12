@@ -17,6 +17,58 @@ class CODAPDataset {
     }
 
     /**
+     * Get the structure of this dataset from CODAP and store it in `this.structure`.
+     * We use this for everything, including storing the data.
+     *
+     * Called from `retrieveAllDataFromCODAP()`
+     *
+     * @returns {Promise<void>}
+     */
+    async loadStructureFromCODAP() {
+        if (this.datasetName) {
+            const theMessage = {
+                action: "get",
+                resource: `dataContext[${this.datasetName}],`
+            }
+            const getDatasetResult = await codapInterface.sendRequest(theMessage);
+            this.structure = getDatasetResult.values;
+        } else {
+            scrambler.doAlert("Dang!", "Can't load a structure without a dataset name", "error");
+        }
+    }
+
+    possibleScrambleAttributeNames(iCheck) {
+        const lastCollection = this.structure.collections[this.structure.collections.length - 1];
+        let formula = false;
+
+        let out = [];
+        lastCollection.attrs.forEach(attr => {
+            if (!attr.formula) {    //  can't scramble a formula attribute....
+                out.push(attr.name);
+            } else if (attr.name === iCheck) {  //  has a formula AND it's the one we're checking
+                formula = true;
+            }
+        })
+
+        return {
+            array: out,
+            check: out.includes(iCheck),
+            hasFormula: formula,
+        };
+    }
+
+    allAttributeNames() {
+        let out = [];
+        this.structure.collections.forEach((c) => {
+            c.attrs.forEach((a) => {
+                out.push(a.name);
+            })
+        })
+        return out;
+    }
+
+
+    /**
      * Scrambles the indicated attribute's values. Called from `scrambler.doScramble()`.
      *
      * This is typically called on the cloned dataset (titled "scrambled_whatever"),
@@ -176,20 +228,6 @@ class CODAPDataset {
         return theCase;
     }
 
-    async emitItems(iAppend, iValues) {
-        //  todo: use iAppend
-        const newItemsMessage = {
-            action: "create",
-            resource: `dataContext[${this.datasetName}].item`,
-            values: iValues,
-        }
-
-        try {
-            const newScrambledItemsResult = await codapInterface.sendRequest(newItemsMessage);
-        } catch (msg) {
-            scrambler.doAlert("Hmmm.", `Problem emitting scrambled measures from ${this.datasetName}: ${msg}`)
-        }
-    }
 
     /**
      * Ask CODAP for all cases in all collections, calling `getAllCasesInCollection()`.
@@ -217,27 +255,6 @@ class CODAPDataset {
         await Promise.all(thePromises);     //  await the data from all collections
     }
 
-    /**
-     * Get the structure of this dataset from CODAP and store it in `this.structure`.
-     * We use this for everything, including storing the data.
-     *
-     * Called from `retrieveAllDataFromCODAP()`
-     *
-     * @returns {Promise<void>}
-     */
-    async loadStructureFromCODAP() {
-        if (this.datasetName) {
-            const theMessage = {
-                action: "get",
-                resource: `dataContext[${this.datasetName}],`
-            }
-            const getDatasetResult = await codapInterface.sendRequest(theMessage);
-            this.structure = getDatasetResult.values;
-
-        } else {
-            scrambler.doAlert("Dang!", "Can't load a structure without a dataset name", "error");
-        }
-    }
 
     /**
      * Retrieve all case data from the collection and stuff it into the collection's (new) `cases` member.
@@ -357,6 +374,21 @@ class CODAPDataset {
             values: theValues,
         })
 
+    }
+
+    async emitItems(iAppend, iValues) {
+        //  todo: use iAppend
+        const newItemsMessage = {
+            action: "create",
+            resource: `dataContext[${this.datasetName}].item`,
+            values: iValues,
+        }
+
+        try {
+            const newScrambledItemsResult = await codapInterface.sendRequest(newItemsMessage);
+        } catch (msg) {
+            scrambler.doAlert("Hmmm.", `Problem emitting scrambled measures from ${this.datasetName}: ${msg}`)
+        }
     }
 
     async emitCasesFromDataset() {
@@ -490,36 +522,6 @@ class CODAPDataset {
             name: this.structure.name,
             title: this.structure.title,
         };
-    }
-
-    findSelectedAttribute(iSuggestion) {
-        const lastCollection = this.structure.collections[this.structure.collections.length - 1];
-        let found = false;
-        lastCollection.attrs.forEach(attr => {
-            if (attr.name === iSuggestion) {
-                found = true;
-            }
-        })
-        return (found ? iSuggestion : lastCollection.attrs[0].name);
-    }
-
-    makeAttributeMenuGuts(iSuggestion) {
-        const theSelectedOne = this.findSelectedAttribute(iSuggestion)
-        const nColls = this.structure.collections.length;
-        const lastCollection = this.structure.collections[nColls - 1];
-
-        let out = "";
-        lastCollection.attrs.forEach(attr => {
-            //  can't scramble a formula attribute....
-            if (!attr.formula) {
-                let selectedText = (theSelectedOne === attr.name) ? "selected" : "";
-                out += `<option value="${attr.name}" ${selectedText}>${attr.name}</option>`;
-            }
-        })
-        // out = `<select id="attributeMenu">${out}</select>`;
-
-        return out;
-
     }
 
 }

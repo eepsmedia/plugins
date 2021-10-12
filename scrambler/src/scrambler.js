@@ -3,8 +3,14 @@ const scrambler = {
     scrambledDataset: null,     //      a CODAPDataset.
     measuresDataset: null,      //      a CODAPDataset.
 
-    nDatasets : 0,
-    currentlyScrambling : false,
+    nDatasets: 0,
+    currentlyScrambling: false,
+    currentlyDraggingAnAttribute: false,
+
+    datasetExists: false,
+    datasetHasMeasure: false,
+    scrattributeExists: false,
+    scrattributeIsLeaf: false,
 
     state: {},
 
@@ -16,14 +22,61 @@ const scrambler = {
             await codapInterface.updateInteractiveState(this.state);
             console.log(`No interactive state retrieved. Got a new one...: ${this.state}`);
         }
-
-        this.matchUItoState();  //  set the scramble attribute and number of reps to match the state
-
         await this.refreshAllData();
     },
 
+    refreshScramblerStatus: function () {
+        let theHTML = ``;
+
+        if (this.datasetExists) {
+            const tDSTitle = this.sourceDataset.structure.title;
+            const tAttName = scrambler.state.scrambleAttributeName;
+            const codeStart = "<code>";
+            const codeEnd = "</code>";
+
+            const attReport =  (this.scrattributeExists)
+                ? `scramble ${tAttName}`
+                : `no attribute :(`;
+
+            document.getElementById("attributeReport").innerHTML = attReport;
+
+            if (this.datasetHasMeasure) {
+                if (this.scrattributeExists) {
+                    if (this.scrattributeIsLeaf) {
+                        theHTML = `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`;
+                    } else {
+                        const possibles = scrambler.sourceDataset.possibleScrambleAttributeNames(tAttName);
+                        const suchAs = (possibles.array.length == 1)
+                            ? `such as ${possibles.array[0]}`
+                            : `such as ${possibles.array[0]} or ${possibles.array[1]}`;
+                        const colls = scrambler.sourceDataset.structure.collections;
+                        const lastCollName = colls[colls.length - 1].name;
+                        if (possibles.hasFormula) {
+                            theHTML = `Scrambling ${tAttName} won't work because it has a formula. 
+                        Drag in a different attribute from the last collection (${lastCollName}), ${suchAs}.`;
+
+                        } else {
+                            theHTML = `Scrambling ${tAttName} won't work. 
+                        Drag in an attribute from the last collection (${lastCollName}), ${suchAs}.`;
+                        }
+                    }
+
+                } else {
+                    theHTML = `What attribute do you want to scramble? Drag in in here. `;
+                }
+            } else {
+                theHTML = `Your dataset, "${tDSTitle}," has no measure. 
+                Drag an attribute to the left so you have something to collect!`
+            }
+        } else {
+            theHTML = `Find a dataset and drag the attribute here that you want to scramble!`;
+        }
+
+        document.getElementById(`scramblerStatus`).innerHTML = theHTML;
+    },
+
     refreshAllData: async function () {
-        const tName = await this.initDatasetUI();
+        const tName = await connect.getSuitableDatasetName(this.state.datasetName);
         this.iteration = 0;
 
         if (tName) {
@@ -34,26 +87,6 @@ const scrambler = {
         this.refreshUIDisplay();
     },
 
-    /**
-     * Start up the dataset UI correctly by adjusting the dataset menu.
-     *
-     * Called by `refreshAllData()` and from the document change handler,
-     * `handleDocumentChangeNotice()` in `notifications.js`.
-     *
-     * @returns {Promise<*>}    the name of the current dataset
-     */
-    initDatasetUI: async function () {
-        const theDefaultName = (this.sourceDataset) ? this.sourceDataset.datasetName : "";
-        const datasetMenuResult = await connect.makeDatasetMenuGuts(theDefaultName);
-        const datasetMenuGuts = datasetMenuResult.guts;
-        this.nDatasets = datasetMenuResult.number;
-
-        document.getElementById("datasetMenuBlock").innerHTML = datasetMenuGuts;
-        const theDatasetMenu = document.getElementById("datasetMenu");
-        const startingName = theDatasetMenu ? theDatasetMenu.value : null;
-
-        return startingName;
-    },
 
     /**
      * Makes a `CODAPDataset` filled with the information from the CODAP dataset of the given name.
@@ -68,24 +101,33 @@ const scrambler = {
         //  make the source dataset object!
         this.sourceDataset = await new CODAPDataset(iName);
         await notificatons.registerForDatasetChanges(iName);
-        await this.sourceDataset.retrieveAllDataFromCODAP();    //  todo need this?
+        await this.sourceDataset.loadStructureFromCODAP();
 
-        //  cope with the scramble attributes
-        const scrin = scrambler.state.scrambleAttributeName;
-        console.log(`Setting source to [${iName}], incoming scrattribute: [${scrin}]`);
-        const scrout = this.sourceDataset.findSelectedAttribute(scrambler.state.scrambleAttributeName);
-        scrambler.state.scrambleAttributeName = scrout;
-        console.log(`    outgoing scrattribute: [${scrout}]`);
+        if (this.sourceDataset) {
+            this.datasetExists = true;
+            this.datasetHasMeasure = (this.sourceDataset.structure.collections.length > 1);
 
-        if (scrin !== scrout) {
-            this.refreshUIDisplay();    //  fix the displayed scramble attribute
+            //  cope with the scramble attributes
+            const tScrambleName = scrambler.state.scrambleAttributeName;
+            this.scrattributeExists = (this.sourceDataset.allAttributeNames().includes(tScrambleName));
+            this.scrattributeIsLeaf = this.sourceDataset.possibleScrambleAttributeNames(tScrambleName).check;
+            console.log(`SetSourceDataset: ${iName} with ${scrambler.state.scrambleAttributeName}`)
+        } else {
+            this.datasetExists = false;
+            this.datasetHasMeasure = false;
+            this.scrattributeExists = false;
+            this.scrattributeIsLeaf = false;
+
+            scrambler.state.scrambleAttributeName = null;
+            console.log(`SetSourceDataset: WE HAVE NO SOURCE!`)
         }
+
     },
 
     /**
      * Handler when user clicks the big refresh arrow.
      */
-    handleBigRefresh : async function() {
+    handleBigRefresh: async function () {
         this.refreshAllData();
 
         if (this.measuresDataset) {
@@ -95,13 +137,26 @@ const scrambler = {
 
     },
 
+    copeWithAttributeDrop: async function (iDataset, iAttribute) {
+        console.log(`Scramble ${iAttribute} in ${iDataset}`);
+        this.state.scrambleAttributeName = iAttribute;      //  it has to exist, we just dropped it!
+
+        await scrambler.setSourceDataset(iDataset);
+
+        if (this.sourceDataset && (iDataset != this.sourceDataset.datasetName)) {
+                    //  changing the dataset
+        }
+
+        this.refreshUIDisplay();
+    },
+
     /**
      * Read the controls on the screen and set internal values, i.e., `state` appropriately.
      *
      */
     handleUIChoice: function () {
         this.state.numberOfScrambles = Number(document.getElementById("howManyBox").value) || this.state.numberOfScrambles || 42;
-        this.state.scrambleAttributeName = document.getElementById("attributeMenu").value || null;
+        // this.state.scrambleAttributeName = document.getElementById("attributeMenu").value || null;
 
         this.refreshUIDisplay();
     },
@@ -216,7 +271,7 @@ const scrambler = {
 
         this.measuresDataset.emitItems(true, newItems);
         connect.showTable(this.measuresDataset.datasetName);
-        this.showProgress(-1,-1);
+        this.showProgress(-1, -1);
         this.currentlyScrambling = false;
         this.refreshUIDisplay();
     },
@@ -229,7 +284,7 @@ const scrambler = {
      * @param howMany   which scramble we're on
      * @param outOf     how many scrambles we're doing
      */
-    showProgress: function(howMany, outOf) {
+    showProgress: function (howMany, outOf) {
         theProgressBox = document.getElementById("progress");
         theProgressBox.innerHTML = howMany > 0 ? `${howMany}/${outOf}` : "";
     },
@@ -240,38 +295,25 @@ const scrambler = {
      */
     refreshUIDisplay: function () {
         console.log(`    refreshing UI display`);
-        //  const domStatus = document.getElementById("status");
-        //  domStatus.innerHTML = this.sourceDataset;   //      calls toString(), displays name and number of collections
-
         //  set the number of scrambles in the box
         document.getElementById("howManyButton").innerHTML = this.state.numberOfScrambles + "x";
-
-        //  set the attribute name in the menu
-        const attributeStripe =  document.getElementById("attribute-stripe");
-
-        if (this.nDatasets > 0) {
-            document.getElementById("attributeMenu").innerHTML
-                = scrambler.sourceDataset.makeAttributeMenuGuts(this.state.scrambleAttributeName);
-            attributeStripe.style.display = "flex";
-        } else {
-            attributeStripe.style.display = "none";
-        }
 
         const buttons = document.getElementById("scramble-buttons-stripe-element");
         const progress = document.getElementById("progress");
 
+        //  visibility; shows appropriate message if scrambling is impossible
+
         buttons.style.display = this.currentlyScrambling ? "none" : "flex";
         progress.style.display = this.currentlyScrambling ? "flex" : "none";
 
-
-        //  visibility; shows appropriate message if scrambling is impossible
-
-        const canScramble = this.sourceDataset && this.sourceDataset.structure.collections.length > 1;
+        const canScramble = this.scrattributeExists && this.scrattributeIsLeaf && this.datasetExists && this.datasetHasMeasure;
         const canDoScrambleStripe = document.getElementById("how-many-stripe");
         const cantDoScrambleStripe = document.getElementById("how-many-stripe-disabled");
 
         canDoScrambleStripe.style.display = canScramble ? "flex" : "none";
         cantDoScrambleStripe.style.display = canScramble ? "none" : "flex";
+
+        this.refreshScramblerStatus();
     },
 
     doAlert: function (iTitle, iText, iIcon = 'info') {
@@ -289,9 +331,10 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "1.0",
+        version: "1.1",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
+            scrambleDatasetName: null,
             scrambleAttributeName: null,
             numberOfScrambles: 10,
             iteration: 0,

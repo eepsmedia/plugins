@@ -8,6 +8,7 @@
     --bg-bottom-color : #234;
     --main-text-color : #cde;
     --main-bg-color : #bcd;
+    --drag-bg-color : #def;
 
 }
 
@@ -17,9 +18,17 @@ body {
     color : #333;
     font-family: "Helvetica Neue", Verdana, sans-serif;
     font-size: small;
+    min-height: 100vh;
     /*background: linear-gradient(#dde, #aab );*/
+}
+
+.body-no-drag {
     background-color: var(--main-bg-color);;
 
+}
+
+.body-drag {
+    background-color: var(--drag-bg-color);;
 }
 
 html {
