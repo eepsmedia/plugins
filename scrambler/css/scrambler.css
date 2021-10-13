@@ -18,7 +18,7 @@ body {
     color : #333;
     font-family: "Helvetica Neue", Verdana, sans-serif;
     font-size: small;
-    min-height: 100vh;
+    min-height: 100vh;      /* make <body> fill the plugin */
     /*background: linear-gradient(#dde, #aab );*/
 }
 

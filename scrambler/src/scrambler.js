@@ -62,11 +62,12 @@ const scrambler = {
                     }
 
                 } else {
-                    theHTML = `What attribute do you want to scramble? Drag in in here. `;
+                    theHTML = `What attribute do you want to scramble? Drag it in here. `;
                 }
             } else {
-                theHTML = `Your dataset, "${tDSTitle}," has no measure. 
-                Drag an attribute to the left so you have something to collect!`
+                theHTML = `Your dataset, "${tDSTitle}," needs a measure, 
+                which is probably an attribute with a formula. 
+                Drag that attribute to the left so you have something to collect!`
             }
         } else {
             theHTML = `Find a dataset and drag the attribute here that you want to scramble!`;

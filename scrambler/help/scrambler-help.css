@@ -28,6 +28,7 @@ html {
 }
 
 code {
+    font-family: Consolas, Menlo, monospace;
     font-weight: bold;
     color: darkblue;
 }
