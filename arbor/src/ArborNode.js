@@ -141,10 +141,7 @@ Node.prototype.stubThisNode = function () {
     console.log("Node.prototype.stubThisNode, set to change tree.");
 
     arbor.eventDispatcher.dispatchEvent("changeNode");
-
-    let tEvent = new Event("changeTree");
-    tEvent.why = "node stubbing";
-    arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+    arbor.dispatchTreeChangeEvent("node stubbing");
 };
 
 Node.prototype.traceCaseInTree = function (c) {
@@ -285,9 +282,7 @@ Node.prototype.flipStopType = function () {
     this.stopSign = (this.stopSign === arbor.constants.diagnosisPlus) ? arbor.constants.diagnosisMinus : arbor.constants.diagnosisPlus;
     console.log("Switching node to " + this.stopSign);
 
-    let tEvent = new Event("changeTree");
-    tEvent.why = "flipping node plus-minus";
-    arbor.dispatchTreeEvent(tEvent);
+    arbor.dispatchTreeChangeEvent("flipping node plus-minus");
 };
 
 

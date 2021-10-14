@@ -43,6 +43,7 @@ arbor.dropManager = {
         if (theHitResult === `dependent-variable`) {
             console.log(`Setting the dependent variable to ${iWhat}`);
             arbor.setDependentVariableByName(iWhat);    //  also sets the focus split
+            arbor.dispatchTreeChangeEvent(`${iWhat} is the new dependent variable`);
             focusSplitMgr.showHideAttributeConfigurationSection(true);
         } else {
             const theNode = arbor.state.tree.nodeFromID(Number(theHitResult));

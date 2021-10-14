@@ -73,17 +73,15 @@ const focusSplitMgr = {
 
         //  force a redraw
 
-        let tEvent = new Event("changeTree");
-        tEvent.why = "change of a split value";
-        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+        arbor.dispatchTreeChangeEvent("change of a split value");
+
     },
 
     changeCurrentSplitTypeUsingMenu: function () {
         const tName = this.theSplit.attName;
         const tSplitType = $("#currentSplitTypeMenu").find('option:selected').val();
         this.theSplit.isCategorical = (tSplitType === "categorical");
-        const tEvent = new Event("changeTree");
-        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+        arbor.dispatchTreeChangeEvent("changing split type");
     },
 
     /**
