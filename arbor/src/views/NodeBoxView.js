@@ -148,6 +148,7 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
     //  handle mouseUp events in the NodeBoxView
     //  this.theGroup.mouseup(this.mouseUpHandler.bind(this));
     this.theGroup.node.setAttribute("class", "node-box-view-group");  //  this is that css thing
+    //  this.theGroup.node.setAttribute("id", `node-box-view-group-${this.myNode.arborNodeID}`);  //  set above as NBV-nn
 
     this.stripes = [];  //  fresh set of stripes
 

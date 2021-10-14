@@ -111,10 +111,6 @@ Node.prototype.parentSplit = function (iParent) {
 Node.prototype.branchThisNode = function (iAttribute) {
     this.attributeSplit = iAttribute.getSplit();    //  gets the latest split
 
-    //  now this node has the right split. Make it the focus
-
-    arbor.setFocusNode(this);
-
     this.branches = [];     //  reset
 
     //  here is where we make the new nodes and constrict their Booleans.
@@ -126,14 +122,13 @@ Node.prototype.branchThisNode = function (iAttribute) {
     const uNewNode = new Node(this, "R"); //
     this.branches.push(uNewNode);     //  array now holds LEFT and RIGHT branches
 
+    //  now this node has the correct split and the tree has the new nodes. Make it the focus
+    arbor.setFocusNode(this);   //  also causes redraw
+
     if (arbor.state.oAlwaysShowConfigurationOnSplit ) {
         focusSplitMgr.showHideAttributeConfigurationSection(true);
     }
-    /*
-        var tEvent = new Event("changeTree");
-        tEvent.why = "node branching";
-        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
-    */
+
 };
 
 /**

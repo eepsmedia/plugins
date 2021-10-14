@@ -67,10 +67,10 @@ const arbor = {
     dependentVariableBoolean: ["true"],
     informalDVBoolean: "all",
     informalDVBooleanReversed: "none",
-    dependentVariableSplit: null,
+    dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021e',
+        version: '2021f',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -104,6 +104,12 @@ const arbor = {
             'dataContextChangeNotice[' + arbor.constants.kRegressTreeDataSetName + ']',
             'selectCases',
             arbor.selectionManager.processCodapSelectionOfTreeCase
+        );
+
+        codapInterface.on(
+            'notify',
+            `dragDrop[attribute]`,
+            arbor.dropManager.handleDrop,
         );
 
         await codapInterface.init(this.iFrameDescription, null);

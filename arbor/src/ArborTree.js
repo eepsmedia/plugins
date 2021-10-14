@@ -40,7 +40,6 @@ Tree = function () {
     this.filterArray = [];  //  empty, but present since this is the parent of the rootNode
     //  this.nodes = [];
 
-
     this.rootNode = new Node(null, "root");   //  null is "no parent node"
     //  this.nodes.push( this.rootNode );
 };
