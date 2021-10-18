@@ -4,116 +4,133 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="Configuration German text plus more documentation in README.md">
+    <list default="true" id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ArborTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborTree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arborCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arborCODAPConnector.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../common/pluginHelper.js" beforeDir="false" afterPath="$PROJECT_DIR$/../common/pluginHelper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/runConfigurations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/webServers.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/css/scrambler.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/help/art/scrambler-data-table.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/help/art/scrambler-measures.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/help/art/scrambler-plugin-basic.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/help/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/help/scrambler-help.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/scrambler.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/CODAPDataset.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/connect.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/notifications.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1ySaHIlVsvUeFsYFYQt1JUETOoL" />
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="4yt2y4w7" />
+  </component>
+  <component name="ProjectId" id="1zcD3r5edSjgBqef9zieQOAKGyH" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="go.formatter.settings.were.checked" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.r.configuration.RSettingsProjectConfigurable" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="" />
-      <created>1632247355629</created>
+      <changelist id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="" />
+      <created>1634438286195</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1632247355629</updated>
-      <workItem from="1632247357171" duration="9477000" />
-      <workItem from="1632352494053" duration="3834000" />
-      <workItem from="1632505912151" duration="34187000" />
-      <workItem from="1633299160137" duration="3352000" />
-      <workItem from="1633361666695" duration="1687000" />
+      <updated>1634438286195</updated>
+      <workItem from="1634438289045" duration="1755000" />
     </task>
-    <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
-      <created>1632269509560</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1632269509560</updated>
-    </task>
-    <task id="LOCAL-00002" summary="arbor 2021b. More translation, more cleanup.">
-      <created>1632269554265</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1632269554265</updated>
-    </task>
-    <task id="LOCAL-00003" summary="arbor 2021c. Now showing leaves is saved in state. Also, improved Node tool tips.">
-      <created>1632355719327</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1632355719327</updated>
-    </task>
-    <task id="LOCAL-00004" summary="arbor 2021d. Better, more options including auto-open attribute config on drop.">
-      <created>1632525143771</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1632525143771</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Configuration German text plus more documentation in README.md">
-      <created>1632867820529</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1632867820529</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="arbor 2021b. More translation, more cleanup." />
-    <MESSAGE value="arbor 2021c. Now showing leaves is saved in state. Also, improved Node tool tips." />
-    <MESSAGE value="arbor 2021d. Better, more options including auto-open attribute config on drop." />
-    <MESSAGE value="Configuration German text plus more documentation in README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Configuration German text plus more documentation in README.md" />
+  <component name="UpdateCopyrightCheckinHandler">
+    <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
 </project>
