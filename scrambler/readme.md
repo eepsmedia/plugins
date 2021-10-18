@@ -1,6 +1,6 @@
 # Scrambler
 
-![scrambler picture](doc-art/scrambler-plugin-basic.png)
+![scrambler picture](help/art/scrambler-plugin-basic.png)
 
 2021-09-11
 
@@ -37,7 +37,7 @@ This is very important, and bears highlighting:
 > You have to say _how much_ taller.
 > 
 
-![scrambler data](doc-art/scrambler-data-table.png)
+![scrambler data](help/art/scrambler-data-table.png)
 
 In our example, we used the difference of means and called it `dMeanHeights` ---
 and dragged it leftwards in the table.
@@ -65,7 +65,7 @@ Make a graph of the measure from the "measures" table.
 You'll see the sampling distribution.
 The picture shows the results from 200 scrambles. 
 
-![scrambler measures](doc-art/scrambler-measures.png)
+![scrambler measures](help/art/scrambler-measures.png)
 
 You want to know what proportion of those measures are more extreme than your "test statistic" 
 (which in our case is 5.87, the difference in mean heights).
