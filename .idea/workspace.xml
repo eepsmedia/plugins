@@ -5,14 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd40b128-64af-49a6-b2a9-f40390721b15" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/arbor/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scrambler/.idea/compiler.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scrambler/.idea/deployment.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrambler/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/scrambler/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scrambler/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scrambler/.idea/runConfigurations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrambler/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/scrambler/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scrambler/.idea/webServers.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/css/scrambler.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/help/art/scrambler-data-table.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/help/art/scrambler-measures.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/help/art/scrambler-plugin-basic.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/help/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/help/scrambler-help.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/readme.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/scrambler.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/src/CODAPDataset.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/src/connect.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/src/notifications.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/src/scrambler.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrambler/src/strings/strings.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +83,7 @@
       <workItem from="1633967940163" duration="13000" />
       <workItem from="1633967995985" duration="9000" />
       <workItem from="1634247618659" duration="782000" />
+      <workItem from="1634439135220" duration="589000" />
     </task>
     <servers />
   </component>

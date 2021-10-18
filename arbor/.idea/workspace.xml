@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/rSettings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/.idea/compiler.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/.idea/deployment.xml" beforeDir="false" />
@@ -28,6 +28,7 @@
       <change beforePath="$PROJECT_DIR$/../scrambler/src/connect.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/src/notifications.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +123,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1634438286195</updated>
-      <workItem from="1634438289045" duration="869000" />
+      <workItem from="1634438289045" duration="1755000" />
     </task>
     <servers />
   </component>
