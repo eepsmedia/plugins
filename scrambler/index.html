@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scrambler 2021</title>
+
+
+    <link rel='stylesheet' type='text/css' href='css/scrambler.css'/>
+
+    <!-- These scripts take care of the communication with CODAP  -->
+
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+
+    <script src="src/scrambler.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/CODAPDataset.js"></script>
+    <script src="src/notifications.js"></script>
+
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+</head>
+
+<!--
+    local just this: http://localhost/plugins/scrambler/
+    local in local codap :
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/scrambler
+
+-->
+
+<body id="entire-scrambler" class="body-no-drag">
+<div class="scrambler-stripe">
+    <div class="stripe-element"><h1>scrambler</h1></div>
+    <div>
+        <img class="stripe-element roundButton"
+             src="../../common/art/refresh-empty.png"
+             onclick="scrambler.handleBigRefresh()"
+             title="Click to refresh the data"
+             alt="refresh icon"
+        >
+        <!--
+        Help is also here, but I have also rendered is as an html file in the help/ folder
+                href="https://github.com/eepsmedia/plugins/blob/master/scrambler/readme.md"
+        -->
+        <a class="stripe-element"
+           target="_blank"
+           href="help/">
+            <img src="../../common/art/info.png"
+                 alt="info" title="Click for detailed help"
+                 class="roundButton">
+        </a>
+
+
+    </div>
+    <div class="stripe-element" id="attributeReport"></div>
+
+    <!--
+        <div class="stripe-element">
+            press refresh after you make any changes to the dataset!
+        </div>
+    -->
+</div>
+
+<div class="scrambler-stripe" id="scramblerStatus">
+</div>
+
+<div class="scrambler-stripe" id="how-many-stripe">
+    <label class="stripe-element" for="howManyBox">how many? </label>
+    <input type="number"
+           class="stripe-element"
+           id="howManyBox"
+           value="10"
+           min="1"
+           max="1000"
+           oninput="scrambler.handleUIChoice()">
+
+    <div class="stripe-element" id="scramble-buttons-stripe-element">
+        <button class="stripe-element" id="howManyButton"
+                onclick="scrambler.doScramble()">I
+        </button>
+
+        <button class="stripe-element"
+                onclick="scrambler.doScramble(1)">1x
+        </button>
+    </div>
+
+    <div id="progress"></div>
+
+</div>
+
+<div class="scrambler-stripe" id="how-many-stripe-disabled">
+    Fix that to proceed.
+</div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        scrambler.initialize();
+    }
+</script>
+
+</html>

@@ -1,335 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="07cb6737-9b8d-4d9b-be81-047273bc711c" name="Default Changelist" comment="Adjust readme.md">
+    <list default="true" id="d414cfe0-71ce-41f0-9fbe-cb9858816f6d" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../arbor/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IdeaLearningProject/IdeaLearningProject.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor 001x/arbor.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../twitty/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../twitty/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../learnD3/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler-old/scrambler.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="JavaScript File" />
-        <option value="HTML File" />
-      </list>
-    </option>
-  </component>
-  <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="useCasesForMeasuresCollections" />
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$/.." value="dragAttsFromCODAP" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
-  <component name="ProjectId" id="1rGzS3MPg9qhOAQzg53koF19gmh" />
+  <component name="ProjectId" id="1zezMI0N7sEdeZiBM1nJyLplWtc" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JSON" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/help" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="project.propCompiler" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/help" />
-      <recent name="$PROJECT_DIR$/help/art" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration name="readme.md" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://184.154.47.42/readme.md">
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JavaScript Debug.readme.md" />
-        <item itemvalue="JavaScript Debug.readme.md" />
-        <item itemvalue="JavaScript Debug.readme.md" />
-        <item itemvalue="JavaScript Debug.readme.md" />
-        <item itemvalue="JavaScript Debug.readme.md" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="07cb6737-9b8d-4d9b-be81-047273bc711c" name="Default Changelist" comment="" />
-      <created>1618617215873</created>
+      <changelist id="d414cfe0-71ce-41f0-9fbe-cb9858816f6d" name="Changes" comment="" />
+      <created>1634523293076</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1618617215873</updated>
-      <workItem from="1618617219209" duration="2130000" />
-      <workItem from="1619375486824" duration="20033000" />
-      <workItem from="1619712110916" duration="5944000" />
-      <workItem from="1622581953251" duration="107000" />
-      <workItem from="1622653904717" duration="895000" />
-      <workItem from="1623082741348" duration="998000" />
-      <workItem from="1623083852738" duration="6272000" />
-      <workItem from="1623120306159" duration="1578000" />
-      <workItem from="1623123430114" duration="11193000" />
-      <workItem from="1623368150090" duration="14880000" />
-      <workItem from="1628268127128" duration="2857000" />
-      <workItem from="1629861412500" duration="8613000" />
-      <workItem from="1629906420546" duration="10740000" />
-      <workItem from="1629936040900" duration="396000" />
-      <workItem from="1629936497863" duration="10087000" />
-      <workItem from="1631729743978" duration="599000" />
-      <workItem from="1631746844273" duration="12770000" />
-      <workItem from="1632072159272" duration="57000" />
-      <workItem from="1633969245829" duration="4921000" />
-      <workItem from="1634000412255" duration="22893000" />
-      <workItem from="1634134552283" duration="1834000" />
-      <workItem from="1634138498401" duration="1013000" />
-      <workItem from="1634228552740" duration="1569000" />
+      <updated>1634523293076</updated>
+      <workItem from="1634523295731" duration="2000" />
     </task>
-    <task id="LOCAL-00001" summary="scrambler 2021a, try again!">
-      <created>1618618648481</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1618618648482</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Back to work! June 2021">
-      <created>1622582045317</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1622582045318</updated>
-    </task>
-    <task id="LOCAL-00003" summary="scrambler 2021c">
-      <created>1623446482536</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1623446482536</updated>
-    </task>
-    <task id="LOCAL-00004" summary="adding the doc art folder">
-      <created>1623543029005</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1623543029006</updated>
-    </task>
-    <task id="LOCAL-00005" summary="adding the doc art folder">
-      <created>1623543214439</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1623543214439</updated>
-    </task>
-    <task id="LOCAL-00006" summary="adding the doc art folder">
-      <created>1623546074281</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1623546074281</updated>
-    </task>
-    <task id="LOCAL-00007" summary="adding the doc art folder">
-      <created>1623546138128</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1623546138128</updated>
-    </task>
-    <task id="LOCAL-00008" summary="fixing doc art">
-      <created>1623547416130</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1623547416131</updated>
-    </task>
-    <task id="LOCAL-00009" summary="fixing doc art">
-      <created>1623547486470</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1623547486470</updated>
-    </task>
-    <task id="LOCAL-00010" summary="comments">
-      <created>1629907532233</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1629907532241</updated>
-    </task>
-    <task id="LOCAL-00011" summary="start branch 2021e for using Cases instead of Items to make measures datasets">
-      <created>1629907714925</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1629907714926</updated>
-    </task>
-    <task id="LOCAL-00012" summary="2021e. Now measures dataset always has === 2 collections. Plus other fixes.">
-      <created>1629933972844</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1629933972844</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Small addition to readme">
-      <created>1629935824926</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1629935824926</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Secure a lot of docs">
-      <created>1631656471138</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1631656471138</updated>
-    </task>
-    <task id="LOCAL-00015" summary="add scrambler help as html">
-      <created>1631747949571</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1631747949571</updated>
-    </task>
-    <task id="LOCAL-00016" summary="more scrambler documentation">
-      <created>1631752102267</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1631752102267</updated>
-    </task>
-    <task id="LOCAL-00017" summary="scrambler 1.0 changes for Bill">
-      <created>1631812227230</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1631812227230</updated>
-    </task>
-    <task id="LOCAL-00018" summary="scrambler art fixes">
-      <created>1631812835583</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1631812835583</updated>
-    </task>
-    <task id="LOCAL-00019" summary="start work on dragging atts">
-      <created>1633970465562</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1633970465562</updated>
-    </task>
-    <task id="LOCAL-00020" summary="moved twitty out">
-      <created>1633970517116</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1633970517116</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Another arbor file">
-      <created>1633970534860</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1633970534860</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Scrambler 1.1, drag and drop!">
-      <created>1634079466365</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1634079466365</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Scrambler 1.1, fixes to help and error strings.">
-      <created>1634135235113</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1634135235113</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Adjust readme.md">
-      <created>1634136284485</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1634136284485</updated>
-    </task>
-    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="scrambler 2021a, try again!" />
-    <MESSAGE value="Back to work! June 2021" />
-    <MESSAGE value="scrambler 2021c" />
-    <MESSAGE value="adding the doc art folder" />
-    <MESSAGE value="fixing doc art" />
-    <MESSAGE value="comments" />
-    <MESSAGE value="start branch 2021e for using Cases instead of Items to make measures datasets" />
-    <MESSAGE value="2021e. Now measures dataset always has === 2 collections. Plus other fixes." />
-    <MESSAGE value="Small addition to readme" />
-    <MESSAGE value="Secure a lot of docs" />
-    <MESSAGE value="add scrambler help as html" />
-    <MESSAGE value="more scrambler documentation" />
-    <MESSAGE value="scrambler 1.0 changes for Bill" />
-    <MESSAGE value="scrambler art fixes" />
-    <MESSAGE value="start work on dragging atts" />
-    <MESSAGE value="moved twitty out" />
-    <MESSAGE value="Another arbor file" />
-    <MESSAGE value="Scrambler 1.1, drag and drop!" />
-    <MESSAGE value="Scrambler 1.1, fixes to help and error strings." />
-    <MESSAGE value="Adjust readme.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adjust readme.md" />
   </component>
 </project>

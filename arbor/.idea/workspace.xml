@@ -4,31 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="untracked">
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../scrambler/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IdeaLearningProject/IdeaLearningProject.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor 001x/arbor.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/deployment.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/runConfigurations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/webServers.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/css/scrambler.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/help/art/scrambler-data-table.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/help/art/scrambler-measures.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/help/art/scrambler-plugin-basic.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/help/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/help/scrambler-help.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/readme.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/scrambler.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/CODAPDataset.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/connect.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/notifications.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../learnD3/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler-old/scrambler.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,5 +116,17 @@
   </component>
   <component name="UpdateCopyrightCheckinHandler">
     <option name="UPDATE_COPYRIGHT" value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
