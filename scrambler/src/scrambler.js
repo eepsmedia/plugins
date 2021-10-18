@@ -14,14 +14,20 @@ const scrambler = {
 
     state: {},
 
+    strings : null,
+
     initialize: async function () {
         await connect.initialize();
+
         this.state = await codapInterface.getInteractiveState();
         if (Object.keys(this.state).length === 0) {
             Object.assign(this.state, this.constants.defaultState);
             await codapInterface.updateInteractiveState(this.state);
-            console.log(`No interactive state retrieved. Got a new one...: ${this.state}`);
+            console.log(`No interactive state retrieved. Got a new one...: 
+            ${JSON.stringify(this.state)}`);
         }
+        scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+
         await this.refreshAllData();
     },
 
@@ -35,42 +41,37 @@ const scrambler = {
             const codeEnd = "</code>";
 
             const attReport =  (this.scrattributeExists)
-                ? `scramble ${tAttName}`
-                : `no attribute :(`;
+                ? `${scrambler.strings.sScramble} ${tAttName}`
+                : scrambler.strings.sNoAttribute;
 
             document.getElementById("attributeReport").innerHTML = attReport;
 
             if (this.datasetHasMeasure) {
                 if (this.scrattributeExists) {
                     if (this.scrattributeIsLeaf) {
-                        theHTML = `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`;
+                        theHTML = scrambler.strings.sfOKtoScramble(tAttName, tDSTitle); //   `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`;
                     } else {
-                        const possibles = scrambler.sourceDataset.possibleScrambleAttributeNames(tAttName);
-                        const suchAs = (possibles.array.length == 1)
+                        const possibles = scrambler.sourceDataset.possibleScrambleAttributeNames(tAttName); //  this is an object
+                        const suchAs = (possibles.array.length == 1)    //  possibles.array is the list of suitable attributes
                             ? `such as ${possibles.array[0]}`
                             : `such as ${possibles.array[0]} or ${possibles.array[1]}`;
                         const colls = scrambler.sourceDataset.structure.collections;
                         const lastCollName = colls[colls.length - 1].name;
-                        if (possibles.hasFormula) {
-                            theHTML = `Scrambling ${tAttName} won't work because it has a formula. 
-                        Drag in a different attribute from the last collection (${lastCollName}), ${suchAs}.`;
-
+                        if (possibles.hasFormula) { //  remember: if it has a formula it will not be listed among the leaves
+                            theHTML = scrambler.strings.sfFormulaProblem(tAttName, lastCollName, suchAs);
                         } else {
-                            theHTML = `Scrambling ${tAttName} won't work. 
-                        Drag in an attribute from the last collection (${lastCollName}), ${suchAs}.`;
+                            theHTML = scrambler.strings.sfNotALeafProblem(tAttName, lastCollName, suchAs);
                         }
                     }
 
                 } else {
-                    theHTML = `What attribute do you want to scramble? Drag it in here. `;
+                    theHTML = scrambler.strings.sNoScrambleAttribute;
                 }
             } else {
-                theHTML = `Your dataset, "${tDSTitle}," needs a measure, 
-                which is probably an attribute with a formula. 
-                Drag that attribute to the left so you have something to collect!`
+                theHTML = scrambler.strings.sfNoMeasure(tDSTitle);
             }
         } else {
-            theHTML = `Find a dataset and drag the attribute here that you want to scramble!`;
+            theHTML = scrambler.strings.sNoDataset;
         }
 
         document.getElementById(`scramblerStatus`).innerHTML = theHTML;
@@ -82,8 +83,6 @@ const scrambler = {
 
         if (tName) {
             await this.setSourceDataset(tName);
-        } else {
-            scrambler.doAlert("oops", `You need a dataset name`);
         }
         this.refreshUIDisplay();
     },
@@ -122,7 +121,6 @@ const scrambler = {
             scrambler.state.scrambleAttributeName = null;
             console.log(`SetSourceDataset: WE HAVE NO SOURCE!`)
         }
-
     },
 
     /**
@@ -309,12 +307,21 @@ const scrambler = {
 
         const canScramble = this.scrattributeExists && this.scrattributeIsLeaf && this.datasetExists && this.datasetHasMeasure;
         const canDoScrambleStripe = document.getElementById("how-many-stripe");
-        const cantDoScrambleStripe = document.getElementById("how-many-stripe-disabled");
+        const cantDoScrambleStripe = document.getElementById("cantScrambleStripe");
 
         canDoScrambleStripe.style.display = canScramble ? "flex" : "none";
         cantDoScrambleStripe.style.display = canScramble ? "none" : "flex";
 
+        //  set the language control
+        document.getElementById("languageControl").innerHTML = scrambler.state.lang;
+
         this.refreshScramblerStatus();
+    },
+
+    changeLanguage : async function() {
+        scrambler.state.lang = (scrambler.state.lang === `en`) ? `es` : `en`;
+        scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+        scrambler.refreshUIDisplay();
     },
 
     doAlert: function (iTitle, iText, iIcon = 'info') {
@@ -340,12 +347,11 @@ const scrambler = {
             numberOfScrambles: 10,
             iteration: 0,
             dirtyMeasures: true,
+            lang : `en`,
         },
         measuresPrefix: "measures_",
         scrambledPrefix: "scrambled_",
         scrambleSetName: "scrset",
-        iterationAttName: "batch",
-        scrambledAttAttName: "scrambled att",
     },
 }
 
