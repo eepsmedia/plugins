@@ -186,8 +186,8 @@ class CODAPDataset {
             let leafValues = iCase.values;  //  an object containing attribute names and values as returned by CODAP
 
             //  now we add two more attributes, one for the iteration and one for the scrambled attribute name
-            leafValues[scrambler.constants.iterationAttName] = scrambler.state.iteration;
-            leafValues[scrambler.constants.scrambledAttAttName] = scrambler.state.scrambleAttributeName;
+            leafValues[scrambler.strings.sIterationAttName] = scrambler.state.iteration;
+            leafValues[scrambler.strings.sScrambledAttName] = scrambler.state.scrambleAttributeName;
 
             //  end recursion here.
             return [leafValues];  //  array of a single object
@@ -483,13 +483,13 @@ class CODAPDataset {
         const scritCollection = {
             name: "iterations",
             attrs: [{
-                name: scrambler.constants.iterationAttName,
+                name: scrambler.strings.sIterationAttName,
                 type: "categorical",
-                description: `Which "run" of data. Increases every time you scramble.`,
+                description: scrambler.strings.sIterationAttDescription,
             }, {
-                name: scrambler.constants.scrambledAttAttName,
+                name: scrambler.strings.sScrambledAttName,
                 type: "categorical",
-                description: `Which attribute was scrambled.`,
+                description: scrambler.strings.sScrambledAttDescription,
             }],
         }
 

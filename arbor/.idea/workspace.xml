@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/css/scrambler.css" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/css/scrambler.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/CODAPDataset.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/scrambler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,16 +108,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1634438286195</updated>
-      <workItem from="1634438289045" duration="1907000" />
+      <workItem from="1634438289045" duration="1755000" />
+      <workItem from="1634523910394" duration="1866000" />
     </task>
-    <task id="LOCAL-00001" summary="scrambler: start strings">
-      <created>1634521467382</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1634521467382</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -119,8 +119,16 @@
   <component name="UpdateCopyrightCheckinHandler">
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="scrambler: start strings" />
-    <option name="LAST_COMMIT_MESSAGE" value="scrambler: start strings" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

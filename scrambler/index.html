@@ -17,8 +17,11 @@
     <script src="src/connect.js"></script>
     <script src="src/CODAPDataset.js"></script>
     <script src="src/notifications.js"></script>
+    <script src="src/strings/strings.js"></script>
 
+<!--
     <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+-->
 
 </head>
 
@@ -43,30 +46,22 @@
         Help is also here, but I have also rendered is as an html file in the help/ folder
                 href="https://github.com/eepsmedia/plugins/blob/master/scrambler/readme.md"
         -->
-        <a class="stripe-element"
-           target="_blank"
-           href="help/">
-            <img src="../../common/art/info.png"
-                 alt="info" title="Click for detailed help"
-                 class="roundButton">
+        <a class="stripe-element"  target="_blank"  href="help/">
+            <img src="../../common/art/info.png"  alt="info" title="Click for detailed help"  class="roundButton">
         </a>
 
 
     </div>
     <div class="stripe-element" id="attributeReport"></div>
+    <div class="stripe-element" id="languageControl" onclick="scrambler.changeLanguage()"></div>
 
-    <!--
-        <div class="stripe-element">
-            press refresh after you make any changes to the dataset!
-        </div>
-    -->
 </div>
 
 <div class="scrambler-stripe" id="scramblerStatus">
 </div>
 
 <div class="scrambler-stripe" id="how-many-stripe">
-    <label class="stripe-element" for="howManyBox">how many? </label>
+    <label class="stripe-element" for="howManyBox" id="howManyLabel">how many? </label>
     <input type="number"
            class="stripe-element"
            id="howManyBox"
@@ -83,14 +78,15 @@
         <button class="stripe-element"
                 onclick="scrambler.doScramble(1)">1x
         </button>
+
     </div>
 
     <div id="progress"></div>
 
 </div>
 
-<div class="scrambler-stripe" id="how-many-stripe-disabled">
-    Fix that to proceed.
+<div class="scrambler-stripe" id="cantScrambleStripe">
+
 </div>
 
 </body>
