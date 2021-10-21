@@ -53,8 +53,8 @@ const scrambler = {
                     } else {
                         const possibles = scrambler.sourceDataset.possibleScrambleAttributeNames(tAttName); //  this is an object
                         const suchAs = (possibles.array.length == 1)    //  possibles.array is the list of suitable attributes
-                            ? `such as ${possibles.array[0]}`
-                            : `such as ${possibles.array[0]} or ${possibles.array[1]}`;
+                            ? `${possibles.array[0]}`
+                            : `${possibles.array[0]} or ${possibles.array[1]}`;
                         const colls = scrambler.sourceDataset.structure.collections;
                         const lastCollName = colls[colls.length - 1].name;
                         if (possibles.hasFormula) { //  remember: if it has a formula it will not be listed among the leaves
@@ -313,7 +313,12 @@ const scrambler = {
         cantDoScrambleStripe.style.display = canScramble ? "none" : "flex";
 
         //  set the language control
-        document.getElementById("languageControl").innerHTML = scrambler.state.lang;
+/*
+        const theFlag = scrambler.strings.languages[scrambler.state.lang].flags();
+        console.log(`the flag is ${theFlag}`);
+*/
+
+        document.getElementById("languageControl").innerHTML = scrambler.pickAFlag();        //  theFlag;
 
         this.refreshScramblerStatus();
     },
@@ -322,6 +327,12 @@ const scrambler = {
         scrambler.state.lang = (scrambler.state.lang === `en`) ? `es` : `en`;
         scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
         scrambler.refreshUIDisplay();
+    },
+
+    pickAFlag : function()  {
+        const theFlags = scrambler.strings.flags;
+        const theIndex = Math.floor( Math.random() * theFlags.length );
+        return theFlags[theIndex];
     },
 
     doAlert: function (iTitle, iText, iIcon = 'info') {
@@ -339,7 +350,7 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "1.1",
+        version: "1.2",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             scrambleDatasetName: null,

@@ -46,18 +46,13 @@ scramblerStrings = {
         return theStrings;
     },
 
-    languageNames: {
-        en: "English",  //  🇬🇧 🇺🇸 🇳🇿 🇨🇦
-        de: "Deutsch",  //  🇩🇪
-        es: "Español",  //  🇲🇽 🇪🇸 🇨🇷
-    },
-
-    flag : {
-
-    },
 
     en : {
+        name : "English",
+        flags : ["🇬🇧", "🇺🇸", "🇳🇿", "🇨🇦"],
+
         staticStrings : {
+            scramblerTitle : `scrambler`,
             cantScrambleStripe : `Fix that to proceed.`,
             howManyLabel : `how many?`,
         },
@@ -81,18 +76,58 @@ scramblerStrings = {
 
         sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
             return `Scrambling ${tAttName} won't work because it has a formula. 
-                        Drag in a different attribute from the last collection (${lastCollName}), ${suchAs}.`
+                        Drag in a different attribute from the last collection (${lastCollName}), such as ${suchAs}.`
         },
 
         sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
             return `Scrambling ${tAttName} won't work because it's not in the last collection (${lastCollName}). 
-                        Drop an attribute here from ${lastCollName} ${suchAs}.`
+                        Drop an attribute here from ${lastCollName}, such as ${suchAs}.`
         }
 
 
     },
 
     es : {
+        name : "Español",
+        flags : ["🇲🇽", "🇪🇸", "🇨🇷"],
+
+        staticStrings : {
+            scramblerTitle : `mezcladora`,  //  scrambler
+            cantScrambleStripe :  `Arreglar eso para continuar`,  //  `Fix that to proceed.`,
+            howManyLabel :  `cuántos?` //  `how many?`,
+        },
+
+        sScramble : `mezclar`,      //  `scramble`,
+        sNoAttribute : `sin atributo :(`,
+        sIterationAttName : `lote`,
+        sIterationAttDescription : `Cuál "lote" de datos. Se aumenta cada mezclado.`,   //  `Which "run" of data. Increases every time you scramble.`,
+        sScrambledAttName : `atr mezclado`,     //  `scrambled att`, (the name of the scrambled att)
+        sScrambledAttDescription : `Qué atributo fue mezclado.`,
+
+        sNoDataset : `¡Busque un conjunto de datos y arrastre el atributo aquí que desea mezclar!`,
+        sNoScrambleAttribute : `¿Qué atributo desea mezclar? Arrástrelo aquí. `,
+
+        sfOKtoScramble : (tAttName, tDSTitle) => {
+            return  `OK para mezclar "${tAttName}" en conjunto de datos "${tDSTitle}"`},
+
+        sfNoMeasure : (tDSTitle) => { return `Su conjunto de datos, "${tDSTitle}," necesita una medida, 
+                probablemente un atributo con fórmula. 
+                Arrastre eso atributo a la izquierda para obtener algo de acumular!`},
+
+        sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
+            return `Mezclar ${tAttName} no funcionará porque tiene una fórmula. 
+                        Arrastre un atributo diferente, de la última colección (${lastCollName}), por ejemplo ${suchAs}.`
+        },
+
+        sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
+            return `Mezclar ${tAttName} no funcionará porque no está en la última colleción (${lastCollName}). 
+                        Ponga un atributo aquí de la colección ${lastCollName}, por ejemplo ${suchAs}.`
+        }
+    },
+
+    de : {
+        name : "Deutsch",
+        flags : ["🇩🇪"],
 
     },
 }
