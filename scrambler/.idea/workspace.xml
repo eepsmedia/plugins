@@ -5,20 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="re-adding a bunch of files esp scrambler">
-      <change afterPath="$PROJECT_DIR$/../arbor/.idea/runConfigurations.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/scrambler.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/scrambler.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/CODAPDataset.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrambler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../texty/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../texty/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -30,6 +27,9 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="ykx9ybjx" />
   </component>
   <component name="ProjectId" id="1zezMI0N7sEdeZiBM1nJyLplWtc" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
