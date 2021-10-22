@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-strings in scrambler
+strings in bootstrap
 
 Author:   Tim Erickson
 
@@ -26,10 +26,10 @@ limitations under the License.
 
 */
 
-scramblerStrings = {
+bootstrapStrings = {
     initializeStrings: async function (iLang = "en") {
 
-        const theStrings = scramblerStrings[iLang];
+        const theStrings = bootstrapStrings[iLang];
 
         //  substitute all the static strings in the IU (by `id`)
         for (const theID in theStrings.staticStrings) {
@@ -52,38 +52,37 @@ scramblerStrings = {
         flags : ["🇬🇧", "🇺🇸", "🇳🇿", "🇨🇦"],
 
         staticStrings : {
-            scramblerTitle : `scrambler`,
-            cantScrambleStripe : `Fix that to proceed.`,
+            bootstrapTitle : `bootstrap`,
+            cantBootstrapStripe : `Fix that to proceed.`,
             howManyLabel : `how many?`,
         },
 
-        sScramble : `scramble`,
+        sBootstrap : `bootstrap`,
         sNoAttribute : `no attribute :(`,
         sIterationAttName : `batch`,
-        sIterationAttDescription : `Which "run" of data. Increases every time you scramble.`,
-        sScrambledAttName : `scrambled att`,
-        sScrambledAttDescription : `Which attribute was scrambled.`,
+        sIterationAttDescription : `Which "run" of data. Increases every time you bootstrap.`,
+        sBootstrappedAttName : `bootstrapped att`,
+        sBootstrappedAttDescription : `Which attribute was bootstrapped.`,
 
-        sNoDataset : `Find a dataset and drag the attribute here that you want to scramble!`,
-        sNoScrambleAttribute : `What attribute do you want to scramble? Drag it in here. `,
+        sNoDataset : `Find a dataset and drag the attribute here that you want to bootstrap!`,
+        sNoBootstrapAttribute : `What attribute do you want to bootstrap? Drag it in here. `,
 
-        sfOKtoScramble : (tAttName, tDSTitle) => {
-            return  `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`},
+        sfOKtoBootstrap : (tDSTitle) => {
+            return  `OK to bootstrap dataset "${tDSTitle}"`},
 
         sfNoMeasure : (tDSTitle) => { return `Your dataset, "${tDSTitle}," needs a measure, 
                 which is probably an attribute with a formula. 
                 Drag that attribute to the left so you have something to collect!`},
 
         sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
-            return `Scrambling ${tAttName} won't work because it has a formula. 
+            return `Bootstrapping ${tAttName} won't work because it has a formula. 
                         Drag in a different attribute from the last collection (${lastCollName}), such as ${suchAs}.`
         },
 
         sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
-            return `Scrambling ${tAttName} won't work because it's not in the last collection (${lastCollName}). 
+            return `Bootstrapping ${tAttName} won't work because it's not in the last collection (${lastCollName}). 
                         Drop an attribute here from ${lastCollName}, such as ${suchAs}.`
-        }
-
+        },
 
     },
 
@@ -92,23 +91,23 @@ scramblerStrings = {
         flags : ["🇲🇽", "🇪🇸", "🇨🇷"],
 
         staticStrings : {
-            scramblerTitle : `mezcladora`,  //  scrambler
-            cantScrambleStripe :  `Arreglar eso para continuar`,  //  `Fix that to proceed.`,
+            bootstrapTitle : `mezcladora`,  //  bootstrap
+            cantBootstrapStripe :  `Arreglar eso para continuar`,  //  `Fix that to proceed.`,
             howManyLabel :  `cuántos?` //  `how many?`,
         },
 
-        sScramble : `mezclar`,      //  `scramble`,
+        sBootstrap : `mezclar`,      //  `bootstrap`,
         sNoAttribute : `sin atributo :(`,
         sIterationAttName : `lote`,
-        sIterationAttDescription : `Cuál "lote" de datos. Se aumenta cada mezclado.`,   //  `Which "run" of data. Increases every time you scramble.`,
-        sScrambledAttName : `atr mezclado`,     //  `scrambled att`, (the name of the scrambled att)
-        sScrambledAttDescription : `Qué atributo fue mezclado.`,
+        sIterationAttDescription : `Cuál "lote" de datos. Se aumenta cada mezclado.`,   //  `Which "run" of data. Increases every time you bootstrap.`,
+        sBootstrappedAttName : `atr mezclado`,     //  `bootstrapped att`, (the name of the bootstrapped att)
+        sBootstrappedAttDescription : `Qué atributo fue mezclado.`,
 
         sNoDataset : `¡Busque un conjunto de datos y arrastre el atributo aquí que desea mezclar!`,
-        sNoScrambleAttribute : `¿Qué atributo desea mezclar? Arrástrelo aquí. `,
+        sNoBootstrapAttribute : `¿Qué atributo desea mezclar? Arrástrelo aquí. `,
 
-        sfOKtoScramble : (tAttName, tDSTitle) => {
-            return  `OK para mezclar "${tAttName}" en conjunto de datos "${tDSTitle}"`},
+        sfOKtoBootstrap : (tDSTitle) => {
+            return  `OK para mezclar el conjunto de datos "${tDSTitle}"`},
 
         sfNoMeasure : (tDSTitle) => { return `Su conjunto de datos, "${tDSTitle}," necesita una medida, 
                 probablemente un atributo con fórmula. 

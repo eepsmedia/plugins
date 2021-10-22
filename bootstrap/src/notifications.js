@@ -48,7 +48,7 @@ notificatons = {
      *
      * If the user has changed things like the structure, we mark the state
      * as "dirty" and refresh the data.
-     * That will eventually mean that when the user scrambles,
+     * That will eventually mean that when the user bootstraps,
      * the entire measures datset will be replaced.
      *
      * @param iMessage
@@ -60,11 +60,11 @@ notificatons = {
             case "moveAttribute":       //  drag left or right
             case "updateAttributes":    //  includes renaming
             case "createCollection":    //  dragged an attribute left
-                scrambler.state.dirtyMeasures = true;
-                scrambler.refreshAllData();
+                bootstrap.state.dirtyMeasures = true;
+                bootstrap.refreshAllData();
                 break;
             case "createAttributes":
-                scrambler.state.dirtyMeasures = true;
+                bootstrap.state.dirtyMeasures = true;
                 const firstAtt = iMessage.values.result.attrs[0];
                 console.log(`    create attribute... resource: ${iMessage.resource} attrs[0]: ${firstAtt.name} ${firstAtt.guid}`);
                 break;
@@ -82,16 +82,16 @@ notificatons = {
     handleDocumentChangeNotice : async function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
 
-        const doesItExist = connect.datasetExists(scrambler.state.datasetName);
+        const doesItExist = connect.datasetExists(bootstrap.state.datasetName);
 
         if (!doesItExist) {
-            const tName = await connect.getSuitableDatasetName(scrambler.state.datasetName);
+            const tName = await connect.getSuitableDatasetName(bootstrap.state.datasetName);
             if (tName) {
-                await scrambler.setSourceDataset(tName);
+                await bootstrap.setSourceDataset(tName);
             } else {
-                scrambler.sourceDataset = null;
+                bootstrap.sourceDataset = null;
             }
-            scrambler.refreshUIDisplay();
+            bootstrap.refreshUIDisplay();
         }
 
     },
@@ -103,28 +103,28 @@ notificatons = {
         switch (iMessage.values.operation) {
             case "dragstart":
                 //  console.log(`... start dragging ${iMessage.values.attribute.title}`);
-                scrambler.currentlyDraggingAnAttribute = true;
+                bootstrap.currentlyDraggingAnAttribute = true;
                 break;
 
             case "drop":
                 console.log(`... drop ${iMessage.values.attribute.title} at ${positionString}`);
-                scrambler.copeWithAttributeDrop(iMessage.values.context.name, iMessage.values.attribute.name)
+                bootstrap.copeWithAttributeDrop(iMessage.values.context.name, iMessage.values.attribute.name)
                 break;
 
             case "dragend":
                 //  console.log(`... dragend ${iMessage.values.attribute.title} at ${positionString}`);
-                document.getElementById("entire-scrambler").className = "body-no-drag";
-                scrambler.currentlyDraggingAnAttribute = false;
+                document.getElementById("entire-bootstrap").className = "body-no-drag";
+                bootstrap.currentlyDraggingAnAttribute = false;
                 break;
 
             case "dragenter":
                 console.log(`... dragenter ${iMessage.values.attribute.title} at ${positionString}`);
-                document.getElementById("entire-scrambler").className = "body-drag";
+                document.getElementById("entire-bootstrap").className = "body-drag";
                 break;
 
             case "dragleave":
                 console.log(`... dragleave ${iMessage.values.attribute.title} at ${positionString}`);
-                document.getElementById("entire-scrambler").className = "body-no-drag";
+                document.getElementById("entire-bootstrap").className = "body-no-drag";
 
                 break;
 

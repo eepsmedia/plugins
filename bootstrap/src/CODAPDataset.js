@@ -33,17 +33,17 @@ class CODAPDataset {
             const getDatasetResult = await codapInterface.sendRequest(theMessage);
             this.structure = getDatasetResult.values;
         } else {
-            scrambler.doAlert("Dang!", "Can't load a structure without a dataset name", "error");
+            bootstrap.doAlert("Dang!", "Can't load a structure without a dataset name", "error");
         }
     }
 
-    possibleScrambleAttributeNames(iCheck) {
+    possibleBootstrapAttributeNames(iCheck) {
         const lastCollection = this.structure.collections[this.structure.collections.length - 1];
         let formula = false;
 
         let out = [];
         lastCollection.attrs.forEach(attr => {
-            if (!attr.formula) {    //  can't scramble a formula attribute....
+            if (!attr.formula) {    //  can't bootstrap a formula attribute....
                 out.push(attr.name);
             } else if (attr.name === iCheck) {  //  has a formula AND it's the one we're checking
                 formula = true;
@@ -69,53 +69,48 @@ class CODAPDataset {
 
 
     /**
-     * Scrambles the indicated attribute's values. Called from `scrambler.doScramble()`.
+     * Called from `bootstrap.doBootstrap()`.
      *
-     * This is typically called on the cloned dataset (titled "scrambled_whatever"),
+     * This is typically called on the cloned dataset (titled "bootstrapped_whatever"),
      * after which the results (with computed measures) are collected
      *
-     * Note that this attribute must be in the "last", most leafy collection.
-     *
-     * @param iAttName  the name of the attribute to be scrambled
+     * @param iSource  the CODAPDataset being bootstrapped (the original data)
      * @returns {Promise<void>}
      */
-    async scrambleInPlace(iAttName) {
-        const nCollections = this.structure.collections.length;
-        const lastCollection = this.structure.collections[nCollections - 1];
+    async bootstrapCasesFrom(iSource) {
+        const nCollections = iSource.structure.collections.length;
+        const lastCollection = iSource.structure.collections[nCollections - 1];
+        const theLastCases = lastCollection.cases;
 
-        const theCases = lastCollection.cases;
-        let valueArray = [];        //  array that just holds the values of this attribute, one per case
+        const nCases = theLastCases.length;
 
-        theCases.forEach(aCase => {
-            valueArray.push(aCase.values[iAttName]);
-        })
-
-        valueArray.scramble();
+        await connect.emptyCODAPDataset(this);     //  start empty
 
         //  construct a request to CODAP to push these values into this dataset
-        const theResource = `dataContext[${this.datasetName}].collection[${lastCollection.name}].case`;
+        const theResource = `dataContext[${this.datasetName}].item`;
 
         //  construct a "values" array (`theValues`) for an update.case message
         let theValues = [];
 
-        for (let i = 0; i < valueArray.length; i++) {
-            const thisCase = lastCollection.cases[i];
-            const oneValuesObject = {};
-            oneValuesObject[iAttName] = valueArray[i];
+        //  make Values array, one for each case in the bootstrapped dataset.
+        for (let i = 0; i < nCases; i++) {
+            const randomIndex = Math.floor(Math.random() * nCases);
+            const randomCaseFromSource = lastCollection.cases[randomIndex];
+            //  console.log(`        boot ${i} index ${randomIndex}: ${randomCaseFromSource.values.name}`);
             theValues.push({
-                id: thisCase.id,
-                values: oneValuesObject,
+                values: randomCaseFromSource.values,
             })
         }
 
         try {
-            const updateScrambleResult = await codapInterface.sendRequest({
-                action: "update",
+            const emitBootstrapSampleResult = await codapInterface.sendRequest({
+                action: "create",
                 resource: theResource,
                 values: theValues,
             });
+            console.log(`    done with a bootstrap (${theValues.length}), success? ${emitBootstrapSampleResult.success}`);
         } catch (msg) {
-            scrambler.doAlert("oops!", `Error updating a scramble! ${msg}`, "error");
+            bootstrap.doAlert("oops!", `Error updating a bootstrap! ${msg}`, "error");
         }
     }
 
@@ -125,9 +120,9 @@ class CODAPDataset {
      * We do this by recursively looking into the collections' `cases`
      * and constructing _items_ for emission to CODAP.
      *
-     * Called on the "scrambled" dataset.
+     * Called on the "bootstrapped" dataset.
      *
-     * @param iSource  a `CODAPDataset`. The source dataset, specifically, the "scrambled" dataset.
+     * @param iSource  a `CODAPDataset`. The source dataset, specifically, the "bootstrapped" dataset.
      * @returns theItems    an array of objects suitable for export to CODAP as items
      */
     async makeMeasuresFrom(iSource) {
@@ -139,7 +134,7 @@ class CODAPDataset {
             const theAlertText = `You're using ${nCollections} level(s) of collection. 
                 You need at least two.
                 Make a measure and drag it leftwards!`;
-            scrambler.doAlert("Watch out!", theAlertText);
+            bootstrap.doAlert("Watch out!", theAlertText);
             return null;
         }
         const theItems = iSource.scrapeCollections(0, lastCollectionLevel);
@@ -185,9 +180,9 @@ class CODAPDataset {
         if (iLevel === zLevel) {
             let leafValues = iCase.values;  //  an object containing attribute names and values as returned by CODAP
 
-            //  now we add two more attributes, one for the iteration and one for the scrambled attribute name
-            leafValues[scrambler.strings.sIterationAttName] = scrambler.state.iteration;
-            leafValues[scrambler.strings.sScrambledAttName] = scrambler.state.scrambleAttributeName;
+            //  now we add two more attributes, one for the iteration and one for the bootstrapped attribute name
+            leafValues[bootstrap.strings.sIterationAttName] = bootstrap.state.iteration;
+            leafValues[bootstrap.strings.sBootstrapdAttName] = bootstrap.state.bootstrapAttributeName;
 
             //  end recursion here.
             return [leafValues];  //  array of a single object
@@ -249,7 +244,7 @@ class CODAPDataset {
                 }
             })
         } catch (msg) {
-            scrambler.doAlert("Dang!", `No structure: ${msg}`, "error");
+            bootstrap.doAlert("Dang!", `No structure: ${msg}`, "error");
         }
 
         await Promise.all(thePromises);     //  await the data from all collections
@@ -304,14 +299,14 @@ class CODAPDataset {
             //  recall that `iCollection` is a collection in the `structure.collections` array.
             iCollection.cases = theCases;   //  here is where the case data gets stored into the `structure` member.
         } else {
-            scrambler.doAlert("Dang!", `Error getting cases from collection [${iCollection.name}]`, "error");
+            bootstrap.doAlert("Dang!", `Error getting cases from collection [${iCollection.name}]`, "error");
         }
     }
 
     /**
      * Have CODAP make a dataset without any data, based on the structure of `this`.
      *
-     * Called by `makeNewMeasuresDataset()` and `makeNewScrambledDataset()`
+     * Called by `makeNewMeasuresDataset()` and `makeNewBootstrappedDataset()`
      *
      * @returns {Promise<void>}
      */
@@ -385,9 +380,9 @@ class CODAPDataset {
         }
 
         try {
-            const newScrambledItemsResult = await codapInterface.sendRequest(newItemsMessage);
+            const newBootstrappedItemsResult = await codapInterface.sendRequest(newItemsMessage);
         } catch (msg) {
-            scrambler.doAlert("Hmmm.", `Problem emitting scrambled measures from ${this.datasetName}: ${msg}`)
+            bootstrap.doAlert("Hmmm.", `Problem emitting bootstrapped measures from ${this.datasetName}: ${msg}`)
         }
     }
 
@@ -480,17 +475,14 @@ class CODAPDataset {
 
         //  define the top-level "iterations" collection
 
-        const scritCollection = {
+        const bootCollection = {
             name: "iterations",
             attrs: [{
-                name: scrambler.strings.sIterationAttName,
+                name: bootstrap.strings.sIterationAttName,
                 type: "categorical",
-                description: scrambler.strings.sIterationAttDescription,
-            }, {
-                name: scrambler.strings.sScrambledAttName,
-                type: "categorical",
-                description: scrambler.strings.sScrambledAttDescription,
-            }],
+                description: bootstrap.strings.sIterationAttDescription,
+            },
+            ],
         }
 
         //  define the other collection (which will contain all non-leaf attributes)
@@ -518,7 +510,7 @@ class CODAPDataset {
         //  make the new structure
 
         this.structure = {
-            collections: [scritCollection, measuresCollection],
+            collections: [bootCollection, measuresCollection],
             name: this.structure.name,
             title: this.structure.title,
         };

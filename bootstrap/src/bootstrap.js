@@ -1,10 +1,10 @@
-const scrambler = {
+const bootstrap = {
     sourceDataset: null,        //      a CODAPDataset.
-    scrambledDataset: null,     //      a CODAPDataset.
+    bootstrappedDataset: null,     //      a CODAPDataset.
     measuresDataset: null,      //      a CODAPDataset.
 
     nDatasets: 0,
-    currentlyScrambling: false,
+    currentlyBootstrapping: false,
     currentlyDraggingAnAttribute: false,
 
     datasetExists: false,
@@ -26,55 +26,51 @@ const scrambler = {
             console.log(`No interactive state retrieved. Got a new one...: 
             ${JSON.stringify(this.state)}`);
         }
-        scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+        bootstrap.strings = await bootstrapStrings.initializeStrings(this.state.lang);
 
         await this.refreshAllData();
     },
 
-    refreshScramblerStatus: function () {
+    refreshBootstrapperStatus: function () {
         let theHTML = ``;
 
         if (this.datasetExists) {
             const tDSTitle = this.sourceDataset.structure.title;
-            const tAttName = scrambler.state.scrambleAttributeName;
+            const tAttName = bootstrap.state.bootstrapAttributeName;
             const codeStart = "<code>";
             const codeEnd = "</code>";
 
-            const attReport =  (this.scrattributeExists)
-                ? `${scrambler.strings.sScramble} ${tAttName}`
-                : scrambler.strings.sNoAttribute;
+            const dsReport =  (this.sourceDataset)
+                ? `${this.sourceDataset.datasetName}`
+                : bootstrap.strings.sNoDataset;
 
-            document.getElementById("attributeReport").innerHTML = attReport;
+            document.getElementById("datasetReport").innerHTML = dsReport;
 
             if (this.datasetHasMeasure) {
-                if (this.scrattributeExists) {
                     if (this.scrattributeIsLeaf) {
-                        theHTML = scrambler.strings.sfOKtoScramble(tAttName, tDSTitle); //   `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`;
+                        theHTML = bootstrap.strings.sfOKtoBootstrap(tDSTitle); //   `OK to bootstrap "${tAttName}" in dataset "${tDSTitle}"`;
                     } else {
-                        const possibles = scrambler.sourceDataset.possibleScrambleAttributeNames(tAttName); //  this is an object
+                        const possibles = bootstrap.sourceDataset.possibleBootstrapAttributeNames(tAttName); //  this is an object
                         const suchAs = (possibles.array.length == 1)    //  possibles.array is the list of suitable attributes
                             ? `${possibles.array[0]}`
                             : `${possibles.array[0]} or ${possibles.array[1]}`;
-                        const colls = scrambler.sourceDataset.structure.collections;
+                        const colls = bootstrap.sourceDataset.structure.collections;
                         const lastCollName = colls[colls.length - 1].name;
                         if (possibles.hasFormula) { //  remember: if it has a formula it will not be listed among the leaves
-                            theHTML = scrambler.strings.sfFormulaProblem(tAttName, lastCollName, suchAs);
+                            theHTML = bootstrap.strings.sfFormulaProblem(tAttName, lastCollName, suchAs);
                         } else {
-                            theHTML = scrambler.strings.sfNotALeafProblem(tAttName, lastCollName, suchAs);
+                            theHTML = bootstrap.strings.sfNotALeafProblem(tAttName, lastCollName, suchAs);
                         }
                     }
 
-                } else {
-                    theHTML = scrambler.strings.sNoScrambleAttribute;
-                }
             } else {
-                theHTML = scrambler.strings.sfNoMeasure(tDSTitle);
+                theHTML = bootstrap.strings.sfNoMeasure(tDSTitle);
             }
         } else {
-            theHTML = scrambler.strings.sNoDataset;
+            theHTML = bootstrap.strings.sNoDataset;
         }
 
-        document.getElementById(`scramblerStatus`).innerHTML = theHTML;
+        document.getElementById(`bootstrapStatus`).innerHTML = theHTML;
     },
 
     refreshAllData: async function () {
@@ -90,9 +86,9 @@ const scrambler = {
 
     /**
      * Makes a `CODAPDataset` filled with the information from the CODAP dataset of the given name.
-     * This thing will be the root of the scrambling we do.
+     * This thing will be the root of the bootstrapping we do.
      *
-     * Also sets a good value for the scrambling attribute.
+     * Also sets a good value for the bootstrapping attribute.
      *
      * @param iName     the name of the dataset
      * @returns {Promise<void>}
@@ -107,18 +103,18 @@ const scrambler = {
             this.datasetExists = true;
             this.datasetHasMeasure = (this.sourceDataset.structure.collections.length > 1);
 
-            //  cope with the scramble attributes
-            const tScrambleName = scrambler.state.scrambleAttributeName;
-            this.scrattributeExists = (this.sourceDataset.allAttributeNames().includes(tScrambleName));
-            this.scrattributeIsLeaf = this.sourceDataset.possibleScrambleAttributeNames(tScrambleName).check;
-            console.log(`SetSourceDataset: ${iName} with ${scrambler.state.scrambleAttributeName}`)
+            //  cope with the bootstrap attributes
+            const tBootstrapName = bootstrap.state.bootstrapAttributeName;
+            this.scrattributeExists = (this.sourceDataset.allAttributeNames().includes(tBootstrapName));
+            this.scrattributeIsLeaf = this.sourceDataset.possibleBootstrapAttributeNames(tBootstrapName).check;
+            console.log(`SetSourceDataset: ${iName} with ${bootstrap.state.bootstrapAttributeName}`)
         } else {
             this.datasetExists = false;
             this.datasetHasMeasure = false;
             this.scrattributeExists = false;
             this.scrattributeIsLeaf = false;
 
-            scrambler.state.scrambleAttributeName = null;
+            bootstrap.state.bootstrapAttributeName = null;
             console.log(`SetSourceDataset: WE HAVE NO SOURCE!`)
         }
     },
@@ -137,10 +133,10 @@ const scrambler = {
     },
 
     copeWithAttributeDrop: async function (iDataset, iAttribute) {
-        console.log(`Scramble ${iAttribute} in ${iDataset}`);
-        this.state.scrambleAttributeName = iAttribute;      //  it has to exist, we just dropped it!
+        console.log(`Bootstrap ${iAttribute} in ${iDataset}`);
+        this.state.bootstrapAttributeName = iAttribute;      //  it has to exist, we just dropped it!
 
-        await scrambler.setSourceDataset(iDataset);
+        await bootstrap.setSourceDataset(iDataset);
 
         if (this.sourceDataset && (iDataset != this.sourceDataset.datasetName)) {
                     //  changing the dataset
@@ -154,9 +150,7 @@ const scrambler = {
      *
      */
     handleUIChoice: function () {
-        this.state.numberOfScrambles = Number(document.getElementById("howManyBox").value) || this.state.numberOfScrambles || 42;
-        // this.state.scrambleAttributeName = document.getElementById("attributeMenu").value || null;
-
+        this.state.numberOfSamples = Number(document.getElementById("howManyBox").value) || this.state.numberOfSamples || 42;
         this.refreshUIDisplay();
     },
 
@@ -168,24 +162,23 @@ const scrambler = {
      */
     handleSourceDatasetChange: async function (theMenu) {
         const theName = theMenu.value;
-        scrambler.setSourceDataset(theName);
+        bootstrap.setSourceDataset(theName);
     },
 
     /**
-     * Clone the "source" dataset to make a new one, which will get scrambled.
-     * Note: it doesn't get scrambled in this method!
-     * (called from `doScramble()`)
+     * Clone the "source" dataset to make a new one, which will get bootstrapped.
+     * Note: it doesn't get bootstrapped in this method!
+     * (called from `doBootstrap()`)
      *
      * @returns {Promise<*>}
      */
-    makeNewScrambledDataset: async function () {
-        const theScrambledOne = this.sourceDataset.clone(scrambler.constants.scrambledPrefix);
-        await theScrambledOne.emitDatasetStructureOnly();
-        await theScrambledOne.emitCasesFromDataset();
-        await theScrambledOne.retrieveAllDataFromCODAP(); //  redo to get IDs right
-        console.log(`cloned to get [${theScrambledOne.datasetName}] for scrambling`);
+    makeNewBootstrappedDataset: async function () {
+        const theBootstrappedOne = this.sourceDataset.clone(bootstrap.constants.bootstrapPrefix);
+        await theBootstrappedOne.emitDatasetStructureOnly();
 
-        return theScrambledOne;
+        console.log(`cloned to get [${theBootstrappedOne.datasetName}] for bootstrapping`);
+
+        return theBootstrappedOne;
     },
 
     /**
@@ -199,14 +192,14 @@ const scrambler = {
 
         let theMeasures = null;
 
-        const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+        const tMeasuresDatasetName = `${bootstrap.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
 
         if (await connect.datasetExists(tMeasuresDatasetName)) {
             theMeasures = await new CODAPDataset(tMeasuresDatasetName);
             await theMeasures.retrieveAllDataFromCODAP();
             console.log(`    [${tMeasuresDatasetName}] already exists`);
         } else {
-            theMeasures = this.sourceDataset.clone(scrambler.constants.measuresPrefix);
+            theMeasures = this.sourceDataset.clone(bootstrap.constants.measuresPrefix);
             theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
             await theMeasures.emitDatasetStructureOnly();
             console.log(`    ${tMeasuresDatasetName}] created anew`);
@@ -216,50 +209,54 @@ const scrambler = {
     },
 
     /**
-     * Sets UI values for the scramble attribute and the number of scrambles to match the `state`.
+     * Sets UI values for the bootstrap attribute and the number of bootstraps to match the `state`.
      */
     matchUItoState: function () {
-        document.getElementById("howManyBox").value = Number(scrambler.state.numberOfScrambles);
-        document.getElementById("attributeMenu").value = scrambler.state.scrambleAttributeName;
+        document.getElementById("howManyBox").value = Number(bootstrap.state.numberOfSamples);
+        document.getElementById("attributeMenu").value = bootstrap.state.bootstrapAttributeName;
     },
 
     /**
-     * Handle the command to actually do a scramble
+     * Handle the command to actually do a bootstrap
      * @param  iReps    the number of repetitions if it is *not* the number in the box (i.e., ONE.)
      * @returns {Promise<null>}
      */
-    doScramble: async function (iReps) {
+    doBootstrap: async function (iReps) {
 
-        this.currentlyScrambling = true;
+        this.currentlyBootstrapping = true;
         this.refreshUIDisplay();
 
-        const nReps = iReps ? iReps : scrambler.state.numberOfScrambles;
-        const sAttribute = scrambler.state.scrambleAttributeName;  //  name of the attribute to scramble
-        scrambler.state.iteration++;
+        const nReps = iReps ? iReps : bootstrap.state.numberOfSamples;
+
+        //  const sAttribute = bootstrap.state.bootstrapAttributeName;  //  name of the attribute to bootstrap
+        bootstrap.state.iteration++;
 
         await codapInterface.updateInteractiveState(this.state);    //  force storage
 
-        console.log(`*** going to scramble. State: ${JSON.stringify(scrambler.state)}`);
-        //  await this.refreshAllData();      //  get a new setup every time we press scramble.
-        //  console.log(`    data refreshed. Ready to scramble.`);
+        console.log(`*** going to bootstrap. State: ${JSON.stringify(bootstrap.state)}`);
+        //  await this.refreshAllData();      //  get a new setup every time we press bootstrap.
+        //  console.log(`    data refreshed. Ready to bootstrap.`);
 
         await this.sourceDataset.retrieveAllDataFromCODAP();
-        console.log(`    data retrieved. Ready to scramble.`);
+        console.log(`    data retrieved. Ready to bootstrap.`);
 
-        if (this.measuresDataset && scrambler.state.dirtyMeasures) {
+        if (this.measuresDataset && bootstrap.state.dirtyMeasures) {
             await connect.deleteDataset(this.measuresDataset.datasetName);
             console.log(`    deleted a dirty measures dataset`);
         }
-        this.scrambledDataset = await this.makeNewScrambledDataset();
         this.measuresDataset = await this.makeNewMeasuresDataset();
-        scrambler.state.dirtyMeasures = false;
+        bootstrap.state.dirtyMeasures = false;
 
         let newItems = [];
 
-        //  actual scramble here
+        //  actual bootstrap here
+        this.bootstrappedDataset = await bootstrap.makeNewBootstrappedDataset();    // structure, with cases
         for (let i = 0; i < nReps; i++) {
-            await this.scrambledDataset.scrambleInPlace(sAttribute);
-            const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.scrambledDataset);
+            //  remake with fresh cases, includes emitting to CODAP so it can calculate measures
+            await this.bootstrappedDataset.bootstrapCasesFrom( this.sourceDataset );
+
+            //  now collect the measures
+            const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.bootstrappedDataset);
             if (oneRepItems) {
                 newItems = newItems.concat(oneRepItems);
             } else {
@@ -271,17 +268,17 @@ const scrambler = {
         this.measuresDataset.emitItems(true, newItems);
         connect.showTable(this.measuresDataset.datasetName);
         this.showProgress(-1, -1);
-        this.currentlyScrambling = false;
+        this.currentlyBootstrapping = false;
         this.refreshUIDisplay();
     },
 
     /**
-     * Display progress text showing how many scrambles have been done out of how many.
+     * Display progress text showing how many bootstraps have been done out of how many.
      *
-     * Called from `scramble.doScramble()`.
+     * Called from `bootstrap.doBootstrap()`.
      *
-     * @param howMany   which scramble we're on
-     * @param outOf     how many scrambles we're doing
+     * @param howMany   which bootstrap we're on
+     * @param outOf     how many bootstraps we're doing
      */
     showProgress: function (howMany, outOf) {
         theProgressBox = document.getElementById("progress");
@@ -289,63 +286,51 @@ const scrambler = {
     },
     /**
      * Set the values in the UI (menu choices, number in a box) to match the state.
-     * Also sets the text on the scramble button to **42x** or whatever.
+     * Also sets the text on the bootstrap button to **42x** or whatever.
      *
      */
     refreshUIDisplay: function () {
         console.log(`    refreshing UI display`);
-        //  set the number of scrambles in the box
-        document.getElementById("howManyButton").innerHTML = this.state.numberOfScrambles + "x";
 
-        const buttons = document.getElementById("scramble-buttons-stripe-element");
+        //  set the number of bootstraps in the box
+        const tNumberInBox = document.getElementById("howManyBox").value;
+        document.getElementById("howManyButton").innerHTML = tNumberInBox + "x";
+
+        const buttons = document.getElementById("bootstrap-buttons-stripe-element");
         const progress = document.getElementById("progress");
 
-        //  visibility; shows appropriate message if scrambling is impossible
+        //  visibility; shows appropriate message if bootstrapping is impossible
 
-        buttons.style.display = this.currentlyScrambling ? "none" : "flex";
-        progress.style.display = this.currentlyScrambling ? "flex" : "none";
+        buttons.style.display = this.currentlyBootstrapping ? "none" : "flex";
+        progress.style.display = this.currentlyBootstrapping ? "flex" : "none";
 
-        const canScramble = this.scrattributeExists && this.scrattributeIsLeaf && this.datasetExists && this.datasetHasMeasure;
-        const canDoScrambleStripe = document.getElementById("how-many-stripe");
-        const cantDoScrambleStripe = document.getElementById("cantScrambleStripe");
+        const canBootstrap = this.datasetExists && this.datasetHasMeasure;
+        const canDoBootstrapStripe = document.getElementById("how-many-stripe");
+        const cantDoBootstrapStripe = document.getElementById("cantBootstrapStripe");
 
-        canDoScrambleStripe.style.display = canScramble ? "flex" : "none";
-        cantDoScrambleStripe.style.display = canScramble ? "none" : "flex";
+        canDoBootstrapStripe.style.display = canBootstrap ? "flex" : "none";
+        cantDoBootstrapStripe.style.display = canBootstrap ? "none" : "flex";
 
         //  set the language control
-/*
-        const theFlag = scrambler.strings.languages[scrambler.state.lang].flags();
-        console.log(`the flag is ${theFlag}`);
-*/
+        document.getElementById("languageControl").innerHTML = bootstrap.pickAFlag();        //  theFlag;
 
-        document.getElementById("languageControl").innerHTML = scrambler.pickAFlag();        //  theFlag;
-
-        this.refreshScramblerStatus();
+        this.refreshBootstrapperStatus();
     },
 
     changeLanguage : async function() {
-        scrambler.state.lang = (scrambler.state.lang === `en`) ? `es` : `en`;
-        scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
-        scrambler.refreshUIDisplay();
+        bootstrap.state.lang = (bootstrap.state.lang === `en`) ? `es` : `en`;
+        bootstrap.strings = await bootstrapStrings.initializeStrings(this.state.lang);
+        bootstrap.refreshUIDisplay();
     },
 
     pickAFlag : function()  {
-        const theFlags = scrambler.strings.flags;
+        const theFlags = bootstrap.strings.flags;
         const theIndex = Math.floor( Math.random() * theFlags.length );
         return theFlags[theIndex];
     },
 
     doAlert: function (iTitle, iText, iIcon = 'info') {
         alert(iText);
-        /*  failed to adjust the height.
-        Swal.fire({
-            className : "scrambler-swal",
-            icon: iIcon,
-            title: iTitle,
-            text: iText,
-            height : 166,
-        })
-        */
     },
 
     constants: {
@@ -353,22 +338,22 @@ const scrambler = {
         version: "0.9",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
-            bootstrapoDatasetName: null,
-            scrambleAttributeName: null,
+            bootstrapDatasetName: null,
+            bootstrapAttributeName: null,
             numberOfSamples: 10,
             iteration: 0,
             dirtyMeasures: true,
             lang : `en`,
         },
         measuresPrefix: "measures_",
-        bootPrefix: "bootsamp_",        //  name of a bootstrap sample dataset
+        bootstrapPrefix: "bootstrapSample_",        //  prefix for a bootstrap sample dataset
         bootstrapSetName: "bootset",
     },
 }
 
 /**
- * Scramble the values in the array. Defined at the bottom of `scrambler.js`.
-Array.prototype.scramble = function () {
+ * Bootstrap the values in the array. Defined at the bottom of `bootstrap.js`.
+Array.prototype.bootstrap = function () {
     const N = this.length;
 
     for (let i = 0; i < N; i++) {

@@ -10,14 +10,14 @@ connect = {
     },
 
     iFrameDescriptor: {
-        name: scrambler.constants.pluginName,
-        title: scrambler.constants.pluginName,
-        version: scrambler.constants.version,
-        dimensions: scrambler.constants.dimensions,      //      dimensions,
+        name: bootstrap.constants.pluginName,
+        title: bootstrap.constants.pluginName,
+        version: bootstrap.constants.version,
+        dimensions: bootstrap.constants.dimensions,      //      dimensions,
     },
 
     /**
-     * Find a dataset that is not _scrambled or _measures, preferably the one we pass in!
+     * Find a dataset that is not _bootstrapped or _measures, preferably the one we pass in!
      *
      * @param iName     Default name, typically the one we have been using all along or restored from save
      * @returns {Promise<*>}
@@ -32,7 +32,7 @@ connect = {
         if (tListResult.success) {
             tListResult.values.forEach((ds) => {
                 const theName = ds.name;
-                if (theName.startsWith(scrambler.constants.measuresPrefix) || theName.startsWith(scrambler.constants.scrambledPrefix)) {
+                if (theName.startsWith(bootstrap.constants.measuresPrefix) || theName.startsWith(bootstrap.constants.bootstrappedPrefix)) {
 
                 } else {
                     tDSNameList.push(theName);
@@ -79,7 +79,28 @@ connect = {
             const dResult = await codapInterface.sendRequest(tDeleteMessage);
             console.log(`    deleting [${iName}]: (${dResult.success ? "success" : "failure"})`);
         } else {
-            console.log(`    no measures daatset to delete!`);
+            console.log(`    no measures dataset to delete!`);
+        }
+    },
+
+    emptyCODAPDataset: async function(iDS) {
+        if (iDS.datasetName) {
+            const aCollectionName = iDS.structure.collections[0].name;
+            const tEmptyMessage = {
+                action : "delete",
+                resource : `dataContext[${iDS.datasetName}].collection[${aCollectionName}].allCases`,
+            }
+
+            try {
+                const dResult = await codapInterface.sendRequest(tEmptyMessage);
+                console.log(`    emptying [${iDS.datasetName}]: (${dResult.success ? "success" : "failure"})`);
+            } catch(msg) {
+                console.log(`    problem emptying ${iDS.datasetName}: ${msg}`);
+            }
+
+        } else {
+            console.log(`    no dataset to empty!`);
+
         }
     },
 

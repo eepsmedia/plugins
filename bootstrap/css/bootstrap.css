@@ -35,6 +35,10 @@ html {
     background-color: var(--main-bg-color);;
 }
 
+#languageControl {
+    font-size: larger;
+}
+
 h1 {
     font-size: large;
 }
@@ -46,7 +50,7 @@ button {
     border-radius: 0.5em;
 }
 
-.scrambler-stripe {
+.bootstrap-stripe {
     padding: .3em 1em .3em 1em;
     min-height: 1.5em;
     display: flex;
@@ -59,7 +63,7 @@ button {
     cursor: pointer;
 }
 
-.scrambler-swal {
+.bootstrap-swal {
     height : 100%;
 }
 
