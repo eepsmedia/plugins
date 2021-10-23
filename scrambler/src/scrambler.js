@@ -335,6 +335,18 @@ const scrambler = {
         return theFlags[theIndex];
     },
 
+    openHelp : async function() {
+        const theURL = `help/help.${scrambler.state.lang}.html`;
+        const response = await fetch(theURL);
+
+        if (response.status == 200) {
+            window.open(theURL, `_blank`);
+        } else if (response.status === 404) {
+            window.open(`help/help.en.html`, `_blank`);     //  default to English
+            console.log(`No help file for ${scrambler.state.lang}, defaulting to English.`)
+        }
+    },
+
     doAlert: function (iTitle, iText, iIcon = 'info') {
         alert(iText);
         /*  failed to adjust the height.

@@ -5,19 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.2, Spanish and flags">
-      <change afterPath="$PROJECT_DIR$/../bootstrap/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/css/bootstrap.css" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/css/bootstrap.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/help/bootstrap-help.css" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/help/bootstrap-help.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/help/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/help/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/help/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/help/help.en.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/CODAPDataset.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/connect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/src/notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/notifications.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/scrambler.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/scrambler.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/help/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/help/help.en.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrambler.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +65,7 @@
       <updated>1634523293076</updated>
       <workItem from="1634523295731" duration="282000" />
       <workItem from="1634523633085" duration="6704000" />
-      <workItem from="1634846133228" duration="7670000" />
+      <workItem from="1634846133228" duration="11383000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>

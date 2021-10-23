@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Scrambler 2021</title>
 
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
 
     <link rel='stylesheet' type='text/css' href='css/scrambler.css'/>
 
@@ -42,16 +43,13 @@
              title="Click to refresh the data"
              alt="refresh icon"
         >
-        <!--
-        Help is also here, but I have also rendered is as an html file in the help/ folder
-                href="https://github.com/eepsmedia/plugins/blob/master/scrambler/readme.md"
-        -->
-        <a class="stripe-element"  target="_blank"  href="help/">
-            <img src="../../common/art/info.png"  alt="info" title="Click for detailed help"  class="roundButton">
-        </a>
-
-
     </div>
+
+    <div class="stripe-element" >
+        <img src="../../common/art/info.png"
+             alt="help button" title="Click for detailed help"  class="roundButton" onclick="scrambler.openHelp()">
+    </div>
+
     <div class="stripe-element" id="attributeReport"></div>
     <div class="stripe-element" id="languageControl" onclick="scrambler.changeLanguage()"></div>
 
