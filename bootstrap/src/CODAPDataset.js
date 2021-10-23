@@ -37,23 +37,32 @@ class CODAPDataset {
         }
     }
 
-    possibleBootstrapAttributeNames(iCheck) {
+    checkForFormulasInCollections( ) {
+        console.log(`checking for formulas in ${this.datasetName}`);
         const lastCollection = this.structure.collections[this.structure.collections.length - 1];
-        let formula = false;
 
-        let out = [];
-        lastCollection.attrs.forEach(attr => {
-            if (!attr.formula) {    //  can't bootstrap a formula attribute....
-                out.push(attr.name);
-            } else if (attr.name === iCheck) {  //  has a formula AND it's the one we're checking
-                formula = true;
-            }
+        let goodAttsInLeaves = [];
+        let goodAttsBeforeLeaves = [];
+        this.structure.collections.forEach( (c) => {
+            console.log(`    coll ${c.name} has ${c.attrs.length} attrs`);
+            c.attrs.forEach( attr => {
+                if (c === lastCollection) {
+                    if (attr.formula) {    //  can only bootstrap a formula attribute....
+                        goodAttsInLeaves.push(attr.name);
+                        console.log(`    found leaf formula in ${attr.name}`);
+                    }
+                } else {
+                    if (attr.formula) {    //  can only bootstrap a formula attribute....
+                        goodAttsBeforeLeaves.push(attr.name);
+                        console.log(`    found non-leaf formula in ${attr.name}`);
+                    }
+                }
+            })
         })
 
         return {
-            array: out,
-            check: out.includes(iCheck),
-            hasFormula: formula,
+            inLeaves: goodAttsInLeaves,
+            beforeLeaves: goodAttsBeforeLeaves,
         };
     }
 
@@ -456,7 +465,14 @@ class CODAPDataset {
 
         let newCollections = [];
         this.structure.collections.forEach(oneCollection => {
-            newCollections.push(Object.assign({}, oneCollection));
+            let collCopy = Object.assign({}, oneCollection);    //  todo: consider if we need this for scrambler
+            let newAttributes = [];
+            collCopy.attrs.forEach( a => {
+                const attCopy = Object.assign({}, a);
+                newAttributes.push(attCopy);
+            })
+            collCopy.attrs = newAttributes;
+            newCollections.push(collCopy);
         })
 
         out.structure = {
@@ -502,6 +518,7 @@ class CODAPDataset {
                 if (attr.formula) {
                     attr.deletedFormula = attr.formula;
                     delete attr.formula;
+                    console.log(`    deleted formula for attr ${attr.name} in "${this.datasetName}"`);
                 }
                 measuresCollection.attrs.push(attr);
             })

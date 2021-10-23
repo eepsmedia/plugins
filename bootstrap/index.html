@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Bootstrap 2021</title>
 
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
 
     <link rel='stylesheet' type='text/css' href='css/bootstrap.css'/>
 
@@ -19,9 +20,9 @@
     <script src="src/notifications.js"></script>
     <script src="src/strings/strings.js"></script>
 
-<!--
-    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
--->
+    <!--
+        <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    -->
 
 </head>
 
@@ -34,7 +35,7 @@
 
 <body id="entire-bootstrap" class="body-no-drag">
 <div class="bootstrap-stripe">
-    <div class="stripe-element" ><h1 id="bootstrapTitle">bootstrap</h1></div>
+    <div class="stripe-element"><h1 id="bootstrapTitle">bootstrap</h1></div>
     <div>
         <img class="stripe-element roundButton"
              src="../../common/art/refresh-empty.png"
@@ -42,16 +43,16 @@
              title="Click to refresh the data"
              alt="refresh icon"
         >
-        <!--
-        Help is also here, but I have also rendered is as an html file in the help/ folder
-                href="https://github.com/eepsmedia/plugins/blob/master/bootstrap/readme.md"
-        -->
-        <a class="stripe-element"  target="_blank"  href="help/">
-            <img src="../../common/art/info.png"  alt="info" title="Click for detailed help"  class="roundButton">
-        </a>
-
-
     </div>
+    <!--
+        help button
+    -->
+    <div class="stripe-element">
+        <img src="../../common/art/info.png" alt="info"
+             title="Click for detailed help" class="roundButton"
+             onclick="bootstrap.openHelp()">
+    </div>
+
     <div class="stripe-element" id="datasetReport"></div>
     <div class="stripe-element" id="languageControl" onclick="bootstrap.changeLanguage()"></div>
 

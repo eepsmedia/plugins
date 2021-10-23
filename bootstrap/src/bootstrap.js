@@ -9,12 +9,10 @@ const bootstrap = {
 
     datasetExists: false,
     datasetHasMeasure: false,
-    scrattributeExists: false,
-    scrattributeIsLeaf: false,
 
     state: {},
 
-    strings : null,
+    strings: null,
 
     initialize: async function () {
         await connect.initialize();
@@ -36,33 +34,34 @@ const bootstrap = {
 
         if (this.datasetExists) {
             const tDSTitle = this.sourceDataset.structure.title;
-            const tAttName = bootstrap.state.bootstrapAttributeName;
+            const nCollections = this.sourceDataset.structure.collections.length;
+            this.datasetHasMeasure = nCollections > 1;
+            const lastCollName = this.sourceDataset.structure.collections[nCollections - 1].name;
+
             const codeStart = "<code>";
             const codeEnd = "</code>";
 
-            const dsReport =  (this.sourceDataset)
+            const dsReport = (this.sourceDataset)
                 ? `${this.sourceDataset.datasetName}`
                 : bootstrap.strings.sNoDataset;
 
             document.getElementById("datasetReport").innerHTML = dsReport;
 
             if (this.datasetHasMeasure) {
-                    if (this.scrattributeIsLeaf) {
-                        theHTML = bootstrap.strings.sfOKtoBootstrap(tDSTitle); //   `OK to bootstrap "${tAttName}" in dataset "${tDSTitle}"`;
+                const formulaSituation = bootstrap.sourceDataset.checkForFormulasInCollections(); //  this is an object
+                console.log(`bootstrap status for ${this.sourceDataset.datasetName}: possible meas = ${formulaSituation.beforeLeaves.length} and leafForms = ${formulaSituation.inLeaves.length}`)
+                if (formulaSituation.beforeLeaves.length === 0) {
+                    if (formulaSituation.inLeaves.length === 0) {
+                        theHTML = bootstrap.strings.sfNoFormulaProblem( tDSTitle);
                     } else {
-                        const possibles = bootstrap.sourceDataset.possibleBootstrapAttributeNames(tAttName); //  this is an object
-                        const suchAs = (possibles.array.length == 1)    //  possibles.array is the list of suitable attributes
-                            ? `${possibles.array[0]}`
-                            : `${possibles.array[0]} or ${possibles.array[1]}`;
-                        const colls = bootstrap.sourceDataset.structure.collections;
-                        const lastCollName = colls[colls.length - 1].name;
-                        if (possibles.hasFormula) { //  remember: if it has a formula it will not be listed among the leaves
-                            theHTML = bootstrap.strings.sfFormulaProblem(tAttName, lastCollName, suchAs);
-                        } else {
-                            theHTML = bootstrap.strings.sfNotALeafProblem(tAttName, lastCollName, suchAs);
-                        }
+                        const suchAs = (formulaSituation.inLeaves.length == 1)    //  formulaSituation.inLeaves is the list of formula attributes among the leaves
+                            ? `${formulaSituation.inLeaves[0]}`
+                            : `${formulaSituation.inLeaves[0]} ${bootstrap.strings.sOr} ${formulaSituation.inLeaves[1]}`;
+                        theHTML = bootstrap.strings.sfOnlyInLeafProblem(tDSTitle, lastCollName, suchAs);
                     }
-
+                } else {
+                    theHTML = bootstrap.strings.sfOKtoBootstrap(tDSTitle); //   `OK to bootstrap dataset "${tDSTitle}"`;
+                }
             } else {
                 theHTML = bootstrap.strings.sfNoMeasure(tDSTitle);
             }
@@ -104,17 +103,11 @@ const bootstrap = {
             this.datasetHasMeasure = (this.sourceDataset.structure.collections.length > 1);
 
             //  cope with the bootstrap attributes
-            const tBootstrapName = bootstrap.state.bootstrapAttributeName;
-            this.scrattributeExists = (this.sourceDataset.allAttributeNames().includes(tBootstrapName));
-            this.scrattributeIsLeaf = this.sourceDataset.possibleBootstrapAttributeNames(tBootstrapName).check;
-            console.log(`SetSourceDataset: ${iName} with ${bootstrap.state.bootstrapAttributeName}`)
+            console.log(`SetSourceDataset: ${iName} `);
         } else {
             this.datasetExists = false;
             this.datasetHasMeasure = false;
-            this.scrattributeExists = false;
-            this.scrattributeIsLeaf = false;
 
-            bootstrap.state.bootstrapAttributeName = null;
             console.log(`SetSourceDataset: WE HAVE NO SOURCE!`)
         }
     },
@@ -133,13 +126,12 @@ const bootstrap = {
     },
 
     copeWithAttributeDrop: async function (iDataset, iAttribute) {
-        console.log(`Bootstrap ${iAttribute} in ${iDataset}`);
-        this.state.bootstrapAttributeName = iAttribute;      //  it has to exist, we just dropped it!
+        console.log(`Bootstrap in dataset ${iDataset}`);
 
         await bootstrap.setSourceDataset(iDataset);
 
         if (this.sourceDataset && (iDataset != this.sourceDataset.datasetName)) {
-                    //  changing the dataset
+            //  changing the dataset
         }
 
         this.refreshUIDisplay();
@@ -202,7 +194,7 @@ const bootstrap = {
             theMeasures = this.sourceDataset.clone(bootstrap.constants.measuresPrefix);
             theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
             await theMeasures.emitDatasetStructureOnly();
-            console.log(`    ${tMeasuresDatasetName}] created anew`);
+            console.log(`    [${tMeasuresDatasetName}] created anew`);
         }
 
         return theMeasures;
@@ -213,7 +205,6 @@ const bootstrap = {
      */
     matchUItoState: function () {
         document.getElementById("howManyBox").value = Number(bootstrap.state.numberOfSamples);
-        document.getElementById("attributeMenu").value = bootstrap.state.bootstrapAttributeName;
     },
 
     /**
@@ -228,7 +219,6 @@ const bootstrap = {
 
         const nReps = iReps ? iReps : bootstrap.state.numberOfSamples;
 
-        //  const sAttribute = bootstrap.state.bootstrapAttributeName;  //  name of the attribute to bootstrap
         bootstrap.state.iteration++;
 
         await codapInterface.updateInteractiveState(this.state);    //  force storage
@@ -253,7 +243,7 @@ const bootstrap = {
         this.bootstrappedDataset = await bootstrap.makeNewBootstrappedDataset();    // structure, with cases
         for (let i = 0; i < nReps; i++) {
             //  remake with fresh cases, includes emitting to CODAP so it can calculate measures
-            await this.bootstrappedDataset.bootstrapCasesFrom( this.sourceDataset );
+            await this.bootstrappedDataset.bootstrapCasesFrom(this.sourceDataset);
 
             //  now collect the measures
             const oneRepItems = await this.measuresDataset.makeMeasuresFrom(this.bootstrappedDataset);
@@ -317,20 +307,32 @@ const bootstrap = {
         this.refreshBootstrapperStatus();
     },
 
-    changeLanguage : async function() {
+    changeLanguage: async function () {
         bootstrap.state.lang = (bootstrap.state.lang === `en`) ? `es` : `en`;
         bootstrap.strings = await bootstrapStrings.initializeStrings(this.state.lang);
         bootstrap.refreshUIDisplay();
     },
 
-    pickAFlag : function()  {
+    pickAFlag: function () {
         const theFlags = bootstrap.strings.flags;
-        const theIndex = Math.floor( Math.random() * theFlags.length );
+        const theIndex = Math.floor(Math.random() * theFlags.length);
         return theFlags[theIndex];
     },
 
     doAlert: function (iTitle, iText, iIcon = 'info') {
         alert(iText);
+    },
+
+    openHelp : async function() {
+        const theURL = `help/help.${bootstrap.state.lang}.html`;
+        const response = await fetch(theURL);
+
+        if (response.status == 200) {
+            window.open(theURL, `_blank`);
+        } else if (response.status === 404) {
+            window.open(`help/help.en.html`, `_blank`);     //  default to English
+            console.log(`No help file for ${bootstrap.state.lang}, defaulting to English.`)
+        }
     },
 
     constants: {
@@ -339,11 +341,10 @@ const bootstrap = {
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             bootstrapDatasetName: null,
-            bootstrapAttributeName: null,
             numberOfSamples: 10,
             iteration: 0,
             dirtyMeasures: true,
-            lang : `en`,
+            lang: `en`,
         },
         measuresPrefix: "measures_",
         bootstrapPrefix: "bootstrapSample_",        //  prefix for a bootstrap sample dataset
@@ -353,7 +354,7 @@ const bootstrap = {
 
 /**
  * Bootstrap the values in the array. Defined at the bottom of `bootstrap.js`.
-Array.prototype.bootstrap = function () {
+ Array.prototype.bootstrap = function () {
     const N = this.length;
 
     for (let i = 0; i < N; i++) {

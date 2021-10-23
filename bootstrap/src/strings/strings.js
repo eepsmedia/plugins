@@ -57,6 +57,7 @@ bootstrapStrings = {
             howManyLabel : `how many?`,
         },
 
+        sOr : `or`,
         sBootstrap : `bootstrap`,
         sNoAttribute : `no attribute :(`,
         sIterationAttName : `batch`,
@@ -64,8 +65,7 @@ bootstrapStrings = {
         sBootstrappedAttName : `bootstrapped att`,
         sBootstrappedAttDescription : `Which attribute was bootstrapped.`,
 
-        sNoDataset : `Find a dataset and drag the attribute here that you want to bootstrap!`,
-        sNoBootstrapAttribute : `What attribute do you want to bootstrap? Drag it in here. `,
+        sNoDataset : `Find a dataset you want to bootstrap, and drag an attribute here!`,
 
         sfOKtoBootstrap : (tDSTitle) => {
             return  `OK to bootstrap dataset "${tDSTitle}"`},
@@ -74,14 +74,13 @@ bootstrapStrings = {
                 which is probably an attribute with a formula. 
                 Drag that attribute to the left so you have something to collect!`},
 
-        sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
-            return `Bootstrapping ${tAttName} won't work because it has a formula. 
-                        Drag in a different attribute from the last collection (${lastCollName}), such as ${suchAs}.`
+        sfNoFormulaProblem : (tDSTitle) => {
+            return `Bootstrapping "${tDSTitle}" won't work because there are no formulas in the measures.`
         },
 
-        sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
-            return `Bootstrapping ${tAttName} won't work because it's not in the last collection (${lastCollName}). 
-                        Drop an attribute here from ${lastCollName}, such as ${suchAs}.`
+        sfOnlyInLeafProblem : (tDSTitle, lastCollName, suchAs) => {
+            return `Bootstrapping "${tDSTitle}" won't work because there are no formulas among the measures. 
+             Nothing will vary. Drag a formula attribute from the last collection ("${lastCollName}"), such as ${suchAs}.`
         },
 
     },
@@ -91,36 +90,36 @@ bootstrapStrings = {
         flags : ["🇲🇽", "🇪🇸", "🇨🇷"],
 
         staticStrings : {
-            bootstrapTitle : `mezcladora`,  //  bootstrap
+            bootstrapTitle : `reemplazo`,  //  bootstrap
             cantBootstrapStripe :  `Arreglar eso para continuar`,  //  `Fix that to proceed.`,
             howManyLabel :  `cuántos?` //  `how many?`,
         },
 
-        sBootstrap : `mezclar`,      //  `bootstrap`,
+        sOr : `o`,
+        sBootstrap : `reemplazo`,      //  `bootstrap`,
         sNoAttribute : `sin atributo :(`,
         sIterationAttName : `lote`,
         sIterationAttDescription : `Cuál "lote" de datos. Se aumenta cada mezclado.`,   //  `Which "run" of data. Increases every time you bootstrap.`,
         sBootstrappedAttName : `atr mezclado`,     //  `bootstrapped att`, (the name of the bootstrapped att)
         sBootstrappedAttDescription : `Qué atributo fue mezclado.`,
 
-        sNoDataset : `¡Busque un conjunto de datos y arrastre el atributo aquí que desea mezclar!`,
-        sNoBootstrapAttribute : `¿Qué atributo desea mezclar? Arrástrelo aquí. `,
+        sNoDataset : `¡Busque un conjunto de datos y arrastre un atributo aquí!`,
 
         sfOKtoBootstrap : (tDSTitle) => {
-            return  `OK para mezclar el conjunto de datos "${tDSTitle}"`},
+            return  `OK para hacer reemplazo en el conjunto de datos "${tDSTitle}"`},
 
         sfNoMeasure : (tDSTitle) => { return `Su conjunto de datos, "${tDSTitle}," necesita una medida, 
                 probablemente un atributo con fórmula. 
                 Arrastre eso atributo a la izquierda para obtener algo de acumular!`},
 
-        sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
-            return `Mezclar ${tAttName} no funcionará porque tiene una fórmula. 
-                        Arrastre un atributo diferente, de la última colección (${lastCollName}), por ejemplo ${suchAs}.`
+        sfNoFormulaProblem : (tDSTitle) => {
+            return `Reemplazar en "${tDSTitle}" no funcionará porque no hay fórmulas en sus medidas.`
         },
 
-        sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
-            return `Mezclar ${tAttName} no funcionará porque no está en la última colleción (${lastCollName}). 
-                        Ponga un atributo aquí de la colección ${lastCollName}, por ejemplo ${suchAs}.`
+        sfOnlyInLeafProblem : (tDSTitle, lastCollName, suchAs) => {
+            return `Reemplazar en "${tDSTitle}" no funcionará porque no hay fórmulas en sus medidas. 
+             Nada puede cambiar! 
+             Ponga un atributo aquí de la colección "${lastCollName}" que tiene una fórmula, por ejemplo ${suchAs}.`
         }
     },
 

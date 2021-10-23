@@ -16,7 +16,7 @@ body {
     margin : 0;
     padding : 0;
     color : #333;
-    font-family: "Helvetica Neue", Verdana, sans-serif;
+    font-family: "Sirin Stencil",sans-serif;
     font-size: small;
     min-height: 100vh;      /* make <body> fill the plugin */
     /*background: linear-gradient(#dde, #aab );*/
@@ -41,6 +41,7 @@ html {
 
 h1 {
     font-size: large;
+    font-family : Verdana, sans-serif;
 }
 
 button {
