@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19755bc8-f6f9-4fa0-b1ae-8cf2978f555f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,6 +104,7 @@
       <updated>1634438286195</updated>
       <workItem from="1634438289045" duration="1755000" />
       <workItem from="1634523910394" duration="1871000" />
+      <workItem from="1634999435986" duration="3678000" />
     </task>
     <servers />
   </component>

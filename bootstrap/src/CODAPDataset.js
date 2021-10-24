@@ -322,10 +322,7 @@ class CODAPDataset {
     async emitDatasetStructureOnly() {
 
         //  Does it already exist? Delete it.
-        await codapInterface.sendRequest({
-            action: "delete",
-            resource: `dataContext[${this.datasetName}]`,
-        })
+        await connect.deleteDataset(this.datasetName);
 
         //  okay, now make a new one...
         //  we'll loop over the collections and use their info to build the request
@@ -377,7 +374,6 @@ class CODAPDataset {
             resource: `dataContext`,
             values: theValues,
         })
-
     }
 
     async emitItems(iAppend, iValues) {

@@ -42,7 +42,7 @@ const bootstrap = {
             const codeEnd = "</code>";
 
             const dsReport = (this.sourceDataset)
-                ? `${this.sourceDataset.datasetName}`
+                ? `${this.sourceDataset.structure.title}`
                 : bootstrap.strings.sNoDataset;
 
             document.getElementById("datasetReport").innerHTML = dsReport;
@@ -159,15 +159,19 @@ const bootstrap = {
 
     /**
      * Clone the "source" dataset to make a new one, which will get bootstrapped.
+     * If the measures are "dirty" (structure changed) this dataset will have been deleted in CODAP
      * Note: it doesn't get bootstrapped in this method!
      * (called from `doBootstrap()`)
      *
      * @returns {Promise<*>}
      */
-    makeNewBootstrappedDataset: async function () {
+    prepareBootstrappedDataset: async function () {
+        //  the INTERNAL (not CODAP) structure of the dataset (a `CODAPDataset`)
         const theBootstrappedOne = this.sourceDataset.clone(bootstrap.constants.bootstrapPrefix);
-        await theBootstrappedOne.emitDatasetStructureOnly();
 
+        if (bootstrap.state.dirtyMeasures) {
+            await theBootstrappedOne.emitDatasetStructureOnly();        //  deletes first. don't need cases; they'll come later
+        }
         console.log(`cloned to get [${theBootstrappedOne.datasetName}] for bootstrapping`);
 
         return theBootstrappedOne;
@@ -180,22 +184,31 @@ const bootstrap = {
      *
      * @returns {Promise<*>}    of a CODAPDataset, which is the Measures dataset
      */
-    makeNewMeasuresDataset: async function () {
+    prepareMeasuresDataset: async function () {
 
-        let theMeasures = null;
+        let theMeasures = this.measuresDataset;
 
-        const tMeasuresDatasetName = `${bootstrap.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+        if ( bootstrap.state.dirtyMeasures) {
+            //  make an entirely new measures dataset
+            theMeasures = this.sourceDataset.clone(bootstrap.constants.measuresPrefix);
+            theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
+            await theMeasures.emitDatasetStructureOnly();
+            console.log(`    [${theMeasures.datasetName}] created anew`);
 
+        } else {
+            //  the measures setup has not changed, so we don't worry about it
+        }
+
+        //  const tMeasuresDatasetName = `${bootstrap.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+
+/*
         if (await connect.datasetExists(tMeasuresDatasetName)) {
             theMeasures = await new CODAPDataset(tMeasuresDatasetName);
             await theMeasures.retrieveAllDataFromCODAP();
             console.log(`    [${tMeasuresDatasetName}] already exists`);
         } else {
-            theMeasures = this.sourceDataset.clone(bootstrap.constants.measuresPrefix);
-            theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
-            await theMeasures.emitDatasetStructureOnly();
-            console.log(`    [${tMeasuresDatasetName}] created anew`);
         }
+*/
 
         return theMeasures;
     },
@@ -221,7 +234,7 @@ const bootstrap = {
 
         bootstrap.state.iteration++;
 
-        await codapInterface.updateInteractiveState(this.state);    //  force storage
+        await codapInterface.updateInteractiveState(this.state);    //  force storage, so state is remembered
 
         console.log(`*** going to bootstrap. State: ${JSON.stringify(bootstrap.state)}`);
         //  await this.refreshAllData();      //  get a new setup every time we press bootstrap.
@@ -230,19 +243,16 @@ const bootstrap = {
         await this.sourceDataset.retrieveAllDataFromCODAP();
         console.log(`    data retrieved. Ready to bootstrap.`);
 
-        if (this.measuresDataset && bootstrap.state.dirtyMeasures) {
-            await connect.deleteDataset(this.measuresDataset.datasetName);
-            console.log(`    deleted a dirty measures dataset`);
-        }
-        this.measuresDataset = await this.makeNewMeasuresDataset();
+        //  delete the derived datasets in CODAP if dirty
+        this.measuresDataset = await this.prepareMeasuresDataset();
+        this.bootstrappedDataset = await this.prepareBootstrappedDataset();    // structure, with cases
         bootstrap.state.dirtyMeasures = false;
 
-        let newItems = [];
 
         //  actual bootstrap here
-        this.bootstrappedDataset = await bootstrap.makeNewBootstrappedDataset();    // structure, with cases
+        let newItems = [];
         for (let i = 0; i < nReps; i++) {
-            //  remake with fresh cases, includes emitting to CODAP so it can calculate measures
+            //  refresh with fresh cases, includes emitting to CODAP so it can calculate measures
             await this.bootstrappedDataset.bootstrapCasesFrom(this.sourceDataset);
 
             //  now collect the measures

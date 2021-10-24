@@ -68,7 +68,7 @@ bootstrapStrings = {
         sNoDataset : `Find a dataset you want to bootstrap, and drag an attribute here!`,
 
         sfOKtoBootstrap : (tDSTitle) => {
-            return  `OK to bootstrap dataset "${tDSTitle}"`},
+            return  `Sample with replacement from "${tDSTitle}"`},
 
         sfNoMeasure : (tDSTitle) => { return `Your dataset, "${tDSTitle}," needs a measure, 
                 which is probably an attribute with a formula. 
@@ -106,7 +106,7 @@ bootstrapStrings = {
         sNoDataset : `¡Busque un conjunto de datos y arrastre un atributo aquí!`,
 
         sfOKtoBootstrap : (tDSTitle) => {
-            return  `OK para hacer reemplazo en el conjunto de datos "${tDSTitle}"`},
+            return  `Muestre con reemplazo del conjunto de datos "${tDSTitle}"`},
 
         sfNoMeasure : (tDSTitle) => { return `Su conjunto de datos, "${tDSTitle}," necesita una medida, 
                 probablemente un atributo con fórmula. 
