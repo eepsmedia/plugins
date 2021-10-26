@@ -36,6 +36,11 @@ li {
     margin-bottom: 0.5em;
 }
 
+.helpart {
+    width: 50%;
+    height: 50%;
+}
+
 p, li {
     line-height: 1.5;
     font-family: Georgia, serif;
