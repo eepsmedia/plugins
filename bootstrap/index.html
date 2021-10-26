@@ -1,0 +1,103 @@
+<!--
+    local just this: http://localhost/plugins/bootstrap/
+    local in local codap :
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/bootstrap
+
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bootstrap 2021</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
+
+    <link rel='stylesheet' type='text/css' href='css/bootstrap.css'/>
+
+    <!-- These scripts take care of the communication with CODAP  -->
+
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+
+    <script src="src/bootstrap.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/CODAPDataset.js"></script>
+    <script src="src/notifications.js"></script>
+    <script src="src/strings/strings.js"></script>
+
+    <!--
+        <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    -->
+
+</head>
+
+<body id="entire-bootstrap" class="body-no-drag">
+<div class="bootstrap-stripe">
+    <div class="stripe-element"><h1 id="bootstrapTitle">bootstrap</h1></div>
+    <div>
+        <img class="stripe-element roundButton"
+             src="../../common/art/refresh-empty.png"
+             onclick="bootstrap.handleBigRefresh()"
+             title="Click to refresh the data"
+             alt="refresh icon"
+        >
+    </div>
+    <!--
+        help button
+    -->
+    <div class="stripe-element">
+        <img src="../../common/art/info.png" alt="info"
+             title="Click for detailed help" class="roundButton"
+             onclick="bootstrap.openHelp()">
+    </div>
+
+    <div class="stripe-element" id="datasetReport"></div>
+    <div class="stripe-element" id="languageControl" onclick="bootstrap.changeLanguage()"></div>
+
+</div>
+
+<div class="bootstrap-stripe" id="bootstrapStatus">
+</div>
+
+<div class="bootstrap-stripe" id="how-many-stripe">
+    <label class="stripe-element" for="howManyBox" id="howManyLabel">how many? </label>
+    <input type="number"
+           class="stripe-element"
+           id="howManyBox"
+           value="10"
+           min="1"
+           max="1000"
+           oninput="bootstrap.handleUIChoice()">
+
+    <div class="stripe-element" id="bootstrap-buttons-stripe-element">
+        <button class="stripe-element" id="howManyButton"
+                onclick="bootstrap.doBootstrap()">I
+        </button>
+
+        <button class="stripe-element"
+                onclick="bootstrap.doBootstrap(1)">1x
+        </button>
+
+    </div>
+
+    <div id="progress"></div>
+
+</div>
+
+<div class="bootstrap-stripe" id="cantBootstrapStripe">
+
+</div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        bootstrap.initialize();
+    }
+</script>
+
+</html>

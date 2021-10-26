@@ -8,40 +8,40 @@
     --bg-bottom-color : #234;
     --main-text-color : #cde;
     --main-bg-color : #bcd;
-    --drag-bg-color : #def;
+    --light-bg-color : #cde;
 
 }
 
 body {
     margin : 0;
-    padding : 0;
+    padding : 1.5em;
+    width: 45.0em;
     color : #333;
-    font-family: "Sirin Stencil",sans-serif;
+    font-family: "Helvetica Neue", Verdana, sans-serif;
     font-size: small;
-    min-height: 100vh;      /* make <body> fill the plugin */
-    /*background: linear-gradient(#dde, #aab );*/
-}
+    background-color: var(--light-bg-color);;
 
-#languageControl {
-    font-size: larger;
-}
-
-.body-no-drag {
-    background-color: var(--main-bg-color);;
-
-}
-
-.body-drag {
-    background-color: var(--drag-bg-color);;
 }
 
 html {
     background-color: var(--main-bg-color);;
 }
 
+code {
+    font-family: Consolas, Menlo, monospace;
+    font-weight: bold;
+    color: darkblue;
+}
+li {
+    margin-bottom: 0.5em;
+}
+
+p, li {
+    line-height: 1.5;
+    font-family: Georgia, serif;
+}
 h1 {
     font-size: large;
-    font-family : Verdana, sans-serif;
 }
 
 button {
@@ -51,8 +51,8 @@ button {
     border-radius: 0.5em;
 }
 
-.scrambler-stripe {
-    padding: .3em 1em .3em 1em;
+.bootstrap-stripe {
+    padding: .3em 0 .3em 1em;
     min-height: 1.5em;
     display: flex;
     align-items: center;
@@ -61,10 +61,9 @@ button {
 
 .stripe-element {
     margin-right: 1em;
-    cursor: pointer;
 }
 
-.scrambler-swal {
+.bootstrap-swal {
     height : 100%;
 }
 
