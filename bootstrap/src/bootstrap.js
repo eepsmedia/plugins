@@ -9,6 +9,7 @@ const bootstrap = {
 
     datasetExists: false,
     datasetHasMeasure: false,
+    measureHasFormula : false,
 
     state: {},
 
@@ -49,6 +50,7 @@ const bootstrap = {
 
             if (this.datasetHasMeasure) {
                 const formulaSituation = bootstrap.sourceDataset.checkForFormulasInCollections(); //  this is an object
+                bootstrap.measureHasFormula = formulaSituation.beforeLeaves.length > 0;
                 console.log(`bootstrap status for ${this.sourceDataset.datasetName}: possible meas = ${formulaSituation.beforeLeaves.length} and leafForms = ${formulaSituation.inLeaves.length}`)
                 if (formulaSituation.beforeLeaves.length === 0) {
                     if (formulaSituation.inLeaves.length === 0) {
@@ -87,8 +89,6 @@ const bootstrap = {
      * Makes a `CODAPDataset` filled with the information from the CODAP dataset of the given name.
      * This thing will be the root of the bootstrapping we do.
      *
-     * Also sets a good value for the bootstrapping attribute.
-     *
      * @param iName     the name of the dataset
      * @returns {Promise<void>}
      */
@@ -126,15 +126,23 @@ const bootstrap = {
     },
 
     copeWithAttributeDrop: async function (iDataset, iAttribute) {
-        console.log(`Bootstrap in dataset ${iDataset}`);
+        console.log(`Bootstrap attribute drop from dataset ${iDataset}`);
 
         await bootstrap.setSourceDataset(iDataset);
 
         if (this.sourceDataset && (iDataset != this.sourceDataset.datasetName)) {
             //  changing the dataset
+            console.log(`    changing dataset from ${this.sourceDataset.datasetName}`)
         }
 
         this.refreshUIDisplay();
+    },
+
+    /**
+     * Sets UI values for the bootstrap attribute and the number of bootstraps to match the `state`.
+     */
+    matchUItoState: function () {
+        document.getElementById("howManyBox").value = Number(bootstrap.state.numberOfSamples);
     },
 
     /**
@@ -186,38 +194,29 @@ const bootstrap = {
      */
     prepareMeasuresDataset: async function () {
 
-        let theMeasures = this.measuresDataset;
 
-        if ( bootstrap.state.dirtyMeasures) {
+        let theMeasures;
+        const tMeasuresDatasetName = `${bootstrap.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+        const measuresAlreadyExists = await connect.datasetExists(tMeasuresDatasetName);
+
+        if ( measuresAlreadyExists && !bootstrap.state.dirtyMeasures ) {
+            //  the measures setup has not changed, so we don't worry about it
+            //  but we do have to fill its information from CODAP
+            theMeasures = await new CODAPDataset(tMeasuresDatasetName);
+            await theMeasures.retrieveAllDataFromCODAP();
+            console.log(`    [${tMeasuresDatasetName}] already exists. Got its info.`);
+        } else {
+            if (measuresAlreadyExists) {
+                connect.deleteDataset(tMeasuresDatasetName);
+            }
             //  make an entirely new measures dataset
             theMeasures = this.sourceDataset.clone(bootstrap.constants.measuresPrefix);
             theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
             await theMeasures.emitDatasetStructureOnly();
             console.log(`    [${theMeasures.datasetName}] created anew`);
-
-        } else {
-            //  the measures setup has not changed, so we don't worry about it
         }
-
-        //  const tMeasuresDatasetName = `${bootstrap.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
-
-/*
-        if (await connect.datasetExists(tMeasuresDatasetName)) {
-            theMeasures = await new CODAPDataset(tMeasuresDatasetName);
-            await theMeasures.retrieveAllDataFromCODAP();
-            console.log(`    [${tMeasuresDatasetName}] already exists`);
-        } else {
-        }
-*/
 
         return theMeasures;
-    },
-
-    /**
-     * Sets UI values for the bootstrap attribute and the number of bootstraps to match the `state`.
-     */
-    matchUItoState: function () {
-        document.getElementById("howManyBox").value = Number(bootstrap.state.numberOfSamples);
     },
 
     /**
@@ -228,7 +227,7 @@ const bootstrap = {
     doBootstrap: async function (iReps) {
 
         this.currentlyBootstrapping = true;
-        this.refreshUIDisplay();
+        //  this.refreshUIDisplay();
 
         const nReps = iReps ? iReps : bootstrap.state.numberOfSamples;
 
@@ -304,17 +303,19 @@ const bootstrap = {
         buttons.style.display = this.currentlyBootstrapping ? "none" : "flex";
         progress.style.display = this.currentlyBootstrapping ? "flex" : "none";
 
-        const canBootstrap = this.datasetExists && this.datasetHasMeasure;
+
+        //  set the language control
+        document.getElementById("languageControl").innerHTML = bootstrap.pickAFlag();        //  theFlag;
+
+        this.refreshBootstrapperStatus();
+
+        const canBootstrap = this.datasetExists && this.datasetHasMeasure && this.measureHasFormula;
         const canDoBootstrapStripe = document.getElementById("how-many-stripe");
         const cantDoBootstrapStripe = document.getElementById("cantBootstrapStripe");
 
         canDoBootstrapStripe.style.display = canBootstrap ? "flex" : "none";
         cantDoBootstrapStripe.style.display = canBootstrap ? "none" : "flex";
 
-        //  set the language control
-        document.getElementById("languageControl").innerHTML = bootstrap.pickAFlag();        //  theFlag;
-
-        this.refreshBootstrapperStatus();
     },
 
     changeLanguage: async function () {
@@ -347,7 +348,7 @@ const bootstrap = {
 
     constants: {
         pluginName: "bootstrap",
-        version: "0.9",
+        version: "11:45 pm",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             bootstrapDatasetName: null,
