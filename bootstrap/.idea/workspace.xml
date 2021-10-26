@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d1309e3-3cf5-48d2-b572-8fd6408f2bcc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/help/art/bootstrap-data-table.png" beforeDir="false" afterPath="$PROJECT_DIR$/help/art/bootstrap-data-table.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/help/art/bootstrap-measures.png" beforeDir="false" afterPath="$PROJECT_DIR$/help/art/bootstrap-measures.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/help/art/bootstrap-plugin-basic.png" beforeDir="false" afterPath="$PROJECT_DIR$/help/art/bootstrap-plugin-basic.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/help/bootstrap-help.css" beforeDir="false" afterPath="$PROJECT_DIR$/help/bootstrap-help.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/help/help.en.html" beforeDir="false" afterPath="$PROJECT_DIR$/help/help.en.html" afterDir="false" />
     </list>
@@ -42,7 +39,7 @@
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
@@ -109,7 +106,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1635261008993</updated>
-      <workItem from="1635261012790" duration="6316000" />
+      <workItem from="1635261012790" duration="6890000" />
     </task>
     <task id="LOCAL-00001" summary="V 11:45 pm. Working better, measures collection doesn't get remade every. single. time.">
       <created>1635267917759</created>
@@ -118,7 +115,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635267917760</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="V 11:45 pm. Help updated with new text and graphics.">
+      <created>1635270258940</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1635270258940</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -129,6 +133,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="V 11:45 pm. Working better, measures collection doesn't get remade every. single. time." />
-    <option name="LAST_COMMIT_MESSAGE" value="V 11:45 pm. Working better, measures collection doesn't get remade every. single. time." />
+    <MESSAGE value="V 11:45 pm. Help updated with new text and graphics." />
+    <option name="LAST_COMMIT_MESSAGE" value="V 11:45 pm. Help updated with new text and graphics." />
   </component>
 </project>
