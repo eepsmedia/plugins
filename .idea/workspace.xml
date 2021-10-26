@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="fd40b128-64af-49a6-b2a9-f40390721b15" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/arbor/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/texty/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/texty/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +63,7 @@
       <workItem from="1633967940163" duration="13000" />
       <workItem from="1633967995985" duration="9000" />
       <workItem from="1634247618659" duration="782000" />
-      <workItem from="1634439135220" duration="827000" />
+      <workItem from="1634439135220" duration="2101000" />
     </task>
     <servers />
   </component>
@@ -81,11 +81,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="306" y="166" key="NewModule_or_Project.wizard" timestamp="1616434562299">
-      <screen x="0" y="25" width="1440" height="875" />
-    </state>
-    <state x="306" y="166" key="NewModule_or_Project.wizard/0.25.1440.875@0.25.1440.875" timestamp="1616434562299" />
   </component>
 </project>
