@@ -37,6 +37,11 @@ class CODAPDataset {
         }
     }
 
+    /**
+     * Gets information on how many attributes have formulas in each collection.
+     * @returns {{inLeaves: *[], beforeLeaves: *[]}} The numbers of formula attributes in the _last_ collection,
+     * and then in all other collections (i.e., _measures_ collections) combined
+     */
     checkForFormulasInCollections( ) {
         console.log(`checking for formulas in ${this.datasetName}`);
         const lastCollection = this.structure.collections[this.structure.collections.length - 1];
@@ -66,6 +71,10 @@ class CODAPDataset {
         };
     }
 
+    /**
+     * Get an Array containing all attribute names, from all collections.
+     * @returns {*[]}
+     */
     allAttributeNames() {
         let out = [];
         this.structure.collections.forEach((c) => {
@@ -117,7 +126,7 @@ class CODAPDataset {
                 resource: theResource,
                 values: theValues,
             });
-            console.log(`    done with a bootstrap (${theValues.length}), success? ${emitBootstrapSampleResult.success}`);
+            //  console.log(`    done with a bootstrap (${theValues.length}), success? ${emitBootstrapSampleResult.success}`);
         } catch (msg) {
             bootstrap.doAlert("oops!", `Error updating a bootstrap! ${msg}`, "error");
         }

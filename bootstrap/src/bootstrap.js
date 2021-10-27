@@ -193,8 +193,6 @@ const bootstrap = {
      * @returns {Promise<*>}    of a CODAPDataset, which is the Measures dataset
      */
     prepareMeasuresDataset: async function () {
-
-
         let theMeasures;
         const tMeasuresDatasetName = `${bootstrap.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
         const measuresAlreadyExists = await connect.datasetExists(tMeasuresDatasetName);
@@ -206,8 +204,8 @@ const bootstrap = {
             await theMeasures.retrieveAllDataFromCODAP();
             console.log(`    [${tMeasuresDatasetName}] already exists. Got its info.`);
         } else {
-            if (measuresAlreadyExists) {
-                connect.deleteDataset(tMeasuresDatasetName);
+            if (measuresAlreadyExists) {    //  therefore, the measures are dirty and we need to reconstruct them
+                connect.deleteDataset(tMeasuresDatasetName);    //  todo: necessary? emitDataset... (below) starts with a delete.
             }
             //  make an entirely new measures dataset
             theMeasures = this.sourceDataset.clone(bootstrap.constants.measuresPrefix);
@@ -227,7 +225,7 @@ const bootstrap = {
     doBootstrap: async function (iReps) {
 
         this.currentlyBootstrapping = true;
-        //  this.refreshUIDisplay();
+        this.refreshUIDisplay();    //  sets progress to visible
 
         const nReps = iReps ? iReps : bootstrap.state.numberOfSamples;
 
@@ -287,6 +285,9 @@ const bootstrap = {
      * Set the values in the UI (menu choices, number in a box) to match the state.
      * Also sets the text on the bootstrap button to **42x** or whatever.
      *
+     * Then, sets visibility of various parts of the UI depending on
+     * whether the dataset is appropriate for bootstrapping
+     *
      */
     refreshUIDisplay: function () {
         console.log(`    refreshing UI display`);
@@ -303,7 +304,6 @@ const bootstrap = {
         buttons.style.display = this.currentlyBootstrapping ? "none" : "flex";
         progress.style.display = this.currentlyBootstrapping ? "flex" : "none";
 
-
         //  set the language control
         document.getElementById("languageControl").innerHTML = bootstrap.pickAFlag();        //  theFlag;
 
@@ -318,12 +318,21 @@ const bootstrap = {
 
     },
 
+    /**
+     * Change to a different language.
+     * @returns {Promise<void>}
+     */
     changeLanguage: async function () {
         bootstrap.state.lang = (bootstrap.state.lang === `en`) ? `es` : `en`;
         bootstrap.strings = await bootstrapStrings.initializeStrings(this.state.lang);
+        bootstrap.state.dirtyMeasures = true;
         bootstrap.refreshUIDisplay();
     },
 
+    /**
+     * Return the (unicode?) flag, chosen randomly from the list of flags, an array
+     * @returns {*}
+     */
     pickAFlag: function () {
         const theFlags = bootstrap.strings.flags;
         const theIndex = Math.floor(Math.random() * theFlags.length);
@@ -334,6 +343,10 @@ const bootstrap = {
         alert(iText);
     },
 
+    /**
+     * Open the help web page
+     * @returns {Promise<void>}
+     */
     openHelp : async function() {
         const theURL = `help/help.${bootstrap.state.lang}.html`;
         const response = await fetch(theURL);
@@ -348,8 +361,8 @@ const bootstrap = {
 
     constants: {
         pluginName: "bootstrap",
-        version: "11:45 pm",
-        dimensions: {height: 178, width: 344},      //      dimensions,
+        version: "1.0",
+        dimensions: {height: 211, width: 344},      //      dimensions,
         defaultState: {
             bootstrapDatasetName: null,
             numberOfSamples: 10,
@@ -363,17 +376,3 @@ const bootstrap = {
     },
 }
 
-/**
- * Bootstrap the values in the array. Defined at the bottom of `bootstrap.js`.
- Array.prototype.bootstrap = function () {
-    const N = this.length;
-
-    for (let i = 0; i < N; i++) {
-        const other = Math.floor(Math.random() * N);
-        const temp = this[i];
-        this[i] = this[other];
-        this[other] = temp;
-    }
-};
-
- */

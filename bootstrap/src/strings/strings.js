@@ -80,7 +80,7 @@ bootstrapStrings = {
 
         sfOnlyInLeafProblem : (tDSTitle, lastCollName, suchAs) => {
             return `Bootstrapping "${tDSTitle}" won't work because there are no formulas among the measures. 
-             Nothing will vary. Drag a formula attribute from the last collection ("${lastCollName}"), such as ${suchAs}.`
+             Nothing will vary. Drag a formula attribute leftwards from the last collection ("${lastCollName}"), such as ${suchAs}.`
         },
 
     },
@@ -117,9 +117,10 @@ bootstrapStrings = {
         },
 
         sfOnlyInLeafProblem : (tDSTitle, lastCollName, suchAs) => {
-            return `Reemplazar en "${tDSTitle}" no funcionará porque no hay fórmulas en sus medidas. 
-             Nada puede cambiar! 
-             Ponga un atributo aquí de la colección "${lastCollName}" que tiene una fórmula, por ejemplo ${suchAs}.`
+            return `Reemplazar en "${tDSTitle}" no funcionará porque sus medidas no tienen fórmulas. 
+             ¡Nada puede cambiar! 
+             Arrastre un atributo con fórmula (por ejemplo ${suchAs})
+             desde la colección "${lastCollName}" hasta la izquierda.`
         }
     },
 
