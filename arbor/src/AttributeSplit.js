@@ -165,7 +165,7 @@ AttributeSplit.prototype.switchCategory = function(iCat) {
 
     this.oneBoolean = this.constructCategoricalFilter("L");    //  make sure our filter is correct!
 
-    arbor.dispatchTreeEvent(new Event("changeTree"));   //  results in a redraw of the tree VIEW.
+    arbor.dispatchTreeChangeEvent("change of category assignment");
 };
 
 

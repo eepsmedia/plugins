@@ -55,7 +55,7 @@ const arbor = {
     strings : null,         //  the actual strings
     analysis: null,        //      connects to CODAP
     treePanelView: null,
-    corralView: null,
+    //  corralView: null,
     attsInBaum: [],         //  the array of all the attributes in the tree
 
     focusNode: null,       //  currently-selected node
@@ -67,10 +67,10 @@ const arbor = {
     dependentVariableBoolean: ["true"],
     informalDVBoolean: "all",
     informalDVBooleanReversed: "none",
-    dependentVariableSplit: null,
+    dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021e',
+        version: '2021f',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -104,6 +104,12 @@ const arbor = {
             'dataContextChangeNotice[' + arbor.constants.kRegressTreeDataSetName + ']',
             'selectCases',
             arbor.selectionManager.processCodapSelectionOfTreeCase
+        );
+
+        codapInterface.on(
+            'notify',
+            `dragDrop[attribute]`,
+            arbor.dropManager.handleDrop,
         );
 
         await codapInterface.init(this.iFrameDescription, null);
@@ -239,7 +245,7 @@ const arbor = {
      */
     handleTreeChange: function (iEvent) {
         if (typeof iEvent.why !== 'undefined') {
-            console.log(`handleTreeChange event to ${iEvent.why}`);
+            console.log(`handleTreeChange event: ${iEvent.why}`);
         } else {
             console.log(`handleTreeChange event for no discernible reason`);
         }
@@ -459,7 +465,7 @@ const arbor = {
         console.log("WINDOW resize to width: " + arbor.displayWidth());
 
         arbor.treePanelView.redrawEntirePanel();
-        arbor.corralView.refreshCorral();
+        //  arbor.corralView.refreshCorral();
     },
 
 
@@ -482,9 +488,9 @@ const arbor = {
 
         this.fixDependentVariableMechanisms();  //  sets appropriate label text
         focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
-        this.corralView = new CorralView();
+        //  this.corralView = new CorralView();
         this.treePanelView = new TreePanelView();  //  the main view.
-        this.corralView.refreshCorral();
+        //  this.corralView.refreshCorral();
         arbor.ui.updateConfusionMatrix();
     },
 
@@ -520,11 +526,7 @@ const arbor = {
      */
     changeToNewDependentVariable: function (iAttributeName) {
         this.setDependentVariableByName(iAttributeName);
-        var tEvent = new Event("changeTree");
-        tEvent.why = "new dependent variable";
-        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
-
-        //  this.treePanelView.makeDependentVariable(theAttribute);
+        arbor.dispatchTreeChangeEvent("new dependent variable");
     },
 
     /**
@@ -741,6 +743,12 @@ const arbor = {
         }.bind(this));
     },
 
+    dispatchTreeChangeEvent : function(iWhy) {
+        let tEvent = new Event("changeTree");
+        tEvent.why = iWhy;
+        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+    },
+
     dispatchTreeEvent: function (iEvent) {
         this.eventDispatcher.dispatchEvent(iEvent);
     },
@@ -759,15 +767,15 @@ const arbor = {
  */
 arbor.constants = {
     nodeWidth: 100,
-    nodeHeightInCorral: 20,
+   // nodeHeightInCorral: 20,
     connectorLineLowerOffset: 5,
-    corralCornerRadius: 4,
+    //  corralCornerRadius: 4,
     fullNodeHeight: 80,
     stopNodeHeight: 30,
 
     attrWidth: 80,
     attrHeight: 20,
-    corralHeight: 40,
+    //  corralHeight: 40,
     treeObjectPadding: 8,
     treeLineLabelHeight: 20,
 
@@ -799,7 +807,7 @@ arbor.constants = {
     nodeValueLabelColor: "white",
     nodeAttributeLabelColor: "#88f",
 
-    corralBackgroundColor: "#abc",
+    //  corralBackgroundColor: "#abc",
     panelBackgroundColor: "#cde",
 
     attributeColors: ["#55f", "#77f", '#33f', "#369", "#39a", "#69a", "#57a", "#66a", "#66f", "#55e", "#44d", "#55c"],
@@ -832,7 +840,7 @@ arbor.constants = {
     },
 
     kTreePanelDOMName: "treePaper",
-    kCorralDOMName: "corral"
+    //  kCorralDOMName: "corral"
 
 
 };

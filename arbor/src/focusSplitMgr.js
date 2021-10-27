@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-var focusSplitMgr = {
+const focusSplitMgr = {
 
     theSplit: null,
     leftCategoryZoneSelector: "#leftCategoryButtons",
@@ -43,10 +43,12 @@ var focusSplitMgr = {
 
         //  set visibility of relevant DOM elements in the configuration section
 
-        var el_cont = document.getElementById("continuousAttributeConfiguration");
-        var el_cate = document.getElementById("categoricalAttributeConfiguration");
+        const el_cont = document.getElementById("continuousAttributeConfiguration");
+        const el_cate = document.getElementById("categoricalAttributeConfiguration");
         el_cont.style.display = (this.theSplit.isCategorical) ? "none" : "table-row";
         el_cate.style.display = (this.theSplit.isCategorical) ? "table-row" : "none";
+
+        this.displayAttributeConfiguration();
 
         console.log("Focusing on split:  {" + this.theSplit + "}");
 
@@ -62,26 +64,24 @@ var focusSplitMgr = {
      */
 
     changeFocusSplitValues: function () {
-        var tName = this.theSplit.attName;
+        const tName = this.theSplit.attName;
 
         //  tell the attribute to remember this particular split as its default.
 
-        var tAtt = arbor.getAttributeByName(tName);
+        const tAtt = arbor.getAttributeByName(tName);
         tAtt.saveSplit(this.theSplit);
 
         //  force a redraw
 
-        var tEvent = new Event("changeTree");
-        tEvent.why = "change of a split value";
-        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+        arbor.dispatchTreeChangeEvent("change of a split value");
+
     },
 
     changeCurrentSplitTypeUsingMenu: function () {
-        var tName = this.theSplit.attName;
-        var tSplitType = $("#currentSplitTypeMenu").find('option:selected').val();
+        const tName = this.theSplit.attName;
+        const tSplitType = $("#currentSplitTypeMenu").find('option:selected').val();
         this.theSplit.isCategorical = (tSplitType === "categorical");
-        var tEvent = new Event("changeTree");
-        arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
+        arbor.dispatchTreeChangeEvent("changing split type");
     },
 
     /**
