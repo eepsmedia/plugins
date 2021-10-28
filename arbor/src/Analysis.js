@@ -81,7 +81,7 @@ Analysis.prototype.getStructureAndData = async function () {
         const tDataContextNames = TEEUtils.getListOfOneFieldInArrayOfObjects(this.dataContexts, "name");
         if (tDataContextNames.indexOf(this.currentDataContextName) < 0) {
             console.log("Data Context [" + this.currentDataContextName + "] not found in list of DCs");
-            this.specifyCurrentDataContext(this.dataContexts[0].name);
+            this.specifyCurrentDataContext(this.dataContexts[0].name);  //  take the first one. This has to go!
         }
         this.host.gotDataContextList(this.dataContexts);
         //  const tArg = {action: "get", resource: "dataContext[" + this.currentDataContextName + "].collectionList"};

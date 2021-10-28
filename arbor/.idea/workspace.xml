@@ -6,17 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2021f. Arbor now accepts drags of attributes from CODAP">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Analysis.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/dropManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/focusSplitMgr.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/focusSplitMgr.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arborCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arborCODAPConnector.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -25,6 +26,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/arborDragDrop" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -32,6 +36,9 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="o8jku9b5" />
   </component>
   <component name="ProjectId" id="1ySaHIlVsvUeFsYFYQt1JUETOoL" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -47,6 +54,8 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="go.formatter.settings.were.checked" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -69,6 +78,7 @@
       <workItem from="1633299160137" duration="3352000" />
       <workItem from="1633361666695" duration="1687000" />
       <workItem from="1634136396047" duration="17149000" />
+      <workItem from="1635385145595" duration="4233000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>

@@ -11,6 +11,29 @@ arbor.codapConnector = {
     gameNumber: 0,
 
     /**
+     * Does the named dataset already exist?
+     * @param iName
+     * @returns {Promise<void>}
+     */
+    datasetExists: async function (iName) {
+        let out = false;
+
+        const existMessage = {
+            action: "get",
+            resource: `dataContextList`,
+        }
+        const tListResult = await codapInterface.sendRequest(existMessage);
+        if (tListResult.success) {
+            tListResult.values.forEach((ds) => {
+                if (ds.name === iName) {
+                    out = true;
+                }
+            })
+        }
+        return out;
+    },
+
+    /**
      * Emit a "tree" case.
      * @param iValues   the case values
      */

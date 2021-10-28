@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d1309e3-3cf5-48d2-b572-8fd6408f2bcc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/Analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/Analysis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/arborCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/arborCODAPConnector.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/CODAPDataset.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/bootstrap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,10 +38,11 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
@@ -107,7 +109,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1635261008993</updated>
-      <workItem from="1635261012790" duration="10173000" />
+      <workItem from="1635261012790" duration="11992000" />
+      <workItem from="1635429477743" duration="671000" />
     </task>
     <task id="LOCAL-00001" summary="V 11:45 pm. Working better, measures collection doesn't get remade every. single. time.">
       <created>1635267917759</created>
@@ -130,7 +133,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635270890659</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="bootstrap 1.0">
+      <created>1635330258277</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1635330258277</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,9 +149,22 @@
   <component name="UpdateCopyrightCheckinHandler">
     <option name="UPDATE_COPYRIGHT" value="true" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="V 11:45 pm. Working better, measures collection doesn't get remade every. single. time." />
     <MESSAGE value="V 11:45 pm. Help updated with new text and graphics." />
-    <option name="LAST_COMMIT_MESSAGE" value="V 11:45 pm. Help updated with new text and graphics." />
+    <MESSAGE value="bootstrap 1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="bootstrap 1.0" />
   </component>
 </project>

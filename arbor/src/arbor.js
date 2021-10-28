@@ -40,7 +40,7 @@
  */
 
 /**
-for testing: http://localhost:8888/codap/static/dg/en/cert/index.html?di=http://localhost:8888/plugins/arbor/arbor.html
+for testing: http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/arbor/arbor.html
 
  */
 
@@ -82,6 +82,8 @@ const arbor = {
      */
     initialize: async function () {
 
+        await codapInterface.init(this.iFrameDescription, null);
+
         focusSplitMgr.showHideAttributeConfigurationSection("hide");
 
         this.eventDispatcher = new EventDispatcher();
@@ -112,7 +114,6 @@ const arbor = {
             arbor.dropManager.handleDrop,
         );
 
-        await codapInterface.init(this.iFrameDescription, null);
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
         await arbor.getAndRestoreViews();   //
 
@@ -122,11 +123,8 @@ const arbor = {
         arbor.redisplay();
     },
 
-    createOutputDatasets : async function() {
-
-        //  delete any existing ones
-
-        tDeleteRequest = [
+    deleteBothOutputDatasets : async function() {
+        const tDeleteRequest = [
             {
                 action : "delete",
                 resource : `dataContext[${arbor.constants.kClassTreeDataSetName}]`,
@@ -142,6 +140,18 @@ const arbor = {
         } catch (msg) {
             console.log(`trouble deleting datasets: ${msg}`);
         }
+
+    },
+
+    createOutputDatasets : async function() {
+
+        if (await arbor.codapConnector.datasetExists(arbor.constants.kClassTreeDataSetName) ||
+            await arbor.codapConnector.datasetExists(arbor.constants.kRegressTreeDataSetName)) {
+            return;
+        }
+
+        //  delete any existing ones
+        await this.deleteBothOutputDatasets();
 
         //  now initialize the "output" data context(s)
 
