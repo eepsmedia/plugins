@@ -686,6 +686,7 @@ const arbor = {
         arbor.state.lang = strings.nextLanguage(arbor.state.lang);
         arbor.strings = await strings.initializeStrings(arbor.state.lang);
 
+        await this.deleteBothOutputDatasets();  //  because they have different attribute names
         await this.createOutputDatasets();
 
         this.redisplay();

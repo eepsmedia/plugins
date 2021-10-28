@@ -48,10 +48,10 @@ NodeBoxView = function (iNode, iZoneView) {
         console.log(`problem with setting the node tool tip: ${msg}`);
     }
 
-    //  handlers
+    //  mousedown handler
 
     this.paper.mousedown(function (iEvent) {
-        this.myZoneView.myPanel.lastMouseDownNodeView = this;
+        this.myZoneView.myPanel.lastMouseDownNodeView = this;   //  a.k.a. arbor.treePanelView.lastMouseDownNodeView
         console.log(`... mouse down in NodeBoxView node ${this.myNode.arborNodeID}`)
     }.bind(this));
 
@@ -61,7 +61,7 @@ NodeBoxView = function (iNode, iZoneView) {
 
 NodeBoxView.prototype.mouseUpHandler = function (iEvent) {
     console.log("    Mouse up in view for " + this.myNode.toString());
-    const tMouseDownPlace = arbor.corralView.lastMouseDownNodeView;
+    const tMouseDownPlace = arbor.treePanelView.lastMouseDownNodeView;
 
     if (tMouseDownPlace) {
         if (this === tMouseDownPlace) {     //  it's a click
@@ -69,14 +69,17 @@ NodeBoxView.prototype.mouseUpHandler = function (iEvent) {
                 console.log(`Mouse up (after mouse down) in ${this.myNode}`);
                 this.myNode.stubThisNode();
             }
+            //  todo: select the cases here!
         }
         //  it's not a click, we've dragged in from somewhere else...
 
         //  dragged in from the corral, so we branch the node by that attribute
+/*
         else if (tMouseDownPlace instanceof CorralAttView) {
             console.log("Dragged into " + this.myNode + " from " + tMouseDownPlace.labelText);
             this.myNode.branchThisNode(tMouseDownPlace.attInBaum);
         }
+*/
 
         //  dragged in from another node, so we branch it by THAT node's attribute, if it exists
         else if (tMouseDownPlace instanceof NodeBoxView) {
@@ -172,7 +175,7 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
     }
 
     if (tNoCases) {
-        const tStripe = new Stripe(this, {text: "no cases", textColor: "#696", bgColor: tDataBackgroundColor}, null);
+        const tStripe = new Stripe(this, {text: arbor.strings.sNoCases, textColor: "#696", bgColor: tDataBackgroundColor}, null);
         this.stripes.push(tStripe);
     } else {
 

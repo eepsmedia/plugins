@@ -87,6 +87,7 @@ strings = {
         sLeafNoDiagnosis: `You have not assigned a diagnosis yet. Click to assign!`,
         sMoreCategories: `more categories`,    //  used in the labels for links
         sNoCategories: `no categories`,    //  used in the labels for links
+        sNoCases :  `no cases`,
 
         //  tree and collection names
 
@@ -224,6 +225,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         sLeafNoDiagnosis: `Sie haben noch keine Diagnose zugeordnet. Zum Zuweisen klicken!`,
         sMoreCategories: `weitere Kategorien`,
         sNoCategories: `keine Kategorien`,
+        sNoCases :  `keine Fälle`,   //  `no cases`,
 
         //  tree and collection names
 
