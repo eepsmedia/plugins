@@ -60,6 +60,8 @@ strings = {
             "no-pred-head": `no prediction`,
             sOmitProportionLabel : `(none)`,
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
+            focusAttributeNameBoxLabel  : `label`,
+            focusAttributeValueBoxLabel  : `value`,    //  `val`,
 
             //  configuration panel
             sConfConfigure : `Configure`,
@@ -198,6 +200,8 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             "no-pred-head": `keine Vorhersage`,        //  todo: 2021-09-18 not appearing. Why not?
             sOmitProportionLabel : `(keine)`,
             sAutoOpenAttributeSplitLabel : `Attributkonfiguration automatisch öffnen`,
+            focusAttributeNameBoxLabel  : `Etikett`,    //  `label`,
+            focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
 
             //  configuration panel
             sConfConfigure : `Konfigurieren`,

@@ -40,7 +40,7 @@
  */
 
 /**
-for testing: http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/arbor/arbor.html
+ for testing: http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/arbor/arbor.html
 
  */
 
@@ -52,7 +52,7 @@ for testing: http://localhost/codap/static/dg/en/cert/index.html?di=http://local
 
 const arbor = {
 
-    strings : null,         //  the actual strings
+    strings: null,         //  the actual strings
     analysis: null,        //      connects to CODAP
     treePanelView: null,
     //  corralView: null,
@@ -123,15 +123,15 @@ const arbor = {
         arbor.redisplay();
     },
 
-    deleteBothOutputDatasets : async function() {
+    deleteBothOutputDatasets: async function () {
         const tDeleteRequest = [
             {
-                action : "delete",
-                resource : `dataContext[${arbor.constants.kClassTreeDataSetName}]`,
+                action: "delete",
+                resource: `dataContext[${arbor.constants.kClassTreeDataSetName}]`,
             },
             {
-                action : "delete",
-                resource : `dataContext[${arbor.constants.kRegressTreeDataSetName}]`,
+                action: "delete",
+                resource: `dataContext[${arbor.constants.kRegressTreeDataSetName}]`,
             }
         ]
         try {
@@ -143,7 +143,7 @@ const arbor = {
 
     },
 
-    createOutputDatasets : async function() {
+    createOutputDatasets: async function () {
 
         if (await arbor.codapConnector.datasetExists(arbor.constants.kClassTreeDataSetName) ||
             await arbor.codapConnector.datasetExists(arbor.constants.kRegressTreeDataSetName)) {
@@ -224,13 +224,15 @@ const arbor = {
 
         const tStateAsString = JSON.stringify(arbor.state);
 
-        let tValues = { state : tStateAsString};
+        let tValues = {state: tStateAsString};
 
         tValues[arbor.strings.sanPredict] = arbor.informalDVBoolean;    //  the informal expression of what is being predicted
-            tValues[arbor.strings.sanN] =  N;
-            tValues[arbor.strings.sanBaseRate] = (tRes.TP + tRes.FN + tRes.PU) / N;
-            tValues[arbor.strings.sanNodes] = tNodes;
-            tValues[arbor.strings.sanDepth] = tDepth;
+        tValues[arbor.strings.sanN] = N;
+        tValues[arbor.strings.sanBaseRate] = (tRes.TP + tRes.FN + tRes.PU) / N;
+        tValues[arbor.strings.sanNodes] = tNodes;
+        tValues[arbor.strings.sanDepth] = tDepth;
+        tValues[arbor.strings.staticStrings.focusAttributeNameBoxLabel] = document.getElementById(`focusAttributeNameBox`).value;
+        tValues[arbor.strings.staticStrings.focusAttributeValueBoxLabel] = document.getElementById(`focusAttributeValueBox`).value;
 
         if (arbor.state.treeType === arbor.constants.kRegressTreeType) {
             tValues[arbor.strings.sanSumSSD] = tSumSSD;
@@ -264,7 +266,7 @@ const arbor = {
     },
 
 
-    handleShowHideDiagnosisLeaves : function() {
+    handleShowHideDiagnosisLeaves: function () {
         arbor.state.oShowDiagnosisLeaves = document.getElementById("showDiagnosisLeaves").checked;
         arbor.refreshBaum('views');
     },
@@ -280,16 +282,16 @@ const arbor = {
     freshState: function () {
 
         return {
-            lang : "en",
+            lang: "en",
             treeType: arbor.constants.kClassTreeType,
             latestNodeID: 42,
             dependentVariableName: null,
             dependentVariableSplit: null,
             tree: null,
-            oNodeDisplayProportion : arbor.constants.kUsePercentageInNodeBox,
-            oNodeDisplayNumber : arbor.constants.kUseOutOfInNodeBox,
-            oAlwaysShowConfigurationOnSplit : false,
-            oShowDiagnosisLeaves : false,
+            oNodeDisplayProportion: arbor.constants.kUsePercentageInNodeBox,
+            oNodeDisplayNumber: arbor.constants.kUseOutOfInNodeBox,
+            oAlwaysShowConfigurationOnSplit: false,
+            oShowDiagnosisLeaves: false,
         }
     },
 
@@ -340,8 +342,8 @@ const arbor = {
      *
      * @returns {Promise<void>}
      */
-    matchUItoState : async function() {
-        arbor.strings =  await strings.initializeStrings(arbor.state.lang);
+    matchUItoState: async function () {
+        arbor.strings = await strings.initializeStrings(arbor.state.lang);
 
         //  now set the options
         switch (arbor.state.oNodeDisplayNumber) {
@@ -574,6 +576,12 @@ const arbor = {
             //  trigger the selection of the cases in that node
 
             arbor.selectionManager.selectCasesInNode(this.focusNode);
+
+            //  fill the boxes on the front page
+            //  leaves have no split, so clicking on a leaf should not affect these output values.
+            if (this.focusNode.attributeSplit) {
+                focusSplitMgr.displayFocusSplitValues();
+            }
         }
     },
 
@@ -682,7 +690,7 @@ const arbor = {
         this.analysis.specifyCurrentCollection($("#collectionMenu").find('option:selected').val());
     },
 
-    changeLanguage : async function() {
+    changeLanguage: async function () {
         arbor.state.lang = strings.nextLanguage(arbor.state.lang);
         arbor.strings = await strings.initializeStrings(arbor.state.lang);
 
@@ -711,7 +719,7 @@ const arbor = {
      * record those in the corresponding `state` members,
      * and redisplay.
      */
-    recordDisplayParams : function() {
+    recordDisplayParams: function () {
         arbor.state.oNodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
         arbor.state.oNodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
 
@@ -754,7 +762,7 @@ const arbor = {
         }.bind(this));
     },
 
-    dispatchTreeChangeEvent : function(iWhy) {
+    dispatchTreeChangeEvent: function (iWhy) {
         let tEvent = new Event("changeTree");
         tEvent.why = iWhy;
         arbor.dispatchTreeEvent(tEvent);   //  results in a redraw of the tree VIEW.
@@ -778,7 +786,7 @@ const arbor = {
  */
 arbor.constants = {
     nodeWidth: 100,
-   // nodeHeightInCorral: 20,
+    // nodeHeightInCorral: 20,
     connectorLineLowerOffset: 5,
     //  corralCornerRadius: 4,
     fullNodeHeight: 80,
@@ -831,17 +839,17 @@ arbor.constants = {
     kName: "arbor",
     kTitle: "Diagnostic Trees",
 
-    kClassTreeType : "classification",
-    kRegressTreeType : "regression",
+    kClassTreeType: "classification",
+    kRegressTreeType: "regression",
     kClassTreeDataSetName: "classTrees",
     kRegressTreeDataSetName: "regressTrees",
 
-    kUsePercentageInNodeBox : "percent",
-    kUseProportionInNodeBox : "proportion",
-    kOmitProportionInNodeBox : "noProportion",
-    kUseOutOfInNodeBox : "outOf",
-    kUseRatioInNodeBox : "ratio",
-    kUseFractionInNodeBox : "fraction",
+    kUsePercentageInNodeBox: "percent",
+    kUseProportionInNodeBox: "proportion",
+    kOmitProportionInNodeBox: "noProportion",
+    kUseOutOfInNodeBox: "outOf",
+    kUseRatioInNodeBox: "ratio",
+    kUseFractionInNodeBox: "fraction",
 
     buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",

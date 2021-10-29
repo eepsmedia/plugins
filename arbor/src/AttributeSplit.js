@@ -180,6 +180,7 @@ AttributeSplit.prototype.reverseContinuousExpression = function(iUseC) {
     return  (iUseC ? "c." : "" ) + this.attName + " " + AttributeSplit.operatorOpposites[this.operator] + " " + this.cutpoint;
 };
 
+
 /**
  * String representation of a split
  *

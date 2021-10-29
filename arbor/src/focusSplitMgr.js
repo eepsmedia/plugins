@@ -102,7 +102,22 @@ const focusSplitMgr = {
             this.theSplit.oneBoolean = this.theSplit.setCutPoint(tCut, $("#operatorMenu").find('option:selected').val());
         }
 
+        this.displayFocusSplitValues();
         this.changeFocusSplitValues();
+    },
+
+    displayFocusSplitValues : function() {
+        const theName = this.theSplit.attName;
+        const domName = document.getElementById("focusAttributeNameBox");
+        const domValue = document.getElementById("focusAttributeValueBox");
+
+        if (this.theSplit.isCategorical) {
+            domName.value = theName;
+            domValue.value = this.theSplit.leftCategories.join(", ");
+        } else {
+            domName.value = `${theName} ${this.theSplit.operator}`;
+            domValue.value = this.theSplit.cutpoint;
+        }
     },
 
     /**

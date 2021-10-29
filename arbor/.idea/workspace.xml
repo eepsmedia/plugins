@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2021f. Arbor now accepts drags of attributes from CODAP">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Analysis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arborCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arborCODAPConnector.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/focusSplitMgr.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/focusSplitMgr.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,7 +81,7 @@
       <workItem from="1633299160137" duration="3352000" />
       <workItem from="1633361666695" duration="1687000" />
       <workItem from="1634136396047" duration="17149000" />
-      <workItem from="1635385145595" duration="4233000" />
+      <workItem from="1635385145595" duration="11380000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
@@ -122,7 +125,21 @@
       <option name="project" value="LOCAL" />
       <updated>1634177017493</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="branch work to fix the problem where the existing tree records disappeared after about 0.25 sec">
+      <created>1635432477691</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1635432477691</updated>
+    </task>
+    <task id="LOCAL-00008" summary="two small bugs">
+      <created>1635433907139</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1635433907139</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -146,6 +163,8 @@
     <MESSAGE value="arbor 2021d. Better, more options including auto-open attribute config on drop." />
     <MESSAGE value="Configuration German text plus more documentation in README.md" />
     <MESSAGE value="2021f. Arbor now accepts drags of attributes from CODAP" />
-    <option name="LAST_COMMIT_MESSAGE" value="2021f. Arbor now accepts drags of attributes from CODAP" />
+    <MESSAGE value="branch work to fix the problem where the existing tree records disappeared after about 0.25 sec" />
+    <MESSAGE value="two small bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="two small bugs" />
   </component>
 </project>
