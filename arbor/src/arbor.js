@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021f',
+        version: '2021g',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -281,8 +281,22 @@ const arbor = {
      */
     freshState: function () {
 
+        //  find the user's favorite language that's actually in our list
+        const userLanguages = Navigator.languages;
+        let theLang = 'en';
+
+        userLanguages.reverse().forEach( (L) => {
+            console.log(`user has lang ${L}`);
+            const twoLetter = L.slice(0,2).toLowerCase();
+            if (arbor.strings.languages.includes(twoLetter)) {
+                theLang = twoLetter;
+                console.log(`    change lang to ${theLang}`);
+            }
+        })
+
+        //  here is the default state
         return {
-            lang: "en",
+            lang: theLang,
             treeType: arbor.constants.kClassTreeType,
             latestNodeID: 42,
             dependentVariableName: null,
@@ -291,7 +305,8 @@ const arbor = {
             oNodeDisplayProportion: arbor.constants.kUsePercentageInNodeBox,
             oNodeDisplayNumber: arbor.constants.kUseOutOfInNodeBox,
             oAlwaysShowConfigurationOnSplit: false,
-            oShowDiagnosisLeaves: false,
+            oShowDiagnosisLeaves: true,         //  default to show the leaves
+            oShowDiagnosisLeafControl : false,  //  default to hide the leaf control
         }
     },
 
@@ -498,11 +513,13 @@ const arbor = {
     redisplay: function () {
         console.log(`Redisplay (in arbor.js, ${arbor.strings.staticStrings.changeLanguageButton}) ------------------------`);
 
+        const showLeafControlCheckbox = document.getElementById("showDiagnosisLeafControl");
+        const showLeavesControl = document.getElementById("showLeavesControl");
+        showLeavesControl.style.display = showLeafControlCheckbox.checked ? "flex" : "none";
+
         this.fixDependentVariableMechanisms();  //  sets appropriate label text
         focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
-        //  this.corralView = new CorralView();
         this.treePanelView = new TreePanelView();  //  the main view.
-        //  this.corralView.refreshCorral();
         arbor.ui.updateConfusionMatrix();
     },
 
@@ -724,6 +741,7 @@ const arbor = {
         arbor.state.oNodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
 
         arbor.state.oAlwaysShowConfigurationOnSplit = document.getElementById("autoOpenAttributeSplitOnDrop").checked;
+        arbor.state.oShowDiagnosisLeafControl = document.getElementById("showDiagnosisLeafControl").checked;
         console.log(`   display params: ${arbor.state.oNodeDisplayNumber} and ${arbor.state.oNodeDisplayProportion}`);
 
         arbor.refreshBaum('views');

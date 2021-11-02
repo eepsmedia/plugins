@@ -101,7 +101,9 @@ pre {
     float : right;
 }
 
-
+.focusatt {
+    padding : 0.5em;
+}
 /*  Tree parts  */
 
 

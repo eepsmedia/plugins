@@ -25,6 +25,8 @@ strings = {
         return theStrings;
     },
 
+    languages : [`en`, `es`, `de`],
+
     languageNames: {
         en: "English",
         de: "Deutsch",
@@ -62,6 +64,8 @@ strings = {
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
             focusAttributeNameBoxLabel  : `label`,
             focusAttributeValueBoxLabel  : `value`,    //  `val`,
+            classificationMenuItem : `classification`,
+            regressionMenuItem : `regression`,
 
             //  configuration panel
             sConfConfigure : `Configure`,
@@ -74,6 +78,7 @@ strings = {
             sConfSwapLandRLabel : `swap left and right:`,
             sConfContinuousOptionText : `continuous`,
             sConfCategoricalOptionText : `categorical`,
+
 
         },
         sIs: "is",
@@ -202,6 +207,8 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             sAutoOpenAttributeSplitLabel : `Attributkonfiguration automatisch öffnen`,
             focusAttributeNameBoxLabel  : `Etikett`,    //  `label`,
             focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
+            classificationMenuItem : `Klassifikation`,      //`classification`,
+            regressionMenuItem : `Regression`,              //   `regression`,
 
             //  configuration panel
             sConfConfigure : `Konfigurieren`,

@@ -160,7 +160,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     -->
     <div id="tree">
 
-        <div>
+        <div id="showLeavesControl">
             <input id="showDiagnosisLeaves" type="checkbox" onchange="arbor.handleShowHideDiagnosisLeaves()">
             <label for="showDiagnosisLeaves" id="sShowPredictionLeaves">leaves?</label>
         </div>
@@ -174,13 +174,13 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                 <span id="resultsText">No results yet</span>
             </div>
             <div class="hBox">
-                <div class="vBox">
+                <div class="vBox focusatt">
                     <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>
                     <input id="focusAttributeNameBox" type="text">
                 </div>
-                <div class="vBox">
+                <div class="vBox focusatt">
                     <label for="focusAttributeValueBox" id="focusAttributeValueBoxLabel">val</label>
-                    <input id="focusAttributeValueBox" type="text">
+                    <input id="focusAttributeValueBox" type="text" readonly>
                 </div>
             </div>
             <div class="hBox">
@@ -277,8 +277,8 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                 <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
                 <label for="treeTypeMenu">Tree type</label>
                 <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
-                    <option value="classification" selected>classification</option>
-                    <option value="regression">regression</option>
+                    <option value="classification" id="classificationMenuItem" selected>classification</option>
+                    <option value="regression" id="regressionMenuItem">regression</option>
                 </select>
 
         </div>
@@ -326,18 +326,23 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <div class="baumControlGroup">
             <input type="checkbox" id="autoOpenAttributeSplitOnDrop" onchange="arbor.recordDisplayParams()">
             <label for="autoOpenAttributeSplitOnDrop" id="sAutoOpenAttributeSplitLabel"></label>
+            <br>
+            <input type="checkbox" id="showDiagnosisLeafControl" onchange="arbor.recordDisplayParams()">
+            <label for="showDiagnosisLeafControl" id="sShowDiagnosisLeafControlLabel">Show leaf control</label>
         </div>
 
-        <div class="baumControlGroup">
-            <p> Change these at your peril.</p>
+                        <div class="baumControlGroup">
+                            <p> Change these at your peril.</p>
 
-            <label for="dataContextMenu">Dataset: </label>
-            <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
-            <!--
-                        <label for="collectionMenu">Collection: </label>
-                        <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
-            -->
-        </div>
+                            <label for="dataContextMenu">Dataset: </label>
+                            <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
+                            &lt;!&ndash;
+                                        <label for="collectionMenu">Collection: </label>
+                                        <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
+                            &ndash;&gt;
+                        </div>
+
+
         <div class="baumControlGroup">
             Credits! Gear icon made by <a href="https://www.flaticon.com/authors/tutsplus" title="TutsPlus">TutsPlus</a>
             from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>

@@ -21,9 +21,10 @@
 
 <p>
   Having Fbola is the <i>dependent variable</i>.
-  We have test and disease data for a number of people who came
+  We have test, exam, and disease data for a number of people who came
   to the clinic.
-  Our tree represents a series of questions: Are you coughing?
+  Our tree represents a series of questions, such as:
+  Are you coughing?
   Is your fever over 39 degrees Celsius?
   Have you ever had the measles?
   Your design of the tree represents a sequence of questions,
@@ -32,7 +33,7 @@
 <p>
   After any question, we can decide to stop and choose a prediction (or <i>diagnosis</i>).
   We will say that our diagnosis is positive (that we think you have Fbola) or negative.
-  The positive and negative diagnoses have black and green blocks.
+  The positive and negative diagnoses have green or brown blocks.
 </p>
 <p>
   Of course, we will not be right every time. There are four possibilities:
@@ -48,16 +49,13 @@
 </p>
 <h3>Variables (or Attributes) and Tree Nodes</h3>
 <p>
-  The names of all the variables --- the column headings in your data table --- appear
-  in a row below the tree, towards the bottom of the window.
+  The names of all the variables appear as column headings in your data table
+  or as rows of your case card.
 </p>
 <p>
   To make the tree branch according to a variable
   (which represents <i>asking a question</i> in our example),
   drag the variable into the tree and drop it on the node you want to branch.
-  <i>At the moment, you may not see the drag!</i> Don't worry, it's dragging nevertheless.
-  And if it doesn't seem to "take," try again.
-  It may be that dropping it on text doesn't work.
 </p>
 <p>
   As you will see, every node is either a "branching" node (where you ask a question) or
@@ -75,17 +73,19 @@
   and you want to study what affects income, make <b>income</b> the dependent variable.
 </p>
 <p>
-  To make a variable dependent, double-click it in the list below the tree.
-</p>
-<p>
   The dependent variable also appears at the top of the tree,
   in the first ("root") node.
   That node also tells you what counts as "positive" in the tree.
 </p>
+<p>
+  To make a variable dependent (the outcome),
+  drag it to the top, "root" node and drop it on the very top stripe.
+</p>
 
 <h3>Positive and Negative Outcomes</h3>
 <p>Whenever you add an attribute (a variable) to the tree, you make two branches.
-  One will have a "leaf" labeled "plus," the other will be "minus."
+  If you assign outcomes to the two leaves,
+  you will typically have a "leaf" labeled "plus," the other will be "minus."
   The "+"s represent a "positive" choice, even if it's a negative occurrence.
   For example, a positive test for a disease may not be what you want,
   but it leads you to suspect that you actually have the disease.
@@ -98,7 +98,7 @@
   Your variables may have more than two values, however.
   The plugin makes default choices about how the values of your variable map
   onto the two choices.
-  You will need to <i>configure</i> any variable you put in a node.
+  You may need to <i>configure</i> the variables you put in a node.
 </p>
 <p>
   Click the <img height="14" width="14" src="art/configure.png"> button in a branching node
@@ -136,7 +136,7 @@
 <p>
   A Classification tree is the traditional decision tree,
   where the result is a positive or negative prediction or diagnosis.
-  Each node shows the proportion of cases where the case you're trying to predict is true.
+  Each node shows the proportion of cases where the variable you're trying to predict is true.
 </p>
 <p>
   In a Regression tree, you are predicting the <em>value</em> of the dependent variable.
