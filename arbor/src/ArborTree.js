@@ -97,23 +97,34 @@ Tree.prototype.casesByFilter = function (iFilterArray, iMissingArray) {
     return out;
 };
 
+/**
+ * Create the text that appears below the tree, showing summary statistics
+ * @returns {*|string}
+ */
 Tree.prototype.resultString = function () {
 
-    var tClassificationSummary = "Classification summary";
-    var tRegressionSummary = "Regression summary";
+    //  dummy values
+    let tSummary = "Classification or regression summary";
 
-    var tRes = this.rootNode.getResultCounts();
-    if (tRes.sampleSize > 0) {
-        tClassificationSummary = arbor.strings.sfClassificationSummary(tRes);
-        if (tRes.undiagDenominator) {
-            tClassificationSummary += `<br>${arbor.strings.sNoPrediction}: ${tRes.PU + tRes.NU}`;
-            tRegressionSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
-        }
+    const tRes = this.rootNode.getResultCounts();   //  like TP = 12, etc
+
+    if (tRes.sampleSize === 0) {
+        tSummary = arbor.strings.sNoCasesToProcess;
     } else {
-        tClassificationSummary = arbor.strings.sNoCasesToProcess;
-        tRegressionSummary = arbor.strings.sNoCasesToProcess;
+        if (arbor.state.treeType === arbor.constants.kClassTreeType) {
+            //  classification tree
+            tSummary = arbor.strings.sfClassificationSummary(tRes);
+            if (tRes.undiagDenominator) {
+                tSummary += `<br>${arbor.strings.sNoPrediction}: ${tRes.PU + tRes.NU}`;
+            }
+
+        } else {
+            //  regression tree
+            tSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
+        }
     }
-    return (arbor.state.treeType === arbor.constants.kClassTreeType) ? tClassificationSummary : tRegressionSummary;
+
+    return tSummary;
 };
 
 Tree.prototype.nodeFromID = function (id) {

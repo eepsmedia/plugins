@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2021h, new German strings, drag and drop to specify almost right">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Analysis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ArborTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborTree.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.newCases.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.newCases.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.selectionManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.selectionManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/dropManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/help/help.en.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/help/help.en.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,7 +81,7 @@
       <workItem from="1633361666695" duration="1687000" />
       <workItem from="1634136396047" duration="17149000" />
       <workItem from="1635385145595" duration="14800000" />
-      <workItem from="1635839675950" duration="21027000" />
+      <workItem from="1635839675950" duration="29908000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
@@ -154,7 +153,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635855553973</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="2021h, new German strings, drag and drop to specify almost right">
+      <created>1635926041817</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1635926041818</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -182,6 +188,7 @@
     <MESSAGE value="two small bugs" />
     <MESSAGE value="first implementation of saving focus node data in the classification tree dataset" />
     <MESSAGE value="2021g, first Paderborn commit. A few safe (ha ha ha ) changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="2021g, first Paderborn commit. A few safe (ha ha ha ) changes" />
+    <MESSAGE value="2021h, new German strings, drag and drop to specify almost right" />
+    <option name="LAST_COMMIT_MESSAGE" value="2021h, new German strings, drag and drop to specify almost right" />
   </component>
 </project>

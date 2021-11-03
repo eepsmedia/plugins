@@ -106,6 +106,17 @@ pre {
 }
 /*  Tree parts  */
 
+#noTreeArea {
+    min-height: 100px;
+    background-color: #8bf;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#noTreeMessage {
+    flex: 0 0 80px;
+}
 
 #attributeConfigurationSection {
     position : fixed;

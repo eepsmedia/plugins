@@ -1,16 +1,20 @@
-<h1>Instructions!!</h1>
+<h1>Instructions!</h1>
 <p>This CODAP plug-in lets you make decision or prediction trees based on the data in the document. Here are the
   basics:</p>
 <ul>
-  <li>Drag a variable from CODAP to the body of a node to make a branch. </li>
-  <li>Click the <b>Show prediction leaves</b> box to assign predictions to your tree.</li>
-  <li>Click a node to select it and all its cases (it turns yellow).</li>
+  <li>Drag an attribute from CODAP to a node to make it branch. </li>
+  <li>Click on the round "prediction leaves" to assign predictions to your tree.
+  Click again to change the prediction.</li>
   <li>Click <img height="14" width="14" src="art/configure.png"> to configure the selected node.</li>
   <li>Stats about your current tree appear below the tree.</li>
   <li>Deleting: click the trash can <img height="14" width="14" src="art/trash.png"> to remove the
     <i>children</i> of a node.
   </li>
-  <li>Drag a variable to the very top "stripe" to make it the "dependent variable."</li>
+  <li>Drag an attribute to the very top "stripe" of the root node to make it the "dependent variable."</li>
+  <li>Click a node to select it and all its cases (it turns yellow).</li>
+  <li><b>Getting started:</b> If you don't have any tree yet, drag the attribute you want to predict into the blue area on the "tree" tab.
+    That will make a box with the name of the attribute. This is your "root node."</li>
+
 </ul>
 <h2>More details:</h2>
 
@@ -49,13 +53,13 @@
 </p>
 <h3>Variables (or Attributes) and Tree Nodes</h3>
 <p>
-  The names of all the variables appear as column headings in your data table
+  The names of all the attributes appear as column headings in your data table
   or as rows of your case card.
 </p>
 <p>
-  To make the tree branch according to a variable
+  To make the tree branch according to an attribute
   (which represents <i>asking a question</i> in our example),
-  drag the variable into the tree and drop it on the node you want to branch.
+  drag the attribute name from CODAP and drop it on the node you want to branch.
 </p>
 <p>
   As you will see, every node is either a "branching" node (where you ask a question) or
@@ -91,21 +95,21 @@
   but it leads you to suspect that you actually have the disease.
 </p>
 
-<h3>Configuring Variables</h3>
+<h3>Configuring Attributes</h3>
 <p>
   All branchings in the tree are <i>binary</i>.
   You are always choosing between two options.
-  Your variables may have more than two values, however.
-  The plugin makes default choices about how the values of your variable map
+  Your attributes may have more than two values, however.
+  The plugin makes default choices about how the values of your attribute map
   onto the two choices.
-  You may need to <i>configure</i> the variables you put in a node.
+  You may need to <i>configure</i> the attributes you put in a node.
 </p>
 <p>
   Click the <img height="14" width="14" src="art/configure.png"> button in a branching node
-  to make its variable's configuration appear.
+  to make its attribute's configuration appear.
 </p>
 <p>
-  Each variable has a "left" and a "right" value.
+  Each attribute has a "left" and a "right" value.
   In general, try to put the more
   "positive" values (with respect to your dependent variable) on the left.
   You can decide what the two sides will be labeled using the text boxes.
@@ -114,20 +118,16 @@
 </p>
 <ul>
   <li>
-    For <b>numerical</b> variables, you can choose an operator and type in a value.
+    For <b>numerical</b> attributes, you can choose an operator and type in a value.
     That specifies the "cut point" that separates the high from the low values.
 
   </li>
   <li>
-    For <b>categorical</b> variables, you will see buttons for the possible values;
+    For <b>categorical</b> attributes, you will see buttons for the possible values;
     click the buttons to move them from left to right or vice versa.
   </li>
 </ul>
-<!-- <p>
-     Don't forget that you can also configure your dependent variable!
-     To configure the dependent variable, click one of the "terminal" nodes ---
-     they do not have variables assigned.
- </p> -->
+
 <h3>Two Tree Types</h3>
 <p>
   In the <b>settings</b> tab, you will find a menu that lets you select between
@@ -136,7 +136,7 @@
 <p>
   A Classification tree is the traditional decision tree,
   where the result is a positive or negative prediction or diagnosis.
-  Each node shows the proportion of cases where the variable you're trying to predict is true.
+  Each node shows the proportion of cases where the attribute you're trying to predict is true.
 </p>
 <p>
   In a Regression tree, you are predicting the <em>value</em> of the dependent variable.

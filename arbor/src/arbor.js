@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021h',
+        version: '2021j',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -310,13 +310,15 @@ const arbor = {
     freshState: function () {
 
         //  find the user's favorite language that's actually in our list
-        const userLanguages = Navigator.languages;
+        const userLanguages = Array.from(navigator.languages).reverse();
+        const arborLanguages = Object.keys(strings.languageNames);
+
         let theLang = 'en';
 
-        userLanguages.reverse().forEach( (L) => {
+        userLanguages.forEach( (L) => {
             console.log(`user has lang ${L}`);
             const twoLetter = L.slice(0,2).toLowerCase();
-            if (arbor.strings.languages.includes(twoLetter)) {
+            if (arborLanguages.includes(twoLetter)) {
                 theLang = twoLetter;
                 console.log(`    change lang to ${theLang}`);
             }
@@ -342,7 +344,7 @@ const arbor = {
     /**
      * Creates the "analysis" which holds all the data contexts, etc.
      * Then fills it.
-     * Note the use of a promise(!) because getting these things is asynchronous.
+     *
      */
     getAndRestoreModel: async function () {
         if (!this.analysis) {
@@ -535,12 +537,16 @@ const arbor = {
      * That is, we believe that the allocation of attributes to nodes should be preserved.
      */
     repopulate: function () {
-        console.log("   repopulate the model! Begin...");
-        this.state.tree.populateTree();               //  count up how many are in what bin throughout the tree, leaving structure intact
-        console.log("       ... populated with " + this.analysis.cases.length + " cases");
-        focusSplitMgr.theSplit.updateSplitStats(this.analysis.cases);    //  update these stats based on all cases
-        console.log("       ... splitStats updated");
-        console.log("   repopulate ends");
+        if (arbor.state.tree) {
+            console.log("   repopulate the model! Begin...");
+            this.state.tree.populateTree();               //  count up how many are in what bin throughout the tree, leaving structure intact
+            console.log("       ... populated with " + this.analysis.cases.length + " cases");
+            focusSplitMgr.theSplit.updateSplitStats(this.analysis.cases);    //  update these stats based on all cases
+            console.log("       ... splitStats updated");
+            console.log("   repopulate ends");
+        } else {
+            console.log(`no tree to repopulate`);
+        }
     },
 
     redisplay: function () {
@@ -550,12 +556,23 @@ const arbor = {
         const showLeavesControl = document.getElementById("showLeavesControl");
         showLeavesControl.style.display = showLeafControlCheckbox.checked ? "flex" : "none";
 
-        if (arbor.state.dataSetName) {
+        const treePaper = document.getElementById("treePaper");
+        const noTreePaper  = document.getElementById("noTreeArea");
+        const outputControls = document.getElementById("outputFileControls");
 
+        if (arbor.state.dataSetName) {
+            outputControls.style.display = "block";
+            treePaper.style.display = "block";
+            noTreePaper.style.display = "none";
             this.fixDependentVariableMechanisms();  //  sets appropriate label text
             focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
             this.treePanelView = new TreePanelView();  //  the main view.
             arbor.ui.updateConfusionMatrix();
+        } else {
+            outputControls.style.display = "none";
+            treePaper.style.display = "none";
+            noTreePaper.style.display = "block";
+
         }
     },
 

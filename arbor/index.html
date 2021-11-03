@@ -1,4 +1,4 @@
-<!--
+"<!--
 ==========================================================================
 
  * Created by tim on 9/26/16.
@@ -92,10 +92,10 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     -->
     <script src="src/views/Stripe.js"></script>
     <script src="src/views/Leaf.js"></script>
-<!--
-    <script src="src/views/CorralView.js"></script>
-    <script src="src/views/CorralAttView.js"></script>
--->
+    <!--
+        <script src="src/views/CorralView.js"></script>
+        <script src="src/views/CorralAttView.js"></script>
+    -->
     <script src="src/views/TreePanelView.js"></script>
     <script src="src/views/NodeZoneView.js"></script>
     <script src="src/views/NodeBoxView.js"></script>
@@ -168,11 +168,15 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <svg id="treePaper" class="noselect" width="100%" height="300">
             <rect height="100%" width="100%" fill="dodgerblue"></rect>
         </svg>
+        <div id="noTreeArea">
+            <p id="noTreeMessage">no tree default text</p>
+        </div>
 
-        <div class="vBox">
-            <div id="statusDiv">
+        <div class="vBox" id="statusDiv">
                 <span id="resultsText">No results yet</span>
-            </div>
+        </div>
+
+        <div class="vBox" id="outputFileControls">
             <div class="hBox">
                 <div class="vBox focusatt">
                     <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>
@@ -184,7 +188,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                 </div>
             </div>
             <div class="hBox">
-                    <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
+                <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
             </div>
             <div class="hBox">
                 <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
@@ -205,7 +209,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <div class="attributeConfigurationHead">
             <span id="sConfConfigure"></span> "<span id="splitVariableName"></span>"
             <button class="attributeConfigurationDoneButton"
-                    id = "sConfDoneButton"
+                    id="sConfDoneButton"
                     onclick="focusSplitMgr.showHideAttributeConfigurationSection()">
             </button>
 
@@ -222,7 +226,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                     <input id="leftLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
                 </td>
                 <td class="rightSide">
-                    <label for="rightLabelText"  id="sConfRightLabelLabel"></label>
+                    <label for="rightLabelText" id="sConfRightLabelLabel"></label>
                     <input id="rightLabelText" type="text" onchange="focusSplitMgr.changeAttributeConfiguration()">
                 </td>
             </tr>
@@ -271,15 +275,17 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <!--    Settings/Options tab       -->
 
     <div id="settings">
-        <div class="baumControlGroup" onclick="arbor.changeLanguage()">
-            <button id="changeLanguageButton" type="button" name="Language">Language</button>
+        <div class="baumControlGroup">
+            <button id="changeLanguageButton" type="button" name="Language" onclick="arbor.changeLanguage()">Language
+            </button>
 
-                <!-- <p>If you are Joachim Engel, you might want to change this to "regression."</p> -->
-                <label for="treeTypeMenu">Tree type</label>
-                <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
-                    <option value="classification" id="classificationMenuItem" selected>classification</option>
-                    <option value="regression" id="regressionMenuItem">regression</option>
-                </select>
+            <!-- <p>If you are Joachim Engel, you might want to change this to " regression.
+    "</p> -->
+            <label for="treeTypeMenu">Tree type</label>
+            <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
+                <option value="classification" id="classificationMenuItem" selected>classification</option>
+                <option value="regression" id="regressionMenuItem">regression</option>
+            </select>
 
         </div>
 
@@ -320,9 +326,10 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             </p>
         </div>
 
-<!--
-        automatically open the configuration box?
--->
+        <!--
+                automatically open the configuration box?
+                show the "show leaves" control?
+        -->
         <div class="baumControlGroup">
             <input type="checkbox" id="autoOpenAttributeSplitOnDrop" onchange="arbor.recordDisplayParams()">
             <label for="autoOpenAttributeSplitOnDrop" id="sAutoOpenAttributeSplitLabel"></label>
@@ -331,16 +338,18 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <label for="showDiagnosisLeafControl" id="sShowDiagnosisLeafControlLabel">Show leaf control</label>
         </div>
 
-                        <div class="baumControlGroup">
-                            <p> Change these at your peril.</p>
+<!--
+        <div class="baumControlGroup">
+            <p> Change these at your peril.</p>
 
-                            <label for="dataContextMenu">Dataset: </label>
-                            <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
-                            &lt;!&ndash;
-                                        <label for="collectionMenu">Collection: </label>
-                                        <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
-                            &ndash;&gt;
-                        </div>
+            <label for="dataContextMenu">Dataset: </label>
+            <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
+            &lt;!&ndash;
+            <label for="collectionMenu">Collection: </label>
+            <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
+            &ndash;&gt;
+        </div>
+-->
 
 
         <div class="baumControlGroup">
@@ -370,4 +379,4 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         arbor.initialize();
     }
 </script>
-</html>
+</html>"
