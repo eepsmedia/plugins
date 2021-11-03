@@ -25,8 +25,6 @@ strings = {
         return theStrings;
     },
 
-    languages : [`en`, `es`, `de`],
-
     languageNames: {
         en: "English",
         de: "Deutsch",
@@ -85,7 +83,10 @@ strings = {
         sOr: "or",
         sAnd: "and",
         sOf : "of",
-        sThenWeAskAbout: `Then we ask about`,
+        sThenWeAskAbout: `
+        
+Then we ask about`,
+
         sAllCasesText: ` of the cases`,
         sPredict: `Predict`,
         sNoPrediction: `no prediction`,
@@ -138,6 +139,12 @@ strings = {
         sadMisclassificationRate : `misclassification rate: the proportion of predictions we did not get correct`,
         sadSumSSD : `total (normalized) sum of the squares of the deviations`,
 
+        //      strings from the options panel
+
+        sShowDiagnosisLeafControlLabel : `show leaf controls`,
+
+
+        //      functions, that is, strongs that have numbers, etc. substitutes in them
 
         sfIsAre : function(howMany) {
             return (howMany === 1) ? "is" : "are";
@@ -189,97 +196,109 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
     de: {
         staticStrings: {
             changeLanguageButton: "Deutsch",
-            sShowPredictionLeaves: `zeigen die "Blätter"`,
+            sShowPredictionLeaves: `"Label" anzeigen`,
             sTreeTab: `Baum`,
             sTableTab: `Tabelle`,
-            sSettingsTab: `Optionen`,
+            sSettingsTab: `Einstellungen`,
             sHelpTab: `Hilfe`,
-            refreshAllButton: `alle erfrischen`,
-            refreshDataButton: `Daten erfrischen`,
+            refreshAllButton: `Baum zurücksetzen`,
+            refreshDataButton: `Baum erneuern`,
             emitDataButton: `Daten ausgeben`,
-            refreshAllButton2: `alle erfrischen`,
-            refreshDataButton2: `Daten erfrischen`,
+            refreshAllButton2: `Baum zurücksetzen`,
+            refreshDataButton2: `Baum erneuern`,
             emitDataButton2: `Daten ausgeben`,
-            "truth-head": "Wahrheit",
+            "truth-head": "tatsächlich",
             "pred-head": "Vorhersage",
-            "no-pred-head": `keine Vorhersage`,        //  todo: 2021-09-18 not appearing. Why not?
-            sOmitProportionLabel : `(keine)`,
-            sAutoOpenAttributeSplitLabel : `Attributkonfiguration automatisch öffnen`,
-            focusAttributeNameBoxLabel  : `Etikett`,    //  `label`,
+            "no-pred-head": `ohne Vorhersage`,        //  todo: 2021-09-18 not appearing. Why not?
+            sOmitProportionLabel : `(ohne)`,
+            sAutoOpenAttributeSplitLabel : `Splitkonfiguration automatisch öffnen`, 
+            focusAttributeNameBoxLabel  : `Label`,    //  `label`,  
             focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
             classificationMenuItem : `Klassifikation`,      //`classification`,
             regressionMenuItem : `Regression`,              //   `regression`,
 
             //  configuration panel
-            sConfConfigure : `Konfigurieren`,
+            sConfConfigure : `Einstellungen für`,  
             sConfDoneButton : `Fertig!`,
-            sConfLeftHeaderText : `linker Zweig`,
-            sConfRightHeaderText : `rechter Zweig`,
-            sConfLeftLabelLabel : `Etikett:`,
-            sConfRightLabelLabel : `Etikett:`,
-            sConfAttributeTypeLabel : `Art des Attributs:`,
+            sConfLeftHeaderText : `linker Ast`,
+            sConfRightHeaderText : `rechter Ast`,
+            sConfLeftLabelLabel : `Label:`,
+            sConfRightLabelLabel : `Label:`,
+            sConfAttributeTypeLabel : `Art der Variable`,  
             sConfSwapLandRLabel : `links und rechts tauschen:`,
             sConfContinuousOptionText : `kontinuierlich`,
-            sConfCategoricalOptionText : `kategorisch`,
+            sConfCategoricalOptionText : `kategorial`,
 
         },
         sIs: "ist",
         sOr: "oder",
         sAnd: "und",
         sOf : "von",
-        sThenWeAskAbout: `Dann fragen wir über`,
-        sAllCasesText: `Fälle`,
-        sPredict: `Vorhersagen`,
-        sNoPrediction: `keine Vorhersage`,
-        sNoCasesToProcess: `keine Fälle zu bearbeiten`,
-        sYourBestGuess: `Ihre beste Vermutung für diese Fälle:`,
-        sLeafNoDiagnosis: `Sie haben noch keine Diagnose zugeordnet. Zum Zuweisen klicken!`,
-        sMoreCategories: `weitere Kategorien`,
-        sNoCategories: `keine Kategorien`,
+        sThenWeAskAbout: `
+        
+Als nächstes wird betrachtet:`,  //insert an empty row before this line
+
+        sAllCasesText: `der Fälle`,
+        sPredict: `Vorhersage für`,
+        sNoPrediction: `ohne Vorhersage`,
+        sNoCasesToProcess: `keine Daten vorhanden`,
+        sYourBestGuess: `Ihre Vorhersage für diese Fälle:`, 
+        sLeafNoDiagnosis: `Sie haben noch keine Vorhersage getroffen. Wählen durch Anklicken!`,
+        sMoreCategories: `mehrere Werte`,
+        sNoCategories: `kein Wert`,
         sNoCases :  `keine Fälle`,   //  `no cases`,
 
         //  tree and collection names
 
         sClassTreeCollectionName: "klassBäume",
-        sClassTreeDataSetTitle: "Klassifikationsbaum Datensätze",
-        sClassTreeDataSetDescription : `Daten über Klassifikationsbäume`,
+        sClassTreeDataSetTitle: "Daten zum Entscheidungsbaum",
+        sClassTreeDataSetDescription : `Daten zum Entscheidungsbaum`,
 
         sRegressTreeCollectionName: "regressBäume",
-        sRegressTreeDataSetTitle: "Regressionsbaum Datensätze",
-        sRegressTreeDataSetDescription : `Daten über Regressionsbäume`,
+        sRegressTreeDataSetTitle: "Daten zum Entscheidungsbaum",
+        sRegressTreeDataSetDescription : `Daten zum Entscheidungsbaum`,
 
 
         //  emitted data attribute names and descriptions. Prefixes; `san` and `sad`
 
-        sanPredict : `Vorhersage`,
+        sanPredict : `Zielvariable`,
         sanN : `N`,
         sanNodes : `Knoten`,
         sanDepth : `Tiefe`,
-        sanBaseRate : `Basissatz`,
+        sanBaseRate : `Zielwertanteil`,
         sanTP : `RP`,
         sanFN : `FN`,
         sanFP : `FP`,
         sanTN : `RN`,
         sanNPPos : `PoV`,
         sanNPNeg : `NoV`,
-        sanSensitivity : `sens`,
+        sanSensitivity : `Sens`,
         sanMisclassificationRate : `FKR`,
-        sanSumSSD: `GQA`,
+        sanSumSSD: `GQA`,  //GERMAN What is that? How to translate?
 
-        sadPredict : `Was versucht dieser Baum vorherzusagen?`,
-        sadN : `Gesamtzahl der Fälle`,
-        sadNodes : `Gesamtzahl der Knotenpunkte`,
-        sadDepth : `Tiefe des Baumes`,
-        sadBaseRate : `der Basissatz`,
-        sadTP : `Anzahl der richtig positiv`,
-        sadFN : `Anzahl der falsch negativ`,
-        sadFP : `Anzahl der falsch positiv`,
-        sadTN : `Anzahl der richtig negativ`,
-        sadNPPos : `Anzahl der Positivmeldungen ohne Vorhersage`,
-        sadNPNeg : `Anzahl der Negativmeldungen ohne Vorhersage`,
-        sadSensitivity : `die (berechnete) Sensitivität ist der Anteil der positiven Fälle, die positiv diagnostiziert werden`,
-        sadMisclassificationRate : `Fehlklassifizierungsrate (berechnet): der Anteil der Vorhersagen, die nicht korrekt waren`,
+        sadPredict : `Was soll dieser Baum vorhersagen?`,
+        sadN : `Gesamtanzahl aller Fälle`,
+        sadNodes : `Gesamtanzahl aller Knoten`,
+        sadDepth : `Tiefe des Baums`,
+        sadBaseRate : `Anteil der Fälle mit dem Zielwert (vorherzusagender Wert) an allen Fällen`,
+        sadTP : `Anzahl der richtig positiven Fälle`,
+        sadFN : `Anzahl der falsch negativen Fälle`,
+        sadFP : `Anzahl der falsch positiven Fälle`,
+        sadTN : `Anzahl der richtig negativen Fälle`,
+        sadNPPos : `Anzahl der positiven Fälle ohne Vorhersage`,
+        sadNPNeg : `Anzahl der negativen Fälle ohne Vorhersage`,
+        sadSensitivity : `Die Sensitivität gibt an, welcher Anteil der tatsächlich positiven Fälle auch positiv vorhergesagt wird: RP/(RP+FN)`,
+        sadMisclassificationRate : `Die Fehlklassifikationsrate gibt den Anteil der falschen Vorhersagen an: (FP+FN)`,
         sadSumSSD : `Gesamtsumme der (normierten) Quadrate der Abweichungen`,
+
+
+        //      strings from the options panel      DEUTSCH... do this section!
+
+        sShowDiagnosisLeafControlLabel : `show leaf controls`,      //  `show leaf controls`,
+
+
+        //      functions, that is, strongs that have numbers, etc. substitutes in them
+
 
 
         sfIsAre : function(howMany) {
@@ -288,9 +307,9 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
 
         sfPositiveNegativeNodeDescription: function () {
             return(
-`In diesem Szenario, wir nennen 
-(${arbor.informalDVBoolean}) 'positiv' und 
-(${arbor.informalDVBooleanReversed}) 'negativ'.`
+`In diesem Baum bezeichnen wir  
+(${arbor.informalDVBoolean}) als "positiv" und 
+(${arbor.informalDVBooleanReversed}) als "negativ".`
             );
         },
 
@@ -299,9 +318,9 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             return (
 `
 Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. 
-Das sind alle ${iNode.friendlySubsetDescription()}.
-Von diesen, ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
-Die anderen, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
+Das sind alle Fälle mit: ${iNode.friendlySubsetDescription()}.
+Davon sind ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}), 
+und ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
             );
 
         },
@@ -313,11 +332,11 @@ Die anderen, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReve
             }
 
             return {
-                "plusMinus": `Ändere die Diagnose in diesem 'Blatt'-Knoten von + auf – oder umgekehrt`,
-                "leftRight": `tausche die Etiketten gegen ${iStripe.sText}`,
-                "trash": `entferne die Kinder dieses Knotens (werde ${iStripe.sText} hier los)`,
-                "configure": `dieses Attribut konfigurieren: ${tVariableName}`,
-                "dependent": `positive Diagnosen in negative umwandeln und umgekehrt`,
+                "plusMinus": `Die Vorhersage dieses Labels ändern`,  //GERMAN? WHere does this all appear?
+                "leftRight": `Label tauschen gegen ${iStripe.sText}`, //GERMAN?
+                "trash": `Die nachfolgenden Knoten entfernen (${iStripe.sText} löschen)`,
+                "configure": `Den Split für diese Variable konfigurieren: ${tVariableName}`,
+                "dependent": `Positive Vorhersage in negative umwandeln und umgekehrt`, //GERMAN?
             }
         },
 

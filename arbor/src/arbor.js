@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021g',
+        version: '2021h',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -121,6 +121,34 @@ const arbor = {
 
         arbor.repopulate();
         arbor.redisplay();
+    },
+
+    /**
+     * Set the data context by name; if the name is the same as the current, do nothing.
+     *
+     * @param iName     name of the data context we'll read in afresh
+     * @returns {Promise<void>}
+     */
+    setDataContext : async function(iName) {
+        if (this.analysis && (iName === this.state.dataSetName)) {
+                console.log("arborsetDataContext: no change from " + this.state.dataSetName);
+        } else {
+            console.log("change dataset to " + iName + " instead of " + this.state.dataSetName);
+
+            this.state.dataSetName = iName;
+            this.state.tree = null;             //  start with a blank tree
+            codapInterface.updateInteractiveState(this.state);  //  save these values
+
+            this.analysis = new Analysis(this);
+
+            codapInterface.on(
+                'notify',
+                'dataContextChangeNotice[' + this.state.dataSetName + ']',
+                'createCases',
+                arbor.newCases.newCasesInData
+            );
+
+        }
     },
 
     deleteBothOutputDatasets: async function () {
@@ -299,6 +327,7 @@ const arbor = {
             lang: theLang,
             treeType: arbor.constants.kClassTreeType,
             latestNodeID: 42,
+            dataSetName : null,
             dependentVariableName: null,
             dependentVariableSplit: null,
             tree: null,
@@ -320,11 +349,7 @@ const arbor = {
             this.analysis = new Analysis(arbor);     //  the global, arbor, is the "host" for the analysis
         }
 
-        await this.analysis.getStructureAndData();
-        arbor.assembleAttributeAndCategoryNames();   //  we have the cases, collect the names
-        this.attsInBaum.forEach(function (a) {
-            a.latestSplit = new AttributeSplit(a);  //  set all defaults
-        });
+        //  getStructureAndData used to be here
 
         /* FIRST call to getInteractiveState, this is to restore any saved state */
 
@@ -335,21 +360,29 @@ const arbor = {
             console.log("getting a fresh state");
         }
 
+        if (arbor.state.dataSetName) {
+            await this.analysis.getStructureAndData();
+            arbor.assembleAttributeAndCategoryNames();   //  we have the cases, collect the names
+            this.attsInBaum.forEach(function (a) {
+                a.latestSplit = new AttributeSplit(a);  //  set all defaults
+            });
+
+            arbor.doBaumRestoration(arbor.state);   //  restore the arbor data. Still all model.
+            arbor.repopulate();
+
+            //  register to receive notifications about selection in the data
+
+            codapInterface.on(
+                'notify',
+                'dataContextChangeNotice[' + arbor.state.dataSetName + ']',
+                'selectCases',
+                arbor.selectionManager.processCodapSelectionOfDataCase
+            );
+        }
         await this.matchUItoState();
 
         console.log("arbor.state is " + JSON.stringify(arbor.state).length + " chars");
 
-        arbor.doBaumRestoration(arbor.state);   //  restore the arbor data. Still all model.
-        arbor.repopulate();
-
-        //  register to receive notifications about selection in the data
-
-        codapInterface.on(
-            'notify',
-            'dataContextChangeNotice[' + arbor.analysis.currentDataContextName + ']',
-            'selectCases',
-            arbor.selectionManager.processCodapSelectionOfDataCase
-        );
     },
 
     /**
@@ -517,10 +550,13 @@ const arbor = {
         const showLeavesControl = document.getElementById("showLeavesControl");
         showLeavesControl.style.display = showLeafControlCheckbox.checked ? "flex" : "none";
 
-        this.fixDependentVariableMechanisms();  //  sets appropriate label text
-        focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
-        this.treePanelView = new TreePanelView();  //  the main view.
-        arbor.ui.updateConfusionMatrix();
+        if (arbor.state.dataSetName) {
+
+            this.fixDependentVariableMechanisms();  //  sets appropriate label text
+            focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
+            this.treePanelView = new TreePanelView();  //  the main view.
+            arbor.ui.updateConfusionMatrix();
+        }
     },
 
     displayWidth: function () {
@@ -695,17 +731,6 @@ const arbor = {
         })
     },
 
-    /**
-     * Make sure the analysis knows which one we will focus on.
-     * User could choose a different DC.
-     */
-    changeDataContext: function () {
-        this.analysis.specifyCurrentDataContext($("#dataContextMenu").find('option:selected').val());
-    },
-
-    changeCollection: function () {
-        this.analysis.specifyCurrentCollection($("#collectionMenu").find('option:selected').val());
-    },
 
     changeLanguage: async function () {
         arbor.state.lang = strings.nextLanguage(arbor.state.lang);

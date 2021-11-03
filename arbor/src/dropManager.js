@@ -1,43 +1,66 @@
 arbor.dropManager = {
 
+    /**
+     * Handle a CODAP API attribute drag/drop action
+     *
+     * @param iMessage  message sent by CODAP
+     * @returns {Promise<void>}
+     */
     handleDrop: async function (iMessage) {
-        const positionString = iMessage.values.position ?
-            `(${iMessage.values.position.x} , ${iMessage.values.position.y})` :
-            `(no pos)`;
-        switch (iMessage.values.operation) {
-            case "dragstart":
-                //  console.log(`... start dragging ${iMessage.values.attribute.title}`);
-                //scrambler.currentlyDraggingAnAttribute = true;
-                break;
+            switch (iMessage.values.operation) {
+                case "dragstart":
+                    //  console.log(`... start dragging ${iMessage.values.attribute.title}`);
+                    //scrambler.currentlyDraggingAnAttribute = true;
+                    break;
 
-            case "drop":
-                console.log(`... drop ${iMessage.values.attribute.title} at ${positionString}`);
-                arbor.dropManager.copeWithAttributeDrop(iMessage.values.attribute.name, iMessage.values.position);
-                break;
 
-            case "dragend":
-                //  console.log(`... dragend ${iMessage.values.attribute.title} at ${positionString}`);
-                // document.getElementById("entire-scrambler").className = "body-no-drag";
-                //scrambler.currentlyDraggingAnAttribute = false;
-                break;
+                case "drop":        //  attribute drop using API dragdrop
+                    const theDropDatasetName = iMessage.values.context.name;
 
-            case "dragenter":
-                console.log(`... dragenter ${iMessage.values.attribute.title} at ${positionString}`);
-                //document.getElementById("entire-scrambler").className = "body-drag";
-                break;
+                    if (theDropDatasetName === arbor.state.dataSetName) {
+                        const positionString = iMessage.values.position ?
+                            `(${iMessage.values.position.x} , ${iMessage.values.position.y})` :
+                            `(no pos)`;
+                        console.log(`... drop ${iMessage.values.attribute.title} at ${positionString}`);
+                        arbor.dropManager.copeWithAttributeDrop(iMessage.values.attribute.name, iMessage.values.position);
+                    } else {    //  different data context, do the change!
+                        console.log(`changing to dataset ${theDropDatasetName}`);
+                        await arbor.setDataContext(theDropDatasetName);           //      change DC and make a new empty analysis
+                        await arbor.getAndRestoreModel();
+                        arbor.setDependentVariableByName(iMessage.values.attribute.name);
+                        arbor.redisplay();
+                    }
+                    break;
 
-            case "dragleave":
-                console.log(`... dragleave ${iMessage.values.attribute.title} at ${positionString}`);
-                //document.getElementById("entire-scrambler").className = "body-no-drag";
+                case "dragend":
+                    //  console.log(`... dragend ${iMessage.values.attribute.title} at ${positionString}`);
+                    // document.getElementById("entire-scrambler").className = "body-no-drag";
+                    //scrambler.currentlyDraggingAnAttribute = false;
+                    break;
 
-                break;
+                case "dragenter":
+                    const positionString = iMessage.values.position ?
+                        `(${iMessage.values.position.x} , ${iMessage.values.position.y})` :
+                        `(no pos)`;
+                    console.log(`... dragenter ${iMessage.values.attribute.title} at ${positionString}`);
+                    //document.getElementById("entire-scrambler").className = "body-drag";
+                    break;
 
-            default:
-        }
+                case "dragleave":
+                    console.log(`... dragleave ${iMessage.values.attribute.title} at ${positionString}`);
+                    //document.getElementById("entire-scrambler").className = "body-no-drag";
+
+                    break;
+
+                default:
+            }
     },
 
     copeWithAttributeDrop : function(iWhat, iWhere) {
+        //  we find some element at the coordinates
         const anElement = document.elementFromPoint(iWhere.x, iWhere.y);
+
+        //  then we look at parents until we get some kind of Node.
         const theHitResult = this.findNodeElementFromElement(anElement);
 
         if (theHitResult === `dependent-variable`) {
@@ -45,7 +68,7 @@ arbor.dropManager = {
             arbor.setDependentVariableByName(iWhat);    //  also sets the focus split
             arbor.dispatchTreeChangeEvent(`${iWhat} is the new dependent variable`);
             focusSplitMgr.showHideAttributeConfigurationSection(true);
-        } else {
+        } else if (theHitResult) {
             const theNode = arbor.state.tree.nodeFromID(Number(theHitResult));
             if (theNode) {
                 const theAttInBaum = arbor.attsInBaum.reduce(function (acc, val) {
@@ -55,6 +78,8 @@ arbor.dropManager = {
             } else {
                 //  it was not dropped on a node. Nothing happens.
             }
+        } else {    //  aha! We are not in a node!
+            console.log(`Drop not in a node`);
         }
     },
 

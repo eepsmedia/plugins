@@ -40,7 +40,7 @@ arbor.newCases = {
     },
 
     /**
-     * Event handler set in Analysis.specifyCurrentDataContext()
+     * Event handler set in arbor.setDataContext()
      * The data context we're looking at has a "create cases" event.
      *
      * @param iCommand
@@ -64,7 +64,7 @@ arbor.newCases = {
                 theIDs.forEach(function (id) {
                     var tOneRequest = {
                         "action": "get",
-                        "resource": "dataContext[" + arbor.analysis.currentDataContextName + "].caseByID[" + id + "]"
+                        "resource": "dataContext[" + arbor.state.dataSetName + "].caseByID[" + id + "]"
                     };
                     tCompoundRequest.push(tOneRequest);
                 });
@@ -131,7 +131,7 @@ arbor.newCases = {
 
                             const tOneRequest = {
                                 "action" : "update",
-                                "resource": "dataContext[" + arbor.analysis.currentDataContextName
+                                "resource": "dataContext[" + arbor.state.dataSetName
                                 + "].collection[" + arbor.analysis.bottomCollectionName
                                 + "].caseByID[" + id + "]",
                                 "values": {"values": tNewValues }

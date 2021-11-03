@@ -35,22 +35,14 @@
  * @constructor
  */
 
-const Analysis = function (iHost) {
-
-    this.host = iHost;            //  the object that has invoked this analysis, probably arbor
+const Analysis = function ( ) {
     this.initialize();
 };
 
 Analysis.prototype.initialize = function () {
-    this.dataContexts = [];
-    this.currentDataContextName = "";
-
     this.collections = [];  // array of objects with { name : 'people', etc }
     this.topCollectionName = "";
     this.bottomCollectionName = "";
-
-    this.attributes = [];   //  array of objects like : {name : 'height', title : 'height'...}
-    this.currentAttributeName = "";
 
     this.cases = [];
 
@@ -69,6 +61,7 @@ Analysis.prototype.getStructureAndData = async function () {
 
     //  function to get the list of data contexts
 
+/*
     const getListOfDataContexts = async function () {
         const tArg = {action: "get", resource: "dataContextList"};
         return codapInterface.sendRequest(tArg);
@@ -89,25 +82,12 @@ Analysis.prototype.getStructureAndData = async function () {
         return codapInterface.sendRequest(tArg);
     };
 
+*/
     /**
      * Process the CODAP get Data Context result to get all the attributes and the collections
      * @param iResult
      * @returns {Promise<void>}
      */
-    const processDataContext = async function(iResult) {
-        this.host.resetAttributeList();   //  set attsInBaum to []
-        this.collections = iResult.values.collections;
-        this.topCollectionName = this.collections[0].name;
-        this.bottomCollectionName = this.collections[this.collections.length - 1].name;
-
-        for (c of this.collections) {
-            for (a of c.attrs) {
-                if (this.excludedAttributeNames.indexOf(a.name) < 0) {     //  todo: cope with this kludge that special-cases "diagnosis" and "analysis"
-                    this.host.gotOneAttribute(a);
-                }
-            }
-        }
-    };
 
     //  function to process the list of collections and set the name of the top and bottom collections
 
@@ -187,10 +167,7 @@ Analysis.prototype.getStructureAndData = async function () {
 */
     //  THIS is what we actually do!
 
-    await getListOfDataContexts()
-        .then(processDataContextList.bind(this))    //  includes asking for list of collections
-        .then(processDataContext.bind(this));     //  includes getting list of attributes
-        //  .then(processCollectionList.bind(this));     //  includes asking for list of attributes
+    await this.processDataContext();     //  includes getting list of attributes
     this.cases = await this.getCasesRecursivelyFromCollection(this.topCollectionName);
     console.log("Success reading in " + this.cases.length + " cases.");
 
@@ -201,11 +178,35 @@ Analysis.prototype.getStructureAndData = async function () {
     */
 };
 
+Analysis.prototype.processDataContext = async function() {
+    const tMessage = {
+        action  : `get`,
+        resource : `dataContext[${arbor.state.dataSetName}]`,
+    }
+
+    const tResult =  await codapInterface.sendRequest(tMessage);
+
+    arbor.resetAttributeList();   //  set attsInBaum to []
+    this.collections = tResult.values.collections;
+    this.topCollectionName = this.collections[0].name;
+    this.bottomCollectionName = this.collections[this.collections.length - 1].name;
+
+    const excluded = this.excludedAttributeNames;
+
+    for (c of this.collections) {
+        for (a of c.attrs) {
+            if (excluded.indexOf(a.name) < 0) {     //  todo: cope with this kludge that special-cases "diagnosis" and "analysis"
+                arbor.gotOneAttribute(a);
+            }
+        }
+    }
+};
+
 Analysis.prototype.getCasesRecursivelyFromCollection = async function(iCollectionName) {
     let out = [];   //  this will hold the eventual cases
     //  get all case IDs for this collection
 
-    const rGetCaseIDs = "dataContext[" + this.currentDataContextName + "].collection[" +
+    const rGetCaseIDs = "dataContext[" + arbor.state.dataSetName + "].collection[" +
         iCollectionName + "].caseSearch[*]";
     const oCases = await codapInterface.sendRequest({action:"get", resource: rGetCaseIDs});
 
@@ -224,7 +225,7 @@ Analysis.prototype.getCasesWithChildrenRecursivelyByID = async function(iParentI
     let out = [];
 
     //  find all my children's IDs
-    const rGetCaseByID = "dataContext[" + this.currentDataContextName + "].caseByID[" + iParentID + "]";
+    const rGetCaseByID = "dataContext[" + arbor.state.dataSetName + "].caseByID[" + iParentID + "]";
     const oParentCase = await codapInterface.sendRequest({action:"get", resource: rGetCaseByID});
     const parentValues = oParentCase.values.case.values;
     const kidIDArray = oParentCase.values.case.children;
@@ -262,6 +263,7 @@ Analysis.prototype.getData = function () {
  * Importantly, includes registering our interest in changes (new cases) in that dataset.
  * @param iDCName
  */
+/*
 Analysis.prototype.specifyCurrentDataContext = function (iDCName) {
 
     if (iDCName === this.currentDataContextName) {  //  not a new specification!
@@ -279,6 +281,7 @@ Analysis.prototype.specifyCurrentDataContext = function (iDCName) {
         );
     }
 };
+*/
 
 
 /*

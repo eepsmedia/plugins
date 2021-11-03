@@ -19,7 +19,7 @@ arbor.selectionManager = {
 
     processCodapSelectionOfDataCase: function(iCommand, iCallback) {
         var tResourceString = iCommand.resource;
-        var tContext = arbor.analysis.currentDataContextName;
+        var tContext = arbor.state.dataSetName;
 
         //  is this event from the data context we're looking at?
 
@@ -60,7 +60,7 @@ arbor.selectionManager = {
 
         var tArg = {
             "action": "create",
-            "resource": "dataContext[" + arbor.analysis.currentDataContextName + "].selectionList",
+            "resource": `dataContext[${arbor.state.dataSetName}].selectionList`,
             "values": ids
         };
 
