@@ -111,6 +111,10 @@ Node.prototype.parentSplit = function (iParent) {
 Node.prototype.branchThisNode = function (iAttribute) {
     this.attributeSplit = iAttribute.getSplit();    //  gets the latest split
 
+    if (arbor.state.oAutoBranchLabels) {
+        this.attributeSplit.setAutoLabels();
+    }
+
     this.branches = [];     //  reset
 
     //  here is where we make the new nodes and constrict their Booleans.
@@ -443,8 +447,8 @@ Node.prototype.friendlySubsetDescription = function () {
         const tDesc = tParent.friendlySubsetDescription();
 
         const tNewLabel = (this.LoR === "L") ?
-            "(" + tParent.attributeSplit.attName + "&nbsp;=&nbsp;" + tParent.attributeSplit.leftLabel + ")" :
-            "(" + tParent.attributeSplit.attName + "&nbsp;=&nbsp;" + tParent.attributeSplit.rightLabel + ")";
+            "(" + tParent.attributeSplit.attName + ` ${arbor.strings.sfIsAre(1)} ` + tParent.attributeSplit.leftLabel + ")" :
+            "(" + tParent.attributeSplit.attName + ` ${arbor.strings.sfIsAre(1)} ` + tParent.attributeSplit.rightLabel + ")";
 
         if (tDesc === tAllCasesText) {
             out = tNewLabel;
@@ -459,14 +463,6 @@ Node.prototype.friendlySubsetDescription = function () {
 };
 
 Node.prototype.longDescription = function () {
-
-
-    /*
-        const tResultCounts = this.getResultCounts();
-        const tProportionText = "p(" + tDependentClause + ") = " + this.mean.toFixed(3);
-        const tMeanText = "\u03bc(" + arbor.state.dependentVariableSplit.attName + ") = " + this.mean.toFixed(0);
-        const tMSDtext = "SSD ratio: " + (tResultCounts.ssdFraction ? (tResultCounts.ssdFraction).toFixed(2) : "N/A");
-    */
 
     let out = "";
     if (!this.parentNode()) {   //  dependent variable only

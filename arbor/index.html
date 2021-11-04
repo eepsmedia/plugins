@@ -1,4 +1,4 @@
-"<!--
+<!--
 ==========================================================================
 
  * Created by tim on 9/26/16.
@@ -46,7 +46,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Arbor</title>
@@ -160,10 +160,12 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     -->
     <div id="tree">
 
+<!--
         <div id="showLeavesControl">
             <input id="showDiagnosisLeaves" type="checkbox" onchange="arbor.handleShowHideDiagnosisLeaves()">
             <label for="showDiagnosisLeaves" id="sShowPredictionLeaves">leaves?</label>
         </div>
+-->
 
         <svg id="treePaper" class="noselect" width="100%" height="300">
             <rect height="100%" width="100%" fill="dodgerblue"></rect>
@@ -173,7 +175,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         </div>
 
         <div class="vBox" id="statusDiv">
-                <span id="resultsText">No results yet</span>
+            <span id="resultsText">No results yet</span>
         </div>
 
         <div class="vBox" id="outputFileControls">
@@ -281,7 +283,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
             <!-- <p>If you are Joachim Engel, you might want to change this to " regression.
     "</p> -->
-            <label for="treeTypeMenu">Tree type</label>
+            <label for="treeTypeMenu" id="treeTypeLabel">Tree type</label>
             <select id="treeTypeMenu" onchange="arbor.changeTreeTypeUsingMenu();">
                 <option value="classification" id="classificationMenuItem" selected>classification</option>
                 <option value="regression" id="regressionMenuItem">regression</option>
@@ -293,37 +295,36 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
         <div class="baumControlGroup">
 
-            <p>How do you want to display...
-                <svg height="16">
-                    <circle r="8" cx="20" cy="8" fill="dodgerblue"></circle>
-                    <circle r="8" cx="40" cy="8" fill="dodgerblue"></circle>
-                    <circle r="8" cx="60" cy="8" fill="dodgerblue"></circle>
-                    <circle r="8" cx="80" cy="8" fill="red"></circle>
-                    <circle r="8" cx="100" cy="8" fill="red"></circle>
-                </svg>
-                <br>
-                ...how many cases are successes?
-                <input id="useOutOfOption" type="radio" name="outOfOrRatio"
-                       value="outOf" onchange="arbor.recordDisplayParams()" checked>
-                <label for="usePercentOption">3 of 5</label>
-                <input id="useFractionOption" type="radio" name="outOfOrRatio"
-                       value="fraction" onchange="arbor.recordDisplayParams()">
-                <label for="useFractionOption">3/5</label>
-                <input id="useRatioOption" type="radio" name="outOfOrRatio"
-                       value="ratio" onchange="arbor.recordDisplayParams()">
-                <label for="useProportionOption">3 : 2</label>
-                <br>
-                ...the proportion of "successes"?
-                <input id="usePercentOption" type="radio" name="proportionOrPercentage"
-                       value="percent" onchange="arbor.recordDisplayParams()" checked>
-                <label for="usePercentOption">60%</label>
-                <input id="useProportionOption" type="radio" name="proportionOrPercentage"
-                       value="proportion" onchange="arbor.recordDisplayParams()">
-                <label for="useProportionOption">p = 0.60</label>
-                <input id="omitProportionOption" type="radio" name="proportionOrPercentage"
-                       value="noProportion" onchange="arbor.recordDisplayParams()">
-                <label id="sOmitProportionLabel" for="omitProportionOption">(none)</label>
-            </p>
+            <span id="howDoYouWantToDisplay">How do you want to display...</span>
+            <svg height="16">
+                <circle r="8" cx="20" cy="8" fill="dodgerblue"></circle>
+                <circle r="8" cx="40" cy="8" fill="dodgerblue"></circle>
+                <circle r="8" cx="60" cy="8" fill="dodgerblue"></circle>
+                <circle r="8" cx="80" cy="8" fill="red"></circle>
+                <circle r="8" cx="100" cy="8" fill="red"></circle>
+            </svg>
+            <br>
+            <span id="howManyCasesAreSuccesses">...how many cases are successes?</span>
+            <input id="useOutOfOption" type="radio" name="outOfOrRatio"
+                   value="outOf" onchange="arbor.recordDisplayParams()" checked>
+            <label for="usePercentOption"><span id="threeOfFive">3 of 5</span></label>
+            <input id="useFractionOption" type="radio" name="outOfOrRatio"
+                   value="fraction" onchange="arbor.recordDisplayParams()">
+            <label for="useFractionOption">3/5</label>
+            <input id="useRatioOption" type="radio" name="outOfOrRatio"
+                   value="ratio" onchange="arbor.recordDisplayParams()">
+            <label for="useProportionOption">3 : 2</label>
+            <br>
+            <span id="theProportionOfSuccesses">...the proportion of "successes"?</span>
+            <input id="usePercentOption" type="radio" name="proportionOrPercentage"
+                   value="percent" onchange="arbor.recordDisplayParams()" checked>
+            <label for="usePercentOption">60%</label>
+            <input id="useProportionOption" type="radio" name="proportionOrPercentage"
+                   value="proportion" onchange="arbor.recordDisplayParams()">
+            <label for="useProportionOption">p = 0.60</label>
+            <input id="omitProportionOption" type="radio" name="proportionOrPercentage"
+                   value="noProportion" onchange="arbor.recordDisplayParams()">
+            <label id="sOmitProportionLabel" for="omitProportionOption">(none)</label>
         </div>
 
         <!--
@@ -334,22 +335,22 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <input type="checkbox" id="autoOpenAttributeSplitOnDrop" onchange="arbor.recordDisplayParams()">
             <label for="autoOpenAttributeSplitOnDrop" id="sAutoOpenAttributeSplitLabel"></label>
             <br>
-            <input type="checkbox" id="showDiagnosisLeafControl" onchange="arbor.recordDisplayParams()">
-            <label for="showDiagnosisLeafControl" id="sShowDiagnosisLeafControlLabel">Show leaf control</label>
+            <input type="checkbox" id="autoBranchLabels" onchange="arbor.recordDisplayParams()">
+            <label for="autoBranchLabels" id="sAutomaticallyShowSplitPointsInBranchLabelsLabel">never see this!</label>
         </div>
 
-<!--
-        <div class="baumControlGroup">
-            <p> Change these at your peril.</p>
+        <!--
+                <div class="baumControlGroup">
+                    <p> Change these at your peril.</p>
 
-            <label for="dataContextMenu">Dataset: </label>
-            <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
-            &lt;!&ndash;
-            <label for="collectionMenu">Collection: </label>
-            <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
-            &ndash;&gt;
-        </div>
--->
+                    <label for="dataContextMenu">Dataset: </label>
+                    <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
+                    &lt;!&ndash;
+                    <label for="collectionMenu">Collection: </label>
+                    <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
+                    &ndash;&gt;
+                </div>
+        -->
 
 
         <div class="baumControlGroup">
@@ -360,7 +361,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <br><br>
             Thanks to many people, including Joachim Engel, Laura Martignon, Bill Finzer,
             Joan Heller, Frieda Reichsman,
-            Suzanne Podworny, Yannik Fleischer, Thomas Wassong, Michael Schlichtig,
+            Susanne Podworny, Yannik Fleischer, Thomas Wassong, Michael Schlichtig,
             and many students in Germany and the USA.
         </div>
     </div>

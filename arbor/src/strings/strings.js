@@ -44,7 +44,7 @@ strings = {
     en: {
         staticStrings: {
             changeLanguageButton: "English",
-            sShowPredictionLeaves: `show prediction "leaves"`,
+            //  sShowPredictionLeaves: `show prediction "leaves"`,
             sTreeTab: `tree`,
             sTableTab: `table`,
             sSettingsTab: `settings`,
@@ -59,13 +59,11 @@ strings = {
             "pred-head": "prediction",
             "no-pred-head": `no prediction`,
             sOmitProportionLabel : `(none)`,
-            sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
             focusAttributeNameBoxLabel  : `label`,
             focusAttributeValueBoxLabel  : `value`,    //  `val`,
-            classificationMenuItem : `classification`,
-            regressionMenuItem : `regression`,
 
-            //  configuration panel
+            //  attribute configuration panel
+
             sConfConfigure : `Configure`,
             sConfDoneButton : `Done`,
             sConfLeftHeaderText : `left branch`,
@@ -76,6 +74,19 @@ strings = {
             sConfSwapLandRLabel : `swap left and right:`,
             sConfContinuousOptionText : `continuous`,
             sConfCategoricalOptionText : `categorical`,
+
+            //  options panel
+
+            classificationMenuItem : `classification`,
+            regressionMenuItem : `regression`,
+            treeTypeLabel : `tree type: `,
+            howDoYouWantToDisplay : `How do you want to display...`,
+            howManyCasesAreSuccesses : `... how many dots are blue?`,
+            theProportionOfSuccesses : `... the proportion of dots are blue?`,
+            threeOfFive : `3 of 5`,
+            sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
+            //      sShowDiagnosisLeafControlLabel :  `never appear!`,
+            sAutomaticallyShowSplitPointsInBranchLabelsLabel : `automatically show split points in branch labels`,
 
 
         },
@@ -139,10 +150,6 @@ Then we ask about`,
         sadMisclassificationRate : `misclassification rate: the proportion of predictions we did not get correct`,
         sadSumSSD : `total (normalized) sum of the squares of the deviations`,
 
-        //      strings from the options panel
-
-        sShowDiagnosisLeafControlLabel : `show leaf controls`,
-
 
         //      functions, that is, strongs that have numbers, etc. substitutes in them
 
@@ -161,8 +168,7 @@ ${arbor.informalDVBooleanReversed} 'negative'.`
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
             return (
-`
-This node represents ${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.
+`This node represents ${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.
 These are all ${iNode.friendlySubsetDescription()}.
 Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
 The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
@@ -196,7 +202,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
     de: {
         staticStrings: {
             changeLanguageButton: "Deutsch",
-            sShowPredictionLeaves: `"Label" anzeigen`,
+            //  sShowPredictionLeaves: `"Label" anzeigen`,
             sTreeTab: `Baum`,
             sTableTab: `Tabelle`,
             sSettingsTab: `Einstellungen`,
@@ -211,11 +217,8 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             "pred-head": "Vorhersage",
             "no-pred-head": `ohne Vorhersage`,        //  todo: 2021-09-18 not appearing. Why not?
             sOmitProportionLabel : `(ohne)`,
-            sAutoOpenAttributeSplitLabel : `Splitkonfiguration automatisch öffnen`, 
-            focusAttributeNameBoxLabel  : `Label`,    //  `label`,  
+            focusAttributeNameBoxLabel  : `Label`,    //  `label`,
             focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
-            classificationMenuItem : `Klassifikation`,      //`classification`,
-            regressionMenuItem : `Regression`,              //   `regression`,
 
             //  configuration panel
             sConfConfigure : `Einstellungen für`,  
@@ -228,6 +231,18 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             sConfSwapLandRLabel : `links und rechts tauschen:`,
             sConfContinuousOptionText : `kontinuierlich`,
             sConfCategoricalOptionText : `kategorial`,
+
+            //  options panel
+            classificationMenuItem : `Klassifikation`,      //`classification`,
+            regressionMenuItem : `Regression`,              //   `regression`,
+            treeTypeLabel : `Art des Baums: `,
+            howDoYouWantToDisplay : `Wie soll die Darstellung aussehen von...`,    //  `How do you want to display...`,
+            howManyCasesAreSuccesses : `Wie viele Fälle sind blau?`,     //  `... how many cases are successes?`,
+            theProportionOfSuccesses :  `Welcher Anteil ist blau?`,    //      `... the proportion of successes?`,
+            threeOfFive : `3 von 5`,        //      `3 of 5`,
+            sAutoOpenAttributeSplitLabel : `Splitkonfiguration automatisch öffnen`,
+            //  sShowDiagnosisLeafControlLabel :  `this should never appear!`,
+            sAutomaticallyShowSplitPointsInBranchLabelsLabel : `Splitwerte an den Ästen anzeigen`,
 
         },
         sIs: "ist",
@@ -291,10 +306,6 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
         sadMisclassificationRate : `Die Fehlklassifikationsrate gibt den Anteil der falschen Vorhersagen an: (FP+FN)`,
         sadSumSSD : `Gesamtsumme der (normierten) Quadrate der Abweichungen`,
 
-
-        //      strings from the options panel      DEUTSCH... do this section!
-
-        sShowDiagnosisLeafControlLabel : `show leaf controls`,      //  `show leaf controls`,
 
 
         //      functions, that is, strongs that have numbers, etc. substitutes in them

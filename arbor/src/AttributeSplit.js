@@ -101,7 +101,11 @@ AttributeSplit.prototype.swapLandR = function() {
 AttributeSplit.prototype.setCutPoint = function(iValue, iOperator ) {
     this.cutpoint = iValue;
     this.operator = iOperator;
-    return "c." + this.attName + " " + this.operator + " " + this.cutpoint; //  e.g., "c.foo < 42"
+    if (arbor.state.oAutoBranchLabels) {
+        this.setAutoLabels();
+    }
+
+    return `c.${this.attName} ${this.operator} ${this.cutpoint}`; //  e.g., "c.foo < 42"
 
 };
 
@@ -126,12 +130,25 @@ AttributeSplit.prototype.makeInitialSplitParameters = function( ) {
         var tCutPoint = (tAtt.sum / (tAtt.caseCount - tAtt.missingCount));
         tCutPoint = Number(tCutPoint.toPrecision(5));
         this.oneBoolean = this.setCutPoint( tCutPoint, "<" );     //  also sets oneBoolean
+        if (arbor.state.oAutoBranchLabels) {
+            this.setAutoLabels();
+        }
     }
     //  console.log("Initial classification, set split for " + this.attName + " oneBoolean: " + this.oneBoolean );
 };
 
+AttributeSplit.prototype.setAutoLabels = function() {
+    if (this.isCategorical) {
+
+    } else {
+        const oppositeOperator = AttributeSplit.operatorOpposites[this.operator];
+        this.leftLabel = `${this.operator} ${this.cutpoint}`;
+        this.rightLabel = `${oppositeOperator} ${this.cutpoint}`;
+    }
+};
+
 AttributeSplit.prototype.makeMissingFilter = function( iName ) {
-    return ("c." + iName + "===''");
+    return (`c.${iName}===''`);
 };
 
 /**

@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021j',
+        version: '2021k',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -338,6 +338,7 @@ const arbor = {
             oAlwaysShowConfigurationOnSplit: false,
             oShowDiagnosisLeaves: true,         //  default to show the leaves
             oShowDiagnosisLeafControl : false,  //  default to hide the leaf control
+            oAutoBranchLabels : false,          //  default, do NOT use automaic branch label text (Energy < 35)
         }
     },
 
@@ -429,7 +430,8 @@ const arbor = {
         }
 
         document.getElementById("autoOpenAttributeSplitOnDrop").checked = arbor.state.oAlwaysShowConfigurationOnSplit;
-        document.getElementById("showDiagnosisLeaves").checked = arbor.state.oShowDiagnosisLeaves;
+        document.getElementById("autoBranchLabels").checked = arbor.state.oAutoBranchLabels;
+        //  document.getElementById("showDiagnosisLeaves").checked = arbor.state.oShowDiagnosisLeaves;
     },
 
     /**
@@ -552,9 +554,9 @@ const arbor = {
     redisplay: function () {
         console.log(`Redisplay (in arbor.js, ${arbor.strings.staticStrings.changeLanguageButton}) ------------------------`);
 
-        const showLeafControlCheckbox = document.getElementById("showDiagnosisLeafControl");
-        const showLeavesControl = document.getElementById("showLeavesControl");
-        showLeavesControl.style.display = showLeafControlCheckbox.checked ? "flex" : "none";
+        //  const showLeafControlCheckbox = document.getElementById("showDiagnosisLeafControl");
+        //  const showLeavesControl = document.getElementById("showLeavesControl");
+        //  showLeavesControl.style.display = showLeafControlCheckbox.checked ? "flex" : "none";
 
         const treePaper = document.getElementById("treePaper");
         const noTreePaper  = document.getElementById("noTreeArea");
@@ -663,10 +665,10 @@ const arbor = {
     fixDependentVariableMechanisms: function () {
         this.dependentVariableBoolean = this.state.dependentVariableSplit.oneBoolean;
 
-        this.informalDVBoolean = this.state.dependentVariableSplit.attName + " = " +
+        this.informalDVBoolean = this.state.dependentVariableSplit.attName + ` ${arbor.strings.sfIsAre(1)} ` +
             this.state.dependentVariableSplit.leftLabel;
 
-        this.informalDVBooleanReversed = this.state.dependentVariableSplit.attName + " = " +
+        this.informalDVBooleanReversed = this.state.dependentVariableSplit.attName +` ${arbor.strings.sfIsAre(1)} ` +
             this.state.dependentVariableSplit.rightLabel;
 
         this.state.tree.rootNode.valueInLabel = "predicting " + this.informalDVBoolean;
@@ -779,11 +781,15 @@ const arbor = {
      * and redisplay.
      */
     recordDisplayParams: function () {
+        //  radio buttons
         arbor.state.oNodeDisplayProportion = document.querySelector(`input[name='proportionOrPercentage']:checked`).value;
         arbor.state.oNodeDisplayNumber = document.querySelector(`input[name='outOfOrRatio']:checked`).value;
 
+        //   checkboxes
         arbor.state.oAlwaysShowConfigurationOnSplit = document.getElementById("autoOpenAttributeSplitOnDrop").checked;
-        arbor.state.oShowDiagnosisLeafControl = document.getElementById("showDiagnosisLeafControl").checked;
+        arbor.state.oAutoBranchLabels = document.getElementById("autoBranchLabels").checked;
+        //  arbor.state.oShowDiagnosisLeafControl = document.getElementById("showDiagnosisLeafControl").checked;
+
         console.log(`   display params: ${arbor.state.oNodeDisplayNumber} and ${arbor.state.oNodeDisplayProportion}`);
 
         arbor.refreshBaum('views');
