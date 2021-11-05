@@ -70,9 +70,9 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021m',
+        version: '2021n',
         name: 'arbor',
-        title: 'diagnostic tree',
+        title: 'decision tree',
         dimensions: {width: 500, height: 555},
         preventDataContextReorg: false,
     },
@@ -132,7 +132,7 @@ const arbor = {
      */
     setDataContext : async function(iName) {
         if (this.analysis && (iName === this.state.dataSetName)) {
-                console.log("arborsetDataContext: no change from " + this.state.dataSetName);
+                console.log("arbor.setDataContext: no change from " + this.state.dataSetName);
         } else {
             console.log("change dataset to " + iName + " instead of " + this.state.dataSetName);
 
@@ -145,12 +145,42 @@ const arbor = {
             codapInterface.on(
                 'notify',
                 'dataContextChangeNotice[' + this.state.dataSetName + ']',
-                'createCases',
-                arbor.newCases.newCasesInData
+                arbor.handleDataContextChange
             );
 
         }
     },
+
+    handleDataContextChange: function(iCommand) {
+
+        switch(iCommand.values.operation) {
+            case `createCases`:
+                arbor.newCases.newCasesInData(iCommand);
+                break;
+
+            case `createAttributes`:
+            case `deleteAttributes`:
+            case `updateAttributes`:
+            case `moveAttribute`:
+            case `createCollection`:
+            case `deleteCollection`:
+
+            case `deleteCases`:
+            case `updateCases`:
+            case `dependentCases`:      //  rerandomize a random formula
+
+                arbor.refreshBaum('data');
+                console.log(`**    handled data context change: ${iCommand.values.operation}`);
+
+                break;
+
+            default:
+                console.log(`    unhandled data context change: ${iCommand.values.operation}`);
+                break;
+        }
+
+    },
+
 
     deleteBothOutputDatasets: async function () {
         const tDeleteRequest = [
