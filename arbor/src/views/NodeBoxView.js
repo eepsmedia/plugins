@@ -244,7 +244,7 @@ NodeBoxView.prototype.makeAndAddClassificationDataStripes = function (iColors) {
             tCountText = `${this.myNode.numerator} ${arbor.strings.sOf} ${this.myNode.denominator}`;
             break;
         case arbor.constants.kUseRatioInNodeBox:
-            tCountText = `${this.myNode.numerator} : ${this.myNode.denominator - this.myNode.numerator}`;
+            tCountText = `${this.myNode.numerator} ${arbor.strings.sTo} ${this.myNode.denominator - this.myNode.numerator}`;
             break;
         case arbor.constants.kUseFractionInNodeBox:
             tCountText = `${this.myNode.numerator}/${this.myNode.denominator}`;

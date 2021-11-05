@@ -40,7 +40,7 @@ arbor.ui = {
         document.getElementById("pred-positive-head").innerHTML = `${kPositive} (${tRes.TP + tRes.FP})`;
         document.getElementById("pred-negative-head").innerHTML = `${kNegative} (${tRes.TN + tRes.FN})`;
 
-        document.getElementById("no-pred-head").innerHTML = `no prediction (${tRes.PU + tRes.NU})`;
+        document.getElementById("noPredictionTableHead").innerHTML = `${arbor.strings.sNoPrediction} (${tRes.PU + tRes.NU})`;
 
         document.getElementById("TP").innerHTML = tRes.TP;
         document.getElementById("FP").innerHTML = tRes.FP;

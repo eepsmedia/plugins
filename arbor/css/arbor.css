@@ -148,6 +148,11 @@ pre {
     text-align:center;
 }
 
+#numberEntryHint {
+    font-size: xx-small;
+    float: right;
+}
+
 #settings {
     display:grid;
     grid-template-columns : 1fr;

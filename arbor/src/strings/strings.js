@@ -55,12 +55,14 @@ strings = {
             refreshAllButton2: `refresh all`,
             refreshDataButton2: `refresh data`,
             emitDataButton2: `emit data`,
+            noTreeMessage : `Drag your target attribute here`,
             "truth-head": "truth",
             "pred-head": "prediction",
-            "no-pred-head": `no prediction`,
             sOmitProportionLabel : `(none)`,
             focusAttributeNameBoxLabel  : `label`,
             focusAttributeValueBoxLabel  : `value`,    //  `val`,
+
+            tableSummaryDataControlDetailTitle : `in order to export...`,
 
             //  attribute configuration panel
 
@@ -72,8 +74,9 @@ strings = {
             sConfRightLabelLabel : `label:`,
             sConfAttributeTypeLabel : `attribute type:`,
             sConfSwapLandRLabel : `swap left and right:`,
-            sConfContinuousOptionText : `continuous`,
+            sConfContinuousOptionText : `numeric`,
             sConfCategoricalOptionText : `categorical`,
+            numberEntryHint : ``,
 
             //  options panel
 
@@ -84,6 +87,7 @@ strings = {
             howManyCasesAreSuccesses : `... how many dots are blue?`,
             theProportionOfSuccesses : `... the proportion of dots are blue?`,
             threeOfFive : `3 of 5`,
+            threeToTwo : `3 to 2`,        //      `3 to 2`,
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
             //      sShowDiagnosisLeafControlLabel :  `never appear!`,
             sAutomaticallyShowSplitPointsInBranchLabelsLabel : `automatically show split points in branch labels`,
@@ -94,6 +98,9 @@ strings = {
         sOr: "or",
         sAnd: "and",
         sOf : "of",
+        sOthers : `others`,
+        sTo : `to`,
+
         sThenWeAskAbout: `
         
 Then we ask about`,
@@ -151,7 +158,7 @@ Then we ask about`,
         sadSumSSD : `total (normalized) sum of the squares of the deviations`,
 
 
-        //      functions, that is, strongs that have numbers, etc. substitutes in them
+        //      functions, that is, strings that have numbers, etc. substitutes in them
 
         sfIsAre : function(howMany) {
             return (howMany === 1) ? "is" : "are";
@@ -208,17 +215,19 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             sSettingsTab: `Einstellungen`,
             sHelpTab: `Hilfe`,
             refreshAllButton: `Baum zurücksetzen`,
-            refreshDataButton: `Baum erneuern`,
+            refreshDataButton: `Daten aktualisieren`,
             emitDataButton: `Daten ausgeben`,
             refreshAllButton2: `Baum zurücksetzen`,
-            refreshDataButton2: `Baum erneuern`,
+            refreshDataButton2: `Daten aktualisieren`,
             emitDataButton2: `Daten ausgeben`,
+            noTreeMessage : `Die Zielvariable hierher ziehen`,
             "truth-head": "tatsächlich",
-            "pred-head": "Vorhersage",
-            "no-pred-head": `ohne Vorhersage`,        //  todo: 2021-09-18 not appearing. Why not?
+            "pred-head" : "Vorhersage",
             sOmitProportionLabel : `(ohne)`,
-            focusAttributeNameBoxLabel  : `Label`,    //  `label`,
+            focusAttributeNameBoxLabel  : `Variable`,    //  `label`,
             focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
+
+            tableSummaryDataControlDetailTitle : `für die Ausfuhr...`,
 
             //  configuration panel
             sConfConfigure : `Einstellungen für`,  
@@ -229,8 +238,9 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             sConfRightLabelLabel : `Label:`,
             sConfAttributeTypeLabel : `Art der Variable`,  
             sConfSwapLandRLabel : `links und rechts tauschen:`,
-            sConfContinuousOptionText : `kontinuierlich`,
+            sConfContinuousOptionText : `numerisch`,
             sConfCategoricalOptionText : `kategorial`,
+            numberEntryHint : `Punkt statt Komma benutzen!`,
 
             //  options panel
             classificationMenuItem : `Klassifikation`,      //`classification`,
@@ -240,6 +250,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             howManyCasesAreSuccesses : `Wie viele Fälle sind blau?`,     //  `... how many cases are successes?`,
             theProportionOfSuccesses :  `Welcher Anteil ist blau?`,    //      `... the proportion of successes?`,
             threeOfFive : `3 von 5`,        //      `3 of 5`,
+            threeToTwo : `3 zu 2`,        //      `3 to 2`,
             sAutoOpenAttributeSplitLabel : `Splitkonfiguration automatisch öffnen`,
             //  sShowDiagnosisLeafControlLabel :  `this should never appear!`,
             sAutomaticallyShowSplitPointsInBranchLabelsLabel : `Splitwerte an den Ästen anzeigen`,
@@ -249,6 +260,9 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         sOr: "oder",
         sAnd: "und",
         sOf : "von",
+        sOthers : `Sonstige`,
+        sTo : `zu`,
+
         sThenWeAskAbout: `
         
 Als nächstes wird betrachtet:`,  //insert an empty row before this line
@@ -308,7 +322,7 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
 
 
-        //      functions, that is, strongs that have numbers, etc. substitutes in them
+        //      functions, that is, strings that have numbers, etc. substitutes in them
 
 
 
@@ -327,8 +341,7 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
             return (
-`
-Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. 
+`Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. 
 Das sind alle Fälle mit: ${iNode.friendlySubsetDescription()}.
 Davon sind ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}), 
 und ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`

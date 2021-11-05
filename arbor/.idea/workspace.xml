@@ -4,15 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2021j, works with no dataset, (have to drag in), better visibility rules.">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/confusion-matrix.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/confusion-matrix.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.newCases.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.newCases.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arborCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arborCODAPConnector.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeZoneView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +85,7 @@
       <workItem from="1633361666695" duration="1687000" />
       <workItem from="1634136396047" duration="17149000" />
       <workItem from="1635385145595" duration="14800000" />
-      <workItem from="1635839675950" duration="42698000" />
+      <workItem from="1635839675950" duration="56533000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
@@ -168,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635935716136</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="2021k, option to automatically label numeric with cutpoint.">
+      <created>1636025662223</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1636025662223</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,6 +208,7 @@
     <MESSAGE value="2021g, first Paderborn commit. A few safe (ha ha ha ) changes" />
     <MESSAGE value="2021h, new German strings, drag and drop to specify almost right" />
     <MESSAGE value="2021j, works with no dataset, (have to drag in), better visibility rules." />
-    <option name="LAST_COMMIT_MESSAGE" value="2021j, works with no dataset, (have to drag in), better visibility rules." />
+    <MESSAGE value="2021k, option to automatically label numeric with cutpoint." />
+    <option name="LAST_COMMIT_MESSAGE" value="2021k, option to automatically label numeric with cutpoint." />
   </component>
 </project>

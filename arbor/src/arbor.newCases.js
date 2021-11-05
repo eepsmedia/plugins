@@ -76,7 +76,7 @@ arbor.newCases = {
             const processAndChangeItemsWithDiagnosesAndPrepareUpdateRequest = function (iResult) {
 
                 /*
-                At the moment, this is quite Arbor-sepcific.
+                At the moment, this is quite Xeno-specific.
                 Specific named attributes: health, diagnosis, score, analysis
                  */
                 let tCompoundRequest = [];
@@ -86,18 +86,18 @@ arbor.newCases = {
                 iResult.forEach(function (r) {
                     if (r.success) {
                         const id = r.values.case.id;
-                        const c = r.values.case.values;
+                        const c = r.values.case.values;     //      this is the case as JSON
 
                         //  arbor.newCases.checkForNewValuesInAttributes(c);
 
                         //  Check to make sure that the case has a "source" === "auto" and that "diagnosis" does not exist.
                         //  THIS IS FRAGILE! :)
 
-                        if (c.diagnosis) {
+                        if (c[arbor.constants.diagnosisAttributeName]) {
                             console.log('case ' + id + ' already diagnosed');
-                        } else if (c.source !== 'auto') {
+                        } else if (c[arbor.constants.sourceAttributeName] !== 'auto') {
 
-                        } else {
+                        } else {        //  OK, it is "auto" and not already diagnosed. So we let the tree diagnose it.
                             newCases.push(c);
 
                             //  get the tree's result for this case
@@ -118,7 +118,8 @@ arbor.newCases = {
                                     arbor.state.dependentVariableSplit.leftLabel :
                                     arbor.state.dependentVariableSplit.rightLabel;
 
-                                theAnalysis = (theTerminalValue === c.health ? "T" : "F");
+                                //  create strings TP, FN, etc...
+                                theAnalysis = (theTerminalValue === c[arbor.constants.healthAttributeName] ? "T" : "F");
                                 theAnalysis += theTrace.terminalNodeSign === "+" ? "P" : "N";
                             }
 

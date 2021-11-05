@@ -79,7 +79,7 @@ limitations under the License.
     grid-row : 3/5;
 }
 
-#no-pred-head {
+#noPredictionTableHead {
     grid-column: 1/3;
     grid-row: 5;
 }

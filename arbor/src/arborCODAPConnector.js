@@ -103,14 +103,16 @@ arbor.codapConnector = {
                             title: arbor.strings.staticStrings.focusAttributeValueBoxLabel,
                             type: 'numeric', description : arbor.strings.sadFocusAttributeValue
                         },
-                        //  N, the number of cases
-                        {name : arbor.strings.sanN, title: arbor.strings.sanN, type: 'numeric', precision : 0, description : arbor.strings.sadN},
-                        {name : arbor.strings.sanBaseRate, title: arbor.strings.sanBaseRate, title : "base rate", type: 'numeric', precision: 3, description : arbor.strings.sadBaseRate},
 
                         //  misclassification rate; note that this has a formula
                         {name : arbor.strings.sanMisclassificationRate, title: arbor.strings.sanMisclassificationRate, type: 'numeric', precision: 3, editable : true,
                             description : arbor.strings.sadMisclassificationRate,
                             formula : `(${arbor.strings.sanN} - ${arbor.strings.sanTP} - ${arbor.strings.sanTN})/${arbor.strings.sanN}`
+                        },
+                        //  sensitivity
+                        {name : arbor.strings.sanSensitivity, title: arbor.strings.sanSensitivity, type: 'numeric', precision: 3, editable : true,
+                            description : arbor.strings.sadSensitivity,
+                            formula : ` ${arbor.strings.sanTP}/( ${arbor.strings.sanTP} +  ${arbor.strings.sanFN} +  ${arbor.strings.sanNPPos})`
                         },
 
                         //  the four base stats!
@@ -122,11 +124,10 @@ arbor.codapConnector = {
                         {name : arbor.strings.sanNPPos, title: arbor.strings.sanNPPos, type: 'numeric', precision: 0, description : arbor.strings.sadNPPos},
                         {name : arbor.strings.sanNPNeg, title: arbor.strings.sanNPNeg, type: 'numeric', precision: 0, description : arbor.strings.sadNPNeg},
 
-                        //  sensitivity
-                        {name : arbor.strings.sanSensitivity, title: arbor.strings.sanSensitivity, type: 'numeric', precision: 3, editable : true,
-                            description : arbor.strings.sadSensitivity,
-                            formula : ` ${arbor.strings.sanTP}/( ${arbor.strings.sanTP} +  ${arbor.strings.sanFN} +  ${arbor.strings.sanNPPos})`
-                        },
+                        //  N, the number of cases
+                        {name : arbor.strings.sanN, title: arbor.strings.sanN, type: 'numeric', precision : 0, description : arbor.strings.sadN},
+                        {name : arbor.strings.sanBaseRate, title: arbor.strings.sanBaseRate, title : "base rate", type: 'numeric', precision: 3, description : arbor.strings.sadBaseRate},
+
 
                         //  number of nodes
                         {name : arbor.strings.sanNodes, title: arbor.strings.sanNodes, type: 'numeric', precision : 0, description : arbor.strings.sadNodes},

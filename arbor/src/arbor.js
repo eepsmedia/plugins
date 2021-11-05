@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021k',
+        version: '2021m',
         name: 'arbor',
         title: 'diagnostic tree',
         dimensions: {width: 500, height: 555},
@@ -115,6 +115,7 @@ const arbor = {
         );
 
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
+        await arbor.figureOutLanguage();
         await arbor.getAndRestoreViews();   //
 
         await this.createOutputDatasets();
@@ -309,24 +310,10 @@ const arbor = {
      */
     freshState: function () {
 
-        //  find the user's favorite language that's actually in our list
-        const userLanguages = Array.from(navigator.languages).reverse();
-        const arborLanguages = Object.keys(strings.languageNames);
-
-        let theLang = 'en';
-
-        userLanguages.forEach( (L) => {
-            console.log(`user has lang ${L}`);
-            const twoLetter = L.slice(0,2).toLowerCase();
-            if (arborLanguages.includes(twoLetter)) {
-                theLang = twoLetter;
-                console.log(`    change lang to ${theLang}`);
-            }
-        })
 
         //  here is the default state
         return {
-            lang: theLang,
+            lang: arbor.constants.kDefaultLanguage,
             treeType: arbor.constants.kClassTreeType,
             latestNodeID: 42,
             dataSetName : null,
@@ -338,7 +325,7 @@ const arbor = {
             oAlwaysShowConfigurationOnSplit: false,
             oShowDiagnosisLeaves: true,         //  default to show the leaves
             oShowDiagnosisLeafControl : false,  //  default to hide the leaf control
-            oAutoBranchLabels : false,          //  default, do NOT use automaic branch label text (Energy < 35)
+            oAutoBranchLabels : true,          //  default, use automatic branch label text (Energy < 35)
         }
     },
 
@@ -390,6 +377,7 @@ const arbor = {
 
     /**
      * Set various controls in the UI to match the `arbor.state` values.
+     * Called in `arbor.getAndRestoreModel`
      *
      * @returns {Promise<void>}
      */
@@ -841,7 +829,36 @@ const arbor = {
     paperString: function (p) {
         return "(x, y) = (" + Math.round(Number(p.attr("x"))) + ", " + Math.round(Number(p.attr("y")))
             + ") ... (w, h) = (" + Math.round(Number(p.attr("width"))) + ", " + Math.round(Number(p.attr("height"))) + ")";
-    }
+    },
+
+    figureOutLanguage : async function() {
+        arbor.state.lang = arbor.constants.kDefaultLanguage;
+
+        //  find the user's favorite language that's actually in our list
+        const userLanguages = Array.from(navigator.languages).reverse();
+        const arborLanguages = Object.keys(strings.languageNames);
+
+        userLanguages.forEach( (L) => {
+            console.log(`user has lang ${L}`);
+            const twoLetter = L.slice(0,2).toLowerCase();
+            if (arborLanguages.includes(twoLetter)) {
+                arbor.state.lang = twoLetter;
+                console.log(`    change lang to ${arbor.state.lang} from user preferences`);
+            }
+        })
+
+
+        const params = new URLSearchParams(document.location.search.substring(1));
+        const lang = params.get("lang");
+
+        if (lang) {
+            arbor.state.lang = lang;
+            console.log(`Got language ${arbor.state.lang} from input parameters`);
+        }
+
+        await strings.initializeStrings(arbor.state.lang);
+    },
+
 
 };
 
@@ -870,9 +887,11 @@ arbor.constants = {
     leafCornerRadius: 15,
     leafTextColor: "#fff",
 
-    //  context specific??
+    //  context specific?? Xeno??
     diagnosisAttributeName: "diagnosis",
     analysisAttributeName: "analysis",
+    sourceAttributeName: "source",
+    healthAttributeName: "health",
 
     //  characters
     leftArrowCode: "\u21c7",       //      "\u2190",
@@ -903,7 +922,7 @@ arbor.constants = {
     closeIconURI: "art/closeAttributeIcon.png",
 
     kName: "arbor",
-    kTitle: "Diagnostic Trees",
+    kTitle: "Decision Trees",
 
     kClassTreeType: "classification",
     kRegressTreeType: "regression",
@@ -927,6 +946,7 @@ arbor.constants = {
     kTreePanelDOMName: "treePaper",
     //  kCorralDOMName: "corral"
 
+    kDefaultLanguage : `en`,
 
 };
 

@@ -124,7 +124,7 @@ AttributeSplit.prototype.makeInitialSplitParameters = function( ) {
     if (this.isCategorical) {
         this.leftCategories[0] = this.categories[0];
         this.leftLabel = this.categories[0];
-        this.rightLabel = (this.categories.length === 2) ? this.categories[1] : "others";
+        this.rightLabel = (this.categories.length === 2) ? this.categories[1] : arbor.strings.sOthers;
         this.oneBoolean = this.constructCategoricalFilter("L");
     } else {
         var tCutPoint = (tAtt.sum / (tAtt.caseCount - tAtt.missingCount));
