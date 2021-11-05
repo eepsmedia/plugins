@@ -1,167 +1,137 @@
-<h1>Hilfe!!</h1>
-<p>Mit diesem CODAP-Plug-in können Sie Entscheidungs- oder Vorhersagebäume basierend auf den Daten im Dokument erstellen. Hier sind die
-  Grundlagen:</p>
+<h1>Anleitung!</h1>
+<p>Mit diesem CODAP Plug-in können Entscheidungsbäume basierend auf Daten ertstellt werden. Das geht folgendermaßen:</p>
 <ul>
-  <li>Drag a variable from CODAP to the body of a node to make a branch. </li>
-  <li>Click the <b>Show prediction leaves</b> box to assign predictions to your tree.</li>
-  <li>Click a node to select it and all its cases (it turns yellow).</li>
-  <li>Click <img height="14" width="14" src="art/configure.png"> to configure the selected node.</li>
-  <li>Stats about your current tree appear below the tree.</li>
-  <li>Deleting: click the trash can <img height="14" width="14" src="art/trash.png"> to remove the
-    <i>children</i> of a node.
-  </li>
-  <li>Drag a variable to the very top "stripe" to make it the "dependent variable."</li>
+  <li><b>Erste Schritte:</b> Um einen Baum zu erstellen, zieht man die Variable, die man vorhersagen möchte, in den blauen Bereich der Registerkarte "Baum". Dadurch wird ein Feld mit dem Namen der Variable erstellt. Dies ist der "Wurzelknoten".</li>
+  <li>Um eine Verzweigung zu erstellen, zieht man eine Variable auf einen Knoten.</li>
+  <li>Um eine bestimmte Vorhersage zuzuweisen, klickt man auf die runden "Label". Ein weiterer Klick ändert die Vorhersage.</li>
+  <li>Hiermit <img height="14" width="14" src="art/configure.png"> gelangt man zu den Einstellungen des ausgewählten Knotens.</li>
+  <li>Statistiken zum aktuellen Baum befinden sich unter dem Baum./li>
+  <li>Löschen: Ein Klick auf den Mülleimer <img height="14" width="14" src="art/trash.png"> entfernt die nachfolgenden Äste. </li>
+  <li>Um eine neue Zielvariable festzulegen, zieht man die neue Variable zum obersten "Streifen" des Wurzelknotens.</li>
+  <li>Mit einem Klick auf einen Knoten wird dieser und alle zugehörigen Fälle ausgewählt (er wird gelb eingefärbt).</li>
+  
+
 </ul>
-<h2>More details:</h2>
+<h2>Weitere Details:</h2>
 
 <P>
-  As an example, suppose we want to determine whether you have a disease called Fbola.
-  We have a number of tests and indications to help us.
+  Es soll nun festgestellt werden, ob man an einer Krankheit namens Fbola leidet. Dazu gibt es eine Reihe von Tests und Hinweisen, die in Form von Daten vorliegen.
 </P>
 
 <p>
-  Having Fbola is the <i>dependent variable</i>.
-  We have test and disease data for a number of people who came
-  to the clinic.
-  Our tree represents a series of questions: Are you coughing?
-  Is your fever over 39 degrees Celsius?
-  Have you ever had the measles?
-  Your design of the tree represents a sequence of questions,
-  each depending on the answers to the previous ones.
+An Fbola erkrankt zu sein, ist die <i>Zielvariable</i>.
+  Es liegen Test-, Untersuchungs- und Krankheitsdaten für verschiedene Personen vor, die sich in der Klinik vorgestellt haben. Der Baum repräsentiert eine Reihe von Fragen, wie zum Beispiel: 
+Haben Sie Husten? 
+Liegt Ihr Fieber über 39 Grad Celsius? 
+Hatten Sie schon einmal die Masern?
+  Das Design des Baums stellt eine Abfolge von Fragen dar, die jeweils von den Antworten auf die vorangegangenen Fragen abhängen.
 </p>
 <p>
-  After any question, we can decide to stop and choose a prediction (or <i>diagnosis</i>).
-  We will say that our diagnosis is positive (that we think you have Fbola) or negative.
-  The positive and negative diagnoses have black and green blocks.
-</p>
+  Nach jeder Frage kann man sich entscheiden, aufzuhören und eine Vorhersage (oder <i>Diagnose</i>) zu treffen. Eine Vorhersage (Diagnose) ist entweder positiv (d. h. man nimmt an, dass Fbola vorliegt) oder negativ. Die positiven und negativen Vorhersagen (Diagnosen) werden am unteren Ende des Baums durch grüne oder braune "Label" dargestellt.</p>
 <p>
-  Of course, we will not be right every time. There are four possibilities:
+  Natürlich liegt man mit einer Vorhersage nicht jedes Mal richtig. Es gibt vier Möglichkeiten:
 </p>
 <ul>
-  <li>We gave a positive diagnosis and you have the disease (a true positive, TP)</li>
-  <li>We gave a positive diagnosis but you are uninfected (a false positive, FP)</li>
-  <li>We gave a negative diagnosis but you actually have the disease (a false negative, FN)</li>
-  <li>We gave a negative diagnosis and you are uninfected (a true negative, TN)</li>
+  <li>Die Vorhersage lautet "positiv" und die Krankheit liegt tatsächlich vor (Richtig positiv, RP)</li>
+  <li>Die Vorhersage lautet "positiv", aber die Krankheit liegt nicht vor (Falsch positiv, FP)</li>
+  <li>Die Vorhersage lautet "negativ", aber die Krankheit liegt vor (Falsch negativ, FN)</li>
+  <li>Die Vorhersage lautet "negativ" und die Krankheit liegt tatsächlich nicht vor (Richtig negativ, RN)</li>
 </ul>
 <p>
-  We want to arrange the tree to get the best outcome we can.
+  Die Variablen sollten im Baum so angeordnet werden, dass möglichst viele Fälle richtig vorhergesagt werden.
 </p>
-<h3>Variables (or Attributes) and Tree Nodes</h3>
+<h3>Variablen (oder Merkmale) und Knoten</h3>
 <p>
-  The names of all the variables --- the column headings in your data table --- appear
-  in a row below the tree, towards the bottom of the window.
-</p>
+  Die Namen aller Variablen stehen als Spaltenüberschriften in der Tabelle oder als Zeilen in der Fallkarte.</p>
 <p>
-  To make the tree branch according to a variable
-  (which represents <i>asking a question</i> in our example),
-  drag the variable into the tree and drop it on the node you want to branch.
-  <i>At the moment, you may not see the drag!</i> Don't worry, it's dragging nevertheless.
-  And if it doesn't seem to "take," try again.
-  It may be that dropping it on text doesn't work.
+  Um den Baum nach einer Variablen zu verzweigen
+  (was in diesem Beispiel dem <i>Fragen einer Frage</i> entspricht),
+  zieht man die Variable aus der Tabelle auf den Knoten, den man verzweigen möchte.
 </p>
 <p>
-  As you will see, every node is either a "branching" node (where you ask a question) or
-  a "terminal" node (where you give a diagnosis or prediction). You can think of the terminal nodes as leaves on the tree.
-  They are labeled + or –. (At the beginning, they start out labeled (?).)
+  Jeder Knoten ist entweder eine "Abzweigung" (falls man eine Frage stellt) oder
+  ein "Endknoten" (an welchem man eine Vorhersage oder Diagnose trifft). Der Endknoten enspricht dem vergebenen Label.
+  Label sind entweder "+" oder "–". (Zu Beginn zeigt ein Label nichts an ("?").)
 </p>
 <p>
-  Reverse the sense of a terminal node by clicking on it.
+  Die Beschriftung eines Endknotens kann man ändern, indem man darauf klickt.
 </p>
-<h3>Dependent Variable</h3>
+<h3>Zielvariable</h3>
 <p>
-  Your tree will always have one dependent (outcome) variable.
-  It's the thing you're trying to predict using the other variables.
-  For example, if you have data on people with their sex, income, race, and education,
-  and you want to study what affects income, make <b>income</b> the dependent variable.
-</p>
-<p>
-  To make a variable dependent, double-click it in the list below the tree.
+  Der Baum enthält immer eine Zielvariable.
+  Diese soll mit Hilfe der anderen Variablen vorhergesagt werden.
+  Wenn man beispielsweise Daten über Personen hat (Geschlecht, Einkommen, Größe, Schulabschluss) 
+  und man das Einkommen von Personen vorhersagen möchte, dann macht man <b>Einkommen</b> zur Zielvariable.
 </p>
 <p>
-  The dependent variable also appears at the top of the tree,
-  in the first ("root") node.
-  That node also tells you what counts as "positive" in the tree.
+  Die Zielvariable erscheint immer an der Spitze des Baums,
+  dem ersten "Wurzelknoten" im oberen "Streifen".
+  Dieser Knoten legt auch fest, welcher Wert der Zielvariable im Baum als "positiv" betrachtet wird.
+</p>
+<p>
+  Um eine Variabel als Zielvariable zu kennzeichnen,
+  zieht man sie zur Spitze auf den "Wurzelknoten" auf den obersten "Streifen".
 </p>
 
-<h3>Positive and Negative Outcomes</h3>
-<p>Whenever you add an attribute (a variable) to the tree, you make two branches.
-  One will have a "leaf" labeled "plus," the other will be "minus."
-  The "+"s represent a "positive" choice, even if it's a negative occurrence.
-  For example, a positive test for a disease may not be what you want,
-  but it leads you to suspect that you actually have the disease.
+<h3>Positive und negative Label</h3>
+<p>Immer wenn man dem Baum eine Variable hinzufügt, werden zwei Äste erstellt.
+  Um die Label zu beschriften, wählt man in der Regel "plus" (+) für das eine Label und "Minus" (-) für das andere.
+  Das "+" steht für eine "positive" Wahl, auch wenn es sich um ein negatives oder schlechtes Ergebnis handelt.
+  Beispielsweise möchte man für eine Krankheit keinen positiven Test haben (weil das bedeutet, dass man krank ist),
+  aber das positive Ergebnis führt dazu, dass man vermutet (oder vorhersagt), dass man diese Krankheit tatsächlich hat.
 </p>
 
-<h3>Configuring Variables</h3>
+<h3>Einstellungen zu Variablen</h3>
 <p>
-  All branchings in the tree are <i>binary</i>.
-  You are always choosing between two options.
-  Your variables may have more than two values, however.
-  The plugin makes default choices about how the values of your variable map
-  onto the two choices.
-  You will need to <i>configure</i> any variable you put in a node.
+  Alle Verzweigungen im Baum sind <i>binär</i>.
+  Man wählt immer zwischen zwei Möglichkeiten.
+  Die Variable kann jedoch auch mehr als zwei Werte haben.
+  Das Plugin trifft eine Standardauswahl darüber, wie die Werte der Variable den beiden Möglichkeiten zugeordnet werden.
+  Möglicherweise muss man diese Zuordnung von Hand in einem Knoten <i>einstellen</i> und verändern.
 </p>
 <p>
-  Click the <img height="14" width="14" src="art/configure.png"> button in a branching node
-  to make its variable's configuration appear.
+  Dazu klickt man auf den Button <img height="14" width="14" src="art/configure.png"> in einem Knoten, 
+  um die Einstellungen zu öffnen.
 </p>
 <p>
-  Each variable has a "left" and a "right" value.
-  In general, try to put the more
-  "positive" values (with respect to your dependent variable) on the left.
-  You can decide what the two sides will be labeled using the text boxes.
-  For example, you might decide that <b>income > 50000</b> should be called <b>rich</b>,
-  and everything else is <b>poor</b>.
+  Jede Variable hat einen "linken" und einen "rechten" Wert.
+  Im Allgemeinen möchte man mehr 
+  "positive" Fälle (in Bezug auf die Zielvariable) auf der "linken" Seite haben.
+
 </p>
 <ul>
   <li>
-    For <b>numerical</b> variables, you can choose an operator and type in a value.
-    That specifies the "cut point" that separates the high from the low values.
-
+    Bei <b>numerischen</b> Variablen kann man einen Operator (<, >=) und einen Wert festlegen.
+So wird die "Grenze" (Schwellenwert/Splitwert) definiert, durch die die Fälle dem rechten oder linken Ast zugeordnet werden.
   </li>
   <li>
-    For <b>categorical</b> variables, you will see buttons for the possible values;
-    click the buttons to move them from left to right or vice versa.
+    Bei <b>kategorialen</b> Variablen kann die Zuweisung der Werte zum rechten oder linken Ast im Konfigurationsmenü geschehen. Dafür klickt man den entsprechenden Namen an, damit er die Seite wechselt.  
+    Man kann selbst entscheiden, wie die Äste beschriftet werden sollen, indem man die Textboxen verwendet.
   </li>
 </ul>
-<!-- <p>
-     Don't forget that you can also configure your dependent variable!
-     To configure the dependent variable, click one of the "terminal" nodes ---
-     they do not have variables assigned.
- </p> -->
-<h3>Two Tree Types</h3>
+
+<h3>Zwei verschiedene Arten von Entscheidungsbäumen</h3>
 <p>
-  In the <b>settings</b> tab, you will find a menu that lets you select between
-  having this be a <em>Classification</em> tree and a <em>Regression</em> tree.
+  In der Registerkarte <b>Einstellungen</b> kann man die Art des Entscheidungsbaums auswählen, je nachdem welche Art von Aufgabe man lösen möchte: Klassifikation oder Regression
 </p>
 <p>
-  A Classification tree is the traditional decision tree,
-  where the result is a positive or negative prediction or diagnosis.
-  Each node shows the proportion of cases where the case you're trying to predict is true.
+  Klassifikation ist die Standardeinstellung. Das Ergebnis ist eine positive oder negative Vorhersage. In jedem Knoten wird der Anteil der Fälle angezeigt, die in Bezug auf die Zielvariable den "positiven" Wert haben.
 </p>
 <p>
-  In a Regression tree, you are predicting the <em>value</em> of the dependent variable.
-  So it makes sense that the dependent variable should be numeric for a regression tree.
-  Nodes will show the mean of the variable for cases in that node,
-  and the bottom "stat" shows the sum of the squares of the deviations
-  from the mean, added up for all terminal nodes, and divided by the original sum of squares.
-  That is, it shows the proportion of variance still unexplained by the tree.
+Im Fall von Regression wird ein Zahlenwert für die Zielvariable vorhergesagt. Deshalb sollte die Zielvariable numerisch sein. In jedem Knoten wird der Mittelwert für die Zielvariable, bezogen auf alle Fälle in diesem Knoten, dargestellt.   
 </p>
 <h3>
-  Interactions with CODAP
+  Interaktionen mit CODAP
 </h3>
 <p>
-  Clicking on a node selects all of the corresponding cases in CODAP.
+  Wenn man einen Knoten anklickt, werden alle zugehörigen Fälle in CODAP ausgewählt.
 </p>
 <p>
-  Pressing <strong>emit data</strong> sends information on the current tree
-  to a separate dataset, called either <strong>Classification Tree Records</strong>
-  or <strong>Regression Tree Records</strong>, depending on the type of tree you're making.
-  Find those tables in the <strong>Tables</strong> menu in the toolbar.
+  Wenn man einen Fall in der Datentabelle in CODAP auswählt, wird der zugehörige Pfad im Baum gelb markiert.
 </p>
 <p>
-  Clicking on one of the records in one of those tables restores the table
-  to what it was when you created that record.
+  Durch Anklicken von <strong>Daten ausgeben</strong> werden Informationen über den aktuellen Entscheidungsbaum in einer neuen Datentabelle <strong>Daten zum Entscheidungsbaum</strong> protokolliert.
 </p>
 <p>
-  Clicking on a single case in the CODAP data table highlights the "path" to its terminal node.
+  Der zugehörige Baum kann wieder hergestellt werden, indem man die passende Zeile in der Tabelle <strong>Daten zum Entscheidungsbaum</strong> anklickt.
 </p>

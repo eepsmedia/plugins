@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021n',
+        version: '2021o',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 555},

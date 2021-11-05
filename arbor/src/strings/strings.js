@@ -174,9 +174,13 @@ ${arbor.informalDVBooleanReversed} 'negative'.`
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
+            const isRoot  = !(iNode.parentID);
+            const sAll = isRoot ? "all " : "";
+            const sBooleanIdentity = isRoot ? "" : `
+These are all cases where (${iNode.friendlySubsetDescription()}).`;
+
             return (
-`This node represents ${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.
-These are all ${iNode.friendlySubsetDescription()}.
+`This node represents ${sAll}${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.${sBooleanIdentity}
 Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
 The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
             );
@@ -227,7 +231,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             focusAttributeNameBoxLabel  : `Variable`,    //  `label`,
             focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
 
-            tableSummaryDataControlDetailTitle : `für die Ausfuhr...`,
+            tableSummaryDataControlDetailTitle : `zum Ausgeben...`,
 
             //  configuration panel
             sConfConfigure : `Einstellungen für`,  
@@ -340,13 +344,15 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
+            const isRoot  = !(iNode.parentID);
+            const sAll = isRoot ? "alle " : "";
+            const sBooleanIdentity = isRoot ? "" : `
+Das sind alle Fälle mit (${iNode.friendlySubsetDescription()}).`;
             return (
-`Dieser Knoten repräsentiert ${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}. 
-Das sind alle Fälle mit: ${iNode.friendlySubsetDescription()}.
-Davon sind ${iNode.numerator}  ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}), 
-und ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
+`Dieser Knoten repräsentiert ${sAll}${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}.${sBooleanIdentity}
+Für ${iNode.numerator} davon gilt: (${arbor.informalDVBoolean}). 
+Für ${theRest}, davon gilt: (${arbor.informalDVBooleanReversed}).`
             );
-
         },
 
         sfGetStripeToolTipText: function (iStripe) {
