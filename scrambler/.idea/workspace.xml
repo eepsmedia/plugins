@@ -5,10 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler string work">
-      <change afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../common/src/pluginLang.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/css/arbor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/AttributeSplit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/arbor-ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../texty/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../texty/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrambler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +76,8 @@
       <workItem from="1634523295731" duration="282000" />
       <workItem from="1634523633085" duration="6704000" />
       <workItem from="1634846133228" duration="3953000" />
+      <workItem from="1636227347136" duration="682000" />
+      <workItem from="1636280861861" duration="4679000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>

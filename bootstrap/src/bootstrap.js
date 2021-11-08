@@ -25,6 +25,8 @@ const bootstrap = {
             console.log(`No interactive state retrieved. Got a new one...: 
             ${JSON.stringify(this.state)}`);
         }
+
+        this.state.lang = pluginLang.figureOutLanguage('en', bootstrapStrings.languages);
         bootstrap.strings = await bootstrapStrings.initializeStrings(this.state.lang);
 
         await this.refreshAllData();
@@ -237,6 +239,7 @@ const bootstrap = {
         //  await this.refreshAllData();      //  get a new setup every time we press bootstrap.
         //  console.log(`    data refreshed. Ready to bootstrap.`);
 
+        //  since we do this only once per button press, we don't try to save time...just get it again.
         await this.sourceDataset.retrieveAllDataFromCODAP();
         console.log(`    data retrieved. Ready to bootstrap.`);
 
@@ -244,7 +247,6 @@ const bootstrap = {
         this.measuresDataset = await this.prepareMeasuresDataset();
         this.bootstrappedDataset = await this.prepareBootstrappedDataset();    // structure, with cases
         bootstrap.state.dirtyMeasures = false;
-
 
         //  actual bootstrap here
         let newItems = [];
@@ -296,20 +298,21 @@ const bootstrap = {
         const tNumberInBox = document.getElementById("howManyBox").value;
         document.getElementById("howManyButton").innerHTML = tNumberInBox + "x";
 
+        //  visibility; shows appropriate controls and progress if bootstrapping is in progress
+
         const buttons = document.getElementById("bootstrap-buttons-stripe-element");
         const progress = document.getElementById("progress");
-
-        //  visibility; shows appropriate message if bootstrapping is impossible
-
         buttons.style.display = this.currentlyBootstrapping ? "none" : "flex";
         progress.style.display = this.currentlyBootstrapping ? "flex" : "none";
 
         //  set the language control
         document.getElementById("languageControl").innerHTML = bootstrap.pickAFlag();        //  theFlag;
 
-        this.refreshBootstrapperStatus();
+        this.refreshBootstrapperStatus();   //      accounts for mistakes in setup, not the right kind of attr, etc
 
         const canBootstrap = this.datasetExists && this.datasetHasMeasure && this.measureHasFormula;
+
+        //  visibility of the bottom "bootstrap stripe"
         const canDoBootstrapStripe = document.getElementById("how-many-stripe");
         const cantDoBootstrapStripe = document.getElementById("cantBootstrapStripe");
 

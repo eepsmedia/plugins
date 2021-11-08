@@ -33,7 +33,7 @@ const binomial = {
      * Have we changed the vocabulary?
      */
     dirty : false,
-
+    strings : null,
 
     initialize : async function() {
         await connect.connectToCODAP();
@@ -43,8 +43,12 @@ const binomial = {
             codapInterface.updateInteractiveState( binomial.freshState );
             //  binomial.state = binomial.freshState;
         } else {
-            binomial.ui.setInputToState();
         }
+
+        this.state.lang = pluginLang.figureOutLanguage('en', binomialStrings.languages);
+        binomial.strings = await binomialStrings.initializeStrings(this.state.lang);
+
+        binomial.ui.setInputToState();
 
         await connect.initialize();
 
@@ -75,8 +79,8 @@ const binomial = {
             aResult["runNumber"] = binomial.state.runNumber;
             aResult[binomial.state.words.eventSuccess] = nSuccesses;
             aResult[binomial.state.words.eventFailure] = (binomial.state.atomicEventsPerExperiment) - nSuccesses;
-            aResult[TEEUtils.pluralize(binomial.state.words.atomicEventName)] = binomial.state.atomicEventsPerExperiment;
-            aResult[TEEUtils.pluralize(binomial.state.words.experimentName)] = binomial.state.experimentsPerRun;
+            aResult[pluginLang.pluralize(binomial.state.words.atomicEventName)] = binomial.state.atomicEventsPerExperiment;
+            aResult[pluginLang.pluralize(binomial.state.words.experimentName)] = binomial.state.experimentsPerRun;
             aResult["trueP"] = binomial.state.parsedProbability.theNumber;
 
             results.push(aResult);

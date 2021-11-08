@@ -2,8 +2,18 @@
 
 
 body {
-    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
-    font-size : 80%;
+    font-family: 'IBM Plex Serif', serif;
+    font-size: small;
+    min-height: 100vh;      /* make <body> fill the plugin */
+}
+
+.ui-widget {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.arbor-tab {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: bold;
 }
 
 /*  prevent text selection in svg       */
@@ -21,7 +31,7 @@ svg text::selection {
 /*  BASIC TEXT FONTS */
 
 h1 {
-    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: 20px;
     font-style: normal;
     font-variant: normal;
@@ -29,7 +39,7 @@ h1 {
     line-height: 22px;
 }
 h2 {
-    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: 17px;
     font-style: normal;
     font-variant: normal;
@@ -37,7 +47,7 @@ h2 {
     line-height: 19px;
 }
 h3 {
-    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: 14px;
     font-style: normal;
     font-variant: normal;
@@ -45,7 +55,7 @@ h3 {
     line-height: 15.4px;
 }
 p, li {
-    font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-family: 'IBM Plex Serif', serif;
     font-size: 14px;
     font-style: normal;
     font-variant: normal;
@@ -53,7 +63,7 @@ p, li {
     line-height: 20px;
 }
 blockquote {
-    font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-family: 'IBM Plex Serif', serif;
     font-size: 17.5px;
     font-style: italic;
     font-variant: normal;
@@ -61,7 +71,7 @@ blockquote {
     line-height: 25px;
 }
 pre {
-    font-family: "Lucida Sans Typewriter", "Lucida Console", monaco, "Bitstream Vera Sans Mono", monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
     font-style: normal;
     font-variant: normal;
@@ -76,8 +86,7 @@ pre {
 /* Attribute Configuration  */
 
 .attributeConfigurationHead {
-    font-family: Verdana, Geneva, sans-serif;
-    font-size: 14px;
+    font-family: 'Roboto Condensed', sans-serif;    font-size: 14px;
     font-style: normal;
     font-variant: normal;
     font-weight: bold;
@@ -87,8 +96,7 @@ pre {
 }
 
 .attributeConfigurationFooter {
-    font-family: Verdana, Geneva, sans-serif;
-    font-size: 12px;
+    font-family: 'Roboto Condensed', sans-serif;    font-size: 12px;
     font-style: normal;
     font-variant: normal;
     font-weight: normal;
@@ -107,15 +115,18 @@ pre {
 /*  Tree parts  */
 
 #noTreeArea {
+    background-color: #789;
     min-height: 100px;
-    background-color: #8bf;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2em;
 }
 
 #noTreeMessage {
-    flex: 0 0 80px;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: large;
+    color: #def;
 }
 
 #attributeConfigurationSection {
@@ -125,7 +136,7 @@ pre {
     background-color: #eee;
     padding : 12px;
     border : 1px solid black;
-    font-family: "Helvetica Neue",Verdana, Geneva, sans-serif;
+    font-family: 'IBM Plex Serif', serif;
 }
 
 #attributeDialog {
@@ -206,7 +217,7 @@ pre {
 }
 
 #resultsText {
-    font-family: Consolas, monospace;
+    font-family: 'JetBrains Mono', monospace;
     /*font-size: 80%;*/
 }
 

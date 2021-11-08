@@ -115,7 +115,10 @@ const arbor = {
         );
 
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
-        await arbor.figureOutLanguage();
+        arbor.state.lang = pluginLang.figureOutLanguage(arbor.constants.kDefaultLanguage, arborStrings.languages);
+        arbor.strings = await arborStrings.initializeStrings(this.state.lang);
+
+        //  await arbor.figureOutLanguage();
         await arbor.getAndRestoreViews();   //
 
         await this.createOutputDatasets();
@@ -412,7 +415,7 @@ const arbor = {
      * @returns {Promise<void>}
      */
     matchUItoState: async function () {
-        arbor.strings = await strings.initializeStrings(arbor.state.lang);
+        arbor.strings = await arborStrings.initializeStrings(arbor.state.lang);
 
         //  now set the options
         switch (arbor.state.oNodeDisplayNumber) {
@@ -572,16 +575,14 @@ const arbor = {
     redisplay: function () {
         console.log(`Redisplay (in arbor.js, ${arbor.strings.staticStrings.changeLanguageButton}) ------------------------`);
 
-        //  const showLeafControlCheckbox = document.getElementById("showDiagnosisLeafControl");
-        //  const showLeavesControl = document.getElementById("showLeavesControl");
-        //  showLeavesControl.style.display = showLeafControlCheckbox.checked ? "flex" : "none";
-
+        const tableTab = document.getElementById("tableTab");
         const treePaper = document.getElementById("treePaper");
         const noTreePaper  = document.getElementById("noTreeArea");
         const outputControls = document.getElementById("outputFileControls");
 
         if (arbor.state.dataSetName) {
             outputControls.style.display = "block";
+            tableTab.style.display = "block";
             treePaper.style.display = "block";
             noTreePaper.style.display = "none";
             this.fixDependentVariableMechanisms();  //  sets appropriate label text
@@ -591,6 +592,7 @@ const arbor = {
         } else {
             outputControls.style.display = "none";
             treePaper.style.display = "none";
+            tableTab.style.display = "none";
             noTreePaper.style.display = "block";
 
         }
@@ -729,7 +731,7 @@ const arbor = {
     },
 
     /**
-     * Called by a loop in processDataContext in this file,
+     * Called by a loop in Analysis.processDataContext,
      * as part of the setup for an analysis.
      *
      * Creates the attInBaum, creates the category map.
@@ -862,7 +864,7 @@ const arbor = {
     },
 
     figureOutLanguage : async function() {
-        arbor.state.lang = arbor.constants.kDefaultLanguage;
+        arbor.state.lang = pluginLang;
 
         //  find the user's favorite language that's actually in our list
         const userLanguages = Array.from(navigator.languages).reverse();

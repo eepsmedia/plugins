@@ -4,12 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2021o, more small fixes + German Help">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/help/help.de.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/help/help.de.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/scrambler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +93,8 @@
       <workItem from="1633361666695" duration="1687000" />
       <workItem from="1634136396047" duration="17149000" />
       <workItem from="1635385145595" duration="14800000" />
-      <workItem from="1635839675950" duration="64105000" />
+      <workItem from="1635839675950" duration="68859000" />
+      <workItem from="1636280855416" duration="5979000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
@@ -186,7 +201,14 @@
       <option name="project" value="LOCAL" />
       <updated>1636122380416</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="2021o, more small fixes + German Help">
+      <created>1636146859882</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1636146859882</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -219,6 +241,7 @@
     <MESSAGE value="2021k, option to automatically label numeric with cutpoint." />
     <MESSAGE value="2021m, many small fixes from Susanne and Yannik" />
     <MESSAGE value="2021n, respect set aside, change of formula, etc. Could this actually work??" />
-    <option name="LAST_COMMIT_MESSAGE" value="2021n, respect set aside, change of formula, etc. Could this actually work??" />
+    <MESSAGE value="2021o, more small fixes + German Help" />
+    <option name="LAST_COMMIT_MESSAGE" value="2021o, more small fixes + German Help" />
   </component>
 </project>

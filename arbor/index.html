@@ -51,23 +51,27 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <meta charset="UTF-8">
     <title>Arbor</title>
 
-    <link rel="stylesheet" href="../common/jqueryFolder/jquery-ui.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../common/jquery/jquery-ui.min.css">
     <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
     <link rel='stylesheet' type='text/css' href='css/confusion-matrix.css'/>
 
     <!-- These two scripts take care of the communication with CODAP  -->
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codap_helper_newAPI.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
 
     <!--    other common files          -->
-    <script src="../common/snap.svg-min.js"></script>
-    <script src="../common/events.js"></script>
-    <script src="../common/TEEUtils.js"></script>
-    <script src="../common/jqueryFolder/jquery.min.js"></script>
-    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
-
+    <script src="../../common/src/snap.svg-min.js"></script>
+    <script src="../../common/src/events.js"></script>
+    <script src="../../common/src/TEEUtils.js"></script>
+    <script src="../../common/jquery/jquery.min.js"></script>
+    <script src="../../common/jquery/jquery-ui.min.js"></script>
 
     <!--
         Models and Controllers
@@ -114,10 +118,10 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
 <div id="tabs">
     <ul>
-        <li><a id="sTreeTab" href="#tree">T</a></li>
-        <li><a id="sTableTab" href="#table">Ta</a></li>
-        <li><a id="sSettingsTab" href="#settings">Se</a></li>
-        <li><a id="sHelpTab" href="#help">?!?!</a></li>
+        <li class="arbor-tab"><a id="sTreeTab" href="#tree">Tr</a></li>
+        <li class="arbor-tab" id="tableTab"><a id="sTableTab" href="#table">Ta</a></li>
+        <li class="arbor-tab"><a id="sSettingsTab" href="#settings">Se</a></li>
+        <li class="arbor-tab"><a id="sHelpTab" href="#help">?!?!</a></li>
     </ul>
 
     <!--
@@ -178,28 +182,28 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <span id="resultsText"></span>
         </div>
 
-        <details>
+        <details id="outputFileControls">
             <summary id="tableSummaryDataControlDetailTitle"></summary>
-        <div class="vBox" id="outputFileControls">
-            <div class="hBox">
-                <div class="vBox focusatt">
-                    <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>
-                    <input id="focusAttributeNameBox" type="text">
+            <div class="vBox">
+                <div class="hBox">
+                    <div class="vBox focusatt">
+                        <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>
+                        <input id="focusAttributeNameBox" type="text">
+                    </div>
+                    <div class="vBox focusatt">
+                        <label for="focusAttributeValueBox" id="focusAttributeValueBoxLabel">val</label>
+                        <input id="focusAttributeValueBox" type="text" readonly>
+                    </div>
                 </div>
-                <div class="vBox focusatt">
-                    <label for="focusAttributeValueBox" id="focusAttributeValueBoxLabel">val</label>
-                    <input id="focusAttributeValueBox" type="text" readonly>
+                <div class="hBox">
+                    <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
                 </div>
-            </div>
-            <div class="hBox">
-                <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
-            </div>
-            <div class="hBox">
-                <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
-                <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
-            </div>
+                <div class="hBox">
+                    <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
+                    <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
+                </div>
 
-        </div>
+            </div>
         </details>
     </div>
 

@@ -121,21 +121,21 @@ connect = {
 
                         attrs: [ // note how this is an array of objects.
                             {name: "runNumber", type: 'categorical', description: "run number"},
-                            {name: `${TEEUtils.pluralize(binomial.state.words.atomicEventName)}`,
-                                type: 'numeric', description: `number of ${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per experiment`},
-                            {name: `${TEEUtils.pluralize(binomial.state.words.experimentName)}`,
-                                type: 'numeric', description: `number of ${TEEUtils.pluralize(binomial.state.words.experimentName)} per run`},
+                            {name: `${pluginLang.pluralize(binomial.state.words.atomicEventName)}`,
+                                type: 'numeric', description: `number of ${pluginLang.pluralize(binomial.state.words.atomicEventName)} per experiment`},
+                            {name: `${pluginLang.pluralize(binomial.state.words.experimentName)}`,
+                                type: 'numeric', description: `number of ${pluginLang.pluralize(binomial.state.words.experimentName)} per run`},
                             {name: "trueP", type : "numeric", precision : 4,
                                 description: `true probability of ${binomial.state.words.eventSuccess}`},
                         ]
                     },
                     {
-                        name: TEEUtils.pluralize(binomial.state.words.experimentName),
+                        name: pluginLang.pluralize(binomial.state.words.experimentName),
                         labels: {
                             singleCase: binomial.state.words.experimentName,
-                            pluralCase: TEEUtils.pluralize(binomial.state.words.experimentName),
+                            pluralCase: pluginLang.pluralize(binomial.state.words.experimentName),
                             setOfCasesWithArticle:
-                                `the ${TEEUtils.pluralize(binomial.state.words.experimentName)} from one run`,
+                                `the ${pluginLang.pluralize(binomial.state.words.experimentName)} from one run`,
                         },
 
                         parent: binomial.constants.kRunCollectionName,

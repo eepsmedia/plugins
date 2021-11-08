@@ -1,4 +1,4 @@
-strings = {
+arborStrings = {
 
     initializeStrings: async function (iLang = "en") {
 
@@ -9,7 +9,7 @@ strings = {
         const theHelp = await response.text();
         document.getElementById("help").innerHTML = theHelp;
 
-        const theStrings = strings[iLang];
+        const theStrings = arborStrings[iLang];
 
         for (const theID in theStrings.staticStrings) {
             if (theStrings.staticStrings.hasOwnProperty(theID)) {
@@ -31,17 +31,23 @@ strings = {
         es: "Español",
     },
 
+    languages : ['en', 'es', 'de'],
 
     nextLanguage: function (iLang = "en") {
         let out = "en";
         if (iLang === "en") {
             out = "de"
         }
-        console.log(`changed language to ${this.languageNames[out]}`);
+        const theNewName = this[out].name;
+
+        console.log(`changed language to ${theNewName}`);
         return out;
     },
 
     en: {
+        name : "English",
+        flags : ["🇬🇧", "🇺🇸", "🇳🇿", "🇨🇦"],
+
         staticStrings: {
             changeLanguageButton: "English",
             //  sShowPredictionLeaves: `show prediction "leaves"`,
@@ -85,7 +91,7 @@ strings = {
             treeTypeLabel : `tree type: `,
             howDoYouWantToDisplay : `How do you want to display...`,
             howManyCasesAreSuccesses : `... how many dots are blue?`,
-            theProportionOfSuccesses : `... the proportion of dots are blue?`,
+            theProportionOfSuccesses : `... the proportion of dots that are blue?`,
             threeOfFive : `3 of 5`,
             threeToTwo : `3 to 2`,        //      `3 to 2`,
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
@@ -211,6 +217,9 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
     },
 
     de: {
+        name : "Deutsch",
+        flags : ["🇩🇪"],
+
         staticStrings: {
             changeLanguageButton: "Deutsch",
             //  sShowPredictionLeaves: `"Label" anzeigen`,
@@ -380,6 +389,10 @@ Für ${theRest}, davon gilt: (${arbor.informalDVBooleanReversed}).`
 
     },
 
-    es: {},
+    es: {
+        name : "Español",
+        flags : ["🇲🇽", "🇪🇸", "🇨🇷"],
+
+    },
 
 }

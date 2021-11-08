@@ -46,6 +46,7 @@ bootstrapStrings = {
         return theStrings;
     },
 
+    languages : ['en', 'es', 'de'],
 
     en : {
         name : "English",

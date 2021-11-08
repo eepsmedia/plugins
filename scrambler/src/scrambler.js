@@ -26,6 +26,8 @@ const scrambler = {
             console.log(`No interactive state retrieved. Got a new one...: 
             ${JSON.stringify(this.state)}`);
         }
+
+        this.state.lang = pluginLang.figureOutLanguage('en', bootstrapStrings.languages);
         scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
 
         await this.refreshAllData();
@@ -268,7 +270,7 @@ const scrambler = {
             this.showProgress(i, nReps);
         }
 
-        this.measuresDataset.emitItems(true, newItems);
+        await this.measuresDataset.emitItems(true, newItems);
         connect.showTable(this.measuresDataset.datasetName);
         this.showProgress(-1, -1);
         this.currentlyScrambling = false;

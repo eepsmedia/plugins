@@ -50,14 +50,16 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
 
     <link rel='stylesheet' type='text/css' href='css/binomial.css'/>
 
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
-    <script src="../common/TEEUtils.js"></script>
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/TEEUtils.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
 
     <script src="src/binomial.js"></script>
     <script src="src/binomial.ui.js"></script>
     <script src="src/connect.js"></script>
+    <script src="src/strings.js"></script>
 
     <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
@@ -84,12 +86,6 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
                        title="enter a fraction, decimal, or percent as your probability"
                 >
                 <label for="probabilityOfSuccessInput" id="probabilityOfSuccessInputLabel">foo</label>
-
-                <!--
-                                <input type="range" id="probabilityOfSuccessInput"
-                                       max="1" min="0" value="0.5" step="0.01" oninput="binomial.update()">
-                                <label for="probabilityOfSuccessInput" id="probabilityOfSuccessInputLabel">foo</label>
-                -->
             </div>
             <div>
                 <input type="number" id="numberOfAtomicEventsInput" value="10"  class="number-input"
@@ -128,7 +124,7 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
                        class="name-input">
                 <label for="experimentNameInput" id="experimentNameInputLabel">bar</label>
             </div>
-            <p class="fine-print">Note: Changing this vocabulary will delete your data on the next run.</p>
+            <p id="changeVocabWarning" class="fine-print">Note: Changing this vocabulary will delete your data on the next run.</p>
             <!--
                         <p>Enter the words you want to use in this simulator, then press <button onclick="binomial.reset()">Reset</button>.</p>
             -->

@@ -26,6 +26,10 @@ limitations under the License.
 
 */
 
+/**
+ * All about the confusion matrix: display the relevant numbers.
+ * @type {{updateConfusionMatrix: arbor.ui.updateConfusionMatrix}}
+ */
 arbor.ui = {
 
     updateConfusionMatrix : function () {

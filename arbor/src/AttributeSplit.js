@@ -127,8 +127,13 @@ AttributeSplit.prototype.makeInitialSplitParameters = function( ) {
         this.rightLabel = (this.categories.length === 2) ? this.categories[1] : arbor.strings.sOthers;
         this.oneBoolean = this.constructCategoricalFilter("L");
     } else {
-        var tCutPoint = (tAtt.sum / (tAtt.caseCount - tAtt.missingCount));
-        tCutPoint = Number(tCutPoint.toPrecision(5));
+        const spread = tAtt.maximum - tAtt.minimum;
+        let tCutPoint = (tAtt.sum / (tAtt.caseCount - tAtt.missingCount));
+        if (spread < 8) {
+            tCutPoint = Number(tCutPoint.toPrecision(3));
+        } else {
+            tCutPoint = Math.round(tCutPoint);
+        }
         this.oneBoolean = this.setCutPoint( tCutPoint, "<" );     //  also sets oneBoolean
         if (arbor.state.oAutoBranchLabels) {
             this.setAutoLabels();

@@ -5,13 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d1309e3-3cf5-48d2-b572-8fd6408f2bcc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/AttributeSplit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../arbor/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/arbor-ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/arbor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../arbor/src/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/views/NodeZoneView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/bootstrap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/scrambler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,9 +70,9 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="org.jetbrains.r.configuration.RSettingsProjectConfigurable" />
   </component>
   <component name="RunManager">
@@ -114,6 +126,8 @@
       <workItem from="1635261012790" duration="11992000" />
       <workItem from="1635429477743" duration="1820000" />
       <workItem from="1635839673562" duration="2195000" />
+      <workItem from="1636227364863" duration="666000" />
+      <workItem from="1636280845797" duration="7338000" />
     </task>
     <task id="LOCAL-00001" summary="V 11:45 pm. Working better, measures collection doesn't get remade every. single. time.">
       <created>1635267917759</created>

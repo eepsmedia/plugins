@@ -45,12 +45,12 @@ binomial.ui = {
         probabilityLabel.innerHTML = probabilityLabelText;
 
 
-        let experimentsLabelText = `${TEEUtils.pluralize(binomial.state.words.experimentName)} per run. `;
+        let experimentsLabelText = `${pluginLang.pluralize(binomial.state.words.experimentName)} per run. `;
         experimentsLabelText += `<span class="fine-print">Probably between 100 and 400.</span>`
         numberOfExperimentsLabel.innerHTML = experimentsLabelText;
 
         numberOfAtomicEventsLabel.innerHTML =
-            `${TEEUtils.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}
+            `${pluginLang.pluralize(binomial.state.words.atomicEventName)} per ${binomial.state.words.experimentName}
              <span class="fine-print">Not more than 20000.</span>
             `;
 
@@ -59,9 +59,9 @@ binomial.ui = {
         eventSuccessLabel.innerHTML =
             `possible result of one ${binomial.state.words.atomicEventName}`;
         experimentNameLabel.innerHTML =
-            `what do you call a set of ${binomial.state.atomicEventsPerExperiment} ${TEEUtils.pluralize(binomial.state.words.atomicEventName)}?`
+            `what do you call a set of ${binomial.state.atomicEventsPerExperiment} ${pluginLang.pluralize(binomial.state.words.atomicEventName)}?`
 
-
+        document.getElementById("probabilityOfSuccessInput").innerHTML = binomial.state.parsedProbability.string;
     },
 
 
@@ -78,11 +78,11 @@ binomial.ui = {
                 <br/>
                 One ${binomial.state.words.experimentName} 
                 consists of <b>${binomial.state.atomicEventsPerExperiment}</b> 
-                ${TEEUtils.pluralize(binomial.state.words.atomicEventName)}.
+                ${pluginLang.pluralize(binomial.state.words.atomicEventName)}.
                 <br/>
                 Press <button onclick="binomial.engage()">Engage!</button> 
                 to simulate <b>${binomial.state.experimentsPerRun}</b> 
-                ${TEEUtils.pluralize(binomial.state.words.experimentName)}.
+                ${pluginLang.pluralize(binomial.state.words.experimentName)}.
                 `;
         return out;
     },
