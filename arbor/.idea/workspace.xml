@@ -6,14 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
@@ -42,7 +37,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="master" />
+        <entry key="$PROJECT_DIR$/.." value="arborRedoSpecifyDataContext" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -204,7 +199,14 @@
       <option name="project" value="LOCAL" />
       <updated>1636146859882</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="arbor 2021p plus some other consistency checkins">
+      <created>1636515035782</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1636515035782</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,6 +240,8 @@
     <MESSAGE value="2021m, many small fixes from Susanne and Yannik" />
     <MESSAGE value="2021n, respect set aside, change of formula, etc. Could this actually work??" />
     <MESSAGE value="2021o, more small fixes + German Help" />
-    <option name="LAST_COMMIT_MESSAGE" value="2021o, more small fixes + German Help" />
+    <MESSAGE value="arbor 2021p plus some other consistency checkins" />
+    <MESSAGE value="pre-merge commit of old master" />
+    <option name="LAST_COMMIT_MESSAGE" value="pre-merge commit of old master" />
   </component>
 </project>
