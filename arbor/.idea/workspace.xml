@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ArborNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ArborNode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AttributeSplit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/AttributeSplit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
@@ -16,14 +18,8 @@
       <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/bootstrap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/scrambler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

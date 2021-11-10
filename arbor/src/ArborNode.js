@@ -257,7 +257,7 @@ Node.prototype.populateNode = function () {
             }
 
             this.filterArray = ["true"];
-            this.missingArray = ["c." + tParentSplit.attName + "===''"];   //  is the root variable missing??
+            this.missingArray = [`c["${tParentSplit.attName}"] ==='' `];   //  is the root variable missing??
             break;
     }
 

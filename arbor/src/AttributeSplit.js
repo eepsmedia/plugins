@@ -105,7 +105,7 @@ AttributeSplit.prototype.setCutPoint = function(iValue, iOperator ) {
         this.setAutoLabels();
     }
 
-    return `c.${this.attName} ${this.operator} ${this.cutpoint}`; //  e.g., "c.foo < 42"
+    return `c["${this.attName}"] ${this.operator} ${this.cutpoint}`; //  e.g., "c["foo"] < 42"
 
 };
 
@@ -153,7 +153,7 @@ AttributeSplit.prototype.setAutoLabels = function() {
 };
 
 AttributeSplit.prototype.makeMissingFilter = function( iName ) {
-    return (`c.${iName}===''`);
+    return (`c["${iName}"]===''`);
 };
 
 /**
@@ -164,9 +164,9 @@ AttributeSplit.prototype.makeMissingFilter = function( iName ) {
  */
 AttributeSplit.prototype.constructCategoricalFilter = function(iLorR) {
     var tArray = this.getListOfCategories(iLorR);   //  get the list of category names
-    var tClauses = [];      //  temporary array of stuff like (c.Sex === "F")
+    var tClauses = [];      //  temporary array of stuff like (c["Sex"] === "F")
     tArray.forEach( function(categoryName) {
-        tClauses.push('String(c.' + this.attName + ') === "' + String(categoryName) + '"');    //  coerce both to String
+        tClauses.push(`String(c["${this.attName}"]) === "${String(categoryName)}"`);    //  coerce both to String
     }.bind(this));
 
     var out = (tClauses.length > 0) ? "(" + tClauses.join(" || ") + ")" : "false";  //  put them all together with OR (||)
@@ -195,11 +195,12 @@ AttributeSplit.prototype.switchCategory = function(iCat) {
 /**
  * Utility to reverse the sense of a continuous "cutpoint" expression.
  * useful for code or just for informational and clarity purposes in the attribute configuration section.
- * @param iUseC         prepend "c." to the variable name (c.Sex as opposed to Sex)? Needed if it will be code.
+ * @param iUseC         prepend "c..." to the variable name (c[Sex] as opposed to Sex)? Needed if it will be code.
  * @returns {string}    the expression
  */
 AttributeSplit.prototype.reverseContinuousExpression = function(iUseC) {
-    return  (iUseC ? "c." : "" ) + this.attName + " " + AttributeSplit.operatorOpposites[this.operator] + " " + this.cutpoint;
+    let out;
+    return  (iUseC ? `c["${this.attName}"]` : this.attName ) +  AttributeSplit.operatorOpposites[this.operator] + " " + this.cutpoint;
 };
 
 
