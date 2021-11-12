@@ -29,9 +29,13 @@ NodeBoxView = function (iNode, iZoneView) {
     this.myNode = iNode;
     this.myZoneView = iZoneView;        //  the view I am embedded in
     this.paper = new Snap(133, 133).attr({"id": "NBV-" + iNode.arborNodeID});
+    this.highlightSVG = null;
 
     this.paper.unmouseup(this.mouseUpHandler.bind(this));
     this.paper.mouseup(this.mouseUpHandler.bind(this));
+
+    // this.paper.unmouseover(this.mouseOverHandler.bind(this));
+    // this.paper.mouseover(this.mouseOverHandler.bind(this));
 
     //  We watch this event for changes from the model,
     //  e.g., changes in number or text.
@@ -59,6 +63,24 @@ NodeBoxView = function (iNode, iZoneView) {
     //  return this;
 };
 
+/*
+NodeBoxView.prototype.mouseOverHandler = function(iEvent) {
+
+    if (arbor.dropManager.currentlyDraggingCODAPAttribute) {
+        this.highlightSVG.attr({fill: "red"});
+    } else {
+        this.highlightSVG.attr({fill: "blue"});
+
+    }
+},
+*/
+
+/**
+ * Handle a mouse up in the node, from the DOM.
+ * Note: this does not handle drops of attributes.
+ *
+ * @param iEvent
+ */
 NodeBoxView.prototype.mouseUpHandler = function (iEvent) {
     console.log("    Mouse up in view for " + this.myNode.toString());
     const tMouseDownPlace = arbor.treePanelView.lastMouseDownNodeView;
@@ -72,14 +94,6 @@ NodeBoxView.prototype.mouseUpHandler = function (iEvent) {
             //  todo: select the cases here!
         }
         //  it's not a click, we've dragged in from somewhere else...
-
-        //  dragged in from the corral, so we branch the node by that attribute
-/*
-        else if (tMouseDownPlace instanceof CorralAttView) {
-            console.log("Dragged into " + this.myNode + " from " + tMouseDownPlace.labelText);
-            this.myNode.branchThisNode(tMouseDownPlace.attInBaum);
-        }
-*/
 
         //  dragged in from another node, so we branch it by THAT node's attribute, if it exists
         else if (tMouseDownPlace instanceof NodeBoxView) {
@@ -141,6 +155,34 @@ NodeBoxView.prototype.adjustPaperSize = function () {
         width: tMaxWidthStripe.minimumWidth()
     });
 };
+
+NodeBoxView.prototype.highlight = function(iMode) {
+    switch(iMode) {
+        case "on" :
+            this.highlightSVG.attr({
+                fillOpacity : arbor.constants.kHighlightDropZoneOpacity,
+                strokeWidth : arbor.constants.kHighlightStrokeWidth,
+                display : "",
+            });
+            break;
+
+        case "nearby":
+            this.highlightSVG.attr({
+                fillOpacity : 0.0, strokeWidth : arbor.constants.kHighlightStrokeWidth,
+                display : ""
+            });
+            break;
+
+        case "off":
+            this.highlightSVG.attr({/*fillOpacity : 0.0, strokeWidth : 0,*/ display : "none"});
+            break;
+
+        default:
+            this.highlightSVG.attr({/*fillOpacity : 0.0, strokeWidth : 0,*/ display : "none"});
+            break;
+
+    }
+},
 
 NodeBoxView.prototype.drawNodeBoxView = function () {
 
@@ -210,6 +252,11 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
         tArgs.y += this.kStripeHeight;
     }.bind(this));
 
+    this.highlightSVG = this.paper.rect(0, 0, this.paper.attr("width"), this.paper.attr("height"));
+    this.highlightSVG.attr({
+        fill : arbor.constants.kNodeHighlightColor, fillOpacity : 0,
+        stroke : arbor.constants.kNodeHighlightColor, strokeWidth : 0, strokeOpacity: arbor.constants.kHighlightDropZoneStrokeOpacity,
+    });
     //  return this.paper;
 };
 

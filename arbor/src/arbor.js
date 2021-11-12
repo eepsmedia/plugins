@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021p',
+        version: '2021q',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 555},
@@ -772,8 +772,8 @@ const arbor = {
 
 
     changeLanguage: async function () {
-        arbor.state.lang = strings.nextLanguage(arbor.state.lang);
-        arbor.strings = await strings.initializeStrings(arbor.state.lang);
+        arbor.state.lang = arborStrings.nextLanguage(arbor.state.lang);
+        arbor.strings = await arborStrings.initializeStrings(arbor.state.lang);
 
         await this.deleteBothOutputDatasets();  //  because they have different attribute names
         await this.createOutputDatasets();
@@ -942,6 +942,10 @@ arbor.constants = {
 
     nodeValueLabelColor: "white",
     nodeAttributeLabelColor: "#88f",
+    kNodeHighlightColor : "#fd0",
+    kHighlightDropZoneOpacity : 0.3,
+    kHighlightDropZoneStrokeOpacity : 0.6,
+    kHighlightStrokeWidth : 12,
 
     //  corralBackgroundColor: "#abc",
     panelBackgroundColor: "#cde",

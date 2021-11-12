@@ -91,7 +91,7 @@ arborStrings = {
             treeTypeLabel : `tree type: `,
             howDoYouWantToDisplay : `How do you want to display...`,
             howManyCasesAreSuccesses : `... how many dots are blue?`,
-            theProportionOfSuccesses : `... the proportion of dots that are blue?`,
+            theProportionOfSuccesses : `... what proportion of dots are blue?`,
             threeOfFive : `3 of 5`,
             threeToTwo : `3 to 2`,        //      `3 to 2`,
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,

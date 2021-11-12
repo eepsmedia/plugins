@@ -114,6 +114,10 @@ pre {
 }
 /*  Tree parts  */
 
+#tree {
+    height: 100vh;
+}
+
 #noTreeArea {
     background-color: #789;
     min-height: 100px;
