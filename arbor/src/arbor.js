@@ -73,7 +73,7 @@ const arbor = {
         version: '2021q',
         name: 'arbor',
         title: 'decision tree',
-        dimensions: {width: 500, height: 555},
+        dimensions: {width: 500, height: 444},
         preventDataContextReorg: false,
     },
 
