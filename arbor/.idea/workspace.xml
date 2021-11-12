@@ -4,17 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="post-merge commit of old master">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/dropManager.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../scrambler/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeZoneView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/TreePanelView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/TreePanelView.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +33,10 @@
     </option>
   </component>
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="origin/arborDragDrop" />
+    <option name="BRANCH" value="arborRedoSpecifyDataContext" />
+  </component>
+  <component name="Git.Rebase.Settings">
+    <option name="NEW_BASE" value="master" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -206,7 +210,14 @@
       <option name="project" value="LOCAL" />
       <updated>1636515035782</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="post-merge commit of old master">
+      <created>1636515284388</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1636515284388</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -242,6 +253,7 @@
     <MESSAGE value="2021o, more small fixes + German Help" />
     <MESSAGE value="arbor 2021p plus some other consistency checkins" />
     <MESSAGE value="pre-merge commit of old master" />
-    <option name="LAST_COMMIT_MESSAGE" value="pre-merge commit of old master" />
+    <MESSAGE value="post-merge commit of old master" />
+    <option name="LAST_COMMIT_MESSAGE" value="post-merge commit of old master" />
   </component>
 </project>

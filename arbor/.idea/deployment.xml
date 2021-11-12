@@ -10,6 +10,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="arbor2-xyz">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/../common" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="codapxyz">
         <serverdata>
           <mappings>

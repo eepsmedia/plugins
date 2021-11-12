@@ -40,6 +40,8 @@
  */
 NodeZoneView = function (iNode, iParent) {
     this.myNode = iNode;        //  model
+    this.myBoxView = null;      //  view of the box, lives inside this view, set in redrawEntireZone
+
     this.nodeBoxLocation = {x: 0, y: 0};   //  x, y, width, height, xc, yc ... for the NodeBoxView
 
     this.myPanel = iParent.myPanel; //  is the panel for the root view, everybody gets this from the TreePanelView.
@@ -86,7 +88,9 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
     this.paper.attr({"id" : this.myNode.LoR + "-NodeZV-" + this.myNode.arborNodeID});      //  in the coordinates of the parent
     this.paper.clear();
 
-    this.myBoxView = new NodeBoxView(this.myNode, this);  //  create, not draw
+    this.myBoxView = new NodeBoxView(this.myNode, this);    //  create, not draw
+    this.myPanel.nodeBoxViewArray.push(this.myBoxView);     //  record the NBV in the panel.
+
     this.leaf = (this.myNode.branches.length === 0 && arbor.state.oShowDiagnosisLeaves) ? new Leaf({node: this.myNode}) : null;          //  our leaf
 
     const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created just above

@@ -9,6 +9,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="54d11350-a4a2-41ac-ad06-1b4e98061f73" name="arbor2-xyz" url="http://184.154.47.42">
+        <fileTransfer rootFolder="/public_html/plugins/arbor2" host="184.154.47.42" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
