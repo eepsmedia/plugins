@@ -30,9 +30,8 @@
  * That is, it has
  *
  *      * a NodeZoneView (for the tree itself)
- *      * the corral
- **
- * @param iTreePanelDOMName, iCorralDOMName  the ID in the html for this region in the DOM
+ *
+ *
  * @constructor
  */
 TreePanelView = function ( ) {

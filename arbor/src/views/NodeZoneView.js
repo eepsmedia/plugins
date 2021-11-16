@@ -27,12 +27,12 @@
 
 /**
  * A NodeZoneView is the rectangular area the nodes appear in.
- * a NodeBoxView is the image for the node itself.
+ * A NodeBoxView is the image for the node itself.
  *
  * NOTE that the NodeBoxView gets redrawn in the constructor.
  *
  * Every NodeZoneView has ONE node and (optionally) TWO subtrees (in array this.subNodeZones).
- * This class also draws the lines connecting bodes and the text labels above the child nodes
+ * This class also draws the lines connecting nodes and the text labels above the child nodes
  *
  * @param iNode     the root node (model) of this zoneView
  * @param iParent   the parent zoneView (view) of this zoneView. If this is the top one, the parent is the TreePanelView

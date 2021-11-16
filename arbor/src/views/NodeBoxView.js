@@ -63,17 +63,6 @@ NodeBoxView = function (iNode, iZoneView) {
     //  return this;
 };
 
-/*
-NodeBoxView.prototype.mouseOverHandler = function(iEvent) {
-
-    if (arbor.dropManager.currentlyDraggingCODAPAttribute) {
-        this.highlightSVG.attr({fill: "red"});
-    } else {
-        this.highlightSVG.attr({fill: "blue"});
-
-    }
-},
-*/
 
 /**
  * Handle a mouse up in the node, from the DOM.
@@ -190,10 +179,7 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
     this.paper.clear(); //  nothing on this paper
     this.theGroup = this.paper.g();     //  fresh group
 
-    //  handle mouseUp events in the NodeBoxView
-    //  this.theGroup.mouseup(this.mouseUpHandler.bind(this));
     this.theGroup.node.setAttribute("class", "node-box-view-group");  //  this is that css thing
-    //  this.theGroup.node.setAttribute("id", `node-box-view-group-${this.myNode.arborNodeID}`);  //  set above as NBV-nn
 
     this.stripes = [];  //  fresh set of stripes
 
@@ -267,7 +253,7 @@ NodeBoxView.prototype.makeRootStripe = function () {
 
     if (arbor.state.treeType === arbor.constants.kClassTreeType) {
         tText = `${arbor.strings.sPredict} ${arbor.state.dependentVariableSplit.attName} 
-        = ${arbor.state.dependentVariableSplit.leftLabel}`;
+        ${arbor.strings.sfIsAre(1)} ${arbor.state.dependentVariableSplit.leftLabel}`;
     } else {
         tText = `${arbor.strings.sPredict} ${arbor.constants.kMu}(${arbor.state.dependentVariableSplit.attName})`;
     }

@@ -76,107 +76,114 @@ arbor.dropManager = {
 
         //  then we look at parents until we get some kind of Node.
         if (anElement) {
-            out = this.findNodeElementFromElement(anElement);
+            out = this.findNodeIndicatorFromElement(anElement);
         }
         return out;
 
     },
 
     /**
-     * Given a DOM element, finds the [grand]parent element that represents a `NodeBoxView`.
+     * Given some element in the DOM, figures out, recursively,
+     * what node (if any) it might be in.
      *
-     * Note that this is _not_ a `NodeBoxView`, but rather the SVG paper owned by a `NodeBoxView`.
+     * Returns the string `"dependent-variable"` if it is on the
+     * dependent variable stripe of the root node,
+     * the node number (as a number) if it's in a node otherwise,
+     * and `null` if the element is not part of a node.
      *
-     * Furthermore, this routine actually returns an object with three fields:
-     *  * `isDependent`: whether the node is for a dependent variable
-     *  * `nodeNumber`: the `arborNodeID` of the node
-     *  * `theNBV` : that SVG element
+     * Note that in the dependent variable case, we will not get far enough
+     * in the recursion to find the node number. That's OK,
+     * because (a) we don't need it and (b) it's the root node anyway.
      *
      * @param iElement
-     * @returns {{nodeNumber: number, isDependent: boolean, theNBV: ({id}|*)}|*|null}
+     * @returns {string|*|null}
      */
-    findNodeElementFromElement: function (iElement) {
-        const tParent = iElement.parentElement;
-        let out = (tParent) ? this.findNodeElementFromElement(tParent) : {};
-
+    findNodeIndicatorFromElement: function (iElement) {
         if (iElement.className) {
+/*
             const classString = (iElement.className.baseVal)
                 ? iElement.className.baseVal.toString()
                 : iElement.className.toString();
-            console.log(iElement.classList);
-            if (iElement.classList.contains(`dependent-variable-stripe`)) {
-                //  if (classString.includes(`dependent-variable`)) {
-                out["isDependent"] = true;
-                console.log(`    found dependent variable stripe`);
+*/
+         //   if (classString.includes(`dependent-variable`)) {
+            if (iElement.id === "dependent") {
+                return `dependent-variable`;    //  return this string
             }
+            if (iElement.id.includes(`NBV`)) {
+                return Number(iElement.id.slice(4));    //  return the number of the node
+            }
+            const tParent = iElement.parentElement;
+            return (tParent) ? this.findNodeIndicatorFromElement(tParent) : null;
         }
-
-        if (iElement.id && iElement.id.includes(`NBV`)) {
-            //  okay, we're in a node box view
-            const nodeNumber = Number(iElement.id.slice(4));
-            const theNBV = arbor.treePanelView.NBVfromNodeID(nodeNumber);
-            out["nodeNumber"] = nodeNumber;
-            out["theNBV"] = theNBV;
-            //  console.log(`    found NBV-${nodeNumber}`);
-        }
-
-        return out;
+        return null;
     },
 
     copeWithAttributeDrag: function (iWhat, iWhere) {
-        const foundNBVData = this.findNBVAt(iWhere);
-        if (foundNBVData) {
-            if (foundNBVData.nodeNumber) {
-                const theNBV = arbor.treePanelView.NBVfromNodeID(foundNBVData.nodeNumber);
-                //    const betterNode = foundNBVData.theNBV.myNode; //  does NOT work because the node returned is an SVG, NOT the actual NodeBoxView
+        const foundNBVIndicator = this.findNBVAt(iWhere);        //  this is either a node number or the string "dependent-variable"
 
+        if (foundNBVIndicator) {
+            //  we are dragging over a node. Highlight it!
+            if (foundNBVIndicator === 'dependent-variable') {
+                //  highlight the dependent variable stripe!
+
+            } else {
+                //  it's a node, but not the DV stripe
+                const theNBV = arbor.treePanelView.NBVfromNodeID(foundNBVIndicator);
                 console.log(`dragging ${iWhat} over node ${theNBV.myNode.arborNodeID}`);
-
-                if (this.highlightedNBV !== foundNBVData.theNBV) {
+                if (this.highlightedNBV !== theNBV) {
+                    //  we have changed the highlighting
                     if (this.highlightedNBV) {
+                        //  we're moving to a new node, to "nearby" the old highlighted one
                         this.highlightedNBV.highlight("nearby");    //  just in case
                     }
-                    this.highlightedNBV = foundNBVData.theNBV;
-                    this.highlightedNBV.highlight("on");
+                    this.highlightedNBV = theNBV;   //  set to the new node
+                    this.highlightedNBV.highlight("on");    //  and highlight it.
                 }
-            } else {
-                console.log(`    found NBV data without a node number. How?`);
             }
-        } else {    //  not over a node
+        } else {
+            //  not over a node of any kind
             if (this.highlightedNBV) {
+                //  must have just left a highlighted node.
                 console.log(`   left node ${this.highlightedNBV.myNode.arborNodeID}`)
                 //  unhighlight the node
                 this.highlightedNBV.highlight("nearby");
-                this.highlightedNBV = null;
+                this.highlightedNBV = null;     //  and set the saved value to null.
             }
         }
+
     },
 
     copeWithAttributeDrop: function (iWhat, iWhere) {
-        const foundNBVData = this.findNBVAt(iWhere);
+        const foundNBVIndicator = this.findNBVAt(iWhere);
 
-        if (foundNBVData.nodeNumber) {
-            if (foundNBVData.isDependent) {
+        if (foundNBVIndicator) {
+            //  we found some node.
+            if (foundNBVIndicator === 'dependent-variable') {
+                //  the drop took place in the DV stripe
                 console.log(`Setting the dependent variable to ${iWhat}`);
                 arbor.setDependentVariableByName(iWhat);    //  also sets the focus split
                 arbor.dispatchTreeChangeEvent(`${iWhat} is the new dependent variable`);
                 focusSplitMgr.showHideAttributeConfigurationSection(true);
-            } else if (foundNBVData.nodeNumber) {
-                const theNode = arbor.state.tree.nodeFromID(foundNBVData.nodeNumber);
+            } else {
+                //  it's the node number
+                const theNode = arbor.state.tree.nodeFromID(foundNBVIndicator);
+
+                //  find which `AttInBaum` corresponds to the string in `iWhat`
                 if (theNode) {
                     const theAttInBaum = arbor.attsInBaum.reduce(function (acc, val) {
                         return ((val.attributeName === iWhat) ? val : acc);
                     });
+                    //  make the branch.
                     theNode.branchThisNode(theAttInBaum);   //   also sets focus node, which redraws
                 } else {
-                    //  it was not dropped on a node. Nothing happens.
+                    //  it was not dropped on a node. Nothing happens. But it should be a node!
+                    console.log(`dropManager.copeWithAttributeDrop() expected a node, didn't find it!`);
                 }
-            } else {
-                console.log(`dropManager.copeWithAttributeDrop() unexpected situation!`);
             }
         } else {  //  aha! We are not in a node!
             console.log(`Drop not in a node`);
         }
+
     },
 
 
