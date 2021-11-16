@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="post-merge commit of old master">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/dropManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeZoneView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/TreePanelView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/TreePanelView.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

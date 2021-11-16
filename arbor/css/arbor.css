@@ -118,9 +118,12 @@ pre {
     height: 100vh;
 }
 
+/**
+This is the <div> that appears at the beginning, when there is no tree.
+ */
 #noTreeArea {
-    background-color: #789;
     min-height: 100px;
+    height : 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -130,7 +133,16 @@ pre {
 #noTreeMessage {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: large;
-    color: #def;
+    color: #eee;
+}
+
+.solid-drop-target {
+    background-color: #ca0;
+
+}
+
+.not-drop-target {
+    background-color: #789;
 }
 
 #attributeConfigurationSection {

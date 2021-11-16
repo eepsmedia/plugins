@@ -255,7 +255,9 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
     this.highlightSVG = this.paper.rect(0, 0, this.paper.attr("width"), this.paper.attr("height"));
     this.highlightSVG.attr({
         fill : arbor.constants.kNodeHighlightColor, fillOpacity : 0,
-        stroke : arbor.constants.kNodeHighlightColor, strokeWidth : 0, strokeOpacity: arbor.constants.kHighlightDropZoneStrokeOpacity,
+        stroke : arbor.constants.kNodeHighlightColor, strokeWidth : 0,
+        strokeOpacity: arbor.constants.kHighlightDropZoneStrokeOpacity,
+        display : "none",
     });
     //  return this.paper;
 };

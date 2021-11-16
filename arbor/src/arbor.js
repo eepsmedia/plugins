@@ -70,7 +70,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021q',
+        version: '2021®',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -581,7 +581,7 @@ const arbor = {
         const outputControls = document.getElementById("outputFileControls");
 
         if (arbor.state.dataSetName) {
-            outputControls.style.display = "block";
+            outputControls.style.display = "flex";
             tableTab.style.display = "block";
             treePaper.style.display = "block";
             noTreePaper.style.display = "none";
@@ -593,7 +593,7 @@ const arbor = {
             outputControls.style.display = "none";
             treePaper.style.display = "none";
             tableTab.style.display = "none";
-            noTreePaper.style.display = "block";
+            noTreePaper.style.display = "flex";
 
         }
     },

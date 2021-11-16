@@ -1,8 +1,8 @@
 arbor.dropManager = {
 
-    highlightedNBV : null,
+    highlightedNBV: null,
 
-    currentlyDraggingCODAPAttribute : false,
+    currentlyDraggingCODAPAttribute: false,
 
     /**
      * Handle a CODAP API attribute drag/drop action
@@ -20,15 +20,18 @@ arbor.dropManager = {
                 break;
             case "dragend":
                 console.log(`...  stop dragging ${iMessage.values.attribute.title}`);
-                arbor.treePanelView.highlightDropZones(false);
+                arbor.dropManager.highlightDropZones(false);
                 this.currentlyDraggingCODAPAttribute = false;
                 break;
 
             case "drag":
-                arbor.dropManager.copeWithAttributeDrag(iMessage.values.attribute.name, iMessage.values.position);
+                if (arbor.treePanelView) {
+                    arbor.dropManager.copeWithAttributeDrag(iMessage.values.attribute.name, iMessage.values.position);
+                }   //  if not, we don't need to track the drag
                 break;
 
             case "drop":        //  attribute drop using API dragdrop
+                console.log(`Dropped [${iMessage.values.attribute.title}] from CODAP`);
                 const theDropDatasetName = iMessage.values.context.name;
 
                 if (theDropDatasetName === arbor.state.dataSetName) {
@@ -43,40 +46,101 @@ arbor.dropManager = {
                 break;
 
             case "dragenter":
-                arbor.treePanelView.highlightDropZones(true);
+                arbor.dropManager.highlightDropZones(true);
                 break;
 
             case "dragleave":
-                arbor.treePanelView.highlightDropZones(false);
+                arbor.dropManager.highlightDropZones(false);
                 break;
 
             default:
         }
     },
 
-    findNBVAt : function(iWhere) {
+    highlightDropZones: function (iHighlight) {
+        if (arbor.treePanelView) {
+            arbor.treePanelView.highlightDropZones(iHighlight);
+        } else {
+            const theNoTreeArea = document.getElementById("noTreeArea");
+            const theNewClass = iHighlight ? "solid-drop-target" : "not-drop-target";
+            theNoTreeArea.className = theNewClass;
+            console.log(`noTreeArea class set to ${theNoTreeArea.className}.`);
+        }
+
+    },
+
+    findNBVAt: function (iWhere) {
         //  we find some element at the coordinates
         const anElement = document.elementFromPoint(iWhere.x, iWhere.y);
+        let out = null;
 
         //  then we look at parents until we get some kind of Node.
-        return this.findNodeElementFromElement(anElement);
+        if (anElement) {
+            out = this.findNodeElementFromElement(anElement);
+        }
+        return out;
 
+    },
+
+    /**
+     * Given a DOM element, finds the [grand]parent element that represents a `NodeBoxView`.
+     *
+     * Note that this is _not_ a `NodeBoxView`, but rather the SVG paper owned by a `NodeBoxView`.
+     *
+     * Furthermore, this routine actually returns an object with three fields:
+     *  * `isDependent`: whether the node is for a dependent variable
+     *  * `nodeNumber`: the `arborNodeID` of the node
+     *  * `theNBV` : that SVG element
+     *
+     * @param iElement
+     * @returns {{nodeNumber: number, isDependent: boolean, theNBV: ({id}|*)}|*|null}
+     */
+    findNodeElementFromElement: function (iElement) {
+        const tParent = iElement.parentElement;
+        let out = (tParent) ? this.findNodeElementFromElement(tParent) : {};
+
+        if (iElement.className) {
+            const classString = (iElement.className.baseVal)
+                ? iElement.className.baseVal.toString()
+                : iElement.className.toString();
+            console.log(iElement.classList);
+            if (iElement.classList.contains(`dependent-variable-stripe`)) {
+                //  if (classString.includes(`dependent-variable`)) {
+                out["isDependent"] = true;
+                console.log(`    found dependent variable stripe`);
+            }
+        }
+
+        if (iElement.id && iElement.id.includes(`NBV`)) {
+            //  okay, we're in a node box view
+            const nodeNumber = Number(iElement.id.slice(4));
+            const theNBV = arbor.treePanelView.NBVfromNodeID(nodeNumber);
+            out["nodeNumber"] = nodeNumber;
+            out["theNBV"] = theNBV;
+            //  console.log(`    found NBV-${nodeNumber}`);
+        }
+
+        return out;
     },
 
     copeWithAttributeDrag: function (iWhat, iWhere) {
         const foundNBVData = this.findNBVAt(iWhere);
         if (foundNBVData) {
-            const theNBV = arbor.treePanelView.NBVfromNodeID(foundNBVData.nodeNumber);
-           //    const betterNode = foundNBVData.theNBV.myNode; //  does NOT work because the node returned is an SVG, NOT the actual NodeBoxView
+            if (foundNBVData.nodeNumber) {
+                const theNBV = arbor.treePanelView.NBVfromNodeID(foundNBVData.nodeNumber);
+                //    const betterNode = foundNBVData.theNBV.myNode; //  does NOT work because the node returned is an SVG, NOT the actual NodeBoxView
 
-            console.log(`dragging ${iWhat} over node ${theNBV.myNode.arborNodeID}`);
+                console.log(`dragging ${iWhat} over node ${theNBV.myNode.arborNodeID}`);
 
-            if (this.highlightedNBV !== foundNBVData.theNBV) {
-                if (this.highlightedNBV) {
-                    this.highlightedNBV.highlight("nearby");    //  just in case
+                if (this.highlightedNBV !== foundNBVData.theNBV) {
+                    if (this.highlightedNBV) {
+                        this.highlightedNBV.highlight("nearby");    //  just in case
+                    }
+                    this.highlightedNBV = foundNBVData.theNBV;
+                    this.highlightedNBV.highlight("on");
                 }
-                this.highlightedNBV = foundNBVData.theNBV;
-                this.highlightedNBV.highlight("on");
+            } else {
+                console.log(`    found NBV data without a node number. How?`);
             }
         } else {    //  not over a node
             if (this.highlightedNBV) {
@@ -91,7 +155,7 @@ arbor.dropManager = {
     copeWithAttributeDrop: function (iWhat, iWhere) {
         const foundNBVData = this.findNBVAt(iWhere);
 
-        if (foundNBVData) {
+        if (foundNBVData.nodeNumber) {
             if (foundNBVData.isDependent) {
                 console.log(`Setting the dependent variable to ${iWhat}`);
                 arbor.setDependentVariableByName(iWhat);    //  also sets the focus split
@@ -113,47 +177,6 @@ arbor.dropManager = {
         } else {  //  aha! We are not in a node!
             console.log(`Drop not in a node`);
         }
-    },
-
-    /**
-     * Given a DOM element, finds the [grand]parent element that represents a `NodeBoxView`.
-     *
-     * Note that this is _not_ a `NodeBoxView`, but rather the SVG paper owned by a `NodeBoxView`.
-     *
-     * Furthermore, this routine actually returns an object with three fields:
-     *  * `isDependent`: whether the node is for a dependent variable
-     *  * `nodeNumber`: the `arborNodeID` of the node
-     *  * `theNBV` : that SVG element
-     *
-     * @param iElement
-     * @returns {{nodeNumber: number, isDependent: boolean, theNBV: ({id}|*)}|*|null}
-     */
-    findNodeElementFromElement: function (iElement) {
-        if (iElement.id) {
-            const nodeNumber = Number(iElement.id.slice(4));
-            const theNBV = arbor.treePanelView.NBVfromNodeID(nodeNumber);
-
-            let out = {
-                isDependent: false,
-                nodeNumber: nodeNumber,
-                theNBV: theNBV,
-            };
-
-            if (iElement.className) {
-                const classString = (iElement.className.baseVal)
-                    ? iElement.className.baseVal.toString()
-                    : iElement.className.toString();
-                if (classString.includes(`dependent-variable`)) {
-                    out.isDependent = true;
-                    return out;
-                } else if (iElement.id.includes(`NBV`)) {  //  this element is a NodeBoxView
-                    return out;
-                }
-            }
-        }
-        const tParent = iElement.parentElement;
-        return (tParent) ? this.findNodeElementFromElement(tParent) : null;
-        //  return null;
     },
 
 
