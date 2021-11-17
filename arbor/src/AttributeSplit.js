@@ -249,6 +249,9 @@ AttributeSplit.prototype.branchDescription = function( iLorR ) {
             case "R":
                 out = this.attName +  " " + AttributeSplit.operatorOpposites[this.operator] +  " " + this.cutpoint;
                 break;
+            case "trunk":
+                out = `all cases`
+                break;
             default:
                 alert('LorR is ' + iLorR + " in AttributeSplit.branchDescription()");
                 break;

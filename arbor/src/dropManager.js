@@ -76,7 +76,7 @@ arbor.dropManager = {
 
         //  then we look at parents until we get some kind of Node.
         if (anElement) {
-            out = this.findNodeIndicatorFromElement(anElement);
+            out = this.findNodeNumberFromElement(anElement);
         }
         return out;
 
@@ -86,59 +86,36 @@ arbor.dropManager = {
      * Given some element in the DOM, figures out, recursively,
      * what node (if any) it might be in.
      *
-     * Returns the string `"dependent-variable"` if it is on the
-     * dependent variable stripe of the root node,
-     * the node number (as a number) if it's in a node otherwise,
+     * Returns the node number (as a number) if it's in a node,
      * and `null` if the element is not part of a node.
-     *
-     * Note that in the dependent variable case, we will not get far enough
-     * in the recursion to find the node number. That's OK,
-     * because (a) we don't need it and (b) it's the root node anyway.
      *
      * @param iElement
      * @returns {string|*|null}
      */
-    findNodeIndicatorFromElement: function (iElement) {
-        if (iElement.className) {
-/*
-            const classString = (iElement.className.baseVal)
-                ? iElement.className.baseVal.toString()
-                : iElement.className.toString();
-*/
-         //   if (classString.includes(`dependent-variable`)) {
-            if (iElement.id === "dependent") {
-                return `dependent-variable`;    //  return this string
-            }
-            if (iElement.id.includes(`NBV`)) {
-                return Number(iElement.id.slice(4));    //  return the number of the node
-            }
-            const tParent = iElement.parentElement;
-            return (tParent) ? this.findNodeIndicatorFromElement(tParent) : null;
+    findNodeNumberFromElement: function (iElement) {
+        if (iElement.id.includes(`NBV`)) {
+            return Number(iElement.id.slice(4));    //  return the number of the node
         }
-        return null;
+        const tParent = iElement.parentElement;
+        return (tParent) ? this.findNodeNumberFromElement(tParent) : null;
     },
 
     copeWithAttributeDrag: function (iWhat, iWhere) {
-        const foundNBVIndicator = this.findNBVAt(iWhere);        //  this is either a node number or the string "dependent-variable"
+        const theNodeNumber = this.findNBVAt(iWhere);
 
-        if (foundNBVIndicator) {
+        if (theNodeNumber) {
             //  we are dragging over a node. Highlight it!
-            if (foundNBVIndicator === 'dependent-variable') {
-                //  highlight the dependent variable stripe!
-
-            } else {
-                //  it's a node, but not the DV stripe
-                const theNBV = arbor.treePanelView.NBVfromNodeID(foundNBVIndicator);
-                console.log(`dragging ${iWhat} over node ${theNBV.myNode.arborNodeID}`);
-                if (this.highlightedNBV !== theNBV) {
-                    //  we have changed the highlighting
-                    if (this.highlightedNBV) {
-                        //  we're moving to a new node, to "nearby" the old highlighted one
-                        this.highlightedNBV.highlight("nearby");    //  just in case
-                    }
-                    this.highlightedNBV = theNBV;   //  set to the new node
-                    this.highlightedNBV.highlight("on");    //  and highlight it.
+            //  it's a node, but not the DV stripe
+            const theNBV = arbor.treePanelView.NBVfromNodeID(theNodeNumber);
+            console.log(`dragging ${iWhat} over node ${theNBV.myNode.arborNodeID}`);
+            if (this.highlightedNBV !== theNBV) {
+                //  we have changed the highlighting
+                if (this.highlightedNBV) {
+                    //  we're moving to a new node, to "nearby" the old highlighted one
+                    this.highlightedNBV.highlight("nearby");    //  just in case
                 }
+                this.highlightedNBV = theNBV;   //  set to the new node
+                this.highlightedNBV.highlight("on");    //  and highlight it.
             }
         } else {
             //  not over a node of any kind
@@ -154,19 +131,19 @@ arbor.dropManager = {
     },
 
     copeWithAttributeDrop: function (iWhat, iWhere) {
-        const foundNBVIndicator = this.findNBVAt(iWhere);
+        const theNodeNumber = this.findNBVAt(iWhere);
 
-        if (foundNBVIndicator) {
+        if (theNodeNumber) {
             //  we found some node.
-            if (foundNBVIndicator === 'dependent-variable') {
-                //  the drop took place in the DV stripe
+            if (theNodeNumber === arbor.state.tree.rootNode.arborNodeID) {
+                //  root node drop -> change the dependent variable
                 console.log(`Setting the dependent variable to ${iWhat}`);
                 arbor.setDependentVariableByName(iWhat);    //  also sets the focus split
                 arbor.dispatchTreeChangeEvent(`${iWhat} is the new dependent variable`);
                 focusSplitMgr.showHideAttributeConfigurationSection(true);
             } else {
                 //  it's the node number
-                const theNode = arbor.state.tree.nodeFromID(foundNBVIndicator);
+                const theNode = arbor.state.tree.nodeFromID(theNodeNumber);
 
                 //  find which `AttInBaum` corresponds to the string in `iWhat`
                 if (theNode) {

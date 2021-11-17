@@ -58,9 +58,11 @@ arborStrings = {
             refreshAllButton: `refresh all`,
             refreshDataButton: `refresh data`,
             emitDataButton: `emit data`,
+/*
             refreshAllButton2: `refresh all`,
             refreshDataButton2: `refresh data`,
             emitDataButton2: `emit data`,
+*/
             noTreeMessage : `Drag your target attribute here`,
             "truth-head": "truth",
             "pred-head": "prediction",
@@ -111,6 +113,7 @@ arborStrings = {
         
 Then we ask about`,
 
+        sAllCases: `all cases`,
         sAllCasesText: ` of the cases`,
         sPredict: `Predict`,
         sNoPrediction: `no prediction`,
@@ -147,6 +150,7 @@ Then we ask about`,
         sanSensitivity : `sens`,
         sanMisclassificationRate : `MCR`,
         sanSumSSD : `sumSSD`,
+        sSSD : `SSD`,       //  sum of squares of deviations
 
         sadPredict : `what does this tree try to predict?`,
         sadN : `total number of cases`,
@@ -230,9 +234,11 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             refreshAllButton: `Baum zurücksetzen`,
             refreshDataButton: `Daten aktualisieren`,
             emitDataButton: `Daten ausgeben`,
+/*
             refreshAllButton2: `Baum zurücksetzen`,
             refreshDataButton2: `Daten aktualisieren`,
             emitDataButton2: `Daten ausgeben`,
+*/
             noTreeMessage : `Die Zielvariable hierher ziehen`,
             "truth-head": "tatsächlich",
             "pred-head" : "Vorhersage",
@@ -280,7 +286,8 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         
 Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
-        sAllCasesText: `der Fälle`,
+        sAllCases: `alle Fälle`,
+        sAllCasesText:  ` der Fälle`,
         sPredict: `Vorhersage für`,
         sNoPrediction: `ohne Vorhersage`,
         sNoCasesToProcess: `keine Daten vorhanden`,
@@ -317,6 +324,7 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
         sanSensitivity : `Sens`,
         sanMisclassificationRate : `FKR`,
         sanSumSSD: `GQA`,  //GERMAN What is that? How to translate?
+        sSSD : `GQA`,       //  sum of squares of deviations
 
         sadPredict : `Was soll dieser Baum vorhersagen?`,
         sadN : `Gesamtanzahl aller Fälle`,

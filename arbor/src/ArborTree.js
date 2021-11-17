@@ -31,17 +31,16 @@
  * The Tree is a model that represents the whole tree.
  * It has a rootNode, which will in turn connect to the other Nodes.
  *
- * Note: a NodeZoneView does NOT have this as a model! A NodeZoneView exists solely to allocate space in the Tree Panel.
+ * Note: a NodeZoneView does NOT have this as a model!
+ * A NodeZoneView exists solely to allocate space in the Tree Panel.
  *
  * @constructor
  */
 Tree = function () {
     //  console.log("Tree constructor");
     this.filterArray = [];  //  empty, but present since this is the parent of the rootNode
-    //  this.nodes = [];
-
     this.rootNode = new Node(null, "root");   //  null is "no parent node"
-    //  this.nodes.push( this.rootNode );
+    this.trunkNode = new Node(this.rootNode, "trunk");
 };
 
 Tree.prototype.populateTree = function () {
@@ -49,14 +48,8 @@ Tree.prototype.populateTree = function () {
 };
 
 Tree.prototype.traceCaseInTree = function (iValues) {
-    //  console.log("tracing: " + JSON.stringify(iValues));
-
     var tTraceResult = this.rootNode.traceCaseInTree(iValues);
-
-    //  console.log("done: it's " + tTraceResult.terminalNodeSign);
-
     return tTraceResult;
-
 };
 
 /**
@@ -120,7 +113,7 @@ Tree.prototype.resultString = function () {
 
         } else {
             //  regression tree
-            tSummary = arbor.constants.kSigma + "(SSD) = " + tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3);
+            tSummary = `${arbor.constants.kSigma}(${srbor.strings.sSSD}) = ${tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3)}`;
         }
     }
 

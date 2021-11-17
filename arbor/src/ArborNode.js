@@ -27,9 +27,14 @@
 Node = function (iParent, iLoR) {
     this.arborNodeID = arbor.state.latestNodeID++;
     this.parentID = (iParent ? iParent.arborNodeID : null);  //  parent NODE (model). NULL if this is the root.
-    this.LoR = iLoR;        //  "L" or "R" (or "root")
+    this.LoR = iLoR;        //  "L" or "R" (or "root" or "trunk")
+
+    if (iParent) {
+        iParent.branches.push(this);
+    }
 
     this.attributeSplit = null;      //  how the descendants of this node get split or otherwise configured.
+    //  if this is the root, this is the dependent variable split.
 
     this.onTrace = false;       //  are we in the path of a (single, CODAP) selected case?
 
@@ -93,18 +98,22 @@ Node.prototype.parentNode = function () {
 
 /**
  * Called from this.populateNode()
- * and NodeBoxView.redrawNodeBoxView() (maybe just to get the parent's color)
+ * and NodeBoxView.redrawNodeBoxView().
+ * Importantly, provides the dependent variable split if this is the root node.
+ *
  * @param iParent       the parent NODE (not just the ID)
  * @returns {null|*}
  */
 Node.prototype.parentSplit = function (iParent) {
-    return (iParent ? iParent.attributeSplit : arbor.state.dependentVariableSplit);
+    if (!iParent) {
+        this.attributeSplit = arbor.state.dependentVariableSplit;   //  this is the root
+        return this.attributeSplit;
+    }
+    return iParent.attributeSplit;
 };
 
 /**
  * Called when the user drops an attribute in a node.
- * The `NodeBoxView` sends the data from the "mouse down place"
- * (in the corral) to this (mouse up) node.
  *
  * @param iAttribute    the `AttInBaum` that branches at this node, just dropped on it
  */
@@ -121,19 +130,21 @@ Node.prototype.branchThisNode = function (iAttribute) {
     //  we add each of the (two) branches separately. Left first.
 
     const tNewNode = new Node(this, "L"); //
-    this.branches.push(tNewNode);     //  array holds the LEFT branch
-
     const uNewNode = new Node(this, "R"); //
-    this.branches.push(uNewNode);     //  array now holds LEFT and RIGHT branches
 
     //  now this node has the correct split and the tree has the new nodes. Make it the focus
     arbor.setFocusNode(this);   //  also causes redraw
 
-    if (arbor.state.oAlwaysShowConfigurationOnSplit ) {
+    if (arbor.state.oAlwaysShowConfigurationOnSplit) {
         focusSplitMgr.showHideAttributeConfigurationSection(true);
     }
 
 };
+
+Node.prototype.addChild = function (iChild) {
+    this.branches.push(iChild);
+    iChild.parentID = this.arborNodeID;     //  just in case
+}
 
 /**
  * Remove all branches from this node
@@ -435,7 +446,7 @@ Node.prototype.getLeafText = function () {
 };
 
 Node.prototype.toString = function () {
-    let out = "Node " + this.arborNodeID + " (" + this.LoR +  ") N = " + this.denominator;
+    let out = "Node " + this.arborNodeID + " (" + this.LoR + ") N = " + this.denominator;
     return out;
 };
 

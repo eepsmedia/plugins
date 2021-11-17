@@ -91,6 +91,14 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
     this.myBoxView = new NodeBoxView(this.myNode, this);    //  create, not draw
     this.myPanel.nodeBoxViewArray.push(this.myBoxView);     //  record the NBV in the panel.
 
+/*
+    //  If I am the root, make the trunk here.
+    if (this.myNode.LoR === "root") {
+        const trunkNode = new Node(this.myNode, "trunk");
+        this.myNode.branches.push(trunkNode);
+    }
+*/
+
     this.leaf = (this.myNode.branches.length === 0 && arbor.state.oShowDiagnosisLeaves) ? new Leaf({node: this.myNode}) : null;          //  our leaf
 
     const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created just above
@@ -109,6 +117,24 @@ NodeZoneView.prototype.redrawEntireZone = function ( ) {  //  object with x, y
     tCurrentY = currentTotalHeight;
 
     switch (this.myNode.branches.length) {
+        case 1:
+/*
+            tCurrentY +=  arbor.constants.treeObjectPadding;     //  top of trunk
+
+            const trunkZoneView = new NodeZoneView(this.myNode.branches[0],this);  //  the trunk's zone view
+            this.paper.append(trunkZoneView.paper);
+            const trunkZoneSize = trunkZoneView.getZoneViewSize();    //  has width and height
+            if (trunkZoneSize.width > currentTotalWidth) {
+                currentTotalWidth = trunkZoneSize.width;
+            }
+            trunkZoneView.paper.attr({
+                x: currentTotalWidth / 2 - trunkZoneSize.width / 2,
+                y: tCurrentY
+            });
+            currentTotalHeight = tCurrentY + trunkZoneSize.height;   //  todo: need padding??
+*/
+
+
         case 2:
             tCurrentY += arbor.constants.treeLineLabelHeight + arbor.constants.treeObjectPadding;    //  top of subZoneViews
 

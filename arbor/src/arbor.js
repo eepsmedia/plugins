@@ -39,12 +39,8 @@
  *
  */
 
-/**
- for testing: http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/arbor/arbor.html
+/* global $, codapHelper, console, iframePhone, alert, TEEUtils, codapInterface, sendRequest */
 
- */
-
-/* global codapInterface */
 /**
  *
  * @type {{analysis: null, treePanelView: null, attsInBaum: Array, focusNode: null, focusSplit: null, panelWidthInView: null, state: {}, dependentVariableBoolean: [string], informalDVBoolean: string, informalDVBooleanReversed: string, dependentVariableSplit: null, iFrameDescription: {version: string, name: string, title: string, dimensions: {width: number, height: number}, preventDataContextReorg: boolean}, initialize: arbor.initialize, refreshBaum: arbor.refreshBaum, emitTreeData: arbor.emitTreeData, handleTreeChange: arbor.handleTreeChange, freshState: arbor.freshState, getAndRestoreModel: arbor.getAndRestoreModel, doBaumRestoration: arbor.doBaumRestoration, parseState: arbor.parseState, restoreTree: arbor.restoreTree, restoreNode: arbor.restoreNode, restoreSplit: arbor.restoreSplit, resizeWindow: arbor.resizeWindow, repopulate: arbor.repopulate, redisplay: arbor.redisplay, setDependentVariableByName: arbor.setDependentVariableByName, changeToNewDependentVariable: arbor.changeToNewDependentVariable, changeCurrentSplitTypeUsingMenu: arbor.changeCurrentSplitTypeUsingMenu, setFocusNode: arbor.setFocusNode, setFocusSplit: arbor.setFocusSplit, changeFocusSplitValues: arbor.changeFocusSplitValues, swapFocusSplit: arbor.swapFocusSplit, changeAttributeConfiguration: arbor.changeAttributeConfiguration, displayAttributeConfiguration: arbor.displayAttributeConfiguration, fixDependentVariableMechanisms: arbor.fixDependentVariableMechanisms, gotDataContextList: arbor.gotDataContextList, gotCollectionList: arbor.gotCollectionList, gotAttributeList: arbor.gotAttributeList, getAttributeByName: arbor.getAttributeByName, changeDataContext: arbor.changeDataContext, changeCollection: arbor.changeCollection, changeTreeTypeUsingMenu: arbor.changeTreeTypeUsingMenu, setTreeTypeByString: arbor.setTreeTypeByString, forceChangeFocusAttribute: arbor.forceChangeFocusAttribute, displayStatus: arbor.displayStatus, displayResults: arbor.displayResults, assembleAttributeAndCategoryNames: arbor.assembleAttributeAndCategoryNames, dispatchTreeEvent: arbor.dispatchTreeEvent}}
@@ -70,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021®',
+        version: '2021s',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -78,7 +74,8 @@ const arbor = {
     },
 
     /**
-     * Start up. Called from HTML.
+     * Startup. Called from HTML
+     * @returns {Promise<void>}
      */
     initialize: async function () {
 
@@ -150,7 +147,6 @@ const arbor = {
                 'dataContextChangeNotice[' + this.state.dataSetName + ']',
                 arbor.handleDataContextChange
             );
-
         }
     },
 
@@ -384,8 +380,8 @@ const arbor = {
         }
 
         if (arbor.state.dataSetName) {
-            await this.analysis.getStructureAndData();
-            arbor.assembleAttributeAndCategoryNames();   //  we have the cases, collect the names
+            await this.analysis.getStructureAndData();  //  load CODAP structure, then all cases. Know attributes!
+            arbor.assembleAttributeAndCategoryNames();   //  we have the cases, collect the value names
             this.attsInBaum.forEach(function (a) {
                 a.latestSplit = new AttributeSplit(a);  //  set all defaults
             });
@@ -503,6 +499,7 @@ const arbor = {
 
     /**
      * Makes an empty, initial tree and a clean display
+     * Called by doBaumRestoration(), above
      */
     restoreTree: function (iTree) {
         let outTree = Object.assign(new Tree(), iTree);     //  now it's labeled as a tree.
@@ -612,6 +609,11 @@ const arbor = {
         return this.setDependentVariableByAttInBaum(theAttribute);
     },
 
+    /**
+     *
+     * @param theAttribute      the AttInBaum we're setting as dependent
+     * @returns {*}
+     */
     setDependentVariableByAttInBaum: function (theAttribute) {
         //  make a new split
         this.state.dependentVariableName = theAttribute.attributeName;    //  for saving

@@ -31,14 +31,16 @@
  *
  *      * a NodeZoneView (for the tree itself)
  *
+ *      Note that the actual drawing of the entire tree really takes place recursively
+ *      starting with constructing the first (root) `NodeZoneView`.
+ *
  *
  * @constructor
  */
 TreePanelView = function ( ) {
     this.myPanel = this;            //  we are the top of the hierarchy
     this.lastMouseDownNodeView = null;
-    this.dependentVariableView = null;      //      this is a CorralAttView, one of the corralAttViews[]
-    this.rootNodeZoneView = null;           //      the top NodeZoneView for this tree
+    this.rootNodeZoneView = null;           //      the top NodeZoneView for this tree, houses the dependent variable
     this.nodeBoxViewArray = [];             //      list of all node box views, for highlighting
 
     /**
@@ -106,8 +108,16 @@ TreePanelView.prototype.redrawEntirePanel = function (  ) {
     this.panelPaper.clear();
 
     if (arbor.state.tree) {    //  if not, there is no root node, and we display only the background
-        //  todo: understand the rect() call in the next line
-        this.treePanelBackgroundRect = this.panelPaper.rect().attr({fill : arbor.constants.panelBackgroundColor});
+
+        /**
+         * This creates the background `rect` at the very bottom of the view hierarchy.
+         * Now it has no size; we fix that towards the end of this method.
+         */
+        this.treePanelBackgroundRect = this.panelPaper.rect().attr({
+                fill : arbor.constants.panelBackgroundColor,
+                id : "tree-background-rect",
+            });
+
         this.nodeBoxViewArray = [];     //  blank this array
 
         //  draw recursively starting with the root
@@ -128,9 +138,7 @@ TreePanelView.prototype.redrawEntirePanel = function (  ) {
             y: tPad
         });
 
-        this.treePanelBackgroundRect.attr({height: rootZoneSize.height, id : "tree-background-rect"});
-
-        arbor.displayResults(arbor.state.tree.resultString());    //  strip at the bottom
+        arbor.displayResults(arbor.state.tree.resultString());    //  strip of text at the bottom
 
         const tViewHeight = rootZoneSize.height + 2 * tPad;   //  in the panel view, yes, above and below,
 
@@ -140,6 +148,7 @@ TreePanelView.prototype.redrawEntirePanel = function (  ) {
             height: tViewHeight
         });
 
+        //  fix the size of the background `rect`.
         this.treePanelBackgroundRect.attr({
             width: arbor.displayWidth(),
             height: tViewHeight
