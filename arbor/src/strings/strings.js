@@ -67,8 +67,8 @@ arborStrings = {
             "truth-head": "truth",
             "pred-head": "prediction",
             sOmitProportionLabel : `(none)`,
-            focusAttributeNameBoxLabel  : `label`,
-            focusAttributeValueBoxLabel  : `value`,    //  `val`,
+            focusAttributeNameBoxLabel  : `FocusNode`,
+            focusAttributeValueBoxLabel  : `LeftValue`,    //  `val`,
 
             tableSummaryDataControlDetailTitle : `in order to export...`,
 
@@ -108,6 +108,7 @@ arborStrings = {
         sOf : "of",
         sOthers : `others`,
         sTo : `to`,
+        sPositive : `positive`,
 
         sThenWeAskAbout: `
         
@@ -243,8 +244,8 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             "truth-head": "tatsächlich",
             "pred-head" : "Vorhersage",
             sOmitProportionLabel : `(ohne)`,
-            focusAttributeNameBoxLabel  : `Variable`,    //  `label`,
-            focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
+            focusAttributeNameBoxLabel  : `FokusKnoten`,    //  `label`,
+            focusAttributeValueBoxLabel  : `LinkerWert`,    //  `val`,
 
             tableSummaryDataControlDetailTitle : `zum Ausgeben...`,
 
@@ -281,6 +282,7 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         sOf : "von",
         sOthers : `Sonstige`,
         sTo : `zu`,
+        sPositive : `positiv`,
 
         sThenWeAskAbout: `
         

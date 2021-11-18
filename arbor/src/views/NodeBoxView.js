@@ -271,7 +271,7 @@ NodeBoxView.prototype.makeRootStripes = function () {
     this.stripes.push(tStripe);
 
     if (arbor.state.treeType === arbor.constants.kClassTreeType) {
-        tText = `positive: ${arbor.state.dependentVariableSplit.attName} ${arbor.strings.sfIsAre(1)} ${arbor.state.dependentVariableSplit.leftLabel}`
+        tText = `${arbor.strings.sPositive}: ${arbor.state.dependentVariableSplit.attName} ${arbor.strings.sfIsAre(1)} ${arbor.state.dependentVariableSplit.leftLabel}`
         const uStripe = new Stripe(
             this,
             {text: tText, textColor: "white", bgColor: arbor.state.dependentVariableSplit.attColor},
