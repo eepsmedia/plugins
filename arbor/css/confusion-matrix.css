@@ -52,8 +52,12 @@ limitations under the License.
     color : #555;
 }
 
-.cell {
+.correct {
     background-color: #aca;
+}
+
+.incorrect {
+    background-color: #caa;
 }
 
 .box {

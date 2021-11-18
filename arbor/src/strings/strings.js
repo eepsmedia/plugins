@@ -184,9 +184,9 @@ ${arbor.informalDVBooleanReversed} 'negative'.`
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
-            const isRoot  = !(iNode.parentID);
-            const sAll = isRoot ? "all " : "";
-            const sBooleanIdentity = isRoot ? "" : `
+            const gotAll  = (iNode.LoR === "root" || iNode.LoR === "trunk");
+            const sAll = gotAll ? "all " : "";
+            const sBooleanIdentity = gotAll ? "" : `
 These are all cases where (${iNode.friendlySubsetDescription()}).`;
 
             return (
@@ -361,9 +361,9 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
-            const isRoot  = !(iNode.parentID);
-            const sAll = isRoot ? "alle " : "";
-            const sBooleanIdentity = isRoot ? "" : `
+            const gotAll  = (iNode.LoR === "root" || iNode.LoR === "trunk");
+            const sAll = gotAll ? "alle " : "";
+            const sBooleanIdentity = gotAll ? "" : `
 Das sind alle Fälle mit (${iNode.friendlySubsetDescription()}).`;
             return (
 `Dieser Knoten repräsentiert ${sAll}${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}.${sBooleanIdentity}

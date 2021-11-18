@@ -30,6 +30,15 @@ svg text::selection {
 
 /*  BASIC TEXT FONTS */
 
+.arbor-ui {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1em;
+}
+
+p.arbor-ui {
+    margin: 6px 0px;
+}
+
 h1 {
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 20px;
@@ -107,6 +116,12 @@ pre {
 
 .attributeConfigurationDoneButton {
     float : right;
+}
+
+#focusAttributeValueBox {
+    background-color: #ddd;
+    padding : 2px 6px;
+    border-radius: 4px;
 }
 
 .focusatt {

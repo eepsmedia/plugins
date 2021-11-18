@@ -290,7 +290,7 @@ const arbor = {
         tValues[arbor.strings.sanNodes] = tNodes;
         tValues[arbor.strings.sanDepth] = tDepth;
         tValues[arbor.strings.staticStrings.focusAttributeNameBoxLabel] = document.getElementById(`focusAttributeNameBox`).value;
-        tValues[arbor.strings.staticStrings.focusAttributeValueBoxLabel] = document.getElementById(`focusAttributeValueBox`).value;
+        tValues[arbor.strings.staticStrings.focusAttributeValueBoxLabel] = document.getElementById(`focusAttributeValueBox`).innerText;
 
         if (arbor.state.treeType === arbor.constants.kRegressTreeType) {
             tValues[arbor.strings.sanSumSSD] = tSumSSD;

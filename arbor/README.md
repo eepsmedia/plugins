@@ -72,13 +72,11 @@ if (this.isRoot()) {
 
 
 
-
-
-
-
-
-
-
+## Attaching HTML to SVG
+A clue:
+```
+        theLineGroup.append(Snap.parse("<title>" + tBranchDescription + "</title>"));
+```
 
 ## Opening attribute configuration on split
 

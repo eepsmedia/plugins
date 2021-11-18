@@ -136,10 +136,10 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <div id="pred-head" class="box">prediction</div>
             <div id="pred-positive-head" class="box">sick</div>
             <div id="pred-negative-head" class="box">well</div>
-            <div id="TP" class="cell">30</div>
-            <div id="TN" class="cell">40</div>
-            <div id="FP" class="cell">10</div>
-            <div id="FN" class="cell">20</div>
+            <div id="TP" class="cell correct">30</div>
+            <div id="TN" class="cell correct">40</div>
+            <div id="FP" class="cell incorrect">10</div>
+            <div id="FN" class="cell incorrect">20</div>
 
             <div id="noPredictionTableHead" class="no-pred">pas de predicion</div>
             <div id="PU" class="no-pred">44</div>
@@ -167,7 +167,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <details id="outputFileControls">
             <summary id="tableSummaryDataControlDetailTitle"></summary>
             <div class="vBox">
-                <p>These values will appear in the output table to help you identify the trees.</p>
+                <p class="arbor-ui">These values will appear in the output table to help you identify the trees.</p>
                 <div class="hBox">
                     <div class="vBox focusatt">
                         <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>
@@ -175,14 +175,14 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                     </div>
                     <div class="vBox focusatt">
                         <label for="focusAttributeValueBox" id="focusAttributeValueBoxLabel">val</label>
-                        <input id="focusAttributeValueBox" type="text" readonly>
+                        <div id="focusAttributeValueBox" ></div>
                     </div>
                 </div>
                 <div class="hBox">
                     <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
                 </div>
-                <p>just in case...</p>
                 <div class="hBox">
+                    <p class="arbor-ui">just in case...</p>
                     <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
                     <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
                 </div>

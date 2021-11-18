@@ -391,7 +391,7 @@ NodeBoxView.prototype.makeBranchingStripe = function () {
     const tStripe = new Stripe(
         this,
         {
-            text: this.myNode.attributeSplit.attName + "?",
+            text: this.myNode.attributeSplit.attName + "...?",
             textColor: "white",
             bgColor: this.myNode.attributeSplit.attColor
         },

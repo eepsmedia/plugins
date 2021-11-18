@@ -253,6 +253,11 @@ Node.prototype.populateNode = function () {
     this.missingArray.push(tParentSplit.oneMissingBoolean);
 
     switch (this.LoR) {
+        case "trunk":
+            this.relevantParentSplitLabel = arbor.strings.sAllCases;
+            this.filterArray = ["true"];
+            //  note, no change in filter array. Still empty.
+            break;
         case "L":
             this.relevantParentSplitLabel = tParentSplit.leftLabel;
             this.filterArray.push(tParentSplit.oneBoolean);
@@ -315,6 +320,8 @@ How deep is the tree below this node?
 Node.prototype.depthDownFromHere = function () {
     if (this.branches.length === 0) {
         return 0;
+    } else if (this.branches.length === 1) {
+        return this.branches[0].depthDownFromHere() + 1;
     } else {
         const Ldepth = this.branches[0].depthDownFromHere() + 1;
         const Rdepth = this.branches[1].depthDownFromHere() + 1;
@@ -454,7 +461,7 @@ Node.prototype.friendlySubsetDescription = function () {
     let out = "";
     const tAllCasesText = arbor.strings.sAllCasesText;
     const tParent = this.parentNode();
-    if (tParent) {
+    if (this.LoR !== "root" && this.LoR !== "trunk") {
         const tDesc = tParent.friendlySubsetDescription();
 
         const tNewLabel = (this.LoR === "L") ?
@@ -476,16 +483,25 @@ Node.prototype.friendlySubsetDescription = function () {
 Node.prototype.longDescription = function () {
 
     let out = "";
-    if (!this.parentNode()) {   //  dependent variable only
-        out += arbor.strings.sfPositiveNegativeNodeDescription() + "<br>&mdash;&mdash;<br>";
+    switch(this.LoR) {
+        case "root":
+            out += arbor.strings.sfPositiveNegativeNodeDescription();
+            break;
+        case "trunk":
+            out += arbor.strings.sfNodeCasesDescription(this);
+            break;
+        case "L":
+            out += arbor.strings.sfNodeCasesDescription(this);
+            break;
+        case "R":
+            out += arbor.strings.sfNodeCasesDescription(this);
+            break;
     }
-    out += arbor.strings.sfNodeCasesDescription(this);
 
-    //  out += (arbor.state.dependentVariableSplit.isCategorical ? tProportionText : (tMeanText + " " + tMSDtext));
-
-    if (this.attributeSplit) {
-        out += "<br>&mdash;&mdash;<br>";
-        out += `${arbor.strings.sThenWeAskAbout} ${this.attributeSplit.attName}`;
+    if (this.attributeSplit && this.LoR !== "root") {
+        out +=
+`&mdash;&mdash;
+${arbor.strings.sThenWeAskAbout} ${this.attributeSplit.attName}`;
     }
 
     return out;
