@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="arbor 2021s, cosmetics repaired, mostly working correctly">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="arbor 2021s, small changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/Stripe.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Stripe.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -230,7 +230,14 @@
       <option name="project" value="LOCAL" />
       <updated>1637198825787</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="arbor 2021s, small changes">
+      <created>1637210730004</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1637210730004</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,6 +277,7 @@
     <MESSAGE value="arbor 2021®, still currently a mess" />
     <MESSAGE value="arbor 2021s, in branch, now includes &quot;trunk&quot; node and clearer place to drop change in dependent variable" />
     <MESSAGE value="arbor 2021s, cosmetics repaired, mostly working correctly" />
-    <option name="LAST_COMMIT_MESSAGE" value="arbor 2021s, cosmetics repaired, mostly working correctly" />
+    <MESSAGE value="arbor 2021s, small changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="arbor 2021s, small changes" />
   </component>
 </project>

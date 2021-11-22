@@ -59,6 +59,7 @@ Stripe = function (iParent, iTextParams, iRole) {
                         focusSplitMgr.showHideAttributeConfigurationSection(true);   //  arbor.swapFocusSplit();              //  actually do the swap
                     }.bind(this)
                 );
+
             this.rightButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.trash, 0, 0, 32, 32)
                 .append(Snap.parse("<title>" + toolTipTexts.trash + "</title>"))
                 .mousedown(

@@ -53,7 +53,8 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" href="../../common/jquery/jquery-ui.min.css">
     <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
@@ -166,6 +167,10 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
         <details id="outputFileControls">
             <summary id="tableSummaryDataControlDetailTitle"></summary>
+            <select>
+                <option>foo</option>
+                <option>bar</option>
+            </select>
             <div class="vBox">
                 <p class="arbor-ui">These values will appear in the output table to help you identify the trees.</p>
                 <div class="hBox">
@@ -175,16 +180,11 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
                     </div>
                     <div class="vBox focusatt">
                         <label for="focusAttributeValueBox" id="focusAttributeValueBoxLabel">val</label>
-                        <div id="focusAttributeValueBox" ></div>
+                        <div id="focusAttributeValueBox"></div>
                     </div>
-                </div>
-                <div class="hBox">
-                    <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
-                </div>
-                <div class="hBox">
-                    <p class="arbor-ui">just in case...</p>
-                    <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
-                    <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
+                    <div class="hBox">
+                        <button id="emitDataButton" onclick="arbor.emitTreeData()">emit data</button>
+                    </div>
                 </div>
 
             </div>
@@ -339,18 +339,13 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <label for="autoBranchLabels" id="sAutomaticallyShowSplitPointsInBranchLabelsLabel">never see this!</label>
         </div>
 
-        <!--
-                <div class="baumControlGroup">
-                    <p> Change these at your peril.</p>
-
-                    <label for="dataContextMenu">Dataset: </label>
-                    <select id="dataContextMenu" onchange="arbor.changeDataContext();"></select>
-                    &lt;!&ndash;
-                    <label for="collectionMenu">Collection: </label>
-                    <select id="collectionMenu" onchange="arbor.changeCollection();"></select>
-                    &ndash;&gt;
-                </div>
-        -->
+        <div class="baumControlGroup">
+            <div class="hBox">
+                <p class="arbor-ui">just in case...</p>
+                <button id="refreshAllButton" onclick="arbor.refreshBaum('all')">refresh everything</button>
+                <button id="refreshDataButton" onclick="arbor.refreshBaum('data')">refresh data</button>
+            </div>
+        </div>
 
 
         <div class="baumControlGroup">
