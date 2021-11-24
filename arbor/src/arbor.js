@@ -55,7 +55,7 @@ const arbor = {
     strings: null,         //  the actual strings
     analysis: null,        //      connects to CODAP
     treePanelView: null,
-    //  corralView: null,
+
     attsInBaum: [],         //  the array of all the attributes in the tree
 
     focusNode: null,       //  currently-selected node

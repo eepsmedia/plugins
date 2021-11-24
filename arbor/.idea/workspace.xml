@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../binomial/src/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/arbor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/arbor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/dropManager.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../binomial/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../binomial/src/binomial.js" beforeDir="false" afterPath="$PROJECT_DIR$/../binomial/src/binomial.js" afterDir="false" />
@@ -41,6 +44,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="o8jku9b5" />
@@ -217,7 +221,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>

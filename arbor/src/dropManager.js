@@ -33,9 +33,6 @@ arbor.dropManager = {
                     break;
 
                 case "dragend":
-                    //  console.log(`... dragend ${iMessage.values.attribute.title} at ${positionString}`);
-                    // document.getElementById("entire-scrambler").className = "body-no-drag";
-                    //scrambler.currentlyDraggingAnAttribute = false;
                     break;
 
                 case "dragenter":
@@ -43,12 +40,12 @@ arbor.dropManager = {
                         `(${iMessage.values.position.x} , ${iMessage.values.position.y})` :
                         `(no pos)`;
                     console.log(`... dragenter ${iMessage.values.attribute.title} at ${positionString}`);
-                    //document.getElementById("entire-scrambler").className = "body-drag";
+                    //  document.getElementById("entire-scrambler").className = "body-drag";
                     break;
 
                 case "dragleave":
                     console.log(`... dragleave ${iMessage.values.attribute.title} at ${positionString}`);
-                    //document.getElementById("entire-scrambler").className = "body-no-drag";
+                    //  document.getElementById("entire-scrambler").className = "body-no-drag";
 
                     break;
 
