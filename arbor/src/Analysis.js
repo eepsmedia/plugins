@@ -30,11 +30,8 @@
 /**
  * An "Analysis" is in charge of connecting an abstract analysis (a chart, a visualization)
  * to data contexts, collections, etc. in CODAP.
- *
- * @param iHost
  * @constructor
  */
-
 const Analysis = function ( ) {
     this.initialize();
 };
@@ -57,125 +54,9 @@ Analysis.prototype.refreshDataOnly = function () {
 
 
 Analysis.prototype.getStructureAndData = async function () {
-    //  this.initialize();
-
-    //  function to get the list of data contexts
-
-/*
-    const getListOfDataContexts = async function () {
-        const tArg = {action: "get", resource: "dataContextList"};
-        return codapInterface.sendRequest(tArg);
-    };
-
-    //  function to deal with the data contexts
-
-    const processDataContextList = async function (iResult) {
-        this.dataContexts = iResult.values;
-        const tDataContextNames = TEEUtils.getListOfOneFieldInArrayOfObjects(this.dataContexts, "name");
-        if (tDataContextNames.indexOf(this.currentDataContextName) < 0) {
-            console.log("Data Context [" + this.currentDataContextName + "] not found in list of DCs");
-            this.specifyCurrentDataContext(this.dataContexts[0].name);  //  take the first one. This has to go!
-        }
-        this.host.gotDataContextList(this.dataContexts);
-        //  const tArg = {action: "get", resource: "dataContext[" + this.currentDataContextName + "].collectionList"};
-        const tArg = {action: "get", resource: "dataContext[" + this.currentDataContextName + "]"};
-        return codapInterface.sendRequest(tArg);
-    };
-
-*/
-    /**
-     * Process the CODAP get Data Context result to get all the attributes and the collections
-     * @param iResult
-     * @returns {Promise<void>}
-     */
-
-    //  function to process the list of collections and set the name of the top and bottom collections
-
-    //  todo: see if we need this any more...
-/*
-    const processCollectionList = async function (iResult) {
-        this.collections = iResult.values;
-        this.topCollectionName = this.collections[0].name;
-        this.bottomCollectionName = this.collections[this.collections.length - 1].name;
-
-        let theTotalAttributeList = [];
-        this.host.resetAttributeList();   //  set attsInBaum to []
-
-        //  read sequentially though all collections so that the attribute names stay in order
-
-        for (const c of this.collections) {
-            const tResource = "dataContext[" + this.currentDataContextName + "].collection[" + c.name + "].attributeList";
-            const tArg = {action: "get", resource: tResource};
-            console.log("Looking for attributes in collection " + c.name);
-            const result = await codapInterface.sendRequest(tArg);
-            const theAtts = result.values;
-            theTotalAttributeList = theTotalAttributeList.concat(theAtts);
-
-            //  construct a compound request to get info on all attributes in this collection
-
-            let tCompoundRequest = [];
-            for (const a of theAtts) {
-                const tResource = "dataContext[" + this.currentDataContextName + "].attribute[" + a.name + "]";
-                const tOneRequest = {"action": "get", "resource": tResource};
-                tCompoundRequest.push(tOneRequest);
-            }
-
-            //  process results of this compound request (array of attribute responses)
-
-            if (tCompoundRequest.length > 0) {
-                console.log("Sending a compound request to retrieve " + tCompoundRequest.length + " attributes");
-                const attsResults = await codapInterface.sendRequest(tCompoundRequest);
-                for (const ar of attsResults) {
-                    if (ar.success) {
-                        var tName = ar.values.name;
-                        if (this.excludedAttributeNames.indexOf(tName) < 0) {     //  todo: cope with this kludge that special-cases "diagnosis" and "analysis"
-                            this.host.gotOneAttribute(ar.values);
-                        }
-                    }
-                }
-            } else {
-                console.log("Not sending any requests to retrieve attributes.");
-            }
-        }   //  end of loop over collections
-        return theTotalAttributeList;
-    };
-*/
-
-
-    //  function to process THE CASES!
-
-/*
-    var processCases = function (iResult) {
-        return new Promise(function (resolve, reject) {
-            if (iResult.success) {
-                var tCases = [];
-
-                iResult.values.forEach( (rawCase) => {
-                    tCases.push(rawCase);  //  note not rawCase.case.values as before. So we will need to get values. This is to preserve the id.
-                });
-
-                this.cases = tCases;
-                console.log("Success reading in " + this.cases.length + " cases.");
-                resolve(this.cases);      //  so processCases returns an array of cases. Sweet.
-            } else {
-                reject("Failed to get cases in Analysis.js");
-            }
-        }.bind(this));
-
-    };
-
-*/
-    //  THIS is what we actually do!
-
     await this.processDataContext();     //  includes getting list of attributes
     this.cases = await this.getCasesRecursivelyFromCollection(this.topCollectionName);
     console.log("Success reading in " + this.cases.length + " cases.");
-
-    /*
-            .then(processAttributeList.bind(this))      //  includes asking for individual attributes
-            .then(processIndividualAttributes.bind(this))   //      includes asking for the cases themselves
-            .then(processCases.bind(this))      //  finishes getting all the cases
-    */
 };
 
 Analysis.prototype.processDataContext = async function() {
@@ -255,33 +136,6 @@ Analysis.prototype.getCasesWithChildrenRecursivelyByID = async function(iParentI
 Analysis.prototype.getData = function () {
 
 };
-
-//  older from here out
-
-/**
- * Given a data context name (possibly new), set up the tree to read that data.
- * Importantly, includes registering our interest in changes (new cases) in that dataset.
- * @param iDCName
- */
-/*
-Analysis.prototype.specifyCurrentDataContext = function (iDCName) {
-
-    if (iDCName === this.currentDataContextName) {  //  not a new specification!
-        console.log("Analysis.specifyCurrentDataContext: no change from " + this.currentDataContextName);
-
-    } else {
-        console.log("Analysis.specifyCurrentDataContext: " + iDCName + " instead of " + this.currentDataContextName);
-        this.currentDataContextName = iDCName;
-
-        codapInterface.on(
-            'notify',
-            'dataContextChangeNotice[' + this.currentDataContextName + ']',
-            'createCases',
-            arbor.newCases.newCasesInData
-        );
-    }
-};
-*/
 
 
 /*

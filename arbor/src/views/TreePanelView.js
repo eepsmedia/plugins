@@ -30,16 +30,18 @@
  * That is, it has
  *
  *      * a NodeZoneView (for the tree itself)
- *      * the corral
- **
- * @param iTreePanelDOMName, iCorralDOMName  the ID in the html for this region in the DOM
+ *
+ *      Note that the actual drawing of the entire tree really takes place recursively
+ *      starting with constructing the first (root) `NodeZoneView`.
+ *
+ *
  * @constructor
  */
 TreePanelView = function ( ) {
     this.myPanel = this;            //  we are the top of the hierarchy
     this.lastMouseDownNodeView = null;
-    this.dependentVariableView = null;      //      this is a CorralAttView, one of the corralAttViews[]
-    this.rootNodeZoneView = null;           //      the top NodeZoneView for this tree
+    this.rootNodeZoneView = null;           //      the top NodeZoneView for this tree, houses the dependent variable
+    this.nodeBoxViewArray = [];             //      list of all node box views, for highlighting
 
     /**
      * The paper for the entire TreePanelView.
@@ -104,16 +106,27 @@ TreePanelView.prototype.createDragSVGPaper = function (iAttInBaum, iWhere) {
 TreePanelView.prototype.redrawEntirePanel = function (  ) {
 
     this.panelPaper.clear();
-    //  todo: understand the rect() call in the next line
-    this.treePanelBackgroundRect = this.panelPaper.rect().attr({fill : arbor.constants.panelBackgroundColor});
-    this.rootNodeZoneView = new NodeZoneView(arbor.state.tree.rootNode, this);
-
-    this.panelPaper.append(this.rootNodeZoneView.paper);
-
-    const tPad = arbor.constants.treeObjectPadding;
-    //  console.log("Redrawing TreePanelView to " + Math.round(arbor.displayWidth()) + " px");
 
     if (arbor.state.tree) {    //  if not, there is no root node, and we display only the background
+
+        /**
+         * This creates the background `rect` at the very bottom of the view hierarchy.
+         * Now it has no size; we fix that towards the end of this method.
+         */
+        this.treePanelBackgroundRect = this.panelPaper.rect().attr({
+                fill : arbor.constants.panelBackgroundColor,
+                id : "tree-background-rect",
+            });
+
+        this.nodeBoxViewArray = [];     //  blank this array
+
+        //  draw recursively starting with the root
+        this.rootNodeZoneView = new NodeZoneView(arbor.state.tree.rootNode, this);
+
+        this.panelPaper.append(this.rootNodeZoneView.paper);
+
+        const tPad = arbor.constants.treeObjectPadding;
+        //  console.log("Redrawing TreePanelView to " + Math.round(arbor.displayWidth()) + " px");
 
         const rootZoneSize = this.rootNodeZoneView.getZoneViewSize();
         /**
@@ -125,17 +138,17 @@ TreePanelView.prototype.redrawEntirePanel = function (  ) {
             y: tPad
         });
 
-        this.treePanelBackgroundRect.attr({height: rootZoneSize.height, id : "tree-background-rect"});
-
-        arbor.displayResults(arbor.state.tree.resultString());    //  strip at the bottom
+        arbor.displayResults(arbor.state.tree.resultString());    //  strip of text at the bottom
 
         const tViewHeight = rootZoneSize.height + 2 * tPad;   //  in the panel view, yes, above and below,
 
+        //  set size of this panel and its background
         this.panelPaper.attr({
             width: arbor.displayWidth(),
             height: tViewHeight
         });
 
+        //  fix the size of the background `rect`.
         this.treePanelBackgroundRect.attr({
             width: arbor.displayWidth(),
             height: tViewHeight
@@ -166,4 +179,24 @@ TreePanelView.prototype.stopDrag = function (paper, event) {
 TreePanelView.prototype.doDrag = function (dx, dy, x, y, event) {
     const tWhere = {x: event.offsetX, y: event.offsetY};
     this.dragSVGPaper.attr(tWhere);
+};
+
+TreePanelView.prototype.highlightDropZones = function(iHighlight) {
+    console.log(`drop zone highlighting ${ iHighlight ? "on" : "off"}`);
+
+    this.nodeBoxViewArray.forEach( (nbv) => {
+        nbv.highlight(iHighlight ? "nearby" : "off");
+    })
+};
+
+TreePanelView.prototype.NBVfromNodeID = function(iNodeID) {
+    let out = null;
+
+    this.nodeBoxViewArray.forEach( (nbv) => {
+        if (nbv.myNode.arborNodeID === iNodeID) {
+            out = nbv;
+        }
+    })
+    return out;
+
 };

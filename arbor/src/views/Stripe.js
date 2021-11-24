@@ -10,6 +10,9 @@ Stripe = function (iParent, iTextParams, iRole) {
 
 
     this.paper = Snap(100, 100).attr({"class": iRole + "-stripe"});
+    if (iRole === 'dependent-variable') {
+        this.paper.attr({ id : "dependent"});
+    }
     this.bgShape = iRole === "terminal" ?
         this.paper.circle(0, 0, 40).attr({fill: this.sBGColor}) :
         this.paper.rect(0, 0, 40, 40).attr({fill: this.sBGColor});
@@ -56,6 +59,7 @@ Stripe = function (iParent, iTextParams, iRole) {
                         focusSplitMgr.showHideAttributeConfigurationSection(true);   //  arbor.swapFocusSplit();              //  actually do the swap
                     }.bind(this)
                 );
+
             this.rightButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.trash, 0, 0, 32, 32)
                 .append(Snap.parse("<title>" + toolTipTexts.trash + "</title>"))
                 .mousedown(

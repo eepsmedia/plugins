@@ -192,7 +192,7 @@ const binomial = {
 
 
     constants : {
-        kVersion : "001a",
+        kVersion : "001b",
         kBinomialDataSetName : "binData",
         kBinomialDataSetTitle : "binomial data",
         kRunCollectionName : "runs",

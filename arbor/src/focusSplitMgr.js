@@ -113,10 +113,10 @@ const focusSplitMgr = {
 
         if (this.theSplit.isCategorical) {
             domName.value = theName;
-            domValue.value = this.theSplit.leftCategories.join(", ");
+            domValue.innerText = this.theSplit.leftCategories.join(", ");
         } else {
             domName.value = `${theName} ${this.theSplit.operator}`;
-            domValue.value = this.theSplit.cutpoint;
+            domValue.innerText = this.theSplit.cutpoint;
         }
     },
 

@@ -58,15 +58,17 @@ arborStrings = {
             refreshAllButton: `refresh all`,
             refreshDataButton: `refresh data`,
             emitDataButton: `emit data`,
+/*
             refreshAllButton2: `refresh all`,
             refreshDataButton2: `refresh data`,
             emitDataButton2: `emit data`,
+*/
             noTreeMessage : `Drag your target attribute here`,
             "truth-head": "truth",
             "pred-head": "prediction",
             sOmitProportionLabel : `(none)`,
-            focusAttributeNameBoxLabel  : `label`,
-            focusAttributeValueBoxLabel  : `value`,    //  `val`,
+            focusAttributeNameBoxLabel  : `FocusNode`,
+            focusAttributeValueBoxLabel  : `LeftValue`,    //  `val`,
 
             tableSummaryDataControlDetailTitle : `in order to export...`,
 
@@ -91,7 +93,7 @@ arborStrings = {
             treeTypeLabel : `tree type: `,
             howDoYouWantToDisplay : `How do you want to display...`,
             howManyCasesAreSuccesses : `... how many dots are blue?`,
-            theProportionOfSuccesses : `... the proportion of dots that are blue?`,
+            theProportionOfSuccesses : `... what proportion of dots are blue?`,
             threeOfFive : `3 of 5`,
             threeToTwo : `3 to 2`,        //      `3 to 2`,
             sAutoOpenAttributeSplitLabel : `automatically open attribute configuration`,
@@ -106,11 +108,13 @@ arborStrings = {
         sOf : "of",
         sOthers : `others`,
         sTo : `to`,
+        sPositive : `positive`,
 
         sThenWeAskAbout: `
         
 Then we ask about`,
 
+        sAllCases: `all cases`,
         sAllCasesText: ` of the cases`,
         sPredict: `Predict`,
         sNoPrediction: `no prediction`,
@@ -147,6 +151,7 @@ Then we ask about`,
         sanSensitivity : `sens`,
         sanMisclassificationRate : `MCR`,
         sanSumSSD : `sumSSD`,
+        sSSD : `SSD`,       //  sum of squares of deviations
 
         sadPredict : `what does this tree try to predict?`,
         sadN : `total number of cases`,
@@ -180,9 +185,9 @@ ${arbor.informalDVBooleanReversed} 'negative'.`
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
-            const isRoot  = !(iNode.parentID);
-            const sAll = isRoot ? "all " : "";
-            const sBooleanIdentity = isRoot ? "" : `
+            const gotAll  = (iNode.LoR === "root" || iNode.LoR === "trunk");
+            const sAll = gotAll ? "all " : "";
+            const sBooleanIdentity = gotAll ? "" : `
 These are all cases where (${iNode.friendlySubsetDescription()}).`;
 
             return (
@@ -230,15 +235,17 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             refreshAllButton: `Baum zurücksetzen`,
             refreshDataButton: `Daten aktualisieren`,
             emitDataButton: `Daten ausgeben`,
+/*
             refreshAllButton2: `Baum zurücksetzen`,
             refreshDataButton2: `Daten aktualisieren`,
             emitDataButton2: `Daten ausgeben`,
+*/
             noTreeMessage : `Die Zielvariable hierher ziehen`,
             "truth-head": "tatsächlich",
             "pred-head" : "Vorhersage",
             sOmitProportionLabel : `(ohne)`,
-            focusAttributeNameBoxLabel  : `Variable`,    //  `label`,
-            focusAttributeValueBoxLabel  : `Wert`,    //  `val`,
+            focusAttributeNameBoxLabel  : `FokusKnoten`,    //  `label`,
+            focusAttributeValueBoxLabel  : `LinkerWert`,    //  `val`,
 
             tableSummaryDataControlDetailTitle : `zum Ausgeben...`,
 
@@ -275,12 +282,14 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         sOf : "von",
         sOthers : `Sonstige`,
         sTo : `zu`,
+        sPositive : `positiv`,
 
         sThenWeAskAbout: `
         
 Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
-        sAllCasesText: `der Fälle`,
+        sAllCases: `alle Fälle`,
+        sAllCasesText:  ` der Fälle`,
         sPredict: `Vorhersage für`,
         sNoPrediction: `ohne Vorhersage`,
         sNoCasesToProcess: `keine Daten vorhanden`,
@@ -317,6 +326,7 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
         sanSensitivity : `Sens`,
         sanMisclassificationRate : `FKR`,
         sanSumSSD: `GQA`,  //GERMAN What is that? How to translate?
+        sSSD : `GQA`,       //  sum of squares of deviations
 
         sadPredict : `Was soll dieser Baum vorhersagen?`,
         sadN : `Gesamtanzahl aller Fälle`,
@@ -353,9 +363,9 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
         sfNodeCasesDescription: function (iNode) {
             const theRest = iNode.denominator - iNode.numerator;
-            const isRoot  = !(iNode.parentID);
-            const sAll = isRoot ? "alle " : "";
-            const sBooleanIdentity = isRoot ? "" : `
+            const gotAll  = (iNode.LoR === "root" || iNode.LoR === "trunk");
+            const sAll = gotAll ? "alle " : "";
+            const sBooleanIdentity = gotAll ? "" : `
 Das sind alle Fälle mit (${iNode.friendlySubsetDescription()}).`;
             return (
 `Dieser Knoten repräsentiert ${sAll}${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}.${sBooleanIdentity}

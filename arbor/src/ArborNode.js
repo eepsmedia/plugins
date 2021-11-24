@@ -27,9 +27,14 @@
 Node = function (iParent, iLoR) {
     this.arborNodeID = arbor.state.latestNodeID++;
     this.parentID = (iParent ? iParent.arborNodeID : null);  //  parent NODE (model). NULL if this is the root.
-    this.LoR = iLoR;        //  "L" or "R" (or "root")
+    this.LoR = iLoR;        //  "L" or "R" (or "root" or "trunk")
+
+    if (iParent) {
+        iParent.branches.push(this);
+    }
 
     this.attributeSplit = null;      //  how the descendants of this node get split or otherwise configured.
+    //  if this is the root, this is the dependent variable split.
 
     this.onTrace = false;       //  are we in the path of a (single, CODAP) selected case?
 
@@ -93,18 +98,22 @@ Node.prototype.parentNode = function () {
 
 /**
  * Called from this.populateNode()
- * and NodeBoxView.redrawNodeBoxView() (maybe just to get the parent's color)
+ * and NodeBoxView.redrawNodeBoxView().
+ * Importantly, provides the dependent variable split if this is the root node.
+ *
  * @param iParent       the parent NODE (not just the ID)
  * @returns {null|*}
  */
 Node.prototype.parentSplit = function (iParent) {
-    return (iParent ? iParent.attributeSplit : arbor.state.dependentVariableSplit);
+    if (!iParent) {
+        this.attributeSplit = arbor.state.dependentVariableSplit;   //  this is the root
+        return this.attributeSplit;
+    }
+    return iParent.attributeSplit;
 };
 
 /**
  * Called when the user drops an attribute in a node.
- * The `NodeBoxView` sends the data from the "mouse down place"
- * (in the corral) to this (mouse up) node.
  *
  * @param iAttribute    the `AttInBaum` that branches at this node, just dropped on it
  */
@@ -121,19 +130,21 @@ Node.prototype.branchThisNode = function (iAttribute) {
     //  we add each of the (two) branches separately. Left first.
 
     const tNewNode = new Node(this, "L"); //
-    this.branches.push(tNewNode);     //  array holds the LEFT branch
-
     const uNewNode = new Node(this, "R"); //
-    this.branches.push(uNewNode);     //  array now holds LEFT and RIGHT branches
 
     //  now this node has the correct split and the tree has the new nodes. Make it the focus
     arbor.setFocusNode(this);   //  also causes redraw
 
-    if (arbor.state.oAlwaysShowConfigurationOnSplit ) {
+    if (arbor.state.oAlwaysShowConfigurationOnSplit) {
         focusSplitMgr.showHideAttributeConfigurationSection(true);
     }
 
 };
+
+Node.prototype.addChild = function (iChild) {
+    this.branches.push(iChild);
+    iChild.parentID = this.arborNodeID;     //  just in case
+}
 
 /**
  * Remove all branches from this node
@@ -242,6 +253,11 @@ Node.prototype.populateNode = function () {
     this.missingArray.push(tParentSplit.oneMissingBoolean);
 
     switch (this.LoR) {
+        case "trunk":
+            this.relevantParentSplitLabel = arbor.strings.sAllCases;
+            this.filterArray = ["true"];
+            //  note, no change in filter array. Still empty.
+            break;
         case "L":
             this.relevantParentSplitLabel = tParentSplit.leftLabel;
             this.filterArray.push(tParentSplit.oneBoolean);
@@ -304,6 +320,8 @@ How deep is the tree below this node?
 Node.prototype.depthDownFromHere = function () {
     if (this.branches.length === 0) {
         return 0;
+    } else if (this.branches.length === 1) {
+        return this.branches[0].depthDownFromHere() + 1;
     } else {
         const Ldepth = this.branches[0].depthDownFromHere() + 1;
         const Rdepth = this.branches[1].depthDownFromHere() + 1;
@@ -435,7 +453,7 @@ Node.prototype.getLeafText = function () {
 };
 
 Node.prototype.toString = function () {
-    let out = "Node " + this.arborNodeID + " (" + this.LoR +  ") N = " + this.denominator;
+    let out = "Node " + this.arborNodeID + " (" + this.LoR + ") N = " + this.denominator;
     return out;
 };
 
@@ -443,7 +461,7 @@ Node.prototype.friendlySubsetDescription = function () {
     let out = "";
     const tAllCasesText = arbor.strings.sAllCasesText;
     const tParent = this.parentNode();
-    if (tParent) {
+    if (this.LoR !== "root" && this.LoR !== "trunk") {
         const tDesc = tParent.friendlySubsetDescription();
 
         const tNewLabel = (this.LoR === "L") ?
@@ -465,16 +483,25 @@ Node.prototype.friendlySubsetDescription = function () {
 Node.prototype.longDescription = function () {
 
     let out = "";
-    if (!this.parentNode()) {   //  dependent variable only
-        out += arbor.strings.sfPositiveNegativeNodeDescription() + "<br>&mdash;&mdash;<br>";
+    switch(this.LoR) {
+        case "root":
+            out += arbor.strings.sfPositiveNegativeNodeDescription();
+            break;
+        case "trunk":
+            out += arbor.strings.sfNodeCasesDescription(this);
+            break;
+        case "L":
+            out += arbor.strings.sfNodeCasesDescription(this);
+            break;
+        case "R":
+            out += arbor.strings.sfNodeCasesDescription(this);
+            break;
     }
-    out += arbor.strings.sfNodeCasesDescription(this);
 
-    //  out += (arbor.state.dependentVariableSplit.isCategorical ? tProportionText : (tMeanText + " " + tMSDtext));
-
-    if (this.attributeSplit) {
-        out += "<br>&mdash;&mdash;<br>";
-        out += `${arbor.strings.sThenWeAskAbout} ${this.attributeSplit.attName}`;
+    if (this.attributeSplit && this.LoR !== "root") {
+        out +=
+`&mdash;&mdash;
+${arbor.strings.sThenWeAskAbout} ${this.attributeSplit.attName}`;
     }
 
     return out;
