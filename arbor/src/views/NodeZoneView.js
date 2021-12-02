@@ -87,8 +87,10 @@ NodeZoneView.prototype.redrawEntireZone = function () {  //  object with x, y
     this.myBoxView = new NodeBoxView(this.myNode, this);    //  create and draw, but not installed. So size is good.
     this.myPanel.nodeBoxViewArray.push(this.myBoxView);     //  record the NBV in the panel.
 
-    this.leaf = (this.myNode.branches.length === 0 && arbor.state.oShowDiagnosisLeaves)
+/*
+    this.leaf = (this.myNode.branches.length === 0 )    //      && arbor.state.oShowDiagnosisLeaves)
         ? new Leaf({node: this.myNode}) : null;          //  our leaf
+*/
 
     const boxPaper = this.myBoxView.paper;         //  this NodeBoxView was created just above
     this.paper.append(boxPaper);    //  attach it, but it's not yet in the right place.
@@ -170,11 +172,11 @@ NodeZoneView.prototype.redrawEntireZone = function () {  //  object with x, y
 
         case 0:     //  it's a leaf! update and position the leaf
             tCurrentY += arbor.constants.treeObjectPadding;     //  top of leaf
+            this.leaf = new Leaf({node: this.myNode});          //  our leaf
 
-            if (arbor.state.oShowDiagnosisLeaves) {
+            if (true) {     //  (arbor.state.oShowDiagnosisLeaves) {
                 this.paper.append(this.leaf.paper);
                 const tLeafDimensions = this.leaf.refreshLeaf();
-                //  todo: make a leaf move-to method
 
                 //  in case the leaf label is longer than the size of the node box
 

@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021s',
+        version: '2021t',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -546,8 +546,10 @@ const arbor = {
     resizeWindow: function (iEvent) {
         console.log("WINDOW resize to width: " + arbor.displayWidth());
 
-        arbor.treePanelView.redrawEntirePanel();
-        //  arbor.corralView.refreshCorral();
+        if (arbor.treePanelView) {
+            arbor.treePanelView.redrawEntirePanel();
+            //  arbor.corralView.refreshCorral();
+        }
     },
 
 
