@@ -138,7 +138,7 @@ TreePanelView.prototype.redrawEntirePanel = function (  ) {
             y: tPad
         });
 
-        arbor.displayResults(arbor.state.tree.resultString());    //  strip of text at the bottom
+        arbor.displayResults(arbor.state.tree.results());    //  strip of text at the bottom
 
         const tViewHeight = rootZoneSize.height + 2 * tPad;   //  in the panel view, yes, above and below,
 

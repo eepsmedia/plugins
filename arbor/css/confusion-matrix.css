@@ -37,7 +37,7 @@ limitations under the License.
 }
 
 
-.box, .cell, .no-pred {
+.box, .cell {
     color : #555;
     border-radius : 4px;
     padding : 6px;

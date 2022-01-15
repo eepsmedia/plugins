@@ -243,14 +243,19 @@ This is the <div> that appears at the beginning, when there is no tree.
 
 /*  results at the bottom   */
 
-#statusDiv {
+#resultsDisplay {
     padding : 0.5em;
+    /*
+    font-family: 'JetBrains Mono', monospace;
+    */
 }
 
-#resultsText {
-    font-family: 'JetBrains Mono', monospace;
-    /*font-size: 80%;*/
+.resultsPill {
+    padding : 0.5em;
+    margin : 0.5em;
+    border-radius: 0.5em;
 }
+
 
 
 /*		BOX CLASSES		*/
