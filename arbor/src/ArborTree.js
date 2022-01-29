@@ -91,33 +91,11 @@ Tree.prototype.casesByFilter = function (iFilterArray, iMissingArray) {
 };
 
 /**
- * Create the text that appears below the tree, showing summary statistics
+ * Return the data showing summary statistics. To appear below the tree,
  * @returns {*|string}
  */
-Tree.prototype.resultString = function () {
-
-    //  dummy values
-    let tSummary = "Classification or regression summary";
-
-    const tRes = this.rootNode.getResultCounts();   //  like TP = 12, etc
-
-    if (tRes.sampleSize === 0) {
-        tSummary = arbor.strings.sNoCasesToProcess;
-    } else {
-        if (arbor.state.treeType === arbor.constants.kClassTreeType) {
-            //  classification tree
-            tSummary = arbor.strings.sfClassificationSummary(tRes);
-            if (tRes.undiagDenominator) {
-                tSummary += `<br>${arbor.strings.sNoPrediction}: ${tRes.PU + tRes.NU}`;
-            }
-
-        } else {
-            //  regression tree
-            tSummary = `${arbor.constants.kSigma}(${srbor.strings.sSSD}) = ${tRes.sumOfSquaresOfDeviationsOfLeaves.toFixed(3)}`;
-        }
-    }
-
-    return tSummary;
+Tree.prototype.results = function () {
+    return this.rootNode.getResultCounts();   //  like TP = 12, etc
 };
 
 Tree.prototype.nodeFromID = function (id) {

@@ -361,7 +361,7 @@ Node.prototype.descendantCount = function () {
 Node.prototype.getResultCounts = function () {
     let tOut = {
         sampleSize: 0,
-        plusNumerator: 0,    //  number in this node (and descendants) that are truly POSITIVE
+        plusNumerator: 0,    //  number in this node (and descendants) that are truly POSITIVE and diag pos
         plusDenominator: 0,  //  number in this node ... that are diagnosed positive
         minusNumerator: 0,
         minusDenominator: 0,
@@ -465,8 +465,8 @@ Node.prototype.friendlySubsetDescription = function () {
         const tDesc = tParent.friendlySubsetDescription();
 
         const tNewLabel = (this.LoR === "L") ?
-            "(" + tParent.attributeSplit.attName + ` ${arbor.strings.sfIsAre(1)} ` + tParent.attributeSplit.leftLabel + ")" :
-            "(" + tParent.attributeSplit.attName + ` ${arbor.strings.sfIsAre(1)} ` + tParent.attributeSplit.rightLabel + ")";
+            `${tParent.attributeSplit.attName} ${arbor.strings.sfIsAre(1)} ${tParent.attributeSplit.leftLabel}` :
+            `${tParent.attributeSplit.attName} ${arbor.strings.sfIsAre(1)} ${tParent.attributeSplit.rightLabel}`;
 
         if (tDesc === tAllCasesText) {
             out = tNewLabel;
