@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2022a',
+        version: '2022b',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -111,11 +111,10 @@ const arbor = {
             arbor.dropManager.handleDrop,
         );
 
-        await arbor.getAndRestoreModel();   //  includes getInteractiveState
         arbor.state.lang = pluginLang.figureOutLanguage(arbor.constants.kDefaultLanguage, arborStrings.languages);
         arbor.strings = await arborStrings.initializeStrings(this.state.lang);
+        await arbor.getAndRestoreModel();   //  includes getInteractiveState
 
-        //  await arbor.figureOutLanguage();
         await arbor.getAndRestoreViews();   //
 
         await this.createOutputDatasets();
@@ -491,7 +490,7 @@ const arbor = {
     },
 
     parseState: function (iStateJSON) {
-        var out = JSON.parse(iStateJSON);     //  out is now an object, not just text
+        let out = JSON.parse(iStateJSON);     //  out is now an object, not just text
         out.tree = this.restoreTree(out.tree); //  restore the tree object so that it is actual Tree
 
         return out;
@@ -706,7 +705,7 @@ const arbor = {
      */
     gotDataContextList: function (iList) {
 
-        var dcm = $("#dataContextMenu");
+        let dcm = $("#dataContextMenu");
         dcm.empty().append(this.analysis.makeOptionsList(iList));
         dcm.val(iList[0].name); //  set the UI to the first item by default
         this.changeDataContext();   //  make sure the analysis knows
@@ -725,7 +724,7 @@ const arbor = {
     },
 
     /**
-     * (2019-08-14) caled when we START getting the list of attributes in Analysis;
+     * (2019-08-14) called when we START getting the list of attributes in Analysis;
      * we need the list to be empty!
      * @param iList     a list of the attributes. We need theAttribute.name
      */
@@ -745,8 +744,8 @@ const arbor = {
         console.log("   >>> got " + iValues.name);
 
         if (iValues.name.length > 0) {
-            var tNewAttInBaum = new AttInBaum(iValues);
-            var tColorIndex = iValues.id % arbor.constants.attributeColors.length;
+            let tNewAttInBaum = new AttInBaum(iValues);
+            const tColorIndex = iValues.id % arbor.constants.attributeColors.length;
             tNewAttInBaum.attributeColor = arbor.constants.attributeColors[tColorIndex];
             this.attsInBaum.push(tNewAttInBaum);
 
@@ -801,7 +800,7 @@ const arbor = {
     },
 
     changeTreeTypeUsingMenu: function () {
-        var tType = $("#treeTypeMenu").find('option:selected').val();
+        const tType = $("#treeTypeMenu").find('option:selected').val();
         this.setTreeTypeByString(tType);
         this.setPluginTitle();
         this.redisplay();
@@ -885,7 +884,7 @@ const arbor = {
 
         this.attsInBaum.forEach(function (a) {
             this.analysis.cases.forEach(function (aCase) {
-                var c = aCase.values;
+                const c = aCase.values;
                 a.considerValue(c[a.attributeName])
             });
         }.bind(this));
