@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fd40b128-64af-49a6-b2a9-f40390721b15" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/scrambler/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/texty/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/texty/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +62,7 @@
       <workItem from="1633967995985" duration="9000" />
       <workItem from="1634247618659" duration="782000" />
       <workItem from="1634439135220" duration="2101000" />
+      <workItem from="1639519647543" duration="4475000" />
     </task>
     <servers />
   </component>
@@ -80,6 +79,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
