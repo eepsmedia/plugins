@@ -1,0 +1,39 @@
+.box {
+    height: 24px;
+    width : 24px;
+    background-color: blueviolet;
+}
+
+.space {
+    height : 24px;
+    width : 8px;
+    background-color: white;
+    transition: background-color 0.5s;
+    transition: width 0.5s;
+}
+
+.unbreakable-space {
+    height : 24px;
+    width : 8px;
+    background-color: white;
+    transition: background-color 0.5s;
+    transition: width 0.5s;
+}
+
+.space:hover {
+    background-color: gold;
+    width : 24px;
+}
+
+.unbreakable-space:hover {
+    background-color: red;
+}
+
+.wide-space {
+    width : 36px;
+}
+
+.hBox	{
+    display: flex;
+    flex-direction: row;
+}

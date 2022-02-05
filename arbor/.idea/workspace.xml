@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="arbor 2021s, small changes">
-      <change afterPath="$PROJECT_DIR$/../../common/.idea/runConfigurations.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../common/src/pluginLang.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../common/src/pluginLang.js" afterDir="false" />
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
+      <change afterPath="$PROJECT_DIR$/../grundy/css/grundy.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../grundy/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../grundy/src/grundy.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +93,8 @@
       <workItem from="1635839675950" duration="68859000" />
       <workItem from="1636280855416" duration="5979000" />
       <workItem from="1638236222172" duration="2555000" />
+      <workItem from="1644023967907" duration="18000" />
+      <workItem from="1644027141720" duration="2135000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
@@ -248,7 +250,14 @@
       <option name="project" value="LOCAL" />
       <updated>1637210730004</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="2022b. Fix Horton save bug.">
+      <created>1643419814807</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1643419814807</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -289,6 +298,7 @@
     <MESSAGE value="arbor 2021s, cosmetics repaired, mostly working correctly" />
     <MESSAGE value="arbor 2021s, small changes" />
     <MESSAGE value="arbor and plugins config files, moving to Max" />
-    <option name="LAST_COMMIT_MESSAGE" value="arbor and plugins config files, moving to Max" />
+    <MESSAGE value="2022b. Fix Horton save bug." />
+    <option name="LAST_COMMIT_MESSAGE" value="2022b. Fix Horton save bug." />
   </component>
 </project>
