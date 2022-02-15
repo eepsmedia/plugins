@@ -43,7 +43,6 @@ Analysis.prototype.initialize = function () {
 
     this.cases = [];
 
-    this.excludedAttributeNames = ["diagnosis", "analysis", "source"];  //  for xeno.
 };
 
 Analysis.prototype.refreshDataOnly = function () {
@@ -72,11 +71,16 @@ Analysis.prototype.processDataContext = async function() {
     this.topCollectionName = this.collections[0].name;
     this.bottomCollectionName = this.collections[this.collections.length - 1].name;
 
-    const excluded = this.excludedAttributeNames;
+    const excluded = [
+        arbor.constants.diagnosisAttributeName,
+        arbor.constants.sourceAttributeName,
+        arbor.constants.analysisAttributeName,
+        // todo: we don't have "health" here. Is that OK?
+    ];
 
     for (c of this.collections) {
         for (a of c.attrs) {
-            if (excluded.indexOf(a.name) < 0) {     //  todo: cope with this kludge that special-cases "diagnosis" and "analysis"
+            if (excluded.indexOf(a.name) < 0) {
                 arbor.gotOneAttribute(a);
             }
         }

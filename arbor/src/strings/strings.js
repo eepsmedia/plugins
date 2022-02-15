@@ -71,6 +71,9 @@ arborStrings = {
             focusAttributeValueBoxLabel  : `LeftValue`,    //  `val`,
 
             tableSummaryDataControlDetailTitle : `in order to export...`,
+            emergencyControlsTitle : `in case of emergency...`,
+            outputTableIntro : `These values will appear in the output table to help you identify the trees.`,
+
 
             //  attribute configuration panel
 
@@ -126,6 +129,9 @@ Then we ask about`,
         sNoCases :  `no cases`,
 
         //  tree and collection names
+
+        sClassificationTreeTitle : "classification (decision) tree",
+        sRegressionTreeTitle : "regression tree",
 
         sClassTreeCollectionName: "classTrees",
         sClassTreeDataSetTitle: "Classification Tree Records",
@@ -193,7 +199,7 @@ These are all cases where (${iNode.friendlySubsetDescription()}).`;
             return (
 `This node represents ${sAll}${iNode.denominator} ${(iNode.denominator === 1) ? "case" : "cases"}.${sBooleanIdentity}
 Of these, ${iNode.numerator} ${this.sfIsAre(iNode.numerator)} (${arbor.informalDVBoolean}). 
-The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
+The other ${theRest} ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed}).`
             );
         },
 
@@ -213,7 +219,20 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
         },
 
         sfClassificationSummary : function( iRes ) {
-            return `TP = ${iRes.TP}, TN = ${iRes.TN}, FP = ${iRes.FP}, FN = ${iRes.FN}`;
+
+            let out = `
+            <div class="correct resultsPill noselect" title="true positives">TP = ${iRes.TP}</div>
+            <div class="correct resultsPill noselect" title="true negatives">TN = ${iRes.TN}</div>
+            <div class="incorrect resultsPill noselect" title="false positives">FP = ${iRes.FP}</div>
+            <div class="incorrect resultsPill noselect" title="false negatives">FN = ${iRes.FN}</div>
+            `
+
+            if (iRes.undiagDenominator) {
+                out += `<div class="no-pred resultsPill noselect">
+                        ${arbor.strings.sNoPrediction} = ${iRes.PU + iRes.NU}</div>`
+                //  out += `<br>${arbor.strings.sNoPrediction}: ${iData.PU + iData.NU}`;
+            }
+            return out;
         },
 
         sfConfusionCaseCount : function( iResults) {
@@ -248,8 +267,10 @@ The rest, ${theRest}, ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReverse
             focusAttributeValueBoxLabel  : `LinkerWert`,    //  `val`,
 
             tableSummaryDataControlDetailTitle : `zum Ausgeben...`,
+            emergencyControlsTitle : `im Falle von Problemen...`,
+            outputTableIntro : `Diese folgenden Werte erscheinen in der Ausgabetabelle, um die Identifizierung der Bäume zu erleichtern.`,
 
-            //  configuration panel
+            //  attribute configuration panel
             sConfConfigure : `Einstellungen für`,  
             sConfDoneButton : `Fertig!`,
             sConfLeftHeaderText : `linker Ast`,
@@ -301,6 +322,9 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
 
         //  tree and collection names
 
+        sClassificationTreeTitle : "Entscheidungsbaum",
+        sRegressionTreeTitle : "Regressbaum",
+
         sClassTreeCollectionName: "klassBäume",
         sClassTreeDataSetTitle: "Daten zum Entscheidungsbaum",
         sClassTreeDataSetDescription : `Daten zum Entscheidungsbaum`,
@@ -316,7 +340,7 @@ Als nächstes wird betrachtet:`,  //insert an empty row before this line
         sanN : `N`,
         sanNodes : `Knoten`,
         sanDepth : `Tiefe`,
-        sanBaseRate : `Zielwertanteil`,
+        sanBaseRate : `Basisrate`,
         sanTP : `RP`,
         sanFN : `FN`,
         sanFP : `FP`,
@@ -370,7 +394,7 @@ Das sind alle Fälle mit (${iNode.friendlySubsetDescription()}).`;
             return (
 `Dieser Knoten repräsentiert ${sAll}${iNode.denominator} ${(iNode.denominator === 1) ? "Fall" : "Fälle"}.${sBooleanIdentity}
 Für ${iNode.numerator} davon gilt: (${arbor.informalDVBoolean}). 
-Für ${theRest}, davon gilt: (${arbor.informalDVBooleanReversed}).`
+Für ${theRest} davon gilt: (${arbor.informalDVBooleanReversed}).`
             );
         },
 
@@ -389,9 +413,28 @@ Für ${theRest}, davon gilt: (${arbor.informalDVBooleanReversed}).`
             }
         },
 
+/*
         sfClassificationSummary : function( iRes ) {
             return  `RP = ${iRes.TP}, RN = ${iRes.TN}, FP = ${iRes.FP}, FN = ${iRes.FN}`;
         },
+*/
+
+        sfClassificationSummary : function( iRes ) {
+
+            let out = `
+            <div class="correct resultsPill noselect" title="richtig positiven">RP = ${iRes.TP}</div>
+            <div class="correct resultsPill noselect" title="richtig negativen">RN = ${iRes.TN}</div>
+            <div class="incorrect resultsPill noselect" title="falsch positiven">FP = ${iRes.FP}</div>
+            <div class="incorrect resultsPill noselect" title="falsch negativen">FN = ${iRes.FN}</div>
+            `;
+
+            if (iRes.undiagDenominator) {
+                out += `<div class="no-pred resultsPill noselect">
+                        ${arbor.strings.sNoPrediction} = ${iRes.PU + iRes.NU}</div>`
+            }
+            return out;
+        },
+
 
         sfConfusionCaseCount : function( iResults) {
             return `<span class='confusionHed'> ${arbor.state.dependentVariableName}</span><br> ${iResults.sampleSize} Fälle`

@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2021t',
+        version: '2022a',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -779,15 +779,31 @@ const arbor = {
         arbor.state.lang = arborStrings.nextLanguage(arbor.state.lang);
         arbor.strings = await arborStrings.initializeStrings(arbor.state.lang);
 
+        await this.setPluginTitle();
         await this.deleteBothOutputDatasets();  //  because they have different attribute names
         await this.createOutputDatasets();
 
         this.redisplay();
     },
 
+    setPluginTitle: async function() {
+        const theTitle = (arbor.state.treeType === arbor.constants.kRegressTreeType) ?
+            arbor.strings.sRegressionTreeTitle :
+            arbor.strings.sClassificationTreeTitle;
+        const mess = {
+            action : "update",
+            resource : "interactiveFrame",
+            values : {
+                title : theTitle,
+            }
+        }
+        const changeResult = await codapInterface.sendRequest(mess);
+    },
+
     changeTreeTypeUsingMenu: function () {
         var tType = $("#treeTypeMenu").find('option:selected').val();
         this.setTreeTypeByString(tType);
+        this.setPluginTitle();
         this.redisplay();
     },
 
@@ -824,9 +840,32 @@ const arbor = {
         $("#statusText").html(iHTML);
     },
 
-    displayResults: function (iHTML) {
-        const theTextThing = document.getElementById("resultsText");
-        theTextThing.innerHTML = iHTML;
+    /**
+     * Update the display of the number of TP, etc., below the tree.
+     * These results come from `arbor.state.tree.results`, i.e., in `ArborTree`
+     * called from the TreePanelView
+     * @param iData
+     */
+    displayResults: function (iData) {
+
+        //  default output
+        let tHTMLout = "Classification or regression summary";
+
+        if (iData.sampleSize === 0) {
+            tHTMLout = arbor.strings.sNoCasesToProcess;
+        } else {
+            if (arbor.state.treeType === arbor.constants.kClassTreeType) {
+                //  classification tree
+                tHTMLout = arbor.strings.sfClassificationSummary(iData);
+
+            } else {
+                //  regression tree
+                tHTMLout = `${arbor.constants.kSigma}(${arbor.strings.sSSD}) = ${iData.sumOfSquaresOfDeviationsOfLeaves.toFixed(3)}`;
+            }
+        }
+
+        const theTextThing = document.getElementById("resultsDisplay");
+        theTextThing.innerHTML = tHTMLout;
     },
 
     /**
@@ -924,10 +963,10 @@ arbor.constants = {
     leafTextColor: "#fff",
 
     //  context specific?? Xeno??
-    diagnosisAttributeName: "diagnosis",
-    analysisAttributeName: "analysis",
-    sourceAttributeName: "source",
-    healthAttributeName: "health",
+    diagnosisAttributeName: "Xdiagnosis",
+    analysisAttributeName: "Xanalysis",
+    sourceAttributeName: "Xsource",
+    healthAttributeName: "Xhealth",
 
     //  characters
     leftArrowCode: "\u21c7",       //      "\u2190",

@@ -50,21 +50,26 @@ arbor.selectionManager = {
 
 
     selectCasesInNode: function (iNode) {
-        var tCases = arbor.state.tree.casesByFilter(iNode.filterArray, iNode.missingArray);
+        const tCases = arbor.state.tree.casesByFilter(iNode.filterArray, iNode.missingArray);
 
-        var ids = [];
+        let ids = [];
 
         tCases.forEach(function (c) {
             ids.push(c.id);
         });
 
-        var tArg = {
+        const tArg = {
             "action": "create",
             "resource": `dataContext[${arbor.state.dataSetName}].selectionList`,
             "values": ids
         };
 
-        var result = codapInterface.sendRequest(tArg);
+        const result = codapInterface.sendRequest(tArg);
 
-    }
+    },
+
+    selectCasesByResult : function(iresult) {
+
+    },
+
 }
