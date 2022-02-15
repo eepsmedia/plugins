@@ -188,8 +188,9 @@ var xeno = {
 
         for (let i = 0; i < n; i++) {
             let tCase = xeno.model.generateCase(xeno.state.malady);
-            tCase.source = iSource;
-            tCase.diagnosis = "";
+            tCase[xeno.constants.sourceAttributeName] = iSource;
+            tCase[xeno.constants.diagnosisAttributeName] = "";
+            tCase[xeno.constants.analysisAttributeName] = "";
             theCaseValues.push(tCase);
         }
 
@@ -213,18 +214,21 @@ var xeno = {
      * @param iDiag  "sick" or "well" in the current language
      */
     manualDiagnose: function (iDiag) {
-        xeno.state.currentCase.source = "clinic";
-        xeno.state.currentCase.diagnosis = iDiag;
+        xeno.state.currentCase[xeno.constants.sourceAttributeName] = "clinic";
+        xeno.state.currentCase[xeno.constants.diagnosisAttributeName] = iDiag;
 
-        const tTrueOrFalse = (iDiag === xeno.state.currentCase.health) ? xeno.strings.true : xeno.strings.false;
-        //  var tPositiveOrNegative = (xeno.state.currentCase.health) === xeno.strings.sick ? xeno.strings.positive : xeno.strings.negative;
-        const tPositiveOrNegative = (iDiag === xeno.strings.sick) ? xeno.strings.positive : xeno.strings.negative;
+        const tTrueOrFalse = (iDiag === xeno.state.currentCase[xeno.constants.healthAttributeName]) ?
+            xeno.strings.true : xeno.strings.false;
+
+        const tPositiveOrNegative = (iDiag === xeno.strings.sick) ?
+            xeno.strings.positive : xeno.strings.negative;
 
         this.state.previousSingleDiagnosisReport = xeno.strings.getSingleDiagnosisReport(iDiag, tTrueOrFalse, tPositiveOrNegative);
 
-        xeno.state.currentCase.analysis = tTrueOrFalse + tPositiveOrNegative;
+        const theAnalysis = tTrueOrFalse + tPositiveOrNegative;
+        xeno.state.currentCase[xeno.constants.analysisAttributeName] = theAnalysis;
 
-        xeno.scoreFromPerformance(xeno.state.currentCase.analysis);
+        xeno.scoreFromPerformance(theAnalysis);
 
         xenoConnect.createXenoItems(xeno.state.currentCase);   //  send CODAP the clinic data
 
@@ -304,7 +308,12 @@ var xeno = {
     },
 
     constants: {
-        version: '001j',
+        version: '2022a',
+        healthAttributeName : `Xhealth`,
+        sourceAttributeName : `Xsource`,
+        diagnosisAttributeName : `Xdiagnosis`,
+        analysisAttributeName : `Xanalysis`,
+
         kInitialLanguage : 'en',
         wellColor: '#752',
         sickColor: '#484',
@@ -313,6 +322,7 @@ var xeno = {
         xenoCollectionName: "creatures",
         autoResultInitialText: "Auto-diagnosis results display",
         initialScore: 200,
+        //  arborURL : "https://localhost/plugins/arbor/",
         arborURL : "https://www.codap.xyz/plugins/arbor/",
 
         scores: {
