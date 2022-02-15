@@ -19,7 +19,7 @@
 
 nhanes.constants = {
 
-    version: "001c",
+    version: "2022a",
 
     kNHANESDataSetName: "NHANESdata",
     kNHANESDataSetTitle: "NHANESdata",
@@ -27,7 +27,7 @@ nhanes.constants = {
     kNHANESCaseTableName: "People from NHANES",
 
     kBasePhpURL: {
-        local:  "http://localhost:8888/plugins/nhanes15/nhanes.php",
+        local:  "http://localhost/plugins/nhanes15/nhanes.php",
         xyz:    "https://codap.xyz/plugins/nhanes15/nhanes.php",
         eeps:   "https://www.eeps.com/codap/nhanes15/nhanes.php"
     }

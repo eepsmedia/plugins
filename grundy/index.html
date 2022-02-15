@@ -4,21 +4,33 @@
     <meta charset="UTF-8">
     <title>Grundy's Game</title>
 
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/grundy.css"/>
 
     <script src="src/grundy.js"></script>
+    <script src="src/think.js"></script>
 
 </head>
 <body>
-<h3>d3 testing</h3>
+<h3>Grundy's Game</h3>
+<p>
+    Click between the blocks to separate them into groups.
+    However, you may not split any group into two equal-sized groups!
+    If you can't move, you lose.
+</p>
+<div id="startGame">
+    Decide who goes first:
+    <button onclick="grundy.startGame('human')">I want to go first</button>
+    <button onclick="grundy.startGame('grundy')">Make Grundy go first</button>
+</div>
 
+<div id="prompt"></div>
 <div id="paperDiv" class="hBox">
 </div>
-<!--
-<svg width="500" height="24" id="paper"></svg>
--->
+<button id="makeGrundyMove" onclick="grundy.doGrundyMove()">Do Grundy's move</button>
+
+<div id="record"></div>
 
 <script>
     grundy.initialize();

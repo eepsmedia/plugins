@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
-      <change afterPath="$PROJECT_DIR$/../grundy/css/grundy.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../grundy/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../grundy/src/grundy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../grundy/src/think.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grundy/css/grundy.css" beforeDir="false" afterPath="$PROJECT_DIR$/../grundy/css/grundy.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grundy/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../grundy/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grundy/src/grundy.js" beforeDir="false" afterPath="$PROJECT_DIR$/../grundy/src/grundy.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +95,7 @@
       <workItem from="1638236222172" duration="2555000" />
       <workItem from="1644023967907" duration="18000" />
       <workItem from="1644027141720" duration="2135000" />
+      <workItem from="1644075667539" duration="1800000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>

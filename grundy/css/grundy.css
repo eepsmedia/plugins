@@ -1,39 +1,49 @@
 .box {
-    height: 24px;
-    width : 24px;
+    height: 20px;
+    width : 20px;
     background-color: blueviolet;
 }
 
 .space {
-    height : 24px;
-    width : 8px;
+    height : 20px;
+    width : 6px;
     background-color: white;
     transition: background-color 0.5s;
     transition: width 0.5s;
+    cursor : pointer;
 }
 
 .unbreakable-space {
-    height : 24px;
-    width : 8px;
+    height : 20px;
+    width : 6px;
     background-color: white;
     transition: background-color 0.5s;
     transition: width 0.5s;
+    cursor : not-allowed;
 }
 
 .space:hover {
     background-color: gold;
-    width : 24px;
+    width : 16px;
 }
 
 .unbreakable-space:hover {
-    background-color: red;
+    background-color: white;
 }
 
 .wide-space {
-    width : 36px;
+    width : 24px;
+    cursor : default;
+    transition: background-color 0.5s;
+    transition: width 0.5s;
 }
 
 .hBox	{
     display: flex;
     flex-direction: row;
+}
+
+#paperDiv {
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
