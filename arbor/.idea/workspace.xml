@@ -249,7 +249,14 @@
       <option name="project" value="LOCAL" />
       <updated>1637210730004</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="arbor 2021t, firm up that we always show leaves, no dependence on that (saved) option!">
+      <created>1638468249762</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1638468249763</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,6 +297,7 @@
     <MESSAGE value="arbor 2021s, in branch, now includes &quot;trunk&quot; node and clearer place to drop change in dependent variable" />
     <MESSAGE value="arbor 2021s, cosmetics repaired, mostly working correctly" />
     <MESSAGE value="arbor 2021s, small changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="arbor 2021s, small changes" />
+    <MESSAGE value="arbor 2021t, firm up that we always show leaves, no dependence on that (saved) option!" />
+    <option name="LAST_COMMIT_MESSAGE" value="arbor 2021t, firm up that we always show leaves, no dependence on that (saved) option!" />
   </component>
 </project>
