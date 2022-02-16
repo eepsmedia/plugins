@@ -109,7 +109,7 @@ creatureString : function (iValues) {
 
                     attrs: [ // note how this is an array of objects.
                         {
-                            name: "health", type: 'categorical', description: "actual health",
+                            name : xeno.constants.healthAttributeName, title: "health", type: 'categorical', description: "actual health",
                             colormap: {
                                 "sick": xeno.constants.sickColor,      //  maps to positive
                                 "well": xeno.constants.wellColor       //  maps to negative
@@ -148,14 +148,14 @@ creatureString : function (iValues) {
                          */
 
                         {
-                            name: "diagnosis", title: "diagnosis", type: 'categorical',
+                            name: xeno.constants.diagnosisAttributeName, title: "diagnosis", type: 'categorical',
                             description: "what you thought the health would be, based on the other data"
                         },
                         {
-                            name: "analysis", title: "analysis", type: 'categorical',
+                            name: xeno.constants.analysisAttributeName, title: "analysis", type: 'categorical',
                             description: "How accurate was the diagnosis? TP = True Positive, FN = False Negative, etc."
                         },
-                        {name: "source", type: 'categorical', description: "where did this case come from?"}
+                        {name : xeno.constants.sourceAttributeName, title: "source", type: 'categorical', description: "where did this case come from?"}
 
 
                     ]
@@ -228,7 +228,7 @@ creatureString : function (iValues) {
 
                     attrs: [ // note how this is an array of objects.
                         {
-                            name: "health", type: 'categorical', description: "tatsächliche Gesundheit",
+                            name: xeno.constants.healthAttributeName, type: 'categorical', description: "tatsächliche Gesundheit",
                             title : "Gesundheit",
                             colormap: {
                                 "sick": xeno.constants.sickColor,      //  maps to positive
@@ -273,14 +273,14 @@ creatureString : function (iValues) {
                          */
 
                         {
-                            name: "diagnosis", title: "Diagnose", type: 'categorical',
+                            name: xeno.constants.diagnosisAttributeName, title: "Diagnose", type: 'categorical',
                             description: "was Sie dachten, die Gesundheit wäre, basierend auf den anderen Daten"
                         },
                         {
-                            name: "analysis", title: "Analyse", type: 'categorical',
+                            name: xeno.constants.analysisAttributeName, title: "Analyse", type: 'categorical',
                             description: "Wie genau war die Diagnose? TP = Wahr Positiv, FN = Falsch Negativ, usw."
                         },
-                        {name: "source", title : "Quelle", type: 'categorical', description: "Woher kam dieser Fall?"}
+                        {name: xeno.constants.sourceAttributeName, title : "Quelle", type: 'categorical', description: "Woher kam dieser Fall?"}
 
 
                     ]

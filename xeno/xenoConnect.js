@@ -146,8 +146,9 @@ var xenoConnect = {
         set of cases, we only count up the results for the cases in that casesProcessed array.
          */
         this.casesProcessed.forEach(function (c) {
-            tNumberCorrect += (c.analysis.charAt(0) === "T") ? 1 : 0;
-            tNumberUndiagnosed += (c.analysis.charAt(0) === "?") ? 1 : 0;
+            const theAnalysis = c[xeno.constants.analysisAttributeName];
+            tNumberCorrect += (theAnalysis.charAt(0) === "T") ? 1 : 0;
+            tNumberUndiagnosed += (theAnalysis.charAt(0) === "?") ? 1 : 0;
         });
 
         tAutoResultText += tNumberCorrect + "&nbsp;correct. ";
@@ -176,7 +177,7 @@ var xenoConnect = {
         this.casesProcessed = [];
 
         iValues = pluginHelper.arrayify(iValues);
-        console.log("Xeno ... createXenoItems with " + iValues.length + " case(s)");
+        console.log("xeno ... createXenoItems with " + iValues.length + " case(s)");
         const out = await pluginHelper.createItems(
             iValues,
             xeno.constants.xenoDataSetName

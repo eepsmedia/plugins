@@ -30,15 +30,21 @@ limitations under the License.
 xeno.model = {
 
     generateCase: function (iMalady) {
-        var tMalady = this.wellCreature;
-        var tHealth = this.maladies[iMalady];   //  { health : function... }
-        Object.assign( tMalady, tHealth );        //  merge 'em
-        var tOut = {malady : iMalady};
+        const tMalady = this.wellCreature;      //  object filled with functions!
+        const tHealth = this.maladies[iMalady];   //  { health : function... }
 
-        for (var key in tMalady) {
+        Object.assign( tMalady, tHealth );        //  merge 'em
+        const tOut = {malady : iMalady};
+
+        for (const key in tMalady) {
             if (tMalady.hasOwnProperty(key)) {
-                var theFunction = tMalady[key].bind(tOut);
-                tOut[key] = theFunction();      //  are these guaranteed to be in order??
+                const theFunction = tMalady[key].bind(tOut);
+
+                if (key === `health`) {
+                    tOut[xeno.constants.healthAttributeName] = theFunction();      //  are these guaranteed to be in order??
+                } else {
+                    tOut[key] = theFunction();      //  are these guaranteed to be in order??
+                }
             }
         }
         return tOut;
@@ -54,7 +60,7 @@ xeno.model = {
      */
     makeMaladyMenuGuts : function() {
         out = "";
-        for (var k in this.maladies) {
+        for (const k in this.maladies) {
             out += "<option value='" + k + "'>" + k + "</option>";
         }
 
