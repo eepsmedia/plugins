@@ -26,6 +26,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
     See the License for the specific language governing permissions and
 limitations under the License.
 ==========================================================================
+
+local: https://localhost/plugins/xeno/arborWorkshop.html
+xyz: https://codap.xyz/plugins/xeno/arborWorkshop.html
 -->
 
 <head>
@@ -39,11 +42,6 @@ limitations under the License.
 <body>
 
 <h1>Trees in a Diagnosis Game</h1>
-
-<p>To begin, simplify the screen: minimize the <b>diagnostic tree</b>
-    by pressing the minus sign in its title bar.
-    Move it away so you're not distracted by it; we'll get to it later.</p>
-<img src="art/minimizer.png" width="333">
 
 <p style="background-color: #aaccbb; padding : 12px;"><b>Scenario</b>:
     You're a xenobiologist studying alien creatures.
@@ -60,10 +58,10 @@ limitations under the License.
         this case, ague).
         <ul>
             <li>
-                In the data table, the <b>health</b> column tells you if they are sick or well.
+                In the data table, the <b>Xhealth</b> column tells you if they are sick or well.
             </li>
             <li>
-                Figure out what <i>other</i> data you can use to predict <b>health</b>.
+                Figure out what <i>other</i> data you can use to predict <b>Xhealth</b>.
             </li>
             <li>
                 Making a graph of the data might help. A lot. (This is CODAP, after all!)
@@ -92,28 +90,26 @@ limitations under the License.
     To diagnose a patient, we ask a sequence of questions.
     The answers will help us predict whether they have this sickness.
     The answer to a question leads either to a diagnosis (sick or well) or to a further question.
-    We will represent&mdash;and automate&mdash;this process using the diagnostic tree.
+    We will represent&mdash;and automate&mdash;this process using the decision tree.
 </p>
 <ul>
-    <li>Re-open the diagnostic tree by pressing that minus sign again.
+    <li>Open the decision tree by pressing the button reading <b>make the tree</b>.
     <li>Arrange your screen so you can see it. (You might want to make your data table smaller.)</li>
+    <li>
+        Begin by dragging in your "target" variable, the thing you want to predict.
+        That's <b>Xhealth</b>.
+    </li>
 </ul>
-<p>The diagnostic tree should look like the next picture, except that your numbers will be different.</p>
+<p>The decision tree should look like the next picture,
+    except that your numbers may be different.</p>
 
-<img src="art/treeRootOnlyBeginnning.png" width="333">
+<img src="art/treeRootAndTrunk.png" width="333">
 
-<p>Grow your tree by dragging attribute names from the palette of names (at the bottom of the window) to the box.
+<p>Grow your tree by dragging attribute names from the table into the tree.
     You probably already figured out that hair color is important.</p>
 <ul>
     <li>
-        Drag <b>hair</b> from the palette to the box. (If it doesn't work the first time, keep trying.)
-
-    </li>
-    <li>
-        The attribute palette for the tree is not the same as the column headings
-        you use to make graphs.
-        You have to use the ones in the tree "tile."
-        Sorry about that.
+        Drag <b>hair</b> from the table and drop it on the white box.
     </li>
 </ul>
 
@@ -123,9 +119,12 @@ limitations under the License.
 
 <p>Here's what it means:</p>
 <ul>
-    <li>Look at the top box (in the illustration; your numbers will be different). Among all of the creatures, 5 out of 10 (50%) are sick.
-    <li>Our first "question" is, what color hair does the patient have? (That's why <b>hair?</b> is in the bottom
-        stripe).
+    <li>The top box tells you you're "predicting" <b>Xhealth</b> and
+        that a value of <b>sick</b> is "positive."</li>
+    <li>Look at the next box (in the illustration; your numbers may be different).
+        Among all of the creatures, 5 out of 10 (50%) are sick.
+    <li>Our first "question" is, what color hair does the patient have?
+    (That's why <b>hair...?</b> is in the bottom stripe).
     <li>There are two possible answers, <b>blue</b> and <b>pink</b>. Each one leads to a different box.
     <li>The left-hand box tells us that there are 5 creatures with blue hair, and none of them (0%) are sick.
     <li>The right-hand box tells us that there are 5 with pink hair, and all 5 of them (100%) are sick.
@@ -143,13 +142,6 @@ limitations under the License.
 <p>Suppose we want to automate our diagnoses.
     We have to tell the tree to assign the pink-hair box to the positive ("sick") group
     and the blue-hair box to the negative ("well") group.</p>
-<ul>
-    <li>
-        Click the box at the top for <b>show diagnosis "leaves."</b> You will see this:
-    </li>
-</ul>
-<img src="art/treeOneSplitDiagNoAssignments.png" width="333">
-
 
 <p>The gray circles with <b>(?)</b> indicate that you have not yet assigned diagnoses to those boxes. </p>
 <ul>
@@ -157,12 +149,18 @@ limitations under the License.
 </ul>
 
 <img src="art/treeOneSplitDiagGood.png" width="333">
+<ul>
+    <li>Notice the colored boxes below the tree?
+    They count the number of "True Positives" (<b>TP</b>), etc., that your
+    tree diagnoses. Hover for more details.</li>
+</ul>
+
 <p>
     When you have your tree set the way you want it, go back to <b>Arbor Xenobiological Services</b> and choose
     <b>auto</b> on the left.
     Then click the <b>run tree</b> button to create 10 cases.</p>
 
-<p>Your diagnostic tree will automatically diagnose 10 new patients. How did your tree do?</p>
+<p>Your decision tree will automatically diagnose 10 new patients. How did your tree do?</p>
 
 <h2>Explore</h2>
 <ul>
