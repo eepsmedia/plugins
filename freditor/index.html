@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FrEditor</title>
+
+    <link rel='stylesheet' type='text/css' href='css/freditor.css'/>
+
+    <!-- These scripts take care of the communication with CODAP  -->
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
+
+    <script src="src/freditor.js"></script>
+
+
+</head>
+<body>
+
+<div id="freditor-blank">
+    Drag an attribute here to see and edit its formula.
+</div>
+
+<div id="freditor-active">
+    <div id="freditor-head">
+
+    </div>
+
+    <div id="freditor-edit">
+        <textarea id="editPane"></textarea>
+        <button onclick="fred.saveFormula()">save</button>
+    </div>
+</div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        fred.initialize();
+    }
+</script>
+
+</html>

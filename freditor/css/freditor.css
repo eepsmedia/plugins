@@ -1,0 +1,10 @@
+body {
+    background-color: bisque;
+    font-family: "Avenir Next Condensed", sans-serif;
+}
+
+#editPane {
+    width : 100%;
+    height : 5.0em;
+    box-sizing:border-box;
+}
