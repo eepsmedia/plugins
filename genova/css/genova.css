@@ -1,0 +1,42 @@
+
+body {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: small;
+    padding : 0;
+    margin : 0;
+    background-color: gainsboro;
+}
+
+h1 {
+    padding-left: 12px;
+}
+label {
+    padding-left: 12px;
+}
+p {
+    padding-left: 12px;
+}
+
+button {
+    margin-left: 12px;
+    margin-bottom: 12px;
+}
+
+#gameOverDiv {
+    background-color: bisque;
+}
+
+#status {
+    padding: 12px;
+    background-color: white;
+}
+
+#marketReport {
+    padding: 12px;
+    background-color: white;
+}
+
+#damageReport {
+    padding: 12px;
+    background-color: white;
+}

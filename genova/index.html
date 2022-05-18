@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Genova</title>
+
+    <link rel='stylesheet' type='text/css' href='css/genova.css'/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap"
+          rel="stylesheet">
+
+    <!-- These five scripts take care of the communication with CODAP  -->
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
+
+    <script src="src/genova.js"></script>
+    <script src="src/connect.js"></script>
+</head>
+<body onload="genova.start()">
+
+<h1>Genova <img src="art/ship.png" width="40"></h1>
+<p>A game about insurance and trade</p>
+<div id="status"></div>
+
+<div id="gameOverDiv">
+    <p id="gameOverText"></p>
+    <button onclick="genova.start()">new game</button>
+</div>
+
+<div id="playingDiv">
+    <p>What would you charge to insure a shipment worth 10000 lira?</p>
+    <label for="premium">Premium price in lira:</label>
+    <input id="premium" type="number">
+    <button onclick="genova.setPrice()">Set price</button>
+    <p id="marketReport"></p>
+
+    <div id="sellDiv">
+        <p>When you have a price you like, click "Sell policies" to sell policies!</p>
+        <button onclick="genova.sellPolicies()">Sell policies</button>
+    </div>
+
+    <div id="sendDiv">
+        <p>When you are ready, send the ships to Bruges! Hope for good weather!</p>
+        <button onclick="genova.sendShips()">Send ships</button>
+    </div>
+
+    <p id="damageReport"></p>
+</div>
+
+<div id="credits">
+    <p>
+        <a href="https://www.flaticon.com/free-icons/ship" title="ship icons">Ship icons created by Freepik -
+            Flaticon</a>
+    </p>
+</div>
+
+</body>
+</html>
