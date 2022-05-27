@@ -11,9 +11,16 @@ const genova = {
     pSink : 0.05,
     playing : true,
     gameOverText : "",
+    currentYearData : {},
+    gameNumber : 0,
 
-    start : function() {
+    start : async function() {
+        this.gameNumber++;
+        await connect.init();
         this.year = this.startingYear;
+        this.currentYearData['year'] = this.year;
+        this.currentYearData['num'] = this.gameNumber;
+
         this.theBalance = this.startingBalance;
         this.playing = true;
         this.setStatus();
@@ -23,7 +30,6 @@ const genova = {
         document.getElementById("gameOverDiv").style.display = "none";
         document.getElementById("playingDiv").style.display = "block";
         document.getElementById("damageReport").innerHTML = "Shipping reports will appear here.";
-
     },
 
     setPrice: function () {
@@ -38,6 +44,7 @@ const genova = {
             document.getElementById("sellDiv").style.display = "block";
         }
         this.setMarketReport();
+        this.currentYearData['price'] = this.thePrice;
     },
 
     supplyAndDemand : function(iPrice) {
@@ -53,6 +60,9 @@ const genova = {
     },
 
     sellPolicies : function () {
+        //  we always sell policies, but we don't always set a (new) price, so record values here:
+        this.currentYearData['bank'] = this.theBalance;     //  starting balance for year
+
         if (!this.playing) {
             this.playing = true;
             this.theBalance = this.startingBalance;
@@ -67,6 +77,8 @@ const genova = {
 
         document.getElementById("sellDiv").style.display = "none";
         document.getElementById("sendDiv").style.display = "block";
+
+        this.currentYearData['boats'] = this.nCustomers;
     },
 
     sendShips : function() {
@@ -78,6 +90,7 @@ const genova = {
                 nSink++;
             }
         }
+        this.currentYearData['sank'] = nSink;
 
         if (nSink > 0) {
             const claimAmount = nSink * this.shipCost;
@@ -94,7 +107,11 @@ const genova = {
     },
 
     newYear : function() {
+        connect.emitData(this.currentYearData); //  emit the previous year's data
+
         this.year++;
+        this.currentYearData['year'] = this.year;
+
         document.getElementById("sellDiv").style.display = "none";
         document.getElementById("sendDiv").style.display = "none";
         this.setStatus();
@@ -121,6 +138,9 @@ const genova = {
     },
 
     endGame : function() {
+        this.currentYearData['bank'] = this.theBalance;
+        //  connect.emitData(this.currentYearData);
+
         this.setStatus();
         this.playing = false;
         document.getElementById("gameOverText").innerHTML = this.gameOverText;

@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
-      <change afterPath="$PROJECT_DIR$/../freditor/freditor.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../genova/art/ship.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../genova/css/genova.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../genova/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../genova/src/connect.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../genova/src/genova.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../steb/.idea/steb.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../steb/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../steb/steb.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
