@@ -35,7 +35,7 @@ class Model extends Object  {
 
         this.theGame = {
             gameCode : "",
-            gameType : mazu.constants.kInitialGameTypeName,     //  called 'config' in mySQL
+            gameType : mazu.constants.kInitialGameTypeName,
             gameState : mazu.constants.kGameWaitingString,
             reason : "",
         };
@@ -56,7 +56,6 @@ class Model extends Object  {
      * @returns {Promise<null>}
      */
     async newGame(iGameType) {
-        this.gameParameters = mazu.fishGameParameters[iGameType];
         this.theGame = await fireConnect.makeNewGame(iGameType);
         this.thePlayers = [];
         this.theTurns = [];
@@ -81,11 +80,6 @@ class Model extends Object  {
     async updateDataFromDB(iPlayers) {
         this.thePlayers = iPlayers;
         this.theTurns = await fireConnect.getTurnsForYear(this.theGame.turn);
-        this.mazu.poll();
-    }
-
-    updateTurnsFromDB(iTurns) {
-        this.theTurns = iTurns;
         this.mazu.poll();
     }
 
@@ -120,11 +114,8 @@ class Model extends Object  {
             t.after = Number(t.before) + t.income - Number(t.expenses);
         });
 
-        const ended = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
 
-        if (!ended) {this.theGame['turn']++}         //  if the game is over, we don't bump the year.
-
-        let thePromises = [fireConnect.uploadGameToDB(this.theGame)];    //  update the game in the DB
+        let thePromises = [];    //  update the game in the DB
 
         //  load all the turns to the turnsDB
         //  while we're there, update player records for balance and playerState
@@ -132,6 +123,7 @@ class Model extends Object  {
         this.theTurns.forEach(
             (t) => {
                 thePromises.push(fireConnect.uploadTurnToDB(t));
+                console.log(` ... promised to upload turn ${t.turn}_${t.playerName} after = ${t.after}`);
 
                 const playerStuff = {
                     balance : t.after,
@@ -141,7 +133,19 @@ class Model extends Object  {
             }
         );
         await Promise.all(thePromises);     //  updates all the collections in the DB
+        console.log(`    Turn and player promises all awaited...`);
+
+        //  Turns are done; see if the game is over; update the game.
+
+        const ended = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
+        if (!ended) {this.theGame['turn']++}         //  if the game is over, we don't bump the year.
+        this.theTurns = [];     //  todo: remove kludge; byzantine way to alert mazu that turns have been made. Do it nore directly.
+        await fireConnect.uploadGameToDB(this.theGame);
+        console.log(`    Done with game change promise...`);
+
+
         ui.update();
+
        // this.mazu.forceUpdate();    // todo:  need this??
     }
 
@@ -196,7 +200,7 @@ class Model extends Object  {
             params : this.gameParameters,
         };
 
-        if (this.theGame.turn >= this.gameParameters.endingTurn) {
+        if (this.theGame.turn >= this.theGame.endingTurn) {
             tReasonObject.end = true;
             tReasonObject.time = true;
             if (this.theGame.population > this.gameParameters.winningPopulation) {
@@ -221,6 +225,12 @@ class Model extends Object  {
             tReasonObject.end = true;
             tReasonObject.pop = "low";
             tEnd = mazu.constants.kLostString;
+        }
+
+        if (this.theGame.population >= this.gameParameters.winningPopulation) {
+            tReasonObject.end = true;
+            tReasonObject.pop = "high";
+            tEnd = mazu.constants.kWonString;
         }
 
         //  set game state appropriately to win and loss

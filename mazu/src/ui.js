@@ -58,7 +58,7 @@ const ui = {
     playerRow: function (p, iTurns) {
         let myTurn = null;
         iTurns.forEach((t) => {
-            console.log(`turn: ${JSON.stringify(t)}`);
+  //              console.log(`turn: ${JSON.stringify(t)}`);
             if (t.playerName === p.playerName) {
                 myTurn = t;
             }
@@ -143,6 +143,7 @@ const ui = {
             <input type="checkbox"
                    id="autoSellBox"
                    onChange="mazu.handleAutoSellBoxChange()"
+                   ${mazu.state.autoSell ? " checked" : ""}
             />
             <label htmlFor="autoSellBox">automate market</label>
         `

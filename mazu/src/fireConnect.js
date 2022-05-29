@@ -67,7 +67,9 @@ const fireConnect = {
      * @returns {Promise<void>} an object with useful stuff
      */
     makeNewGame: async function (iGameType) {
-        const params = mazu.fishGameParameters[iGameType]
+        const params = mazu.fishGameParameters[iGameType];
+        params['turn'] = new Date().getFullYear();
+        params['endingTurn'] = params.turn + params.duration;
 
         let newCode = "didn't get a code";
 
@@ -95,8 +97,10 @@ const fireConnect = {
         console.log("new code: " + newCode);
 
         const newGameValues = {
-            turn: params.openingTurn,
+            turn: params.turn,
+            endingTurn : params.endingTurn,
             population: params.openingPopulation,
+
             configuration: iGameType,
             gameState: mazu.constants.kInProgressString,
             gameCode: newCode,
@@ -223,16 +227,17 @@ const fireConnect = {
      * @returns {Promise<void>}
      */
     uploadGameToDB: async function (iGame) {
-        this.gameDR.set(iGame);
+        await this.gameDR.set(iGame);
     },
 
-    uploadTurnToDB: function (iTurn) {
+    uploadTurnToDB: async function (iTurn) {
         const theTurnID = iTurn.turn + "_" + iTurn.playerName;
-        this.turnsCR.doc(theTurnID).set(iTurn);
+        await this.turnsCR.doc(theTurnID).set(iTurn);
+        console.log(` ... uploaded turn ${theTurnID} (after = ${iTurn.after})`);
     },
 
-    updatePlayerOnDB: function (iPlayerName, iNewData) {
-        this.playersCR.doc(iPlayerName).update(iNewData);    //  e.g., balance
+    updatePlayerOnDB: async function (iPlayerName, iNewData) {
+        await this.playersCR.doc(iPlayerName).update(iNewData);    //  e.g., balance
     },
 
 };

@@ -174,7 +174,7 @@ let fish = {
 
     /**
      * Called on receiving a notification that the game has changed in the DB.
-     * Typically, because poseidon has updated the game year.
+     * Typically, because mazu has updated the game year.
      * @param iGame
      */
     updateGame: async function(iGame) {
@@ -184,8 +184,10 @@ let fish = {
         fish.state.gameEndMessage = this.gameFromDB.reason;
 
         if (this.state.gameTurn !== this.gameFromDB.turn) {
+            console.log(`updating game, turn ${this.state.gameTurn} to ${this.gameFromDB.turn}`);
+
             //  change of turn! Fish got sold!
-            this.updateTurnFromOldYearInCODAP(this.state.gameTurn); //  gets the turn data and pushes it
+            await this.updateTurnFromOldYearInCODAP(this.state.gameTurn); //  gets the turn data and pushes it
             this.state.gameTurn = this.gameFromDB.turn;
 
             const myData = await fireConnect.getMyData();
@@ -204,6 +206,22 @@ let fish = {
         }
 
         this.ui.update();
+    },
+
+    /**
+     *
+     * @param iTurns        all turns
+     * @returns {Promise<void>}
+     */
+    updateTurns : async function( iTurns ) {
+        //  for now, look for the turn for this year, for this player, and update the CODAP record to match.
+
+        let thisTurn = null;
+        iTurns.forEach( t => {
+            if (t.turn === this.state.gameTurn && t.playerName === this.state.playerName) {
+                fish.CODAPConnector.updateFishItemInCODAP(t);   //  t includes caseID
+            }
+        });
     },
 
     updateTurnFromOldYearInCODAP : async function( iTurn ) {
@@ -342,7 +360,7 @@ let fish = {
     },
 
     constants: {
-        version: "001h",
+        version: "2022a",
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,

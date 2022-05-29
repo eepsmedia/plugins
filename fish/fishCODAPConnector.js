@@ -119,7 +119,7 @@ fish.CODAPConnector = {
                 'income' : iTurn.income,
                 'after' : iTurn.after,
             };
-            console.log("    fish ... updateFishItemInCODAP() for " + theYear );
+            console.log(`    ... updateFishItemInCODAP() ${theYear}, after = ${iTurn.after}` );
 
             //  use the item id of the relevant case:
 

@@ -41,7 +41,9 @@ fish.userActions = {
      */
     clickJoinButton: async function ( iCode = null) {
         const codeTextField = document.getElementById("gameCodeTextField");
-        const theCode = iCode ? iCode : codeTextField.value;
+        let theCode = iCode ? iCode : codeTextField.value;
+        theCode = theCode.toLowerCase();
+
         const gameData = await fireConnect.tryGameCode(theCode);  //  null if not exist
         if (gameData) {
             fish.state.gameCode = theCode;

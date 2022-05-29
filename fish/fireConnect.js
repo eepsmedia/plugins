@@ -44,6 +44,7 @@ const fireConnect = {
 
     unsubscribeFromGame: null,
     unsubscribeFromPlayers: null,
+    unsubscribeFromTurns : null,
 
     initialize: async function (iFish) {
         this.fish = iFish;
@@ -70,19 +71,19 @@ const fireConnect = {
 
         if (docSnap.exists) {
             console.log(iCode + " exists!");
-
-            //  join this game
-
-            this.gameDR = docRef;
-            this.playersCR = this.gameDR.collection("players");
-            this.turnsCR = this.gameDR.collection("turns");
-            this.setNotifications();
-
+            await this.joinGame(docRef);
             return docSnap.data();      //  all fields
         } else {
             console.log(iCode + " doesn't exist!");
             return null;
         }
+    },
+
+    joinGame : async function(iDocRef) {
+        this.gameDR = iDocRef;
+        this.playersCR = this.gameDR.collection("players");
+        this.turnsCR = this.gameDR.collection("turns");
+        this.setNotifications();
     },
 
     /**
@@ -112,6 +113,16 @@ const fireConnect = {
     },
 
     setNotifications: function () {
+
+        this.unsubscribeFromTurns = this.gameDR.collection('turns')
+            .onSnapshot((iTurns) => {
+                let tTurns = [];
+                iTurns.forEach( tSnap => {
+                    tTurns.push(tSnap.data());
+                })
+                console.log(`    listener returns ${tTurns.length} turns`);
+                this.fish.updateTurns(tTurns);
+            });
 
         this.unsubscribeFromGame = this.gameDR
             .onSnapshot((iDocSnap) => {
@@ -143,10 +154,13 @@ const fireConnect = {
      * @param iCommands     The commands to send. This is an object whose keys (string) are the commands in php, and the values are the values.
      * @returns {Promise<any>}
      */
+/*
     sendCommand: async function (iCommands) {
         console.log("fish ... sendCommand " + iCommands.c);
     },
+*/
 
+/*
     getGameData: async function (iCode) {
 
         try {
@@ -157,6 +171,7 @@ const fireConnect = {
             console.log('get game data error: ' + msg);
         }
     },
+*/
 
     getMyData : async  function() {
         try {

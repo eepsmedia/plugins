@@ -30,13 +30,12 @@ limitations under the License.
 
 mazu.constants = {
 
-    version: "001d",
+    version: "2022a",
 
     kTimerInterval: 2500,       //      milliseconds, ordinarily 1000
     kUsingTimer: true,
     kInitialLanguage: 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
 
-    kInitialTurn: 2020,
     kInitialPopulation: 200,
     kInitialGameTypeName: "albacore",
 
@@ -60,28 +59,6 @@ mazu.constants = {
  */
 mazu.fishGameParameters = {
 
-    trout: {
-        starter: true,
-        openingPopulation: 400,
-        carryingCapacity: 3000,
-
-        winningPopulation: 405,
-        losingPopulation: 100,
-        openingBalance: 5000,
-        openingTurn: 2020,
-        endingTurn: 2022,          //          2060
-        defaultPrice: 100,
-        overhead: 2000,
-        visibleProbability: 0.50,
-        birthProbability: 0.10,
-        catchProbability: 1.00,
-        binomialProbabilityModel: false,
-        boatCapacity: 120,
-
-        calculatePrice: function (n) {
-            return this.defaultPrice;
-        }
-    },
 
     albacore: {
         starter: true,
@@ -91,8 +68,7 @@ mazu.fishGameParameters = {
         winningPopulation: 800,
         losingPopulation: 100,
         openingBalance: 5000,
-        openingTurn: 2020,
-        endingTurn: 2060,          //          2060
+        duration : 40,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -114,8 +90,7 @@ mazu.fishGameParameters = {
         winningPopulation: 800,
         losingPopulation: 100,
         openingBalance: 5000,
-        openingTurn: 2020,
-        endingTurn: 2060,
+        duration : 40,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -137,8 +112,7 @@ mazu.fishGameParameters = {
         winningPopulation: 1000,
         losingPopulation: 100,
         openingBalance: 3000,
-        openingTurn: 2020,
-        endingTurn: 2060,
+        duration : 40,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -165,8 +139,7 @@ mazu.fishGameParameters = {
         winningPopulation: 1000,
         losingPopulation: 100,
         openingBalance: 3000,
-        openingTurn: 2020,
-        endingTurn: 2060,
+        duration : 40,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -183,5 +156,29 @@ mazu.fishGameParameters = {
             if (tPrice < 0) tPrice = 0;
             return tPrice;
         }
-    }
+    },
+
+    /*  testing game -- short duration */
+    trout: {
+        starter: true,
+        openingPopulation: 400,
+        carryingCapacity: 3000,
+
+        winningPopulation: 405,
+        losingPopulation: 100,
+        openingBalance: 5000,
+        duration : 5,
+        defaultPrice: 100,
+        overhead: 2000,
+        visibleProbability: 0.50,
+        birthProbability: 0.10,
+        catchProbability: 1.00,
+        binomialProbabilityModel: false,
+        boatCapacity: 120,
+
+        calculatePrice: function (n) {
+            return this.defaultPrice;
+        }
+    },
+
 };
