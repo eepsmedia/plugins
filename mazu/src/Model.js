@@ -149,23 +149,6 @@ class Model extends Object  {
        // this.mazu.forceUpdate();    // todo:  need this??
     }
 
-/*
-    /!**
-     * update the player records to reflect the ending balance and the year in the corresponding turns record.
-     * The trick is to get the names right... :P
-     *!/
-    updatePlayersData() {
-        this.thePlayers.forEach( (p) => {
-            this.theTurns.forEach( (t) => {
-                if (t.playerName === p.playerName) {
-                    p.balance = t.balanceAfter;
-                    p.onTurn = t.onTurn + 1;
-                }
-            })
-        });
-    }
-*/
-
     births() {
         let tPop = this.theGame.population;
         let tAdjustedProbability = this.gameParameters.birthProbability *

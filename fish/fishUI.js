@@ -40,6 +40,17 @@ fish.ui = {
         console.log('new text in code field = ' + theText);
     },
 
+    /**
+     * Update the UI in the player app.
+     *
+     * Here is the order of the "stripes"
+     *  * statusDIV -- balance, name, year
+     *  * catchFishDIV -- where you tell how many fish (irrelevant when selling)
+     *  * noticeDIV -- what's happening (can change when fishing)
+     *  * aboutPlayersDIV -- who are you waiting for
+     *  * debug
+     * @returns {Promise<void>}
+     */
     update: async function () {
 
         //  fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
@@ -112,7 +123,7 @@ fish.ui = {
 
 
                 const noticeText = (fish.state.playerState === fish.constants.kFishingString) ?
-                    fish.strings.youAreFishingText : fish.strings.fishAtMarketText();
+                    fish.strings.youAreFishingText : fish.strings.fishAtMarketText();       //  todo: change to market report, move you are fishing elsewhere
                 fish.setNotice(noticeText);
 
                 break;

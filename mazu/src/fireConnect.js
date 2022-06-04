@@ -154,7 +154,7 @@ const fireConnect = {
                 iPlayers.forEach((pSnap) => {
                     tPlayers.push(pSnap.data())
                 });
-                console.log(`  listener gets ${tPlayers.length} players`);
+                console.log(`  ¬¬¬ Players listener gets ${tPlayers.length} players`);
                 mazu.model.updateDataFromDB(tPlayers);
             });
     },

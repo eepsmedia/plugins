@@ -164,7 +164,7 @@ let FS = {
 
         waitingToStartText: "Waiting to start a game!",
         successfullyJoinedText: "Successfully joined ",
-        enterAndPressCatchText: "Enter a number and press <b>catch</b>.",
+        enterAndPressCatchText: "Enter a number and press <b>Catch</b>.",
         wonText: "won",
         lostText: "lost",
 

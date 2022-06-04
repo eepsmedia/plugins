@@ -120,14 +120,14 @@ const fireConnect = {
                 iTurns.forEach( tSnap => {
                     tTurns.push(tSnap.data());
                 })
-                console.log(`    listener returns ${tTurns.length} turns`);
+                console.log(`    ¬¬¬ Turn listener reported ${tTurns.length} turn(s)`);
                 this.fish.updateTurns(tTurns);
             });
 
         this.unsubscribeFromGame = this.gameDR
             .onSnapshot((iDocSnap) => {
                 const theGame = iDocSnap.data();
-                console.log(`    Got game ${theGame.gameCode} turn ${theGame.turn} from listener`);
+                console.log(`    ¬¬¬ Game listener got ${theGame.gameCode} turn ${theGame.turn} from listener`);
                 this.fish.updateGame(theGame);
             });
 
@@ -142,7 +142,7 @@ const fireConnect = {
                 iPlayers.forEach((pSnap) => {
                     tPlayers.push(pSnap.data())     //  don't need await??
                 });
-                console.log("    listener sends player all " + tPlayers.length + " player(s)");
+                console.log(`    ¬¬¬ Player listener reported ${tPlayers.length} player(s)`);
                 this.fish.updatePlayers(tPlayers);
             });
     },
