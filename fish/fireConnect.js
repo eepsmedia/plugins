@@ -134,7 +134,7 @@ const fireConnect = {
 
         /**
          * Let's be careful here.
-         * This is ONLY in order to tell, locally, who has moved and who as not.
+         * This is ONLY in order to tell, locally, who has moved and who has not.
          */
         this.unsubscribeFromPlayers = this.gameDR.collection("players")
             .onSnapshot((iPlayers) => {

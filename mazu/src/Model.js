@@ -28,23 +28,25 @@ limitations under the License.
 */
 
 
-class Model extends Object  {
+class Model extends Object {
 
     constructor(iMazu) {
         super();
 
         this.theGame = {
-            gameCode : "",
-            gameType : mazu.constants.kInitialGameTypeName,
-            gameState : mazu.constants.kGameWaitingString,
-            reason : "",
+            gameCode: "",
+            gameType: mazu.constants.kInitialGameTypeName,
+            gameState: mazu.constants.kGameWaitingString,
+            reason: "",
         };
+        this.theSituation = this.getCurrentSituation();
         this.thePlayers = [];
-        this.theTurns = [];
-        this.gameParameters = mazu.fishGameParameters[this.theGame.gameType];
+        this.allTurns = [];
+        //       this.theTurns = [];
+        //  this.gameParameters = mazu.fishGameParameters[this.theGame.gameType];
         this.mazu = iMazu;
-
-       // fireConnect.initialize(this);
+        this.calculatePrice = null;   //      (function)
+        // fireConnect.initialize(this);
 
         return this;
     }
@@ -56,41 +58,72 @@ class Model extends Object  {
      * @returns {Promise<null>}
      */
     async newGame(iGameType) {
-        this.theGame = await fireConnect.makeNewGame(iGameType);
+        await fireConnect.makeNewGame(iGameType);
         this.thePlayers = [];
         this.theTurns = [];
+    }
 
+    async joinOldGame(iCode) {
+        this.theGame = await fireConnect.joinOldGame(iCode);    //  synchronous
         return this.theGame;
     }
 
-    async   joinOldGame(iCode) {
-        this.theGame = await fireConnect.joinOldGame(iCode);
-        if (this.theGame) {
-            this.gameParameters = mazu.fishGameParameters[this.theGame.configuration];
-            //  this.theGame does NOT include subcollections, players and turns
-            //  so we restore them here:
+    async gotNewData(whence) {
+        this.theSituation = this.getCurrentSituation();
 
-            this.thePlayers = await fireConnect.getAllPlayers();
-            this.theTurns = await fireConnect.getAllTurns();
+        if (whence === "allTurns" &&
+            this.theSituation.autoOK &&
+            mazu.state.autoSell &&
+            this.thePlayers.length > 0 &&
+            this.theGame.gameState === mazu.constants.kInProgressString) {
+            await this.sellFish();
+            console.log(`*** auto sold *** now it's ${this.theGame.turn}`);
         }
 
-        return this.theGame;
+        ui.update();
     }
 
-    async updateDataFromDB(iPlayers) {
+    async gotAllTurns(iAllTurns) {
+        this.allTurns = iAllTurns;
+        this.gotNewData('allTurns');
+    }
+
+    async gotAllPlayers(iPlayers) {
+        const oldPlayers = this.thePlayers;
         this.thePlayers = iPlayers;
-        this.theTurns = await fireConnect.getTurnsForYear(this.theGame.turn);
-        this.mazu.poll();
+        if (oldPlayers.length !== this.thePlayers.length) {
+            console.log(`number of players changes from ${oldPlayers.length} to ${this.thePlayers.length}`);
+        }
+        this.thePlayers = iPlayers;
+        this.gotNewData('allPlayers');
     }
 
+    async gotGame(iGame) {
+        this.theGame = iGame;
+
+        //  now, because the `calculatePrice()` function is not stored on the DB...
+        if (this.theGame) {
+            this.gameParameters = mazu.fishGameParameters[this.theGame.configuration];
+        }
+
+        this.gotNewData('theGame');
+    }
+
+    /**
+     * Note: we will be updating `this.theGame` throughout.
+     * At the end, we load it into the DB, which may cause a listener firing.
+     *
+     * @returns {Promise<void>}
+     */
     async sellFish() {
+        console.log(`${this.theGame.turn}: Selling fish`);
+
         const tN0 = Number(this.theGame['population']);
 
-        this.theTurns = await fireConnect.getTurnsForYear( this.theGame.turn );
+        const theTurns = this.thisYearsTurns();
+        const nPlayers = this.thePlayers.length;
 
-        const nPlayers = this.theTurns.length;
-
-        let tTotalCaughtFish = this.theTurns.reduce(function (a, v) {
+        let tTotalCaughtFish = theTurns.reduce(function (a, v) {
             return {caught: a.caught + Number(v.caught)}
         }, {caught: 0});     //  count up how many fish got caught...
 
@@ -108,54 +141,57 @@ class Model extends Object  {
         //  update the local copy of the turns
         //  adding unitPrice, income, and after fields
 
-        this.theTurns.forEach((t) => {
+        theTurns.forEach((t) => {
             t.unitPrice = tUnitPrice;
             t.income = tUnitPrice * Number(t.caught);
-            t.after = Number(t.before) + t.income - Number(t.expenses);
+            const tAfter = Number(t.before) + t.income - Number(t.expenses);
+            t.after = Math.round(tAfter);
         });
 
 
-        let thePromises = [];    //  update the game in the DB
+        let thePromises = [];    //  for updating the game in the DB
 
         //  load all the turns to the turnsDB
         //  while we're there, update player records for balance and playerState
 
-        this.theTurns.forEach(
+        theTurns.forEach(
             (t) => {
                 thePromises.push(fireConnect.uploadTurnToDB(t));
-                console.log(` ... promised to upload turn ${t.turn}_${t.playerName} after = ${t.after}`);
 
+                //  todo: do we really need to update the player? Redundant with turns?
                 const playerStuff = {
-                    balance : t.after,
-                    playerState : mazu.constants.kFishingString,
+                    balance: t.after,
+                    playerState: mazu.constants.kFishingString,
                 };
-                thePromises.push(fireConnect.updatePlayerOnDB( t.playerName, playerStuff));
+                thePromises.push(fireConnect.updatePlayerToDB(t.playerName, playerStuff));
             }
         );
-        await Promise.all(thePromises);     //  updates all the collections in the DB
-        console.log(`    Turn and player promises all awaited...`);
 
         //  Turns are done; see if the game is over; update the game.
 
         const ended = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
-        if (!ended) {this.theGame['turn']++}         //  if the game is over, we don't bump the year.
-        this.theTurns = [];     //  todo: remove kludge; byzantine way to alert mazu that turns have been made. Do it nore directly.
-        await fireConnect.uploadGameToDB(this.theGame);
-        console.log(`    Done with game change promise...`);
+        if (!ended) {
+            this.theGame['turn']++;     //      this is where the date gets incremented. End of turn.
+            console.log(`... end of turn. Updating to ${this.theGame.turn} `);
+        }
+        thePromises.push(fireConnect.uploadGameToDB(this.theGame));
 
+        await Promise.all(thePromises);     //  updates all the collections in the DB
 
+        if (ended) {
+            fireConnect.endGame();      //  unsubscribe
+
+        }
         ui.update();
-
-       // this.mazu.forceUpdate();    // todo:  need this??
     }
 
     births() {
         let tPop = this.theGame.population;
-        let tAdjustedProbability = this.gameParameters.birthProbability *
-            (1 - (tPop / this.gameParameters.carryingCapacity));
+        let tAdjustedProbability = this.theGame.birthProbability *
+            (1 - (tPop / this.theGame.carryingCapacity));
         let tOut = tAdjustedProbability * tPop;
 
-        if (this.gameParameters.binomialProbabilityModel) {
+        if (this.theGame.binomialProbabilityModel) {
             tOut = 0;
             for (let i = 0; i < tPop; i++) {
                 if (Math.random() < tAdjustedProbability) {
@@ -172,6 +208,8 @@ class Model extends Object  {
      */
     async checkForEndGame() {
 
+        const theTurns = this.thisYearsTurns();
+
         let tReasonText = "";
 
         let tEnd = "";      //  "" | "won" | "lost"
@@ -180,13 +218,13 @@ class Model extends Object  {
             broke: [],      //  who went broke?
             time: false,   //  set true if time is up
             pop: "",       //  high | low
-            params : this.gameParameters,
+            params: this.gameParameters,
         };
 
         if (this.theGame.turn >= this.theGame.endingTurn) {
             tReasonObject.end = true;
             tReasonObject.time = true;
-            if (this.theGame.population > this.gameParameters.winningPopulation) {
+            if (this.theGame.population > this.theGame.winningPopulation) {
                 tReasonObject.pop = "high";
                 tEnd = mazu.constants.kWonString;
             } else {
@@ -196,7 +234,7 @@ class Model extends Object  {
         }
 
         //  check all turns to see if anyone went negative
-        this.theTurns.forEach((aTurn) => {
+        theTurns.forEach((aTurn) => {
             if (aTurn.after < 0) {
                 tReasonObject.end = true;
                 tReasonObject.broke.push(aTurn.playerName);
@@ -204,13 +242,13 @@ class Model extends Object  {
             }
         });
 
-        if (this.theGame.population < this.gameParameters.losingPopulation) {
+        if (this.theGame.population < this.theGame.losingPopulation) {
             tReasonObject.end = true;
             tReasonObject.pop = "low";
             tEnd = mazu.constants.kLostString;
         }
 
-        if (this.theGame.population >= this.gameParameters.winningPopulation) {
+        if (this.theGame.population >= this.theGame.winningPopulation) {
             tReasonObject.end = true;
             tReasonObject.pop = "high";
             tEnd = mazu.constants.kWonString;
@@ -230,51 +268,96 @@ class Model extends Object  {
     }
 
     /**
+     * Filter the `allTurns` item to focus on the current year
+     * @returns {*}
+     */
+    thisYearsTurns() {
+        const year = this.theGame.turn;
+        let out = [];
+        this.allTurns.forEach(t => {
+            if (t.turn === year) out.push(t);
+        })
+        return out;
+    }
+
+    mostRecentPlayerTurn(iName) {
+        let thisPlayersTurns = [];
+        this.allTurns.forEach(t => {
+            if (t.playerName === iName) {
+                thisPlayersTurns.push(t);
+            }
+        })
+
+        //  assume allTurns is sorted by year, so we get the last one in the array
+        return thisPlayersTurns[thisPlayersTurns.length - 1];
+    }
+
+    /**
+     * In case not all players are playing; Mazu can proceed when somebody doesn't move.
+     *
+     * @returns {[]}
+     */
+    playingPlayers() {
+        return this.thePlayers;
+    }
+
+    /**
      * This will return an object that describes the implications of the current game state.
+     *
      * Especially these Booleans:
      *
-     * OK : is it OK to sell fish? (i.e., has everybody moved?)
-     * missing: who has not moved yet?
-     * gameOver : has the game ended?
+     * * OK : is it OK to sell fish? (i.e., has everybody moved?)
+     * * missing: who has not moved yet?
+     * * playing : has the game ended?
      * @returns {Promise<{missing: [], playing: boolean, OK: boolean, allPlayers: *}|{missing: [], playing: boolean, OK: boolean, allPlayers: []}|{missing: *, playing: boolean, OK: boolean, allPlayers: *}>}
      */
-    async getCurrentSituation() {
+    getCurrentSituation() {     //  todo: be SURE this shouldn't be async!
 
         if (this.theGame.gameCode) {
             //  game information
-            let missingPlayers = [];
-            let allPlayers = [];
+            let missingPlayerNames = [];
+            let currentPlayerNames = [];
 
-            this.thePlayers.forEach((p) => {
-                allPlayers.push(p.playerName);
+            const tPlayingPlayers = this.playingPlayers();
+            const tTheseTurns = this.thisYearsTurns();
+
+
+            tPlayingPlayers.forEach((p) => {
+                currentPlayerNames.push(p.playerName);
                 if (p.playerState !== mazu.constants.kSellingString) {
-                    missingPlayers.push(p.playerName);
+                    missingPlayerNames.push(p.playerName);
                 }
             });
 
-            const ok = this.thePlayers.length === this.theTurns.length;
+            const ok = (tPlayingPlayers.length === tTheseTurns.length);
+
+            console.log(`getting curSit in ${this.theGame.turn} for ${tTheseTurns.length} turns ... ${ok ? "OK" : "not OK"}`);
 
             if (this.theGame.gameState === mazu.constants.kInProgressString) {
                 return {
                     OK: ok,
-                    missing: missingPlayers,
-                    allPlayers: allPlayers,
-                    playing : true,
+                    autoOK: (tPlayingPlayers.length ? ok : false),
+                    missing: missingPlayerNames,
+                    current: currentPlayerNames,
+                    playing: true,
                 };
             } else {        //  game is not in progress, i.e., over
                 return {
-                    OK : false,
-                    missing : [],
-                    allPlayers : allPlayers,
-                    playing : false,
+                    OK: false,
+                    autoOK : false,
+                    missing: [],
+                    current: currentPlayerNames,
+                    playing: false,
                 };
             }
+
         } else {
             return {
-                OK : false,
-                missing : [],
-                allPlayers : [],
-                playing : false,
+                OK: false,
+                autoOK: false,
+                missing: [],
+                current: [],
+                playing: false,
             };
         }
     }

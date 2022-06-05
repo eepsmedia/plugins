@@ -54,36 +54,66 @@ const ui = {
         return guts;
     },
 
-
+    /**
+     *
+     * @param p     a player (like in the DB)
+     * @param iTurns    the turns
+     * @returns {`<tr key=${*} class="playerRow">
+                <td>${*}</td>
+                <td>${{de: string, es: string}|string}</td>
+                <td>${string}</td>
+                <td>${string}</td>
+            </tr>`}
+     */
     playerRow: function (p, iTurns) {
-        let myTurn = null;
-        iTurns.forEach((t) => {
-  //              console.log(`turn: ${JSON.stringify(t)}`);
-            if (t.playerName === p.playerName) {
-                myTurn = t;
-            }
-        });
+        let myTurn = mazu.model.mostRecentPlayerTurn(p.playerName); //  if from previous year,
 
-        const tWanted = myTurn ? myTurn.want : "--";
-        return (
-            `<tr key=${p.playerName} class="playerRow">
+        if (myTurn) {
+            let tPlayerState = mazu.constants.kBetweenString;
+            let tWanted = null;
+            let tBalance = 0;
+
+            if (myTurn.turn === mazu.model.theGame.turn) {      //  from current year, so PARTIAL turn without after
+                tWanted = myTurn.want;
+                tPlayerState = mazu.constants.kSellingString;
+                tBalance = myTurn.before;
+            } else {        //  from previous year
+                tWanted = "--";
+                tPlayerState = mazu.constants.kFishingString;   //  haven't told us how many yet
+                tBalance = myTurn.after;
+            }
+
+            return (
+                `<tr key=${p.playerName} class="playerRow">
                 <td>${p.playerName}</td>
                 <td>${tWanted}</td>
-                <td>${p.balance}</td>
-                <td>${p.playerState}</td>
+                <td>${tBalance}</td>
+                <td>${tPlayerState}</td>
             </tr>`
-        )
+            )
+        } else {
+            //  we have a player, but no turns yet (mazu has quit and rejoined before game starts)
+            return (
+                `<tr key=${p.playerName} class="playerRow">
+                <td>${p.playerName}</td>
+                <td>?</td>
+                <td>?</td>
+                <td>?</td>
+            </tr>`
+
+            )
+        }
     },
 
     playerList: function (props) {
 
         const thePlayers = mazu.model.thePlayers;
-        const theTurns = mazu.model.theTurns;
+        const theTurns = mazu.model.allTurns;
         const listGuts = thePlayers.map(
             (p) => this.playerRow(p, theTurns)
         );
 
-        const headerText = thePlayers.length + " player(s)";
+        const headerText = `${thePlayers.length} ${thePlayers.length === 1 ? "player" :"players"}`;
         const tableHeader = `<tr>
                 <th>name</th>
                 <th>wants</th>
@@ -111,22 +141,21 @@ const ui = {
 
     fishMarket: async function () {
 
-        const situation = await mazu.model.getCurrentSituation();
-        const autoSellBox = this.autoSellBox();
+        const tAutoSellBox = this.autoSellBox();
         let guts = `<h3 class="ui-stripe-element">Fish Market</h3>`
 
-        if (situation.OK) {
+        if (mazu.model.theSituation.OK) {
             guts +=  `
                     <button id="sellFishButton"  class="ui-stripe-element"
                     onClick="mazu.model.sellFish()">sell fish</button>
-                    ${autoSellBox}
+                    ${tAutoSellBox}
                 `;
         } else {
-            if (situation.missing.length > 0) {
-                const missingPlayerList = situation.missing.join(", ");
+            if (mazu.model.theSituation.missing.length > 0) {
+                const missingPlayerList = mazu.model.theSituation.missing.join(", ");
                 guts +=  `
                     <span  class="ui-stripe-element">Waiting for ${missingPlayerList}</span>
-                    ${autoSellBox}
+                    ${tAutoSellBox}
                 `;
 
             } else {
@@ -137,6 +166,19 @@ const ui = {
         return guts;
     },
 
+    /**
+     * Create the HTML for the automated sell box.
+     *
+     * @param props
+     * @returns {`
+            <input type="checkbox"
+                   id="autoSellBox"
+                   onChange="mazu.handleAutoSellBoxChange()"
+                   ${string}
+            />
+            <label htmlFor="autoSellBox">automate market</label>
+        `}
+     */
     autoSellBox: function (props) {
 
         return `

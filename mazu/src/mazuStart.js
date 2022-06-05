@@ -96,20 +96,15 @@ const mazuStart = {
 
     makeNewGame: async function () {
         const theChosenType = document.getElementById("gameTypesMenu").value;
-        const newGame = await mazu.model.newGame(theChosenType);
-        console.log("... MazuHeader, new game " + newGame.gameCode);
-        ui.update();
+        await mazu.model.newGame(theChosenType);
     },
 
     joinOldGame: async function () {
         const oldGamesMenu = document.getElementById("oldGamesMenu")
         const theOldCode = oldGamesMenu.value;
-        const getDataResult = await mazu.model.joinOldGame(theOldCode);
-        if (getDataResult) {
-            const message = `
-            You have rejoined ${mazu.model.theGame.gameCode} with ${mazu.model.thePlayers.length} player(s) 
-            and ${mazu.model.theTurns.length} turn(s).
-            `;
+        await mazu.model.joinOldGame(theOldCode);
+        if (mazu.model.theGame) {
+            const message = `You have rejoined ${mazu.model.theGame.gameCode}`;
             Swal.fire({
                 icon: "success",
                 text: message,
@@ -148,80 +143,4 @@ const mazuStart = {
 
 }
 
-/*
-}
-import React from 'react';
-//  import model from "../model";
-import mazu from "../constants";
-
-export default class MazuHeader extends React.Component {
-
-    constructor(props) {
-        console.log("Constructing MazuHeader");
-        super(props);
-        this.state = {
-            newOrOldGame: true,
-            prospectiveGameType: mazu.constants.kInitialGameTypeName,
-        };
-
-        //  binding
-        this.makeNewGame = this.makeNewGame.bind(this);
-        this.joinOldGame = this.joinOldGame.bind(this);
-    }
-
-    handleNewOrOldChange = (e) => {
-        this.setState({
-            newOrOldGame: (e.target.value === "new")
-        })
-    };
-
-    handleGameTypeChange = (e) => {
-        this.setState({prospectiveGameType: e.target.value})
-    };
-
-
-    sitrep() {
-        console.log("... MazuHeader, sitrep ");
-    }
-
-    render() {
-        const theGame = this.props.model.theGame;
-
-        let wholeThing = (<div>waiting</div>);
-
-
-        const gameCodeOrTypeMenu = (this.state.newOrOldGame ? (
-                <select id="gameTypesMenu" value={this.state.prospectiveGameType}
-                        onChange={(e) => this.setState({prospectiveGameType: e.target.value})}>
-                    {typesMenuGuts}
-                </select>
-            ) : (
-                <input type="text" id={"oldGameCodeInput"}></input>
-            )
-        );
-
-
-
-        if (theGame.gameState === mazu.constants.kInProgressString) {
-            wholeThing = (
-                <div id="MazuHeader">
-                    <strong>{theGame.gameCode}</strong>&nbsp;|&nbsp;
-                    <strong>{theGame.turn}</strong>&nbsp;|&nbsp;
-                    <span><strong>{theGame.population}</strong></span>
-                    <span role={"img"} aria-label={"fish"}>&nbsp;&#x1f41f; &nbsp;</span>|
-                    <span>&nbsp;type: {theGame.config}</span>
-                </div>
-            )
-        } else {
-            wholeThing = (<div id="MazuHeader">
-                {radioButtons}
-                {gameCodeOrTypeMenu}&nbsp;{createOrJoinButton}
-            </div>)
-        }
-
-        return <div>{wholeThing}</div>;
-    }
-}
-
- */
 

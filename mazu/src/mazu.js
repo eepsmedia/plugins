@@ -47,7 +47,7 @@ const mazu =  {
             missing: [],
             now: new Date(),
         };
-        console.log("Constructing Mazu. State: " + JSON.stringify(this.state));
+        console.log("Initializing Mazu. State: " + JSON.stringify(this.state));
 
         this.model = new Model(this);   //  singleton
         await fireConnect.initialize( );   //  must precede ui initialize
@@ -135,10 +135,11 @@ const mazu =  {
 
     sitrep() {
         const theGame = this.model.theGame;
+        const nTurns = this.model.thisYearsTurns();
 
         return "Mazu sitrep: " +  theGame.gameCode + " (" + theGame.gameState + ") turn " + theGame.turn +
             " -- " + this.model.thePlayers.length + " players " +
-            " -- " + this.model.theTurns.length + " turns "
+            " -- " + nTurns + ` ${nTurns === 1 ? turn : turns} `
             ;
     },
 
@@ -158,56 +159,9 @@ const mazu =  {
         const newCheckedState = document.getElementById("autoSellBox").checked;
         this.state.autoSell = newCheckedState;
         console.log("Auto sell checkbox now " + newCheckedState);
-        this.poll();
+        const currentSituation = mazu.model.getCurrentSituation();
     },
 
-/*
-    render() {
-        let gameRunningStuff;
-
-        if (this.model.theGame.gameCode) {
-            gameRunningStuff = (<div id={"gameRunningStuff"}>
-
-                <FishMarket
-                    OK={(this.state.missing.length === 0)}
-                    autoHandler={this.handleAutoSellBoxChange.bind(this)}
-                    sellHandler={this.sellFish.bind(this)}
-                    missingNames={this.state.missing}
-                />
-                <GameOverDiv
-                    game={this.model.theGame}
-                    reason={this.model.theGame.reason}
-                />
-                <PlayerList
-                    thePlayers={this.model.thePlayers}
-                    theTurns={this.model.theTurns}
-                />
-            </div>)
-        } else {
-            gameRunningStuff = <div id={"gameRunningStuff"}><h4>no game yet</h4></div>
-        }
-
-        return (
-            <div id={"mazu"}>
-                <div id={"titleBar"}>
-                    <h1>Mazu</h1>
-                    <RefreshButton
-                        doRefresh={this.poll.bind(this)}
-                    />
-                </div>
-
-                <MazuHeader
-                    id={"mazuHeader"}
-                    model={this.model}
-                />
-
-                {gameRunningStuff}
-
-                <div id={"clock"}><strong>{this.state.now.toLocaleTimeString()}</strong></div>
-            </div>
-        )
-    }
-*/
 }
 
 /*

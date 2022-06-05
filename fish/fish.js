@@ -116,7 +116,7 @@ let fish = {
 
     calculateVisible : function() {
         let tVisible = 0;
-        let tPop = Number(fish.gameFromDB['population']);
+        let tPop = Number(fish.gameFromDB['population']);   //  todo: use listener's game.
 
         if (fish.gameParameters.binomialProbabilityModel) {
             for (let i = 0; i < tPop; i++) {

@@ -1,10 +1,11 @@
 const fireConnect = {
 
     db: null,
-    gamesCR: null,     //      = games collection reference
+    gamesCR: null,     //      = all games collection reference
     gameDR: null,       //      this game's document reference
     turnsCR: null,     //  this game's turns subcollection reference
     playersCR: null,
+    godsCR : null,
 
     //  for auth
     ui: null,
@@ -14,6 +15,7 @@ const fireConnect = {
 
     unsubscribeFromTurns: null,
     unsubscribeFromPlayers: null,
+    unsubscribeFromGame: null,
 
     initialize: async function () {
         // Initialize Firebase
@@ -68,14 +70,15 @@ const fireConnect = {
      */
     makeNewGame: async function (iGameType) {
         const params = mazu.fishGameParameters[iGameType];
-        params['turn'] = new Date().getFullYear();
-        params['endingTurn'] = params.turn + params.duration;
+
+        params['startingTurn'] = new Date().getFullYear();
+        params['endingTurn'] = params.startingTurn + params.duration;
 
         let newCode = "didn't get a code";
 
         try {
-            let iter = 0;
             let stillLooking = true;
+            let iter = 0;
             while (stillLooking) {
                 iter++;
                 console.log(`Finding a code, iteration ${iter}`);
@@ -84,6 +87,7 @@ const fireConnect = {
                 const theDocRef = await this.gamesCR.doc(newCode);
                 const theDocSnap = await theDocRef.get();
                 stillLooking = theDocSnap.exists;
+                console.log(`found a new code, ${newCode}, in ${iter} iteration(s)`);
             }
         } catch (msg) {
             console.log(`Sheesh. Can't even look to see whether a game exists! ${msg}`);
@@ -94,12 +98,16 @@ const fireConnect = {
             });
         }
 
-        console.log("new code: " + newCode);
-
         const newGameValues = {
-            turn: params.turn,
+            turn: params.startingTurn,
+            startingTurn: params.startingTurn,
             endingTurn : params.endingTurn,
             population: params.openingPopulation,
+            winningPopulation : params.winningPopulation,
+            losingPopulation : params.losingPopulation,
+            carryingCapacity : params.carryingCapacity,
+            birthProbability : params.birthProbability,
+            binomialProbabilityModel : params.binomialProbabilityModel,
 
             configuration: iGameType,
             gameState: mazu.constants.kInProgressString,
@@ -120,6 +128,16 @@ const fireConnect = {
         return newGameValues;
     },
 
+    /**
+     * Find *and load* an old game by code. Called by `mazu.model.joinOldGame(iCode)`.
+     *
+     * Note: this is an exception to the "do everything through notifications" rule.
+     * We actually get the game directly; we do not write it o th DB and wait for notification.
+     * That way, `mazuStart` gets the game info synchronously and can log us in.
+     *
+     * @param iCode
+     * @returns {Promise<null|*>}
+     */
     joinOldGame: async function (iCode) {
         const thisGameDR = this.gamesCR.doc(iCode);
         const thisGameSnap = await thisGameDR.get();
@@ -141,12 +159,41 @@ const fireConnect = {
     setDBValuesAndConnections: function () {
         this.turnsCR = this.gameDR.collection("turns");
         this.playersCR = this.gameDR.collection("players");
+        this.makeSubscriptions();
+    },
 
-        this.unsubscribeFromPlayers = this.setPlayersNotifications(this.playersCR);
+    makeSubscriptions: function() {
+        if (this.unsubscribeFromPlayers) {
+            this.unsubscribeFromPlayers();
+            this.unsubscribeFromGame();
+            this.unsubscribeFromTurns();
+        }
+        this.unsubscribeFromGame = this.receiveGameNotification(this.gameDR);
+        this.unsubscribeFromPlayers = this.receivePlayersNotification(this.playersCR);
+        this.unsubscribeFromTurns = this.receiveTurnsNotification(this.turnsCR);
 
     },
 
-    setPlayersNotifications: function (iPlayersCR) {
+    receiveGameNotification : function(iGameDR) {
+        iGameDR.onSnapshot( iGame => {
+            const theGame = iGame.data();
+            console.log(`    ¬¬¬ Game listener gets ${theGame.gameCode} on turn ${theGame.turn}`);
+            mazu.model.gotGame(theGame);
+        });
+    },
+
+    receiveTurnsNotification : function(iTurnsCR) {
+        iTurnsCR.onSnapshot( iTurns => {
+            let tAllTurns = [];
+            iTurns.forEach( tSnap => {
+                tAllTurns.push(tSnap.data());
+            })
+            console.log(`    ¬¬¬ Turns listener gets ${tAllTurns.length} turns`);
+            mazu.model.gotAllTurns(tAllTurns);
+        });
+    },
+
+    receivePlayersNotification: function (iPlayersCR) {
         //  notifications
         iPlayersCR
             .onSnapshot((iPlayers) => {
@@ -154,49 +201,23 @@ const fireConnect = {
                 iPlayers.forEach((pSnap) => {
                     tPlayers.push(pSnap.data())
                 });
-                console.log(`  ¬¬¬ Players listener gets ${tPlayers.length} players`);
-                mazu.model.updateDataFromDB(tPlayers);
+                console.log(`    ¬¬¬ Players listener gets ${tPlayers.length} players`);
+                mazu.model.gotAllPlayers(tPlayers);
             });
     },
 
-    getAllPlayers: async function () {
-        let thePlayers = [];
-
-        const querySS = await this.playersCR.get();
-        querySS.forEach(docSS => {
-            thePlayers.push(docSS.data())
-        })
-
-        return thePlayers;
-    },
-
-    getAllTurns: async function () {
-        let theTurns = [];
-
-        const querySS = await this.turnsCR.get();
-        querySS.forEach(docSS => {
-            theTurns.push(docSS.data())
-        })
-
-        return theTurns;
-    },
-
     /**
-     * called by model.updateDataFromDB() and .sellFish()
      *
      * @param iYear     the year
-     * @returns {Promise<[]>}
+     * @returns Array
      */
     getTurnsForYear: async function (iYear) {
         let theTurns = [];
-
-        const theSnaps = await this.turnsCR
-            .where("turn", "==", iYear)
-            .get();
-        theSnaps.forEach(ts => {
-            theTurns.push(ts.data());
-        });
-
+        this.allTurns.forEach( t => {
+            if (t.turn === iYear) {
+                theTurns.push(t);
+            }
+        })
         return theTurns;
     },
 
@@ -227,17 +248,26 @@ const fireConnect = {
      * @returns {Promise<void>}
      */
     uploadGameToDB: async function (iGame) {
+        console.log(`    π   posting game ${iGame.gameCode} on turn ${iGame.turn}`);
         await this.gameDR.set(iGame);
     },
 
     uploadTurnToDB: async function (iTurn) {
         const theTurnID = iTurn.turn + "_" + iTurn.playerName;
+
+        console.log(`    π   posting turn ${theTurnID} (after = ${iTurn.after})`);
         await this.turnsCR.doc(theTurnID).set(iTurn);
-        console.log(` ... uploaded turn ${theTurnID} (after = ${iTurn.after})`);
     },
 
-    updatePlayerOnDB: async function (iPlayerName, iNewData) {
-        await this.playersCR.doc(iPlayerName).update(iNewData);    //  e.g., balance
+    updatePlayerToDB: async function (iPlayerName, iNewData) {
+        console.log(`    π   posting player ${iPlayerName}, now with ${iNewData.after}`);
+        await this.playersCR.doc(iPlayerName).update(iNewData);    //  e.g., balance = inewData.after
+    },
+
+    endGame : function() {
+        this.unsubscribeFromTurns();
+        this.unsubscribeFromGame();
+        this.unsubscribeFromPlayers();
     },
 
 };
