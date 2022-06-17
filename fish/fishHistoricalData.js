@@ -39,7 +39,7 @@ fish.historicalData = {
         await fish.CODAPConnector.deleteAllHistoricalRecords();
         fish.state.gameCodeList.forEach((gc) => {
                 console.log("getHistoricalData for " + gc);
-                promises.push(fireConnect.getAllTurnsFromGame(gc));  //  make one promise for each game we've been in
+                promises.push(fireConnect.getHistoricalRecord(gc));  //  make one promise for each game we've been in
             });
 
         const res = await Promise.all(promises);
@@ -63,8 +63,8 @@ fish.historicalData = {
                                 after: turnR.after,
                                 game: turnR.game,
 
-                                result: turnR.gameState,     //  because CODAP's name for the attribute is result
-                                level: turnR.config
+                                result: turnR.result,     //  because CODAP's name for the attribute is result
+                                level: turnR.level
                             })
                         }
                     )

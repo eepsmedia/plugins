@@ -147,32 +147,7 @@ const fireConnect = {
             });
     },
 
-
-    /**
-     * This function is the only place in this file that actually communicates with php, via the fetch command.
-     *
-     * @param iCommands     The commands to send. This is an object whose keys (string) are the commands in php, and the values are the values.
-     * @returns {Promise<any>}
-     */
-/*
-    sendCommand: async function (iCommands) {
-        console.log("fish ... sendCommand " + iCommands.c);
-    },
-*/
-
-/*
-    getGameData: async function (iCode) {
-
-        try {
-            const docRef = this.gamesCR.doc(iCode);
-            const docSnap = await docRef.get();
-            return docSnap.data();
-        } catch (msg) {
-            console.log('get game data error: ' + msg);
-        }
-    },
-*/
-
+    // todo: make obsolete
     getMyData : async  function() {
         try {
             const mySnap = await this.meDR.get();
@@ -184,6 +159,7 @@ const fireConnect = {
         return null;
     },
 
+    //  todo: make obsolete
     getOneTurn : async function(iPlayerName, iTurn) {
         try {
             const theDocName = iTurn + "_" + iPlayerName;
@@ -195,6 +171,24 @@ const fireConnect = {
             console.log(`problem in getOneTurn() for ${iPlayerName} in ${iTurn}: ${msg}`);
             return null;
         }
+    },
+
+    getHistoricalRecord : async function(iGameCode) {
+
+        const theTurns = await this.getAllTurnsFromGame(iGameCode);
+
+        //  add two game-based fields to the turn record
+
+        const thisGameDR = await this.gamesCR.doc(iGameCode);
+        const thisGameSnap = await thisGameDR.get();
+        const thisGame = thisGameSnap.data();
+
+        theTurns.forEach( t => {
+            t["result"] = thisGame.gameState;
+            t["level"] = thisGame.configuration;
+        })
+
+        return theTurns;
     },
 
     getAllTurnsFromGame : async function(iGameCode) {

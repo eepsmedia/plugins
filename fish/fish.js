@@ -275,6 +275,10 @@ let fish = {
 
     },
 
+    leaveGame : function() {
+        console.log(`leaving game "${this.state.gameCode}"`);
+
+    },
 
     /**
      * Called when the game has ended

@@ -45,6 +45,7 @@ fish.ui = {
      *
      * Here is the order of the "stripes"
      *  * statusDIV -- balance, name, year
+     *  * winLoseDiaog -- only appears after a game ends
      *  * catchFishDIV -- where you tell how many fish (irrelevant when selling)
      *  * noticeDIV -- what's happening (can change when fishing)
      *  * aboutPlayersDIV -- who are you waiting for
@@ -76,8 +77,8 @@ fish.ui = {
         needPlayerNameElement.style.display = (fish.state.gameCode && !fish.state.playerName) ? "flex" : "none";
         catchFishDIV.style.display
             = ((fish.state.gameState === fish.constants.kInProgressString) && fish.state.playerName) ? "flex" : "none";   //  was : "none"
-        aboutPlayersDIV.style.display = (fish.constants.kInProgressString ? "flex" : "none");
-        noticeDIV.style.display = true;
+        noticeDIV.style.display =  (fish.state.gameState === fish.constants.kInProgressString ? "flex" : "none");
+        aboutPlayersDIV.style.display = (fish.state.gameState === fish.constants.kInProgressString ? "flex" : "none");
         winLoseElement.style.display
             = (fish.state.gameState === fish.constants.kWonString || fish.state.gameState === fish.constants.kLostString)
             ? "flex" : "none";
@@ -100,27 +101,30 @@ fish.ui = {
 
         //  miscellaneous state-specific stuff
 
+        const winLoseText = document.getElementById("winLoseText");
+
         switch (fish.state.gameState) {
             case fish.constants.kWaitingString:
                 fish.setNotice('Waiting to start a game! ');
                 break;
 
             case fish.constants.kWonString:
-                $("#winLoseText").html(fish.strings.youWonGame + " <span class='info'>"
-                    + fish.state.gameCode + "</span> " + fish.strings.because + "<br> "
-                    + fish.state.gameEndMessage);
+                winLoseText.innerHTML = fish.strings.youWonGame
+                    + " <span class='info'>" + fish.state.gameCode + "</span> "
+                    + fish.strings.because + "<br> "
+                    + fish.state.gameEndMessage;
                 break;
 
             case fish.constants.kLostString:
-                $("#winLoseText").html(fish.strings.youLostGame + " <span class='info'>"  //
-                    + fish.state.gameCode + "</span> " + fish.strings.because + "<br> "
-                    + fish.state.gameEndMessage);
+                winLoseText.innerHTML = fish.strings.youLostGame
+                    + " <span class='info'>" + fish.state.gameCode + "</span> "
+                    + fish.strings.because + "<br> "
+                    + fish.state.gameEndMessage;
                 break;
 
             case fish.constants.kInProgressString:
                 const theText = fish.strings.sitrep();
-                $("#aboutPlayersText").html(theText);   //  the "who is missing" text
-
+                document.getElementById("aboutPlayersText").innerHTML = theText
 
                 const noticeText = (fish.state.playerState === fish.constants.kFishingString) ?
                     fish.strings.youAreFishingText : fish.strings.fishAtMarketText();       //  todo: change to market report, move you are fishing elsewhere
@@ -133,7 +137,7 @@ fish.ui = {
         //  debugging
 
         fish.debugThing.html(
-            `${fish.gameConfig} (${fish.language}) ${fish.state.gameTurn} `
+            `${fish.gameConfig} (${fish.language}) ${fish.state.gameTurn} | `
         );
 
     },

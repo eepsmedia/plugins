@@ -240,7 +240,9 @@ let FS = {
             }
             if (yourIndex > -1) {
                 out += "Waiting for <strong>YOU</strong>";
-                if (waitingFor.length > 0) {
+                if (waitingFor.length === 1) {
+                    out += " and " + waitingFor[0] + ".";
+                } else if (waitingFor.length > 0) {
                     out += " and " + waitingFor.length + " more.";
                 } else {
                     out += ".";
@@ -493,7 +495,9 @@ let FS = {
                 }
                 if (yourIndex > -1) {
                     out += "Esperando a <strong>USTED</strong>";
-                    if (waitingFor.length > 0) {
+                    if (waitingFor.length === 1) {
+                        out += " y " + waitingFor[0] + ".";
+                    } else if (waitingFor.length > 0) {
                         out += " y " + waitingFor.length + " más.";
                     } else {
                         out += ".";
