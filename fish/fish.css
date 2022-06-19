@@ -45,7 +45,7 @@ body {
     padding-top : 6px;
     padding-bottom : 6px;
     display : flex;
-    min-height: 3em;
+    min-height: 2em;
     align-items: center;
     flex-direction: row;
 }
@@ -104,10 +104,28 @@ div#statusText{
     top: 50%; transform: translate(0, -50%); /* center vert, do nothing horiz */
 }
 
-div#catchFishDIV {
+div#fishingDIV {
     background-color: #cde;
-    display : flex;
 }
+
+div#showSeaDIV {
+    display : block;
+    position : relative;
+}
+
+div#catchFishDIV {
+    display: flex;
+    background-color: #cde;
+}
+
+div#sellingDIV {
+    background-color: bisque;
+}
+
+div#showMarketDIV {
+    position : relative;
+}
+
 
 
 div#noticeDIV {

@@ -39,8 +39,8 @@ const fireConnect = {
     gameDR: null,      //  document reference for THIS game
     playersCR: null,   //  collection reference for players in THIS game
     turnsCR: null,     //  collection reference for turns in this game
-    //  document reference for THIS player
-    meDR: null,
+
+    meDR: null,         //  document reference for THIS player
 
     unsubscribeFromGame: null,
     unsubscribeFromPlayers: null,
@@ -49,10 +49,14 @@ const fireConnect = {
     initialize: async function (iFish) {
         this.fish = iFish;
         console.log('initializing fireConnect');
-        firebase.initializeApp(fish.constants.kFirebaseConfiguration);
-        //  firebase.analytics();
-        this.db = firebase.firestore();
-        this.gamesCR = this.db.collection("games");     //  games collection reference
+        try {
+            firebase.initializeApp(fish.constants.kFirebaseConfiguration);
+            //  firebase.analytics();
+            this.db = firebase.firestore();
+            this.gamesCR = this.db.collection("games");     //  games collection reference
+        } catch (err) {
+            alert(`Oops, fatal: Could not start firebase, error = ${err}`);
+        }
     },
 
 
@@ -66,16 +70,20 @@ const fireConnect = {
      * @returns {Promise<void>}
      */
     tryGameCode: async function (iCode) {
-        const docRef = this.gamesCR.doc(iCode);
-        const docSnap = await docRef.get();
+        if (this.db) {
+            const docRef = this.gamesCR.doc(iCode);
+            const docSnap = await docRef.get();
 
-        if (docSnap.exists) {
-            console.log(iCode + " exists!");
-            await this.joinGame(docRef);
-            return docSnap.data();      //  all fields
+            if (docSnap.exists) {
+                console.log(iCode + " exists!");
+                await this.joinGame(docRef);
+                return docSnap.data();      //  all fields
+            } else {
+                console.log(iCode + " doesn't exist!");
+                return null;
+            }
         } else {
-            console.log(iCode + " doesn't exist!");
-            return null;
+            alert(`fatal: firebase did not initialize properly`);
         }
     },
 
@@ -184,7 +192,7 @@ const fireConnect = {
         const thisGame = thisGameSnap.data();
 
         theTurns.forEach( t => {
-            t["result"] = thisGame.gameState;
+            t["result"] = thisGame.fishStars;
             t["level"] = thisGame.configuration;
         })
 

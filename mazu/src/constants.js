@@ -30,7 +30,7 @@ limitations under the License.
 
 mazu.constants = {
 
-    version: "2022b",
+    version: "2022c",
 
     kTimerInterval: 2500,       //      milliseconds, ordinarily 1000
     kUsingTimer: true,
@@ -46,8 +46,7 @@ mazu.constants = {
 
     //  game states
     kInProgressString: "in progress",
-    kWonString: "won",
-    kLostString: "lost",
+    kEndedString: "game over",
     kWaitingString: "waiting",      //
 }
 
@@ -66,7 +65,7 @@ mazu.fishGameParameters = {
         carryingCapacity: 3000,
 
         winningPopulation: 800,
-        losingPopulation: 100,
+        losingPopulation: 20,
         openingBalance: 5000,
         duration : 40,
         defaultPrice: 100,

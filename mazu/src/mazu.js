@@ -111,12 +111,9 @@ const mazu =  {
         ui.update();
     },
 
-    showWonLost() {
+    isGameOver() {
         if (this.model.theGame.gameCode) {
-            return (
-                this.model.theGame.gameState === mazu.constants.kWonString ||
-                this.model.theGame.gameState === mazu.constants.kLostString
-            )
+            return (this.model.theGame.gameState === mazu.constants.kEndedString)
         } else {
             return false;
         }

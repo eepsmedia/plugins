@@ -38,9 +38,9 @@ fish.historicalData = {
 
         await fish.CODAPConnector.deleteAllHistoricalRecords();
         fish.state.gameCodeList.forEach((gc) => {
-                console.log("getHistoricalData for " + gc);
-                promises.push(fireConnect.getHistoricalRecord(gc));  //  make one promise for each game we've been in
-            });
+            console.log("getHistoricalData for " + gc);
+            promises.push(fireConnect.getHistoricalRecord(gc));  //  make one promise for each game we've been in
+        });
 
         const res = await Promise.all(promises);
         if (res) {
@@ -63,7 +63,7 @@ fish.historicalData = {
                                 after: turnR.after,
                                 game: turnR.game,
 
-                                result: turnR.result,     //  because CODAP's name for the attribute is result
+                                result: this.makeResultFromFishStars(turnR.result),     //  because CODAP's name for the attribute is result
                                 level: turnR.level
                             })
                         }
@@ -79,5 +79,34 @@ fish.historicalData = {
         fish.CODAPConnector.makeHistoricalTableAppear();
 
         console.log("getHistoricalData() -- Historical fish items created.");
+    },
+
+    makeResultFromFishStars(iStars) {
+        let theText = "???";
+        switch (iStars) {
+            case 5:
+                theText = "🐟🐟🐟🐟🐟";
+                break;
+            case 4:
+                theText = "🐟🐟🐟🐟";
+                break;
+            case 3:
+                theText = "🐟🐟🐟";
+                break;
+            case 2:
+                theText = "🐟🐟";
+                break;
+            case 1:
+                theText = "🐟";
+                break;
+            case 0:
+                theText = "💀";
+                break;
+            default:
+                break;
+
+        }
+
+        return theText;
     }
 };

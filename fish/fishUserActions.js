@@ -97,23 +97,30 @@ fish.userActions = {
         fish.ui.update();
     },
 
+    /**
+     * Vital event handler. Updates the current turn with number of fish to be caught,
+     * and goes all the way to saving the current turn in the Firebase DB.
+     *
+     * @returns {Promise<void>}
+     */
     catchFish: async function () {
 
-        let tFishWanted = Number(document.getElementById("howManyFish").value);
+        const fishWantedBox = document.getElementById("howManyFish");
+        let tFishWanted = Number(fishWantedBox.value);
 
         if (tFishWanted > fish.gameParameters.boatCapacity) {
-            alert("Your boat will only carry " + fish.gameParameters.boatCapacity + ". ");
-            $("#howManyFish").val(fish.gameParameters.boatCapacity);
+            alert(`Your boat will only carry ${fish.gameParameters.boatCapacity}. `);
+            fishWantedBox.value = fish.gameParameters.boatCapacity;
             return;
         }
 
         if (tFishWanted < 0) {
             alert("You can't catch negative fish! ");
-            $("#howManyFish").val(0);
+            fishWantedBox.value = 0;
             return;
         }
 
-        $("#catchButton").hide();       //  hide immediately after pressing the button
+        //  $("#catchButton").hide();       //  hide immediately after pressing the button
 
         if (fish.state.gameTurn < fish.state.gameTurn) {         //  odd occurrence
             fish.state.gameTurn = fish.state.gameTurn;
@@ -124,9 +131,13 @@ fish.userActions = {
             fish.state.playerState = fish.constants.kSellingString;     //  set the player state to selling
 
             const tCatchModelResult =  fish.catchFish(tFishWanted);
+            fish.state.currentTurnResult = tCatchModelResult;
 
             console.log("    fish ... " + tCatchModelResult.caught + " in " + tCatchModelResult.turn
                 + " (" + fish.state.playerState + ")" );
+
+            //  todo: don't call this here, but rather in the notification handler when we get the turn back from the DB. (fish.updateTurns)
+            //  the problem is that we get the CODAP caseIDs here  from the CODAP call, and we need them for the update.
 
             const theNewTurn = await (fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult));  //  record in the CODAP table, partial record :)
             //  theNewTurn now has caseIDs, year, balance before, player name, game code
@@ -136,18 +147,18 @@ fish.userActions = {
             //  record the (updated, complete) turn in the database, resolves to the number caught (which we don't need)
             thePromises.push(fireConnect.newTurnRecord(theNewTurn));
 
-            //  update the player in the database
+            //  update the player in the database  todo: get rid of dependency on player database every turn
             thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState}));
 
             await Promise.all(thePromises);
 
-            fish.state.currentTurnResult = tCatchModelResult;
+            // fish.state.currentTurnResult = tCatchModelResult;
 
         } else {
             fish.debugThing.html('Gotta wait for everybody else!');
         }
 
-        fish.ui.update();
+        // fish.ui.update();
     },
 
     changeAutomation : async function() {

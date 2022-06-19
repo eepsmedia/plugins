@@ -154,6 +154,7 @@ let fish = {
 
         try {
             const tVisible = this.calculateVisible();
+
             tCaught = this.calculateCaught(iWanted, tVisible);
 
             let tExpenses = fish.gameParameters.overhead;
@@ -181,16 +182,16 @@ let fish = {
         this.gameFromDB = iGame;
         this.state.gameState = this.gameFromDB.gameState; //      maybe we won or lost!
         this.gameConfig = this.gameFromDB.configuration;
-        fish.state.gameEndMessage = this.gameFromDB.reason;
+        fish.state.fishStars = this.gameFromDB.fishStars;
 
         if (this.state.gameTurn !== this.gameFromDB.turn) {
             console.log(`updating game, turn ${this.state.gameTurn} to ${this.gameFromDB.turn}`);
 
             //  change of turn! Fish got sold!
-            await this.updateTurnFromOldYearInCODAP(this.state.gameTurn); //  gets the turn data and pushes it
+            await this.updateTurnFromOldYearInCODAP(this.state.gameTurn); //  gets the turn data and pushes it todo: do we need to do this?
             this.state.gameTurn = this.gameFromDB.turn;
 
-            const myData = await fireConnect.getMyData();
+            const myData = await fireConnect.getMyData();   //  todo: avoid this call through notifications
 
             this.state.playerState = fish.constants.kFishingString;     //  myData.playerState;        //  we are back to fishing
             this.state.balance = myData.balance;
@@ -201,8 +202,8 @@ let fish = {
             }
         }
 
-        if (this.state.gameState === fish.constants.kWonString || this.state.gameState === fish.constants.kLostString) {
-            this.endGame(this.state.gameState);
+        if (this.state.gameState === fish.constants.kEndedString) {
+            this.endGame(iGame);
         }
 
         this.ui.update();
@@ -219,6 +220,7 @@ let fish = {
         let thisTurn = null;
         iTurns.forEach( t => {
             if (t.turn === this.state.gameTurn && t.playerName === this.state.playerName) {
+                fish.state.turnReport = fish.strings.makeRecentTurnReport(t);   //  t includes caseID
                 fish.CODAPConnector.updateFishItemInCODAP(t);   //  t includes caseID
             }
         });
@@ -284,11 +286,11 @@ let fish = {
      * Called when the game has ended
      * Makes the historical data appear.
      *
-     * @param iTheState     'won' or 'lost'
+     * @param iGame     the received Game object
      * @returns {Promise<void>}
      */
-    endGame: async function (iTheState) {
-        console.log(`in fish.endGame("${iTheState}")`);
+    endGame: async function (iGame) {
+        console.log(`in fish.endGame("${iGame.gameState}")`);
         fish.state.gameCodeList.push(this.state.gameCode);
         await fish.historicalData.getHistoricalData();
         //  fish.ui.update();
@@ -364,7 +366,7 @@ let fish = {
     },
 
     constants: {
-        version: "2022a",
+        version: "2022c",
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
@@ -397,8 +399,7 @@ let fish = {
 
         //  game states
         kInProgressString: "in progress",
-        kWonString: "won",
-        kLostString: "lost",
+        kEndedString: "game over",
         kWaitingString: "waiting",      //
 
         //  player states

@@ -36,9 +36,14 @@ class Model extends Object {
         this.theGame = {
             gameCode: "",
             gameType: mazu.constants.kInitialGameTypeName,
-            gameState: mazu.constants.kGameWaitingString,
+            gameState: mazu.constants.kWaitingString,
+            fishStars : -1,
+            brokePlayers : "",
+            outOfTime : false,
             reason: "",
+            turn : null,        //  the year we're in
         };
+        this.gameParameters = null;
         this.theSituation = this.getCurrentSituation();
         this.thePlayers = [];
         this.allTurns = [];
@@ -130,9 +135,12 @@ class Model extends Object {
         //  fish ecology
 
         const tBirths = this.births();
-        const newPopulation = Math.round(tN0 +
+        let newPopulation = Math.round(tN0 +
             tBirths -
             (nPlayers > 0 ? (tTotalCaughtFish.caught / nPlayers) : 0));
+        if (newPopulation < this.theGame.losingPopulation) {
+            newPopulation = 0;
+        }
         this.theGame["population"] = newPopulation;
 
         const tUnitPrice = this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers);
@@ -169,18 +177,23 @@ class Model extends Object {
 
         //  Turns are done; see if the game is over; update the game.
 
-        const ended = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
-        if (!ended) {
+        const endCheck = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
+        if (endCheck.end) {
+            this.theGame.outOfTime = endCheck.time;
+            this.theGame.fishStars = endCheck.fishStars;
+            this.theGame.brokePlayers = endCheck.broke.join(", ");
+            this.theGame.gameState = mazu.constants.kEndedString;
+        } else {
             this.theGame['turn']++;     //      this is where the date gets incremented. End of turn.
             console.log(`... end of turn. Updating to ${this.theGame.turn} `);
         }
-        thePromises.push(fireConnect.uploadGameToDB(this.theGame));
+
+        thePromises.push(fireConnect.uploadGameToDB(this.theGame)); //  todo: if it works, move tghis after the "all" call. Clrity and you could put the endCheck clause there too.
 
         await Promise.all(thePromises);     //  updates all the collections in the DB
 
-        if (ended) {
+        if (endCheck.end) {
             fireConnect.endGame();      //  unsubscribe
-
         }
         ui.update();
     }
@@ -210,61 +223,65 @@ class Model extends Object {
 
         const theTurns = this.thisYearsTurns();
 
-        let tReasonText = "";
-
-        let tEnd = "";      //  "" | "won" | "lost"
         let tReasonObject = {
             end: false,     //  is the game over?
             broke: [],      //  who went broke?
             time: false,   //  set true if time is up
-            pop: "",       //  high | low
             params: this.gameParameters,
+            fishStars : -1,  //  if ending, 0 to 5, how good was your game?
+            text : "",
         };
 
         if (this.theGame.turn >= this.theGame.endingTurn) {
             tReasonObject.end = true;
             tReasonObject.time = true;
             if (this.theGame.population > this.theGame.winningPopulation) {
-                tReasonObject.pop = "high";
-                tEnd = mazu.constants.kWonString;
+                tReasonObject.fishStars = 5;
+            } else if (this.theGame.population >
+                this.theGame.openingPopulation + (this.theGame.winningPopulation - this.theGame.openingPopulation) / 2){
+                tReasonObject.fishStars = 4
+            } else if (this.theGame.population >
+                this.theGame.openingPopulation){
+                tReasonObject.fishStars = 3
+            } else if (this.theGame.population >
+                this.theGame.openingPopulation - (this.theGame.openingPopulation - this.theGame.losingPopulation) / 2){
+                tReasonObject.fishStars = 2
+            } else if (this.theGame.population >
+                this.theGame.losingPopulation){
+                tReasonObject.fishStars = 1
             } else {
-                tReasonObject.pop = "low";
-                tEnd = mazu.constants.kLostString;
+                tReasonObject.fishStars = 0
             }
         }
 
         //  check all turns to see if anyone went negative
         theTurns.forEach((aTurn) => {
             if (aTurn.after < 0) {
+                tReasonObject.fishStars = 0;
                 tReasonObject.end = true;
                 tReasonObject.broke.push(aTurn.playerName);
-                tEnd = mazu.constants.kLostString;
             }
         });
 
         if (this.theGame.population < this.theGame.losingPopulation) {
             tReasonObject.end = true;
-            tReasonObject.pop = "low";
-            tEnd = mazu.constants.kLostString;
+            tReasonObject.fishStars = 0;
         }
 
         if (this.theGame.population >= this.theGame.winningPopulation) {
+            tReasonObject.fishStars = 5;
             tReasonObject.end = true;
-            tReasonObject.pop = "high";
-            tEnd = mazu.constants.kWonString;
         }
 
-        //  set game state appropriately to win and loss
+        //  set game state appropriately to win and loss, make tReasonText
 
         if (tReasonObject.end) {
-            this.theGame.gameState = tEnd;      //  side effect; change the game
-            tReasonText = strings.constructGameEndMessageFrom(tReasonObject);
+            this.theGame.gameState = mazu.constants.kEndedString;      //  side effect; change the game
         } else {
-            tReasonText = "End of year " + this.theGame.turn;
+            tReasonObject.text = "End of year " + this.theGame.turn;
         }
 
-        this.theGame.reason = tReasonText;
-        return tEnd;
+        return tReasonObject;
     }
 
     /**

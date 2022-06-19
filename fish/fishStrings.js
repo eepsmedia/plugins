@@ -167,6 +167,7 @@ let FS = {
         enterAndPressCatchText: "Enter a number and press <b>Catch</b>.",
         wonText: "won",
         lostText: "lost",
+        drawText: "neither won nor lost",
 
         setNameButton: "Set name",
         createGameButton: "Create",
@@ -178,7 +179,9 @@ let FS = {
         completedAllUpdates: "completed all updates for year ",
         youWonGame: "You won game",
         youLostGame: "You lost game",
+        youDrewGame: "You neither won nor lost game",
         because: "because",
+        youCanDoBetter: "Your business survived and so did the fish...but you can do better!",
 
         fishAtMarketText: function () {
             const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";
@@ -282,7 +285,12 @@ let FS = {
 
                     attrs: [ // note how this is an array of objects.
                         {name: "year", type: 'numeric', precision: 0, description: "game year (i.e., turn)"},
-                        {name: "seen", type: 'numeric', precision: 1, description: "how many fish you saw"},
+                        {
+                            name: "seen",
+                            type: 'numeric',
+                            precision: 1,
+                            description: "how many fish you saw before you started fishing"
+                        },
                         {name: "want", type: 'numeric', precision: 1, description: "how many fish you wanted to catch"},
                         {name: "caught", type: 'numeric', precision: 1, description: "how many fish you caught"},
                         {
@@ -325,7 +333,12 @@ let FS = {
 
                     attrs: [ // note how this is an array of objects.
                         {name: "year", type: 'numeric', precision: 0, description: "game year (i.e., turn)"},
-                        {name: "seen", type: 'numeric', precision: 1, description: "how many fish you saw"},
+                        {
+                            name: "seen",
+                            type: 'numeric',
+                            precision: 1,
+                            description: "how many fish you saw before you started fishing"
+                        },
                         {name: "want", type: 'numeric', precision: 1, description: "how many fish you wanted to catch"},
                         {name: "caught", type: 'numeric', precision: 1, description: "how many fish you caught"},
                         {
@@ -352,7 +365,7 @@ let FS = {
 
 
         makeRecentTurnReport: function (iTurn) {
-            let out = "Your last full turn was year " + iTurn.year
+            let out = "Your last full turn was year " + iTurn.turn
                 + ".<br>You saw " + iTurn.seen + ", wanted " + iTurn.want
                 + " and caught " + iTurn.caught + ".<br>You sold them for $"
                 + iTurn.unitPrice + " each for a total of $" + iTurn.income + ".";
@@ -374,41 +387,71 @@ let FS = {
             return out;
         },
 
-        constructGameEndMessageFrom: function (iReason) {
+        constructGameEndMessage: function () {
+
+            const theGame = fish.gameFromDB;
 
             let out = "";
 
-            if (iReason.end) {
-                let tMessageParts = [];
+            let tMessageParts = [];
 
-                if (iReason.time) {
-                    tMessageParts.push("the game ends at year " + fish.game.endingTurn);
-                }
+            if (theGame.outOfTime) {
+                tMessageParts.push(`The game ends in ${theGame.endingTurn}.<br>`);
+            } else {
+                tMessageParts.push(`The game ended early in ${theGame.turn}.<br>`);
+            }
 
-                switch (iReason.pop) {
-                    case "high":
-                        tMessageParts.push("the total fish population is now large enough to be sustainable");
-                        break;
-                    case "low":
-                        tMessageParts.push("the total fish population is now too small to be sustainable");
-                        break;
-                }
+            switch (theGame.fishStars) {
+                case 5:
+                    tMessageParts.push("🐟🐟🐟🐟🐟 Well done! Five fish out of five! " +
+                        "The fish population is healthy --- and so large that you can catch many fish " +
+                        "without reducing the fish population. " +
+                        "Fishing is now a sustainable source of food.");
+                    break;
+                case 4:
+                    tMessageParts.push("🐟🐟🐟🐟 Your rating is four fish (out of five). " +
+                        "The total number of fish has increased a lot! " +
+                        "You can now catch more fish without reducing the population. " +
+                        "Can you make it to five stars?");
+                    break;
+                case 3:
+                    tMessageParts.push("🐟🐟🐟 Your rating is three fish (out of five). " +
+                        "The total number of fish has increased! Your fishing business is doing well, but it could be better.");
+                    break;
+                case 2:
+                    tMessageParts.push("🐟🐟 Your rating is two fish (out of five). " +
+                        "The total number of fish has gone down. Your fishing business survived, " +
+                        "but the fish population is not healthy.");
+                    break;
+                case 1:
+                    tMessageParts.push("🐟 Your rating is one fish (out of five). " +
+                        "The total number of fish is very low. You might not be able to keep fishing for much longer.");
+                    break;
+                case 0:
+                    tMessageParts.push("💀 Your rating is zero fish (out of five)! " +
+                        "The fish will all soon be gone, and the fishing industry has collapsed.");
+                    break;
+                default:
+                    //  no value for fishStars, that is, ended because of bankruptcy.
+                    // tMessageParts.push("(Something odd happened at game end; the number of 'fish' doesn't make sense!)");
+                    break;
+            }
 
-                iReason.broke.forEach((p) => {  //  broke is an array of player names.
-                    tMessageParts.push(p + " has a negative bank balance");
-                });
+            if (theGame.brokePlayers.length > 0) {
+                const brokePart = `Your rating is zero fish (out of five).
+                    You have lost the game because these players have gone bankrupt: ${theGame.brokePlayers}.`;
+                tMessageParts.push(brokePart);
+            }
 
-                if (tMessageParts.length === 0) {
-                    out = "...dang! We don't really know why!";
-                } else {
-                    out = tMessageParts.join(", and ") + ".";
-                }
+            if (tMessageParts.length === 0) {
+                out = "...dang! We don't really know why!";
+            } else {
+                out = tMessageParts.join(" ");
             }
             return out;
-        }
+        },
 
-
-    },
+    },      //  end of en = English
 
     "es": {
         automateChairLabelText: "¿automatizar mercado? ",
@@ -428,6 +471,7 @@ let FS = {
         enterAndPressCatchText: "Entre un número y presione <b>pescar</b>.",
         wonText: "ganó",
         lostText: "perdió",
+        drawText: "ni ganó ni perdió",
 
         setNameButton: "entrar nombre",
         createGameButton: "crear juego",
@@ -439,7 +483,9 @@ let FS = {
         completedAllUpdates: "completado todas las actualizaciones por año ",
         youWonGame: "Ganó juego",
         youLostGame: "Perdió juego",
+        youDrewGame: "Ni ganó ni perdió el juego",
         because: "porque",
+        youCanDoBetter: "Su negocio sobrvivió, y también sobrvivió los peces...pero puede hacerlo mejor!",
 
         fishAtMarketText: function () {
             const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";

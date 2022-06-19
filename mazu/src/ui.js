@@ -20,7 +20,7 @@ const ui = {
         mazuStartDiv.style.display = (!playing && mazu.loginName.length) ?  "flex" : "none";
         mazuMarketDiv.style.display = (playing && mazu.loginName.length) ?  "flex" : "none";
         mazuPlayerListDiv.style.display = (playing && mazu.loginName.length) ?  "flex" : "none";
-        gameOverDiv.style.display = (mazu.showWonLost()) ?  "flex" : "none";
+        gameOverDiv.style.display = (mazu.isGameOver()) ?  "flex" : "none";
 
         gameOverDiv.innerHTML = this.makeEndGameMessage();
         mazuHeader.innerHTML = this.makeHeaderGuts();
@@ -36,7 +36,7 @@ const ui = {
     makeHeaderGuts : function() {
         let guts = "";
 
-        if (mazu.playing() || mazu.showWonLost()) {
+        if (mazu.playing() || mazu.isGameOver()) {
             guts = `
             <div class="ui-stripe-element">
             ${mazu.model.theGame.gameCode} | 
@@ -192,17 +192,10 @@ const ui = {
     },
 
     makeEndGameMessage : function() {
+        const theGame = mazu.model.theGame;
 
-        if (mazu.showWonLost()) {
-            const theGame = mazu.model.theGame;
-
-            return `
-        <h3>Game over! The players ${theGame.gameState}!</h3>
-        <p>${theGame.reason}</p>
-        `;
-        } else  {
-            return "end hgame message";
-        }
-    }
-
+        return `
+        Game over! Players got ${theGame.fishStars}/5 fish!
+        `
+    },
 }

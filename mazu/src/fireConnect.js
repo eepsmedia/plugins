@@ -102,12 +102,17 @@ const fireConnect = {
             turn: params.startingTurn,
             startingTurn: params.startingTurn,
             endingTurn : params.endingTurn,
+            openingPopulation: params.openingPopulation,
             population: params.openingPopulation,
             winningPopulation : params.winningPopulation,
             losingPopulation : params.losingPopulation,
             carryingCapacity : params.carryingCapacity,
             birthProbability : params.birthProbability,
             binomialProbabilityModel : params.binomialProbabilityModel,
+
+            fishStars : -1,
+            brokePlayers : "",
+            outOfTime : false,
 
             configuration: iGameType,
             gameState: mazu.constants.kInProgressString,

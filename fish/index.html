@@ -38,7 +38,7 @@ local plugin only:
 
 local in local CODAP:
     http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/fish/
-    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/fish/?code=foo.bar
+    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/fish/?lang=es
 
 
 MySQL general log setup, run this in MYSQL
@@ -50,10 +50,7 @@ SHOW VARIABLES LIKE "general_log%";
 todo let regular players know who still has to fish
 
 todo: improve end of game messages
-todo: add hysteresis model level
-todo: add level with steeper growth curve
 todo: add level with more chance to not see enough
-todo: fix the end-of-game alert bug
 
 todo: fix bug: at end of game, historical records don't include the very last one. Perhaps only if auto.
 
@@ -96,7 +93,6 @@ todo: fix bug: at end of game, historical records don't include the very last on
 </head>
 
 <body onload="fish.initialize()">
-
 
 
 <div id="fish">
@@ -142,9 +138,10 @@ todo: fix bug: at end of game, historical records don't include the very last on
         <br>
     </div>
 
-    <!--         In game! Player tells how many fish to catch        -->
+    <!--         In game!     -->
 
-    <div id="catchFishDIV" class="fish-ui-stripe" style="display: flex">
+    <!--        user tells how many fish to catch       -->
+    <div id="catchFishDIV" class="fish-ui-stripe">
         <label id="fishQuantityLabel" class="fish-stripe-element"
                for="howManyFish">xxx HOW MANY xxx</label>
         <input type="number" id="howManyFish" class="fish-stripe-element">
@@ -157,18 +154,30 @@ todo: fix bug: at end of game, historical records don't include the very last on
                onchange="fish.userActions.changeAutomation()">
     </div>
 
+    <div id="fishingDIV" style="display: none">
+        <!--        visible fish            -->
+        <div id="showSeaDIV" class="fish-ui-stripe" height="66"></div>
+        <div id="turnReport" class="fish-ui-stripe"></div>
+    </div>
 
-    <div id="winLoseDialog" class="fish-ui-stripe">
+    <div id="sellingDIV" style="display: none">
+        <div id="showMarketDIV" class="fish-ui-stripe" height="66"></div>
+        <div id="waitingToSellDIV" class="fish-ui-stripe"></div>
+    </div>
+
+    <div id="gameEndDIV" class="fish-ui-stripe">
         <div>
-            <span id="winLoseText">Content you want the user to see goes here.</span> <br><br>
+            <span id="gameEndText">Content you want the user to see at end of game goes here.</span> <br><br>
             <button id="startNewGameButton" onclick="fish.startWaitingForNewGame()">OK, join a new game</button>
         </div>
     </div>
 
 
+<!--
     <div id="noticeDIV" class="fish-ui-stripe">
         <div id="notice"></div>
     </div>
+-->
 
     <div id="aboutPlayersDIV" class="fish-ui-stripe">
         <div id="aboutPlayersText"></div>
@@ -176,7 +185,8 @@ todo: fix bug: at end of game, historical records don't include the very last on
 
     <div id="debug" class="fish-ui-stripe">
         <span id="debugSpan"></span>
-        <p><a href="https://www.flaticon.com/free-icons/fish" title="fish icons">Fish icons created by Those Icons - Flaticon</a>"</p>
+        <p><a href="https://www.flaticon.com/free-icons/fish" title="fish icons">Fish icons created by Those Icons -
+            Flaticon</a>"</p>
     </div>
 </div>
 
