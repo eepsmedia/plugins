@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+
+<!--
+
+Local w/CODAP:         http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/genova/
+
+
+-->
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,19 +45,20 @@
 <div id="playingDiv">
     <p>What would you charge to insure a shipment worth 10000 lira?</p>
     <label for="premium">Premium price in lira:</label>
-    <input id="premium" type="number">
-    <button onclick="genova.setPrice()">Set price</button>
+    <input id="premium" type="number" oninput="genova.setPrice()">
     <p id="marketReport"></p>
 
     <div id="sellDiv">
-        <p>When you have a price you like, click "Sell policies" to sell policies!</p>
-        <button onclick="genova.sellPolicies()">Sell policies</button>
+        <p id="sellPrompt">This is the sell prompt!</p>
+        <button onclick="genova.sellAndSend();">Sell policies and send ships</button>
     </div>
 
+<!--
     <div id="sendDiv">
         <p>When you are ready, send the ships to Bruges! Hope for good weather!</p>
-        <button onclick="genova.sendShips()">Send ships</button>
+        <button onclick="">Send ships</button>
     </div>
+-->
 
     <p id="damageReport"></p>
 </div>

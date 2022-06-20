@@ -25,8 +25,9 @@ const genova = {
         this.playing = true;
         this.setStatus();
         this.setMarketReport();
-        document.getElementById("sellDiv").style.display = "none";
-        document.getElementById("sendDiv").style.display = "none";
+        const tCurrentPremiumPrice = document.getElementById("premium").value;
+        document.getElementById("sellDiv").style.display = (tCurrentPremiumPrice === "") ? "none" : "block";
+       //    document.getElementById("sendDiv").style.display = "none";
         document.getElementById("gameOverDiv").style.display = "none";
         document.getElementById("playingDiv").style.display = "block";
         document.getElementById("damageReport").innerHTML = "Shipping reports will appear here.";
@@ -40,11 +41,21 @@ const genova = {
         }
         this.thePrice = tPrice;
         const prospects = this.supplyAndDemand(this.thePrice);
-        if (prospects > 0) {
+        if (prospects >= 0) {
             document.getElementById("sellDiv").style.display = "block";
+        } else {
+            document.getElementById("sellDiv").style.display = "none";
+
         }
-        this.setMarketReport();
         this.currentYearData['price'] = this.thePrice;
+        const policiesWord = (prospects === 1) ? "policy" : "policies";
+        const shipsWord = (prospects === 1) ? "ship" : "ships";
+
+        document.getElementById("marketReport").innerHTML =
+            `If you charge ${this.thePrice} lira, you will sell ${prospects} ${policiesWord}`;
+        document.getElementById("sellPrompt").innerHTML =
+            `When you have a price you like, click "Sell policies and send ships" \
+            to send ${prospects} ${shipsWord} to Bruges!`;
     },
 
     supplyAndDemand : function(iPrice) {
@@ -59,9 +70,14 @@ const genova = {
         return tCustomers;
     },
 
-    sellPolicies : function () {
+    sellAndSend : async function() {
+        await this.sellPolicies();
+        await this.sendShips();
+    },
+
+    sellPolicies : async function () {
         //  we always sell policies, but we don't always set a (new) price, so record values here:
-        this.currentYearData['bank'] = this.theBalance;     //  starting balance for year
+        this.currentYearData['bank-before'] = this.theBalance;     //  starting balance for year
 
         if (!this.playing) {
             this.playing = true;
@@ -76,12 +92,30 @@ const genova = {
         document.getElementById('marketReport').innerHTML = theText;
 
         document.getElementById("sellDiv").style.display = "none";
-        document.getElementById("sendDiv").style.display = "block";
+        //  document.getElementById("sendDiv").style.display = "block";
 
         this.currentYearData['boats'] = this.nCustomers;
+
+        //  automatically make the table appear
+
+        this.makeCaseTableAppear();
     },
 
-    sendShips : function() {
+    makeCaseTableAppear : async function() {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'caseTable',
+                dataContext : k.kGenovaDatasetName,
+                name : k.kGenovaDatasetTitle,
+                cannotClose : true
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
+    sendShips : async function() {
         let theText = `In ${this.year}, ${this.nCustomers} ships sailed from Genova`;
 
         let nSink = 0;
@@ -103,6 +137,8 @@ const genova = {
 
         document.getElementById("damageReport").innerHTML = theText;
         this.nCustomers = 0;
+        this.currentYearData['bank-after'] = this.theBalance;     //  ending balance for year
+
         this.newYear();
     },
 
@@ -113,7 +149,7 @@ const genova = {
         this.currentYearData['year'] = this.year;
 
         document.getElementById("sellDiv").style.display = "none";
-        document.getElementById("sendDiv").style.display = "none";
+        //  document.getElementById("sendDiv").style.display = "none";
         this.setStatus();
         this.setPrice();    //  assume user will use the same price that's in the box.
     },
@@ -138,7 +174,7 @@ const genova = {
     },
 
     endGame : function() {
-        this.currentYearData['bank'] = this.theBalance;
+        this.currentYearData['bank-before'] = this.theBalance;  //  todo: should be after??
         //  connect.emitData(this.currentYearData);
 
         this.setStatus();
@@ -149,8 +185,7 @@ const genova = {
     },
 
     setStatus : function() {
-            const theText = `The year is ${this.year}. \
-        You have ${this.theBalance} lira in the bank and ${this.nCustomers} policies.`
+            const theText = `The year is ${this.year}. You have ${this.theBalance} lira in the bank.`
             document.getElementById('status').innerHTML = theText;
     },
 
@@ -163,6 +198,7 @@ const genova = {
             theText = `Waiting for a suitable price...`;
         }
         document.getElementById('marketReport').innerHTML = theText;
+        return howManyWouldBuy;
     },
 
 

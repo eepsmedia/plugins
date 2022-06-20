@@ -48,7 +48,7 @@ const connect = {
     },
 
     iFrameDescription: {
-        version: '2022a',
+        version: '2022b',
         name: 'Genova',
         title: 'Genova insurance simulation',
         dimensions: {width: 444, height: 555},
@@ -83,7 +83,7 @@ const connect = {
                 attrs: [ // note how this is an array of objects.
                     {name: "year", type: 'numeric', precision: 0, description: "year"},
                     {
-                        name: "bank",
+                        name: "bank-before",
                         type: 'numeric',
                         precision: 0,
                         unit: "lira",
@@ -103,6 +103,13 @@ const connect = {
                         precision: 0,
                         unit: "boats",
                         description: "number of boats that sank"
+                    },
+                    {
+                        name: "bank-after",
+                        type: 'numeric',
+                        precision: 0,
+                        unit: "lira",
+                        description: "balance at the end of the year"
                     },
                 ]
 
