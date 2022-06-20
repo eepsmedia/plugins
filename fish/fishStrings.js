@@ -428,8 +428,14 @@ let FS = {
                         "The total number of fish is very low. You might not be able to keep fishing for much longer.");
                     break;
                 case 0:
-                    tMessageParts.push("💀 Your rating is zero fish (out of five)! " +
-                        "The fish will all soon be gone, and the fishing industry has collapsed.");
+                    if (theGame.brokePlayers.length > 0) {
+                        const brokePart = `💀 Your rating is zero fish (out of five).
+                        You have lost the game because these players have gone bankrupt: ${theGame.brokePlayers}.`;
+                        tMessageParts.push(brokePart);
+                    } else {
+                        tMessageParts.push("💀 Your rating is zero fish (out of five)! " +
+                            "The fish will all soon be gone, and the fishing industry has collapsed.");
+                    }
                     break;
                 default:
                     //  no value for fishStars, that is, ended because of bankruptcy.
@@ -437,11 +443,6 @@ let FS = {
                     break;
             }
 
-            if (theGame.brokePlayers.length > 0) {
-                const brokePart = `Your rating is zero fish (out of five).
-                    You have lost the game because these players have gone bankrupt: ${theGame.brokePlayers}.`;
-                tMessageParts.push(brokePart);
-            }
 
             if (tMessageParts.length === 0) {
                 out = "...dang! We don't really know why!";

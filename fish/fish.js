@@ -362,7 +362,9 @@ let fish = {
      * @param iText     the text to appear
      */
     setNotice: function (iText) {
-        document.getElementById("notice").innerHTML = iText;
+        console.log(`notice not displayed: ${iText}`);
+        return;
+        // document.getElementById("notice").innerHTML = iText;
     },
 
     constants: {
