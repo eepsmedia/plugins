@@ -114,13 +114,41 @@ const TEEUtils = {
             if (i === 0) return "00";
             if (i >= 10) return "" + i;
             else return "0" + i;
-        }
-        ,
+        },
 
         twoPlaces: function (x) {
             return (Math.round(x * 100) / 100.0);
-        }
-        ,
+        },
+
+        stringFractionDecimalOrPercentToNumber: function (iString) {
+            let out = {theNumber: 0, theString: '0'};
+            let theNumber = 0;
+            let theString = "";
+
+            const wherePercent = iString.indexOf("%");
+            const whereSlash = iString.indexOf("/");
+            if (wherePercent !== -1) {
+                theNumber = parseFloat(iString.substring(0, wherePercent - 1)) / 100.0;
+                theString = `${theNumber}%`;
+            } else if (whereSlash !== -1) {
+                const beforeSlash = iString.substring(0, whereSlash - 1);
+                const afterSlash = iString.substring(whereSlash + 1);
+                const theNumerator = parseFloat(beforeSlash);
+                const theDenominator = parseFloat(afterSlash);
+                theNumber = theNumerator / theDenominator;
+                theString = `${theNumerator}/${theDenominator}`;
+            } else {
+                const theNumber = parseFloat(iString);
+                theString = `${theNumber}`;
+            }
+
+            if (!isNaN(theNumber)) {
+                return {theNumber: theNumber, theString: theString};
+            } else {
+                return {theNumber: 0, theString: ""};
+            }
+        },
+
 
         /**
          * A funky random Poisson function.
@@ -198,22 +226,19 @@ const TEEUtils = {
             let dayOfYear = dayCount[mn - 1] + dn;
             if (mn > 1) dayOfYear += leapThing;
             return dayOfYear;
-        }
-        ,
+        },
 
         dateStringToDayOfWeek: function (iString, iTimeZoneString) {
             const tTempDate = new Date(iString + " " + iTimeZoneString);
             const tDay = tTempDate.getDay();      //  day of week, Sunday = 0, etc.
             return tDay;
-        }
-        ,
+        },
 
         dateNumberToDayOfWeek: function (iMilliseconds) {
             const tTempDate = new Date(iMilliseconds);
             const tDay = tTempDate.getDay();      //  day of week, Sunday = 0, etc.
             return tDay;
-        }
-        ,
+        },
 
         newtonsMethod: function (iExpression, iStartValue, iTolerance) {
             const maxIterations = 50;

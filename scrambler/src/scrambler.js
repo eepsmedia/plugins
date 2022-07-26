@@ -27,7 +27,7 @@ const scrambler = {
             ${JSON.stringify(this.state)}`);
         }
 
-        this.state.lang = pluginLang.figureOutLanguage('en', bootstrapStrings.languages);
+        this.state.lang = pluginLang.figureOutLanguage('en', scramblerStrings.languages);
         scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
 
         await this.refreshAllData();
@@ -199,19 +199,19 @@ const scrambler = {
      */
     makeNewMeasuresDataset: async function () {
 
-        let theMeasures = null;
+        let theMeasures = null;     //      a CODAPDataset, a "local" data structure
 
         const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
 
         if (await connect.datasetExists(tMeasuresDatasetName)) {
             theMeasures = await new CODAPDataset(tMeasuresDatasetName);
-            await theMeasures.retrieveAllDataFromCODAP();
+            await theMeasures.retrieveAllDataFromCODAP();   //  get the existing data and put it into the local variable
             console.log(`    [${tMeasuresDatasetName}] already exists`);
         } else {
             theMeasures = this.sourceDataset.clone(scrambler.constants.measuresPrefix);
             theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
-            await theMeasures.emitDatasetStructureOnly();
-            console.log(`    ${tMeasuresDatasetName}] created anew`);
+            await theMeasures.emitDatasetStructureOnly();   //  side effect: deletes it first
+            console.log(`    [${tMeasuresDatasetName}] created anew`);
         }
 
         return theMeasures;
@@ -246,7 +246,7 @@ const scrambler = {
         //  console.log(`    data refreshed. Ready to scramble.`);
 
         await this.sourceDataset.retrieveAllDataFromCODAP();
-        console.log(`    data retrieved. Ready to scramble.`);
+        console.log(`    latest data retrieved. Ready to scramble.`);
 
         if (this.measuresDataset && scrambler.state.dirtyMeasures) {
             await connect.deleteDataset(this.measuresDataset.datasetName);
@@ -314,12 +314,6 @@ const scrambler = {
         canDoScrambleStripe.style.display = canScramble ? "flex" : "none";
         cantDoScrambleStripe.style.display = canScramble ? "none" : "flex";
 
-        //  set the language control
-/*
-        const theFlag = scrambler.strings.languages[scrambler.state.lang].flags();
-        console.log(`the flag is ${theFlag}`);
-*/
-
         document.getElementById("languageControl").innerHTML = scrambler.pickAFlag();        //  theFlag;
 
         this.refreshScramblerStatus();
@@ -364,7 +358,7 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "1.2",
+        version: "1.3",
         dimensions: {height: 178, width: 344},      //      dimensions,
         defaultState: {
             scrambleDatasetName: null,

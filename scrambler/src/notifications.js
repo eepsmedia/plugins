@@ -47,9 +47,10 @@ notificatons = {
      * We have detected a change in a dataset.
      *
      * If the user has changed things like the structure, we mark the state
+     * (`scrambler.state.dirtyMeasures`)
      * as "dirty" and refresh the data.
      * That will eventually mean that when the user scrambles,
-     * the entire measures datset will be replaced.
+     * the entire measures dataset will be replaced.
      *
      * @param iMessage
      */

@@ -55,7 +55,7 @@ const genova = {
             `If you charge ${this.thePrice} lira, you will sell ${prospects} ${policiesWord}`;
         document.getElementById("sellPrompt").innerHTML =
             `When you have a price you like, click "Sell policies and send ships" \
-            to send ${prospects} ${shipsWord} to Bruges!`;
+            to collect your money and send ${prospects} ${shipsWord} to Bruges!`;
     },
 
     supplyAndDemand : function(iPrice) {

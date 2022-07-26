@@ -10,13 +10,6 @@ const connect = {
 
         this.state = await codapInterface.getInteractiveState();
 
-        /*
-                if (jQuery.isEmptyObject(nhanes.state)) {
-                    await codapInterface.updateInteractiveState(nhanes.freshState);
-                    console.log("nhanes: getting a fresh state");
-                }
-                console.log("nhanes.state is " + JSON.stringify(nhanes.state));   //  .length + " chars");
-        */
         this.makeIframeMutable();
     },
 
@@ -82,6 +75,7 @@ const connect = {
                 },
                 attrs: [ // note how this is an array of objects.
                     {name: "year", type: 'numeric', precision: 0, description: "year"},
+                    {name: "price", type: 'numeric', precision: 0, unit: "lira", description: "price for a policy"},
                     {
                         name: "bank-before",
                         type: 'numeric',
@@ -89,7 +83,13 @@ const connect = {
                         unit: "lira",
                         description: "balance at the beginning of the year"
                     },
-                    {name: "price", type: 'numeric', precision: 0, unit: "lira", description: "price for a policy"},
+                    {
+                        name: "bank-after",
+                        type: 'numeric',
+                        precision: 0,
+                        unit: "lira",
+                        description: "balance at the end of the year"
+                    },
                     {
                         name: "boats",
                         type: 'numeric',
@@ -103,13 +103,6 @@ const connect = {
                         precision: 0,
                         unit: "boats",
                         description: "number of boats that sank"
-                    },
-                    {
-                        name: "bank-after",
-                        type: 'numeric',
-                        precision: 0,
-                        unit: "lira",
-                        description: "balance at the end of the year"
                     },
                 ]
 

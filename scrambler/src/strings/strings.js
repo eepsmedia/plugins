@@ -46,7 +46,7 @@ scramblerStrings = {
         return theStrings;
     },
 
-    languages  ['en', 'es', 'de'],
+    languages : ['en', 'es', 'de'],
 
     en : {
         name : "English",
