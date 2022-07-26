@@ -43,11 +43,11 @@ connect = {
     },
 
     /**
-     * Does the named dataset already exist?
+     * Does the named dataset already exist in CODAP's list of data contexts?
      * @param iName
      * @returns {Promise<void>}
      */
-    datasetExists: async function (iName) {
+    datasetExistsOnCODAP: async function (iName) {
         let out = false;
 
         const existMessage = {
@@ -65,23 +65,40 @@ connect = {
         return out;
     },
 
-    needFreshOutputDataset: async function () {
-        return false;
-    },
-
-    deleteDataset : async function(iName) {
+    /**
+     * Ask CODAP to delete the named dataset
+     * @param iName     the name
+     * @returns {Promise<void>}
+     */
+    deleteDatasetOnCODAP : async function(iName) {
         if (iName) {
             const tDeleteMessage = {
                 action: "delete",
                 resource: `dataContext[${iName}]`,
             }
-
             const dResult = await codapInterface.sendRequest(tDeleteMessage);
             console.log(`    deleting [${iName}]: (${dResult.success ? "success" : "failure"})`);
         } else {
-            console.log(`    no measures daatset to delete!`);
+            console.log(`    no dataset name passed in to delete!`);
         }
     },
+
+    deleteCasesOnCODAPinCODAPDataset : async function(iDS) {
+        const tCollName = iDS.structure.collections[0].name;
+        const tResource = `dataContext[${iDS.datasetName}].collection[${tCollName}].allCases`;
+        const dResult = await codapInterface.sendRequest({
+            action : "delete",
+            resource : tResource,
+        })
+        console.log(`    flushing [${iDS.datasetName}]: (${dResult.success ? "success" : "failure"})`);
+
+    },
+/*
+    needFreshOutputDataset: async function () {
+        return false;
+    },
+*/
+
 
     allowReorg: async function () {
         const tMutabilityMessage = {
@@ -109,12 +126,13 @@ connect = {
 
     /**
      * Get a list of selected case IDs.
+     * todo: delete if unused
      *
      * @param iCases
      * @returns {Promise<[]>}
      */
-    getCODAPSelectedCaseIDs: async function () {
-        const theMeasuresName = "";     //  todoi: put in actual name
+/*    getCODAPSelectedCaseIDs: async function () {
+        const theMeasuresName = "";     //  todo: put in actual name
         const selectionListResource = `dataContext[${theMeasuresName}].selectionList`;
         //  now get all the currently selected caseIDs.
         const gMessage = {
@@ -134,6 +152,6 @@ connect = {
             })
         }
         return oldIDs;
-    },
+    },*/
 
 }

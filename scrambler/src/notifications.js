@@ -83,7 +83,7 @@ notificatons = {
     handleDocumentChangeNotice : async function (iMessage) {
         console.log(`doc change notice: ${iMessage.values.operation}`);
 
-        const doesItExist = connect.datasetExists(scrambler.state.datasetName);
+        const doesItExist = connect.datasetExistsOnCODAP(scrambler.state.datasetName);
 
         if (!doesItExist) {
             const tName = await connect.getSuitableDatasetName(scrambler.state.datasetName);

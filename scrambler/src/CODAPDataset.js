@@ -266,7 +266,7 @@ class CODAPDataset {
      */
     async getAllCasesInCollection(iCollection) {
         // first, figure out how many cases there are
-        //  this is so we can make a loop for getting the cases
+        //  so we can make a loop for getting the cases
         const tMessage = {
             action: "get",
             resource: `dataContext[${this.datasetName}].collection[${iCollection.name}].caseCount`,
@@ -318,10 +318,12 @@ class CODAPDataset {
     async emitDatasetStructureOnly() {
 
         //  Does it already exist? Delete it.
+/*
         await codapInterface.sendRequest({
             action: "delete",
             resource: `dataContext[${this.datasetName}]`,
         })
+*/
 
         //  okay, now make a new one...
         //  we'll loop over the collections and use their info to build the request
@@ -427,6 +429,19 @@ class CODAPDataset {
         }
 
         const theCreateCasesResults = await codapInterface.sendRequest(theMessage);
+
+        /**
+         * At this point, we're creating a dictionary to relate the case IDs from the "old" dataset
+         * (the one we're holding locally in `this`) to the "new" dataset (the one we're creating in CODAP).
+         * It's of the form { oldID : newID, oldID2 : newID2, ... }
+         *
+         * This is essential for setting the values for the `parentID`s in the new CODAP dataset.
+         *
+         * The first time through here -- at the top level -- it doesn't matter. But we return this level's
+         * dictionary to the caller (`emitCasesFromDataset()`) for use in the next time through its loop.
+         *
+         * @type {{}}
+         */
         const theIDDictionary = {};
 
         for (let i = 0; i < theCreateCasesResults.values.length; i++) {

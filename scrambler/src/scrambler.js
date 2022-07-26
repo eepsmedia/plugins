@@ -132,7 +132,7 @@ const scrambler = {
         this.refreshAllData();
 
         if (this.measuresDataset) {
-            await connect.deleteDataset(this.measuresDataset.datasetName);
+            await connect.deleteDatasetOnCODAP(this.measuresDataset.datasetName);
             this.state.iteration = 0;
         }
 
@@ -180,9 +180,19 @@ const scrambler = {
      *
      * @returns {Promise<*>}
      */
-    makeNewScrambledDataset: async function () {
-        const theScrambledOne = this.sourceDataset.clone(scrambler.constants.scrambledPrefix);
-        await theScrambledOne.emitDatasetStructureOnly();
+    setUpLocalScrambledDataset: async function () {
+
+        let theScrambledOne = this.sourceDataset.clone(scrambler.constants.scrambledPrefix);
+
+        if (scrambler.state.dirtyMeasures) {
+            await connect.deleteDatasetOnCODAP(theScrambledOne.datasetName);
+            await theScrambledOne.emitDatasetStructureOnly();
+        } else {
+            //  structure is OK but we may have changed the contents
+            //  also, we only want the one copy of the source dataset
+            await connect.deleteCasesOnCODAPinCODAPDataset(theScrambledOne);
+        }
+
         await theScrambledOne.emitCasesFromDataset();
         await theScrambledOne.retrieveAllDataFromCODAP(); //  redo to get IDs right
         console.log(`cloned to get [${theScrambledOne.datasetName}] for scrambling`);
@@ -194,26 +204,37 @@ const scrambler = {
      * Makes a new "measures" dataset if necessary. If the dataset already exists,
      * get an "internal" object with its information.
      * If not, make a fresh one with the right structure (but no data).
+     * (called from `doScramble()`)
      *
      * @returns {Promise<*>}    of a CODAPDataset, which is the Measures dataset
      */
-    makeNewMeasuresDataset: async function () {
+    setUpLocalMeasuresDataset: async function () {
 
-        let theMeasures = null;     //      a CODAPDataset, a "local" data structure
+        let theMeasures = this.sourceDataset.clone(scrambler.constants.measuresPrefix);
+        theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
 
-        const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
-
-        if (await connect.datasetExists(tMeasuresDatasetName)) {
-            theMeasures = await new CODAPDataset(tMeasuresDatasetName);
-            await theMeasures.retrieveAllDataFromCODAP();   //  get the existing data and put it into the local variable
-            console.log(`    [${tMeasuresDatasetName}] already exists`);
+        if (scrambler.state.dirtyMeasures) {
+            //  empty the whole measures dataset
+            await connect.deleteDatasetOnCODAP(theMeasures.datasetName);
+            await theMeasures.emitDatasetStructureOnly();   //  emit structure into CODAP, creates new dataset
+            console.log(`    [${theMeasures.datasetName}] created anew`);
         } else {
-            theMeasures = this.sourceDataset.clone(scrambler.constants.measuresPrefix);
-            theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
-            await theMeasures.emitDatasetStructureOnly();   //  side effect: deletes it first
-            console.log(`    [${tMeasuresDatasetName}] created anew`);
+            //  not dirty? Get all the old measures into the existing structure, keyed by the name (`theMeasures.datasetName`)
+            await theMeasures.retrieveAllDataFromCODAP();   //  get the existing data and put it into the local variable
+            console.log(`    [${theMeasures.datasetName}] already exists`);
         }
 
+/*
+       //    const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+
+        if (await connect.datasetExistsOnCODAP(tMeasuresDatasetName)) {
+            theMeasures = await new CODAPDataset(tMeasuresDatasetName);
+            await theMeasures.retrieveAllDataFromCODAP();   //  get the existing data and put it into the local variable
+            console.log(`    [${theMeasures.datasetName}] already exists`);
+        } else {
+        }
+
+*/
         return theMeasures;
     },
 
@@ -248,12 +269,8 @@ const scrambler = {
         await this.sourceDataset.retrieveAllDataFromCODAP();
         console.log(`    latest data retrieved. Ready to scramble.`);
 
-        if (this.measuresDataset && scrambler.state.dirtyMeasures) {
-            await connect.deleteDataset(this.measuresDataset.datasetName);
-            console.log(`    deleted a dirty measures dataset`);
-        }
-        this.scrambledDataset = await this.makeNewScrambledDataset();
-        this.measuresDataset = await this.makeNewMeasuresDataset();
+        this.scrambledDataset = await this.setUpLocalScrambledDataset();
+        this.measuresDataset = await this.setUpLocalMeasuresDataset();
         scrambler.state.dirtyMeasures = false;
 
         let newItems = [];
