@@ -100,7 +100,7 @@ scramblerStrings = {
 
         sScramble : `mezclar`,      //  `scramble`,
         sNoAttribute : `sin atributo :(`,
-        sIterationAttName : `lote`,
+        sIterationAttName : `lote`,     //          batch
         sIterationAttDescription : `Cuál "lote" de datos. Se aumenta cada mezclado.`,   //  `Which "run" of data. Increases every time you scramble.`,
         sScrambledAttName : `atr mezclado`,     //  `scrambled att`, (the name of the scrambled att)
         sScrambledAttDescription : `Qué atributo fue mezclado.`,
@@ -109,7 +109,7 @@ scramblerStrings = {
         sNoScrambleAttribute : `¿Qué atributo desea mezclar? Arrástrelo aquí. `,
 
         sfOKtoScramble : (tAttName, tDSTitle) => {
-            return  `OK para mezclar "${tAttName}" en conjunto de datos "${tDSTitle}"`},
+            return  `Está bien mezclar "${tAttName}" en el conjunto de datos "${tDSTitle}"`},
 
         sfNoMeasure : (tDSTitle) => { return `Su conjunto de datos, "${tDSTitle}," necesita una medida, 
                 probablemente un atributo con fórmula. 
@@ -117,7 +117,7 @@ scramblerStrings = {
 
         sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
             return `Mezclar ${tAttName} no funcionará porque tiene una fórmula. 
-                        Arrastre un atributo diferente, de la última colección (${lastCollName}), por ejemplo ${suchAs}.`
+                        Arrastre un atributo diferente hasta la última colección (${lastCollName}), por ejemplo ${suchAs}.`
         },
 
         sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
@@ -128,7 +128,67 @@ scramblerStrings = {
 
     de : {
         name : "Deutsch",
-        flags : ["🇩🇪"],
+        flags : ["🇩🇪", "🇦🇹"],
+
+        staticStrings : {
+            scramblerTitle : `Verschlüssler`,   //  scrambler
+            cantScrambleStripe : `Dies zu korrigieren, um fortzufahren`, // `Fix that to proceed.`,
+            howManyLabel : `wieviel?`,      //  how many
+        },
+
+        sScramble : `verschlüsseln `,   //  `scramble`,
+        sNoAttribute : `kein Attribut`,   //``no attribute :(`,
+        sIterationAttName : `Ladung`,    //`batch`,
+        sIterationAttDescription : `Welcher "Ladung" von Daten. Erhöht sich jedes Mal, wenn Sie verschlüsseln.`,
+            //  `Which "run" of data. Increases every time you scramble.`,
+        sScrambledAttName : `verschlüsseltes Att`,      //  scrambled att
+        sScrambledAttDescription : `Welches Attribut verschlüsselt wurde.`, //   `Which attribute was scrambled.`,
+
+        sNoDataset : `Suchen Sie einen Datensatz und ziehen Sie das Attribut, das Sie verschlüsseln möchten, hierher!`,
+            //  `Find a dataset and drag the attribute here that you want to scramble!`,
+        sNoScrambleAttribute : `Welches Attribut wollen Sie verschlüsseln? Ziehen Sie es hier hinein!`,
+            //  `What attribute do you want to scramble? Drag it in here. `,
+
+        sfOKtoScramble : (tAttName, tDSTitle) => {
+            return  `Es ist OK, um "${tAttName}" im Datensatz "${tDSTitle}" zu verschlüsseln.`
+            //  return  `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`
+        },
+
+        sfNoMeasure : (tDSTitle) => {
+            return `Ihr Datensatz, "${tDSTitle}", benötigt eine Maßnahme, 
+            was wahrscheinlich ein Attribut mit einer Formel ist. 
+            Ziehen Sie dieses Attribut nach links, 
+            damit Sie etwas zum Sammeln haben!`
+/*
+            return `Your dataset, "${tDSTitle}," needs a measure,
+                which is probably an attribute with a formula.
+                Drag that attribute to the left so you have something to collect!`
+*/
+        },
+
+        sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
+            return `Das Verschlüsseln von ${tAttName} wird nicht funktionieren, 
+                weil es eine Formel hat. 
+                Ziehen Sie ein anderes Attribut 
+                aus der letzten Sammlung (${lastCollName}) ein, z.B. ${suchAs}.`
+
+/*
+            return `Scrambling ${tAttName} won't work because it has a formula.
+                        Drag in a different attribute from the last collection (${lastCollName}),
+                        such as ${suchAs}.`
+*/
+        },
+
+        sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
+            return  `Das Verschlüsseln von ${tAttName} wird nicht funktionieren, 
+                        weil es nicht in der letzten Sammlung (${lastCollName}) ist. 
+                        Legen Sie hier ein Attribut aus ${lastCollName} ab, wie ${suchAs}.`
+/*
+            return `Scrambling ${tAttName} won't work because it's not in the last collection (${lastCollName}).
+                        Drop an attribute here from ${lastCollName}, such as ${suchAs}.`
+*/
+        }
+
 
     },
 }

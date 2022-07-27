@@ -7,6 +7,8 @@ const scrambler = {
     currentlyScrambling: false,
     currentlyDraggingAnAttribute: false,
 
+    dirtyMeasures : true,
+
     datasetExists: false,
     datasetHasMeasure: false,
     scrattributeExists: false,
@@ -14,7 +16,7 @@ const scrambler = {
 
     state: {},
 
-    strings : null,
+    strings: null,
 
     initialize: async function () {
         await connect.initialize();
@@ -42,7 +44,7 @@ const scrambler = {
             const codeStart = "<code>";
             const codeEnd = "</code>";
 
-            const attReport =  (this.scrattributeExists)
+            const attReport = (this.scrattributeExists)
                 ? `${scrambler.strings.sScramble} ${tAttName}`
                 : scrambler.strings.sNoAttribute;
 
@@ -101,6 +103,7 @@ const scrambler = {
      */
     setSourceDataset: async function (iName) {
         //  make the source dataset object!
+        this.dirtyMeasures = true;
         this.sourceDataset = await new CODAPDataset(iName);
         await notificatons.registerForDatasetChanges(iName);
         await this.sourceDataset.loadStructureFromCODAP();
@@ -142,10 +145,10 @@ const scrambler = {
         console.log(`Scramble ${iAttribute} in ${iDataset}`);
         this.state.scrambleAttributeName = iAttribute;      //  it has to exist, we just dropped it!
 
-        await scrambler.setSourceDataset(iDataset);
-
-        if (this.sourceDataset && (iDataset != this.sourceDataset.datasetName)) {
-                    //  changing the dataset
+        if (!this.sourceDataset || (iDataset != this.sourceDataset.datasetName)) {
+            //  changing the dataset
+            scrambler.dirtyMeasures = true;
+            await scrambler.setSourceDataset(iDataset);
         }
 
         this.refreshUIDisplay();
@@ -184,7 +187,7 @@ const scrambler = {
 
         let theScrambledOne = this.sourceDataset.clone(scrambler.constants.scrambledPrefix);
 
-        if (scrambler.state.dirtyMeasures) {
+        if (scrambler.dirtyMeasures) {
             await connect.deleteDatasetOnCODAP(theScrambledOne.datasetName);
             await theScrambledOne.emitDatasetStructureOnly();
         } else {
@@ -213,7 +216,7 @@ const scrambler = {
         let theMeasures = this.sourceDataset.clone(scrambler.constants.measuresPrefix);
         theMeasures.makeIntoMeasuresDataset();     //  strips out the "leaf" collection
 
-        if (scrambler.state.dirtyMeasures) {
+        if (scrambler.dirtyMeasures) {
             //  empty the whole measures dataset
             await connect.deleteDatasetOnCODAP(theMeasures.datasetName);
             await theMeasures.emitDatasetStructureOnly();   //  emit structure into CODAP, creates new dataset
@@ -224,17 +227,17 @@ const scrambler = {
             console.log(`    [${theMeasures.datasetName}] already exists`);
         }
 
-/*
-       //    const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
+        /*
+               //    const tMeasuresDatasetName = `${scrambler.constants.measuresPrefix}${this.sourceDataset.structure.title}`;
 
-        if (await connect.datasetExistsOnCODAP(tMeasuresDatasetName)) {
-            theMeasures = await new CODAPDataset(tMeasuresDatasetName);
-            await theMeasures.retrieveAllDataFromCODAP();   //  get the existing data and put it into the local variable
-            console.log(`    [${theMeasures.datasetName}] already exists`);
-        } else {
-        }
+                if (await connect.datasetExistsOnCODAP(tMeasuresDatasetName)) {
+                    theMeasures = await new CODAPDataset(tMeasuresDatasetName);
+                    await theMeasures.retrieveAllDataFromCODAP();   //  get the existing data and put it into the local variable
+                    console.log(`    [${theMeasures.datasetName}] already exists`);
+                } else {
+                }
 
-*/
+        */
         return theMeasures;
     },
 
@@ -254,6 +257,7 @@ const scrambler = {
     doScramble: async function (iReps) {
 
         this.currentlyScrambling = true;
+
         this.refreshUIDisplay();
 
         const nReps = iReps ? iReps : scrambler.state.numberOfScrambles;
@@ -271,7 +275,7 @@ const scrambler = {
 
         this.scrambledDataset = await this.setUpLocalScrambledDataset();
         this.measuresDataset = await this.setUpLocalMeasuresDataset();
-        scrambler.state.dirtyMeasures = false;
+        scrambler.dirtyMeasures = false;
 
         let newItems = [];
 
@@ -318,6 +322,7 @@ const scrambler = {
 
         const buttons = document.getElementById("scramble-buttons-stripe-element");
         const progress = document.getElementById("progress");
+        const showScrambled = document.getElementById("showScrambledDIV");
 
         //  visibility; shows appropriate message if scrambling is impossible
 
@@ -330,25 +335,35 @@ const scrambler = {
 
         canDoScrambleStripe.style.display = canScramble ? "flex" : "none";
         cantDoScrambleStripe.style.display = canScramble ? "none" : "flex";
+        showScrambled.style.display = canScramble ? "flex" : "none";
 
         document.getElementById("languageControl").innerHTML = scrambler.pickAFlag();        //  theFlag;
 
         this.refreshScramblerStatus();
     },
 
-    changeLanguage : async function() {
-        scrambler.state.lang = (scrambler.state.lang === `en`) ? `es` : `en`;
+    changeLanguage: async function () {
+
+        const theLanguages = scramblerStrings.languages;
+        const nLanguages = theLanguages.length;
+        let theIndex = theLanguages.indexOf(scrambler.state.lang) + 1;
+
+        if (theIndex >= nLanguages) {
+            theIndex = 0;
+        }
+
+        scrambler.state.lang = theLanguages[theIndex];
         scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
         scrambler.refreshUIDisplay();
     },
 
-    pickAFlag : function()  {
+    pickAFlag: function () {
         const theFlags = scrambler.strings.flags;
-        const theIndex = Math.floor( Math.random() * theFlags.length );
+        const theIndex = Math.floor(Math.random() * theFlags.length);
         return theFlags[theIndex];
     },
 
-    openHelp : async function() {
+    openHelp: async function () {
         const theURL = `help/help.${scrambler.state.lang}.html`;
         const response = await fetch(theURL);
 
@@ -376,14 +391,13 @@ const scrambler = {
     constants: {
         pluginName: "scrambler",
         version: "1.3",
-        dimensions: {height: 178, width: 344},      //      dimensions,
+        dimensions: {height: 188, width: 344},      //      dimensions,
         defaultState: {
             scrambleDatasetName: null,
             scrambleAttributeName: null,
             numberOfScrambles: 10,
             iteration: 0,
-            dirtyMeasures: true,
-            lang : `en`,
+            lang: `en`,
         },
         measuresPrefix: "measures_",
         scrambledPrefix: "scrambled_",

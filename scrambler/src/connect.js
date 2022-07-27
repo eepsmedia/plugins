@@ -113,6 +113,10 @@ connect = {
         codapInterface.sendRequest(tMutabilityMessage);
     },
 
+    showScrambled : function() {
+        this.showTable(scrambler.scrambledDataset.datasetName);
+    },
+
     showTable: function (iName) {
         codapInterface.sendRequest({
             "action": "create",

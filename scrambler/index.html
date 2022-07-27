@@ -21,13 +21,16 @@
     <script src="../../common/src/iframe-phone.js"></script>
     <script src="../../common/src/codapInterface.js"></script>
     <script src="../../common/src/pluginHelper.js"></script>
+<!--
     <script src="../../common/src/pluginLang.js"></script>
+-->
 
     <script src="src/scrambler.js"></script>
     <script src="src/connect.js"></script>
     <script src="src/CODAPDataset.js"></script>
     <script src="src/notifications.js"></script>
     <script src="src/strings/strings.js"></script>
+    <script src="src/strings/pluginLang.js"></script>
 
 <!--
     <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
@@ -74,7 +77,7 @@
 
     <div class="stripe-element" id="scramble-buttons-stripe-element">
         <button class="stripe-element" id="howManyButton"
-                onclick="scrambler.doScramble()">I
+                onclick="scrambler.doScramble()">🚫
         </button>
 
         <button class="stripe-element"
@@ -88,6 +91,13 @@
 </div>
 
 <div class="scrambler-stripe" id="cantScrambleStripe">
+
+</div>
+
+<div class="scrambler-stripe" id="showScrambledDIV">
+    <button class="stripe-element" id="showScrambledButton"
+            onclick="connect.showScrambled()">show scrambled
+    </button>
 
 </div>
 

@@ -28,7 +28,7 @@ class CODAPDataset {
         if (this.datasetName) {
             const theMessage = {
                 action: "get",
-                resource: `dataContext[${this.datasetName}],`
+                resource: `dataContext[${this.datasetName}]`,
             }
             const getDatasetResult = await codapInterface.sendRequest(theMessage);
             this.structure = getDatasetResult.values;
