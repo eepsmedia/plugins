@@ -22,6 +22,11 @@ body {
     /*background: linear-gradient(#dde, #aab );*/
 }
 
+code {
+    color : blue;
+    font-family: monospace;
+}
+
 #languageControl {
     font-size: larger;
 }

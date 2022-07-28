@@ -7,7 +7,7 @@ const scrambler = {
     currentlyScrambling: false,
     currentlyDraggingAnAttribute: false,
 
-    dirtyMeasures : true,
+    dirtyMeasures: true,
 
     datasetExists: false,
     datasetHasMeasure: false,
@@ -41,8 +41,10 @@ const scrambler = {
         if (this.datasetExists) {
             const tDSTitle = this.sourceDataset.structure.title;
             const tAttName = scrambler.state.scrambleAttributeName;
-            const codeStart = "<code>";
-            const codeEnd = "</code>";
+            /*
+                        const codeStart = "<code>";
+                        const codeEnd = "</code>";
+            */
 
             const attReport = (this.scrattributeExists)
                 ? `${scrambler.strings.sScramble} ${tAttName}`
@@ -87,6 +89,10 @@ const scrambler = {
 
         if (tName) {
             await this.setSourceDataset(tName);
+            if (await connect.datasetExistsOnCODAP(tName)) {
+                this.dirtyMeasures = false;
+                console.log(`Dataset ${this.state.datasetName} already exists. Whew.`)
+            }
         }
         this.refreshUIDisplay();
     },
@@ -103,7 +109,6 @@ const scrambler = {
      */
     setSourceDataset: async function (iName) {
         //  make the source dataset object!
-        this.dirtyMeasures = true;
         this.sourceDataset = await new CODAPDataset(iName);
         await notificatons.registerForDatasetChanges(iName);
         await this.sourceDataset.loadStructureFromCODAP();
@@ -148,9 +153,9 @@ const scrambler = {
         if (!this.sourceDataset || (iDataset != this.sourceDataset.datasetName)) {
             //  changing the dataset
             scrambler.dirtyMeasures = true;
-            await scrambler.setSourceDataset(iDataset);
         }
 
+        await scrambler.setSourceDataset(iDataset);
         this.refreshUIDisplay();
     },
 
@@ -354,6 +359,7 @@ const scrambler = {
 
         scrambler.state.lang = theLanguages[theIndex];
         scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+        scrambler.dirtyMeasures = true;
         scrambler.refreshUIDisplay();
     },
 
