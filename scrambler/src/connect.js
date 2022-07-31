@@ -31,7 +31,8 @@ connect = {
         const tListResult = await codapInterface.sendRequest(tMessage);
         if (tListResult.success) {
             tListResult.values.forEach((ds) => {
-                const theName = ds.name;
+                const theName = ds.name
+                //  measures and scrambled datasets are unsuitable
                 if (theName.startsWith(scrambler.constants.measuresPrefix) || theName.startsWith(scrambler.constants.scrambledPrefix)) {
 
                 } else {

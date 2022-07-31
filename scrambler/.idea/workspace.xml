@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.3. Fixed a bunch of weird bugs.">
+    <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.3. more weird bugs.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/scrambler.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/scrambler.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/help/art/scrambler-plugin-basic.png" beforeDir="false" afterPath="$PROJECT_DIR$/help/art/scrambler-plugin-basic.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/help/help.en.html" beforeDir="false" afterPath="$PROJECT_DIR$/help/help.en.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/notifications.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrambler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,26 +51,26 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
-    "WebServerToolWindowPanel.toolwindow.show.date": "false",
-    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
-    "WebServerToolWindowPanel.toolwindow.show.size": "false",
-    "last_opened_file_path": "/Users/tim/Sites/plugins/scrambler",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "copyright"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/tim/Sites/plugins/scrambler&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;copyright&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -80,7 +85,8 @@
       <workItem from="1636227347136" duration="682000" />
       <workItem from="1636280861861" duration="4679000" />
       <workItem from="1637715855462" duration="2836000" />
-      <workItem from="1658784504168" duration="31945000" />
+      <workItem from="1658784504168" duration="46321000" />
+      <workItem from="1659103687308" duration="2852000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>
@@ -117,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658947234095</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="scrambler 1.3. more weird bugs.">
+      <created>1658972355554</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1658972355554</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,6 +153,7 @@
     <MESSAGE value="scrambler work. Set for 1.3 effort to preserve the scrambled collection" />
     <MESSAGE value="scrambler 1.3. Scrambled collection abides." />
     <MESSAGE value="scrambler 1.3. Fixed a bunch of weird bugs." />
-    <option name="LAST_COMMIT_MESSAGE" value="scrambler 1.3. Fixed a bunch of weird bugs." />
+    <MESSAGE value="scrambler 1.3. more weird bugs." />
+    <option name="LAST_COMMIT_MESSAGE" value="scrambler 1.3. more weird bugs." />
   </component>
 </project>

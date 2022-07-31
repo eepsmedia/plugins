@@ -47,25 +47,25 @@ notificatons = {
      * We have detected a change in a dataset.
      *
      * If the user has changed things like the structure, we mark the dirty measures flag
-     * (`scrambler.dirtyMeasures`)
+     * (`scrambler.state.dirtyMeasures`)
      * as "dirty" and refresh the data.
      * That will eventually mean that when the user scrambles,
      * the entire measures dataset will be replaced.
      *
      * @param iMessage
      */
-    handleDatasetChangeNotice : function(iMessage) {
+    handleDatasetChangeNotice : async function(iMessage) {
         console.log(`ds change notice: ${iMessage.values.operation}`);
 
         switch(iMessage.values.operation)  {
             case "moveAttribute":       //  drag left or right
             case "updateAttributes":    //  includes renaming
             case "createCollection":    //  dragged an attribute left
-                scrambler.dirtyMeasures = true;
-                scrambler.refreshAllData();
+                scrambler.state.dirtyMeasures = true;
+                await scrambler.refreshAllData();
                 break;
             case "createAttributes":
-                scrambler.dirtyMeasures = true;
+                scrambler.state.dirtyMeasures = true;
                 const firstAtt = iMessage.values.result.attrs[0];
                 console.log(`    create attribute... resource: ${iMessage.resource} attrs[0]: ${firstAtt.name} ${firstAtt.guid}`);
                 break;
@@ -91,7 +91,7 @@ notificatons = {
                 await scrambler.setSourceDataset(tName);
             } else {
                 scrambler.sourceDataset = null;
-                scrambler.dirtyMeasures = true;
+                scrambler.state.dirtyMeasures = true;
             }
             scrambler.refreshUIDisplay();
         }

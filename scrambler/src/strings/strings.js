@@ -31,7 +31,7 @@ scramblerStrings = {
 
         const theStrings = scramblerStrings[iLang];
 
-        //  substitute all the static strings in the IU (by `id`)
+        //  substitute all the static strings in the UI (by `id`)
         for (const theID in theStrings.staticStrings) {
             if (theStrings.staticStrings.hasOwnProperty(theID)) {
                 const theValue = theStrings.staticStrings[theID];
@@ -43,7 +43,16 @@ scramblerStrings = {
                 }
             }
         }
+
+        // this.setStrings();  //      other strings that need setting, not static IDs.
+
         return theStrings;
+    },
+
+    setStrings : function() {
+
+        //  various help texts
+        document.getElementById(`scrambledDataButtonName`).title = scrambler.strings.shShowScrambledButtonHelpText;
     },
 
     languages : ['en', 'es', 'de'],
@@ -56,6 +65,7 @@ scramblerStrings = {
             scramblerTitle : `scrambler`,
             cantScrambleStripe : `Fix that to proceed.`,
             howManyLabel : `how many?`,
+            scrambledDataButtonName : `show scrambled`,   //  show scrambled [data]
         },
 
         sScramble : `scramble`,
@@ -67,6 +77,12 @@ scramblerStrings = {
 
         sNoDataset : `Find a dataset and drag the attribute here that you want to scramble!`,
         sNoScrambleAttribute : `What attribute do you want to scramble? Drag it in here. `,
+
+        shShowScrambledButtonHelpText : `Show one scrambled dataset`,
+
+        sfScrambledAttribute : (tAttName) => {
+            return  `scramble <code>${tAttName}</code>`;
+        },
 
         sfOKtoScramble : (tAttName, tDSTitle) => {
             return  `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`},
@@ -95,7 +111,8 @@ scramblerStrings = {
         staticStrings : {
             scramblerTitle : `mezcladora`,  //  scrambler
             cantScrambleStripe :  `Arreglar eso para continuar`,  //  `Fix that to proceed.`,
-            howManyLabel :  `cuántos?` //  `how many?`,
+            howManyLabel :  `cuántos?`, //  `how many?`,
+            scrambledDataButtonName : `muestre lo mezclado`,   //  show scrambled [data]
         },
 
         sScramble : `mezclar`,      //  `scramble`,
@@ -107,6 +124,12 @@ scramblerStrings = {
 
         sNoDataset : `¡Busque un conjunto de datos y arrastre el atributo aquí que desea mezclar!`,
         sNoScrambleAttribute : `¿Qué atributo desea mezclar? Arrástrelo aquí. `,
+
+        shShowScrambledButtonHelpText : `Muestre un conjunto de datos mezclado`,
+
+        sfScrambledAttribute : (tAttName) => {
+            return `mezcle <code>${tAttName}</code>`
+        },
 
         sfOKtoScramble : (tAttName, tDSTitle) => {
             return  `Está bien mezclar "${tAttName}" en el conjunto de datos "${tDSTitle}"`},
@@ -131,62 +154,68 @@ scramblerStrings = {
         flags : ["🇩🇪", "🇦🇹"],
 
         staticStrings : {
-            scramblerTitle : `Verschlüssler`,   //  scrambler
-            cantScrambleStripe : `Dies zu korrigieren, um fortzufahren`, // `Fix that to proceed.`,
-            howManyLabel : `wieviel?`,      //  how many
+            scramblerTitle : `Mischmaschine`,   //  scrambler
+            cantScrambleStripe : `Dies ändern, um weiter zu machen.`, // `Fix that to proceed.`,
+            howManyLabel : `Wie häufig?`,      //  how many
+            scrambledDataButtonName : `Mischungen anzeigen`,   //  show scrambled [data]
         },
 
-        sScramble : `verschlüsseln `,   //  `scramble`,
-        sNoAttribute : `kein Attribut`,   //``no attribute :(`,
-        sIterationAttName : `Ladung`,    //`batch`,
-        sIterationAttDescription : `Welcher "Ladung" von Daten. Erhöht sich jedes Mal, wenn Sie verschlüsseln.`,
-            //  `Which "run" of data. Increases every time you scramble.`,
-        sScrambledAttName : `verschlüsseltes Att`,      //  scrambled att
-        sScrambledAttDescription : `Welches Attribut verschlüsselt wurde.`, //   `Which attribute was scrambled.`,
+        sScramble : `Mischen`,   //  `scramble`,
+        sNoAttribute : `ein Merkmal fehlt :(`,   //``no attribute :(`,
+        sIterationAttName : `Durchgang`,    //`batch`,
+        sIterationAttDescription : `Anzahl der "Durchgänge". Erhöht sich jedes Mal, wenn gemischt wird.`,
+        //  `Which "run" of data. Increases every time you scramble.`,
+        sScrambledAttName : `Gemischtes Merkmal`,      //  scrambled att
+        sScrambledAttDescription : `Merkmal, welches gemischt wurde.`, //   `Which attribute was scrambled.`,
 
-        sNoDataset : `Suchen Sie einen Datensatz und ziehen Sie das Attribut, das Sie verschlüsseln möchten, hierher!`,
-            //  `Find a dataset and drag the attribute here that you want to scramble!`,
-        sNoScrambleAttribute : `Welches Attribut wollen Sie verschlüsseln? Ziehen Sie es hier hinein!`,
-            //  `What attribute do you want to scramble? Drag it in here. `,
+        sNoDataset : `Wählen Sie einen Datensatz und ziehen Sie das Merkmal hierher, welches gemischt werden soll!`,
+        //  `Find a dataset and drag the attribute here that you want to scramble!`,
+        sNoScrambleAttribute : `Welches Merkmal soll gemischt werden? Hierher ziehen!`,
+        //  `What attribute do you want to scramble? Drag it in here. `,
+
+        shShowScrambledButtonHelpText : `einen vermischten Datensatz anzeigen`,
+
+        sfScrambledAttribute : (tAttName) => {
+            return  `<code>${tAttName}</code> mischen`;
+        },
 
         sfOKtoScramble : (tAttName, tDSTitle) => {
-            return  `Es ist OK, um "${tAttName}" im Datensatz "${tDSTitle}" zu verschlüsseln.`
+            return  `<span><code>${tAttName}</code> im Datensatz "${tDSTitle}" kann gemischt werden.</span>`
             //  return  `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`
         },
 
         sfNoMeasure : (tDSTitle) => {
-            return `Ihr Datensatz, "${tDSTitle}", benötigt eine Maßnahme, 
-            was wahrscheinlich ein Attribut mit einer Formel ist. 
-            Ziehen Sie dieses Attribut nach links, 
-            damit Sie etwas zum Sammeln haben!`
-/*
-            return `Your dataset, "${tDSTitle}," needs a measure,
-                which is probably an attribute with a formula.
-                Drag that attribute to the left so you have something to collect!`
-*/
+            return `Zuerst muss im Datensatz "${tDSTitle}" etwas geändert werden. 
+            Wahrscheinlich benötigen Sie zuerst ein Merkmal mit einer Formel. 
+            Ziehen Sie ein Merkmal nach links, um etwas zum Sammeln zu haben.`
+            /*
+                        return `Your dataset, "${tDSTitle}," needs a measure,
+                            which is probably an attribute with a formula.
+                            Drag that attribute to the left so you have something to collect!`
+            */
         },
 
         sfFormulaProblem : (tAttName, lastCollName, suchAs) => {
-            return `Das Verschlüsseln von ${tAttName} wird nicht funktionieren, 
-                weil es eine Formel hat. 
-                Ziehen Sie ein anderes Attribut 
-                aus der letzten Sammlung (${lastCollName}) ein, z.B. ${suchAs}.`
+            return `<span>Das Mischen von <code>${tAttName}</code> wird nicht funktionieren, 
+                weil es eine Formel beinhaltet. 
+                Ziehen Sie ein anderes Merkmal 
+                aus der unteren Tabellenebene (${lastCollName}) hier hinein, z.B. <code>${suchAs}</code>.</span>`
 
-/*
-            return `Scrambling ${tAttName} won't work because it has a formula.
-                        Drag in a different attribute from the last collection (${lastCollName}),
-                        such as ${suchAs}.`
-*/
+            /*
+                        return `Scrambling ${tAttName} won't work because it has a formula.
+                                    Drag in a different attribute from the last collection (${lastCollName}),
+                                    such as ${suchAs}.`
+            */
         },
 
         sfNotALeafProblem : (tAttName, lastCollName, suchAs) => {
-            return  `Das Verschlüsseln von ${tAttName} wird nicht funktionieren, 
-                        weil es nicht in der letzten Sammlung (${lastCollName}) ist. 
-                        Legen Sie hier ein Attribut aus ${lastCollName} ab, wie ${suchAs}.`
-/*
-            return `Scrambling ${tAttName} won't work because it's not in the last collection (${lastCollName}).
-                        Drop an attribute here from ${lastCollName}, such as ${suchAs}.`
-*/
+            return  `<span>Das Mischen von <code>${tAttName}</code> wird nicht funktionieren, 
+                        weil es sich nicht in der unteren Tabellenebene (${lastCollName}) befindet. 
+                        Ziehen Sie ein Merkmal aus ${lastCollName} hierher, wie <code>${suchAs}</code>.</span>`
+            /*
+                        return `Scrambling ${tAttName} won't work because it's not in the last collection (${lastCollName}).
+                                    Drop an attribute here from ${lastCollName}, such as ${suchAs}.`
+            */
         }
 
 
