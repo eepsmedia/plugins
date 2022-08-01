@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.3. Better German.">
+    <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.4. More reliable, I hope; better documentation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/CODAPDataset.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/notifications.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrambler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/help/help.en.html" beforeDir="false" afterPath="$PROJECT_DIR$/help/help.en.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +88,7 @@
       <workItem from="1636280861861" duration="4679000" />
       <workItem from="1637715855462" duration="2836000" />
       <workItem from="1658784504168" duration="46321000" />
-      <workItem from="1659103687308" duration="10346000" />
+      <workItem from="1659103687308" duration="11759000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>
@@ -143,7 +139,14 @@
       <option name="project" value="LOCAL" />
       <updated>1659300505151</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="scrambler 1.4. More reliable, I hope; better documentation.">
+      <created>1659394639274</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1659394639274</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -168,6 +171,7 @@
     <MESSAGE value="scrambler 1.3. Fixed a bunch of weird bugs." />
     <MESSAGE value="scrambler 1.3. more weird bugs." />
     <MESSAGE value="scrambler 1.3. Better German." />
-    <option name="LAST_COMMIT_MESSAGE" value="scrambler 1.3. Better German." />
+    <MESSAGE value="scrambler 1.4. More reliable, I hope; better documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="scrambler 1.4. More reliable, I hope; better documentation." />
   </component>
 </project>
