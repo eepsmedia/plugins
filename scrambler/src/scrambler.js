@@ -1,3 +1,27 @@
+/**
+ * `scrambler` is the global singleton at the root of the scrambler logic.
+ *
+ * Important notes about design:
+ *
+ * The user has a CODAP dataset they want to scramble.
+ * For the most part, we let CODAP itself take care of that.
+ * Nevertheless, in order to scramble, we have to read everything in at some point and
+ * manipulate the contents, eventually emitting various CODAP datasets.
+ *
+ * For this reason, there is a separate class, `CODAPDataset`,
+ * that we use for the _internal_ representation of a CODAP dataset.
+ * Various methods in that class read and write parts of the dataset,
+ * based on the CODAP Plugin API.
+ *
+ * * `scrambler.sourceDataset` is a reflection of the user's original dataset.
+ * We will call this the "source dataset."
+ * * `scrambler.scrambledDataset` is made from the "source," but its data gets scrambled.
+ * * `scrambler.measuresDataset` gets scraped from the "scrambled" dataset.
+ *
+ * Scrambling, in this model, depends on the hierarchical structure of the source dataset.
+ *
+ * @type {{doScramble: ((function(*): Promise<null>)|*), setSourceDataset: (function(*): Promise<null>), showProgress: scrambler.showProgress, refreshAllData: ((function(): Promise<void>)|*), openHelp: ((function(): Promise<void>)|*), doAlert: scrambler.doAlert, matchUItoState: scrambler.matchUItoState, datasetExists: boolean, handleBigRefresh: ((function(): Promise<void>)|*), scrattributeExists: boolean, strings: null, state: {}, constants: {scrambledPrefix: string, defaultState: {scrambleAttributeName: null, dirtyMeasures: boolean, lastDatasetName: null, iteration: number, numberOfScrambles: number, lang: string}, measuresPrefix: string, pluginName: string, scrambleSetName: string, version: string, dimensions: {width: number, height: number}}, setUpLocalScrambledDataset: (function(): Promise<*>), measuresDataset: null, copeWithAttributeDrop: ((function(*, *): Promise<void>)|*), setUpLocalMeasuresDataset: (function(): Promise<*>), currentlyScrambling: boolean, refreshScramblerStatus: scrambler.refreshScramblerStatus, refreshUIDisplay: scrambler.refreshUIDisplay, changeLanguage: ((function(): Promise<void>)|*), scrattributeIsLeaf: boolean, currentlyDraggingAnAttribute: boolean, scrambledDataset: null, pickAFlag: (function(): *), handleUIChoice: scrambler.handleUIChoice, handleSourceDatasetChange: ((function(*): Promise<void>)|*), sourceDataset: null, datasetHasMeasure: boolean, nDatasets: number, initialize: ((function(): Promise<void>)|*)}}
+ */
 const scrambler = {
     sourceDataset: null,        //      a CODAPDataset.
     scrambledDataset: null,     //      a CODAPDataset.
@@ -16,17 +40,25 @@ const scrambler = {
 
     strings: null,
 
+    /**
+     * Called from the HTML. Starts everything rolling.
+     *
+     * @returns {Promise<void>}
+     */
     initialize: async function () {
-        await connect.initialize();
+        await connect.initialize();     //  set up connection to CODAP
 
-        this.state = await codapInterface.getInteractiveState();
+        this.state = await codapInterface.getInteractiveState();    //  get stored state of any
+
+        //  but what if there is none? Make a new one...
         if (Object.keys(this.state).length === 0) {
             Object.assign(this.state, this.constants.defaultState);
-            await codapInterface.updateInteractiveState(this.state);
+            await codapInterface.updateInteractiveState(this.state);    //  store this
             console.log(`No interactive state retrieved. Got a new one...: 
             ${JSON.stringify(this.state)}`);
         }
 
+        //  set up the language
         this.state.lang = pluginLang.figureOutLanguage('en', scramblerStrings.languages);
         scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
 
@@ -77,11 +109,18 @@ const scrambler = {
         document.getElementById(`scramblerStatus`).innerHTML = theHTML;
     },
 
+    /**
+     * Refresh all the data, including wiping the scrambled and measures CODAPDatasets.
+     *
+     * @returns {Promise<void>}
+     */
     refreshAllData: async function () {
+        //  find a dataset (probably the last one)
         const tName = await connect.getSuitableDatasetName(this.state.lastDatasetName);
         console.log(`connect suggests using ${tName} as the dataset name`);
         this.iteration = 0;
 
+        //  eliminate derived datasets
         if (this.measuresDataset) {
             await connect.deleteDatasetOnCODAP(this.measuresDataset.datasetName);
             this.measuresDataset = null;
@@ -91,6 +130,7 @@ const scrambler = {
             this.scrambledDataset = null;
         }
 
+        //  if a suitable name was found, connect to it.
         if (tName) {
             await this.setSourceDataset(tName);
             if (this.sourceDataset) {
@@ -110,27 +150,31 @@ const scrambler = {
      *
      * Also sets a good value for the scrambling attribute.
      *
+     * Note: we load up the structure of the source dataset here, but not its contents.
+     * That's not necessary; we only have to do that when we scramble.
+     *
      * @param iName     the name of the dataset
      * @returns {Promise<void>}
      */
     setSourceDataset: async function (iName) {
-        //  make the source dataset object!
-        this.sourceDataset = await new CODAPDataset(iName);
+
+        this.sourceDataset = await new CODAPDataset(iName);     //  make the source dataset object!
 
         await notificatons.registerForDatasetChanges(iName);
-        await this.sourceDataset.loadStructureFromCODAP();
+        await this.sourceDataset.loadStructureFromCODAP();      //  get the "structure" part
 
         if (this.sourceDataset) {
             this.datasetExists = true;
             this.state.lastDatasetName = this.sourceDataset.datasetName;    //  for restoring
             this.datasetHasMeasure = (this.sourceDataset.structure.collections.length > 1);
 
-            //  cope with the scramble attributes
+            //  cope with the scramble attribute
             const tScrambleName = scrambler.state.scrambleAttributeName;
             this.scrattributeExists = (this.sourceDataset.allAttributeNames().includes(tScrambleName));
             this.scrattributeIsLeaf = this.sourceDataset.possibleScrambleAttributeNames(tScrambleName).check;
             console.log(`SetSourceDataset: ${iName} with ${scrambler.state.scrambleAttributeName}`)
         } else {
+            //  something went wrong; set everything to null and bail
             this.state.lastDatasetName = null;    //  for restoring
             this.datasetExists = false;
             this.datasetHasMeasure = false;
@@ -146,7 +190,8 @@ const scrambler = {
 
     /**
      * Handler when user clicks the big refresh arrow.
-     * todo: fix this procedure; it breaks the measures dataset.
+     * (Big refresh arrow removed in 1.4, but let;s leave this here.
+     * ...warning: it might break the Measures dataset)
      */
     handleBigRefresh: async function () {
         this.refreshAllData();
@@ -160,6 +205,13 @@ const scrambler = {
 
     },
 
+    /**
+     * Notification handler called in response to an attribute drop
+     *
+     * @param iDataset      name of the dataset the attribute was in
+     * @param iAttribute    name of the attriute
+     * @returns {Promise<void>}
+     */
     copeWithAttributeDrop: async function (iDataset, iAttribute) {
         console.log(`Scramble ${iAttribute} in ${iDataset}`);
         this.state.scrambleAttributeName = iAttribute;      //  it has to exist, we just dropped it!
@@ -196,11 +248,14 @@ const scrambler = {
     },
 
     /**
+     * Set up the "Scrambled" dataset, ensuring that if it exists already and
+     * the data are not "dirty," it's just emptied, not deleted.
+     *
      * Clone the "source" dataset to make a new one, which will get scrambled.
      * Note: it doesn't get scrambled in this method!
      * (called from `doScramble()`)
      *
-     * @returns {Promise<*>}
+     * @returns {Promise<*>}    of the "internal" scrambled CODAPDataset
      */
     setUpLocalScrambledDataset: async function () {
 
@@ -270,9 +325,9 @@ const scrambler = {
      */
     doScramble: async function (iReps) {
 
-        this.currentlyScrambling = true;
+        this.currentlyScrambling = true;    //  flag to keep other things from happening
 
-        this.refreshUIDisplay();
+        this.refreshUIDisplay();    //  this hides the scramble buttons, etc.
 
         const nReps = iReps ? iReps : scrambler.state.numberOfScrambles;
         const sAttribute = scrambler.state.scrambleAttributeName;  //  name of the attribute to scramble
@@ -281,17 +336,17 @@ const scrambler = {
         await codapInterface.updateInteractiveState(this.state);    //  force storage
 
         console.log(`*** going to scramble. State: ${JSON.stringify(scrambler.state)}`);
-        //  await this.refreshAllData();      //  get a new setup every time we press scramble.
-        //  console.log(`    data refreshed. Ready to scramble.`);
 
+        //  Get the very latest data from CODAP and put it in `sourceDataset`.
+        //  (The user might have changed values in CODAP, and we want tto scramble THOSE.)
         await this.sourceDataset.retrieveAllDataFromCODAP();
-        console.log(`    latest data retrieved. Ready to scramble.`);
 
+        //  Vital three lines! This sets up the two derived datasets for this process.
         this.scrambledDataset = await this.setUpLocalScrambledDataset();
         this.measuresDataset = await this.setUpLocalMeasuresDataset();
         scrambler.state.dirtyMeasures = false;
 
-        let newItems = [];
+        let newItems = [];  //  these will be items for the measures dataset.
 
         //  actual scramble here
         for (let i = 0; i < nReps; i++) {
@@ -305,11 +360,14 @@ const scrambler = {
             this.showProgress(i, nReps);
         }
 
+        //  we have been updating the scrambled dataset every iteration,
+        //  but we don;t update the measures until now.
         await this.measuresDataset.emitItems(true, newItems);
-        connect.showTable(this.measuresDataset.datasetName);
-        this.showProgress(-1, -1);
-        this.currentlyScrambling = false;
-        this.refreshUIDisplay();
+
+        connect.showTable(this.measuresDataset.datasetName);    //  must show measures table
+        this.showProgress(-1, -1);      //  stop showing progress
+        this.currentlyScrambling = false;           //  turn off that flag
+        this.refreshUIDisplay();                    //  and reset the display
     },
 
     /**
@@ -327,7 +385,7 @@ const scrambler = {
     /**
      * Set the values in the UI (menu choices, number in a box) to match the state.
      * Also sets the text on the scramble button to **42x** or whatever.
-     *
+     * Also sets visibility of some of the UI <div>s.
      */
     refreshUIDisplay: function () {
         console.log(`    refreshing UI display`);
@@ -356,7 +414,16 @@ const scrambler = {
         this.refreshScramblerStatus();
     },
 
+    /**
+     * Change the language.
+     * Requires resetting the strings in the UI.
+     * Called when user clicks on the flag.
+     *
+     * @returns {Promise<void>}
+     */
     changeLanguage: async function () {
+
+        //  cycle to the next language in the list (no menu, just cycle...)
 
         const theLanguages = scramblerStrings.languages;
         const nLanguages = theLanguages.length;
@@ -374,12 +441,22 @@ const scrambler = {
         scrambler.refreshUIDisplay();
     },
 
+    /**
+     * Pick a flag at random for the set of flags for a language
+     *
+     * @returns {*}
+     */
     pickAFlag: function () {
         const theFlags = scrambler.strings.flags;
         const theIndex = Math.floor(Math.random() * theFlags.length);
         return theFlags[theIndex];
     },
 
+    /**
+     * Open the relevant help html (by language) in a new tab.
+     *
+     * @returns {Promise<void>}
+     */
     openHelp: async function () {
         const theURL = `help/help.${scrambler.state.lang}.html`;
         const response = await fetch(theURL);
@@ -392,22 +469,20 @@ const scrambler = {
         }
     },
 
+    /**
+     * Present an alert box. Originally to wrap sweetalert, but the plugin's footprint is too small!
+     *
+     * @param iTitle
+     * @param iText     text of the alert
+     * @param iIcon
+     */
     doAlert: function (iTitle, iText, iIcon = 'info') {
         alert(iText);
-        /*  failed to adjust the height.
-        Swal.fire({
-            className : "scrambler-swal",
-            icon: iIcon,
-            title: iTitle,
-            text: iText,
-            height : 166,
-        })
-        */
     },
 
     constants: {
         pluginName: "scrambler",
-        version: "1.3",
+        version: "1.4",
         dimensions: {height: 188, width: 344},      //      dimensions,
         defaultState: {
             lastDatasetName: null,

@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.3. more weird bugs.">
+    <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.3. Better German.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/help/art/scrambler-plugin-basic.png" beforeDir="false" afterPath="$PROJECT_DIR$/help/art/scrambler-plugin-basic.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/help/help.en.html" beforeDir="false" afterPath="$PROJECT_DIR$/help/help.en.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CODAPDataset.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/CODAPDataset.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connect.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/notifications.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scrambler.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrambler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +37,14 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="6a1ee9d8-dbdb-4e88-88dd-9bd31639a1e3" />
+        <option name="url" value="https://github.com/eepsmedia/common" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="nltur0dc" />
@@ -86,7 +92,7 @@
       <workItem from="1636280861861" duration="4679000" />
       <workItem from="1637715855462" duration="2836000" />
       <workItem from="1658784504168" duration="46321000" />
-      <workItem from="1659103687308" duration="2852000" />
+      <workItem from="1659103687308" duration="10346000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>
@@ -130,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658972355554</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="scrambler 1.3. Better German.">
+      <created>1659300505151</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1659300505151</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -154,6 +167,7 @@
     <MESSAGE value="scrambler 1.3. Scrambled collection abides." />
     <MESSAGE value="scrambler 1.3. Fixed a bunch of weird bugs." />
     <MESSAGE value="scrambler 1.3. more weird bugs." />
-    <option name="LAST_COMMIT_MESSAGE" value="scrambler 1.3. more weird bugs." />
+    <MESSAGE value="scrambler 1.3. Better German." />
+    <option name="LAST_COMMIT_MESSAGE" value="scrambler 1.3. Better German." />
   </component>
 </project>

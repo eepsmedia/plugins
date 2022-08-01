@@ -20,7 +20,7 @@ class CODAPDataset {
      * Get the structure of this dataset from CODAP and store it in `this.structure`.
      * We use this for everything, including storing the data.
      *
-     * Called from `retrieveAllDataFromCODAP()`
+     * Called from `scrambler.retrieveAllDataFromCODAP()`
      *
      * @returns {Promise<void>}
      */
@@ -37,6 +37,16 @@ class CODAPDataset {
         }
     }
 
+    /**
+     * Return a structure with information about which attribute (names) are suitable for scrambling.
+     *
+     * Such an attribute
+     * * must be in the last (leaf) collection
+     * * must _not_ have a formula
+     *
+     * @param iCheck        a name we might pass in to see if it's one of them
+     * @returns {{array: *[], check: boolean, hasFormula: boolean}}
+     */
     possibleScrambleAttributeNames(iCheck) {
         const lastCollection = this.structure.collections[this.structure.collections.length - 1];
         let formula = false;
@@ -57,6 +67,11 @@ class CODAPDataset {
         };
     }
 
+    /**
+     * Get a list of all attribute names in all collections
+     *
+     * @returns {*[]}
+     */
     allAttributeNames() {
         let out = [];
         this.structure.collections.forEach((c) => {
@@ -71,10 +86,14 @@ class CODAPDataset {
     /**
      * Scrambles the indicated attribute's values. Called from `scrambler.doScramble()`.
      *
-     * This is typically called on the cloned dataset (titled "scrambled_whatever"),
-     * after which the results (with computed measures) are collected
+     * This is typically called on the cloned dataset, `scrambler.scrambledDataset` (in CODAP, titled "scrambled_whatever"),
+     * after which the results (with computed measures) are collected.
      *
      * Note that this attribute must be in the "last", most leafy collection.
+     *
+     * At the end, the scrambled values have been pushed into the scrambled dataset _in CODAP_.
+     * There, any measures get automatically recalculated (the whole point, right?)
+     * and are ready to be retrieved and made into measures.
      *
      * @param iAttName  the name of the attribute to be scrambled
      * @returns {Promise<void>}
@@ -83,16 +102,18 @@ class CODAPDataset {
         const nCollections = this.structure.collections.length;
         const lastCollection = this.structure.collections[nCollections - 1];
 
-        const theCases = lastCollection.cases;
+        const theCases = lastCollection.cases;      //  remember, a `CODAPDataset` case this `cases` member.
         let valueArray = [];        //  array that just holds the values of this attribute, one per case
 
+        //  put the values in the array...
         theCases.forEach(aCase => {
             valueArray.push(aCase.values[iAttName]);
         })
 
-        valueArray.scramble();
+        valueArray.scramble();      //  ... and scramble them
 
         //  construct a request to CODAP to push these values into this dataset
+
         const theResource = `dataContext[${this.datasetName}].collection[${lastCollection.name}].case`;
 
         //  construct a "values" array (`theValues`) for an update.case message
@@ -103,7 +124,7 @@ class CODAPDataset {
             const oneValuesObject = {};
             oneValuesObject[iAttName] = valueArray[i];
             theValues.push({
-                id: thisCase.id,
+                id: thisCase.id,        //      for this to be an update request, we need the caseIDs of the cases
                 values: oneValuesObject,
             })
         }
@@ -131,10 +152,12 @@ class CODAPDataset {
      * @returns theItems    an array of objects suitable for export to CODAP as items
      */
     async makeMeasuresFrom(iSource) {
-        await iSource.retrieveAllDataFromCODAP();
+        await iSource.retrieveAllDataFromCODAP();   //  now `iSource`, which is local,  has the (recently) scrambled data.
 
         const nCollections = iSource.structure.collections.length;
         const lastCollectionLevel = nCollections - 2;   //   so if there are 3 levels, this is 1, that is, the second level.
+
+        //  just in case. This should never fire!
         if (nCollections <= 1) {
             const theAlertText = `You're using ${nCollections} level(s) of collection. 
                 You need at least two.
@@ -142,6 +165,8 @@ class CODAPDataset {
             scrambler.doAlert("Watch out!", theAlertText);
             return null;
         }
+
+        //  make CODAP-ready item(s) from the scrambled collection
         const theItems = iSource.scrapeCollections(0, lastCollectionLevel);
         return theItems;
     }
@@ -317,14 +342,6 @@ class CODAPDataset {
      */
     async emitDatasetStructureOnly() {
 
-        //  Does it already exist? Delete it.
-/*
-        await codapInterface.sendRequest({
-            action: "delete",
-            resource: `dataContext[${this.datasetName}]`,
-        })
-*/
-
         //  okay, now make a new one...
         //  we'll loop over the collections and use their info to build the request
 
@@ -378,6 +395,14 @@ class CODAPDataset {
 
     }
 
+    /**
+     * Actually emit items into CODAP.
+     * Called from `scrambler.doScramble()` on the _measures_ dataset.
+     *
+     * @param iAppend
+     * @param iValues           the Values
+     * @returns {Promise<void>}
+     */
     async emitItems(iAppend, iValues) {
         //  todo: use iAppend
         const newItemsMessage = {
@@ -433,7 +458,7 @@ class CODAPDataset {
         /**
          * At this point, we're creating a dictionary to relate the case IDs from the "old" dataset
          * (the one we're holding locally in `this`) to the "new" dataset (the one we're creating in CODAP).
-         * It's of the form { oldID : newID, oldID2 : newID2, ... }
+         * The dictionary is of the form { oldID : newID, oldID2 : newID2, ... }
          *
          * This is essential for setting the values for the `parentID`s in the new CODAP dataset.
          *

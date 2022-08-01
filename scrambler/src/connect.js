@@ -1,7 +1,17 @@
 let connect;
 
+/**
+ * Singleton responsible for communicating with CODAP
+ *
+ * @type {{deleteDatasetOnCODAP: ((function(*): Promise<void>)|*), getSuitableDatasetName: (function(*): Promise<*>), allowReorg: ((function(): Promise<void>)|*), datasetExistsOnCODAP: (function(*): Promise<boolean>), iFrameDescriptor: {name: string, title: string, version: string, dimensions: {width: number, height: number}}, deleteCasesOnCODAPinCODAPDataset: ((function(*): Promise<void>)|*), showTable: connect.showTable, showScrambled: connect.showScrambled, initialize: ((function(): Promise<void>)|*)}}
+ */
 connect = {
 
+    /**
+     * Initialize the connection to CODAP
+     *
+     * @returns {Promise<void>}
+     */
     initialize: async function () {
         await codapInterface.init(this.iFrameDescriptor, null);
         await this.allowReorg();
@@ -9,6 +19,10 @@ connect = {
         notificatons.registerForAttributeDrops();
     },
 
+    /**
+     * Constant descriptor for the iFrame.
+     * Find and edit the values in `scrambler.constants`
+     */
     iFrameDescriptor: {
         name: scrambler.constants.pluginName,
         title: scrambler.constants.pluginName,
@@ -18,6 +32,8 @@ connect = {
 
     /**
      * Find a dataset that is not _scrambled or _measures, preferably the one we pass in!
+     *
+     * If that doesn't exist, pick the first one in the list.
      *
      * @param iName     Default name, typically the one we have been using all along or restored from save
      * @returns {Promise<*>}
@@ -84,6 +100,12 @@ connect = {
         }
     },
 
+    /**
+     * Empty a dataset so it has a structure, but no cases.
+     *
+     * @param iDS
+     * @returns {Promise<void>}
+     */
     deleteCasesOnCODAPinCODAPDataset : async function(iDS) {
         const tCollName = iDS.structure.collections[0].name;
         const tResource = `dataContext[${iDS.datasetName}].collection[${tCollName}].allCases`;
@@ -94,13 +116,12 @@ connect = {
         console.log(`    flushing [${iDS.datasetName}]: (${dResult.success ? "success" : "failure"})`);
 
     },
-/*
-    needFreshOutputDataset: async function () {
-        return false;
-    },
-*/
 
-
+    /**
+     * Kludge to ensure that a dataset is reorg-able.
+     *
+     * @returns {Promise<void>}
+     */
     allowReorg: async function () {
         const tMutabilityMessage = {
             "action": "update",
@@ -114,10 +135,18 @@ connect = {
         codapInterface.sendRequest(tMutabilityMessage);
     },
 
+    /**
+     * Quick method to make the scrambled dataset's table appear.
+     * Called in response to the button push
+     */
     showScrambled : function() {
         this.showTable(scrambler.scrambledDataset.datasetName);
     },
 
+    /**
+     * Show the table for the named dataset
+     * @param iName     dataset name
+     */
     showTable: function (iName) {
         codapInterface.sendRequest({
             "action": "create",

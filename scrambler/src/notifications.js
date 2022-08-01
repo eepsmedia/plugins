@@ -4,6 +4,11 @@ notificatons = {
     datasetSubscriberIndex: null,
     attributeDropSubscriberIndex: null,
 
+    /**
+     * Register for doc change events.
+     *
+     * Why? If the user deletes the source dataset, we need to know.
+     */
     registerForDocumentChanges : function() {
         const tResource = `documentChangeNotice`;
         this.documentSubscriberIndex = codapInterface.on(
@@ -33,6 +38,9 @@ notificatons = {
         console.log(`registered for changes to dataset ${iName}. Index ${this.datasetSubscriberIndex}`);
     },
 
+    /**
+     * Register for the dragDrop[attribute] event
+     */
     registerForAttributeDrops : function() {
         const tResource = `dragDrop[attribute]`;
 
@@ -49,8 +57,7 @@ notificatons = {
      * If the user has changed things like the structure, we mark the dirty measures flag
      * (`scrambler.state.dirtyMeasures`)
      * as "dirty" and refresh the data.
-     * That will eventually mean that when the user scrambles,
-     * the entire measures dataset will be replaced.
+     * Side effect: if it's dirty, the measures (and scrambled) dataset(s) vanish.
      *
      * @param iMessage
      */
@@ -62,7 +69,7 @@ notificatons = {
             case "updateAttributes":    //  includes renaming
             case "createCollection":    //  dragged an attribute left
                 scrambler.state.dirtyMeasures = true;
-                await scrambler.refreshAllData();
+                await scrambler.refreshAllData();       //  update scrambler.sourceDataset's structure and redraw.
                 break;
             case "createAttributes":
                 scrambler.state.dirtyMeasures = true;
@@ -95,9 +102,16 @@ notificatons = {
             }
             scrambler.refreshUIDisplay();
         }
-
     },
 
+    /**
+     * The handler for an attribute drop.
+     *
+     * On drop, call `scrambler.copeWithAttributeDrop()`.
+     *
+     * @param iMessage
+     * @returns {Promise<void>}
+     */
     handleAttributeDrop : async function (iMessage) {
         const positionString = iMessage.values.position ?
             `(${iMessage.values.position.x} , ${iMessage.values.position.y})` :

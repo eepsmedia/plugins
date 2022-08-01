@@ -2,89 +2,80 @@
 
 ![scrambler picture](help/art/scrambler-plugin-basic.png)
 
-2021-09-11
+2022-08-01
 
-Here we describe the current version of the **Scrambler** plugin.
+## Overall design
 
-* Drag the URL for this plugin into your document.
-* Prepare your dataset for scrambling (see the example below...):
-    * Make a measure (a new attribute with a formula) that describes the effect you're studying.
-    * Drag it left so that it's at a higher level in the hierarchy.
-* Make sure the dataset you want to scramble is selected in the menu (**heights** is there by default, and that's correct).
-* Choose what attribute you want to scramble (we've set it up to scramble `Gender`).
-* Adjust the number and then click the buttons to create as many "scrambles" as you wish.
+The user has a CODAP dataset they want to scramble.
+For the most part, we let CODAP itself take care of that.
+Nevertheless, in order to scramble, we have to read everything in at some point and
+manipulate the contents, eventually emitting various CODAP datasets.
 
-You can try all this yourself in [this sample document](https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=https%3A%2F%2Fcfm-shared.concord.org%2FjEeBNIbK29v5XwtZdmhy%2Ffile.json)
+For this reason, there is a separate class, `CODAPDataset`,
+that we use for the _internal_ representation of a CODAP dataset.
+Various methods in that class read and write parts of the dataset using the CODAP Plugin API.
 
-(Want a task? That document is set up to compare 13-year-olds. Make it compare 10-year-olds!)
+* `scrambler.sourceDataset` is a reflection of the user's original dataset.
+  We will call this the "source dataset."
+* `scrambler.scrambledDataset` is made from the "source," but its data gets scrambled.
+* `scrambler.measuresDataset` gets scraped from the "scrambled" dataset.
 
-## Background and an Example
+What is this "scraping"?
+Scrambling, in this model, depends on the hierarchical structure of the source dataset.
+Suppose you have heights and you want to collect `meanHeight` as a measure.
+You should drag `meanHeight` to the left so it's higher in the hierarchy, 
+and then scramble. 
+Then `meanHeight` will be a _leaf_ attribute in the measures dataset.
 
-The point of scrambling is to create a _sampling distribution_ of some _measure_. 
-For example, suppose that in your dataset it appears that 13-year-old boys are taller than 13-year-old girls.
-You want to assess whether it's _plausible_ that the difference in means that you see could happen by chance.
+That is, anything that's in the "leaf" collection of the source dataset 
+will not appear in the (scraped) measures dataset.
+We retain only the aggregate values that refer to the dataset, not the "source" values themselves.
 
-To do that, you will make the "null hypothesis" real: 
-you will break any association between `Gender` and `Height` by scrambling the values for one of those attributes.
-Then you look to see how different the boys and girls seem to be when the difference _is_ just chance.
+## CODAPDataset class
 
-But one trial is not enough. Furthermore, you have to decide what, specifically, to look at to say that the boys are taller.
-In this situation, that means coming up with a number that represents how much taller the boys are. 
+There will be three instantiations of this class: `source`, `scrambled`, and `measures`.
+Among the methods in this class, some are appropriate to all. 
+Some are for a specific type.
+See the comments in the source file.
 
-This is very important, and bears highlighting:
+## The scrambled dataset and gymnastics with IDs
 
-> You must create a _measure_ of the effect you're seeing. It's not enough to say that boys are taller than girls;
-> You have to say _how much_ taller.
-> 
+This can only really work because we let CODAP perform any calculations of the measures themselves. 
+To make that work, the _scrambled_ dataset has to be a full-fledged dataset in CODAP.
+It will be exactly like the source dataset, except that one of its attributes is scrambled. 
+CODAP will automatically compute the measures based on that dataset.
 
-![scrambler data](help/art/scrambler-data-table.png)
+(By default, the scrambled dataset is hidden -- but it's still an entire dataset.)
 
-In our example, we used the difference of means and called it `dMeanHeights` ---
-and dragged it leftwards in the table.
-The CODAP formula looks like this:
+The problem happens when we do the actual scramble. 
+We will have made a (hidden) copy of the CODAP dataset.
+Now we want to scramble, so we get all the values from all the cases,
+make an array of the values we want to scramble,
+then scramble that array.
+
+Now we want to put those local values into the appropriate slots in the CODAP dataset itself.
+We don't want to alter anything else, so we want to do an update.
+Now, in the API, we need case IDs. 
+So that means we have had to record those IDs for all (leaf) cases in the dataset. 
+That's why we read in `scrambler.scrambledDataset` right after we write it out. 
 
 ```
-mean(Height, Gender="Male") - mean(Height, Gender="Female")
+        await theScrambledOne.emitCasesFromDataset();
+        await theScrambledOne.retrieveAllDataFromCODAP(); //  redo to get IDs right
+
 ```
 
-We see how much taller boys are in the actual data (in our case, 5.87 cm in the mean).
-Then we will see how much taller they are when the data have been all scrambled. 
-Because the data are randomly assigned, sometimes the difference will be positive, sometimes negative (the "girls" will be taller).
+The method `CODAPDataset.retrieveAllDataFromCODAP()`, gets case information on every case
+(eventually), and this info includes the caseID. 
+We only need to do this once per _set_ of scrambles, that is, 
+each time the user presses a scramble button,
+because the scrambled dataset gets preserved.
 
-But is it plausible that 5.87 could appear by chance?
+Another issue is with the measures.
+Because there can be more than one case at a higher-level collection
+(the user may have an elaborate hierarchy with more than one "measures" case)
+we need to know the scrambled caseIDs _and the parentIDs_ so that we 
+can correctly construct the measures dataset. 
 
-Repeat this process a few hundred times and see.
-In this case, no: even though it's _possible_ that the data could be that extreme
-(after all, the real data _could_ come up when you scramble),
-it doesn't happen very often.
-
-
-## Analyzing your results
-
-Make a graph of the measure from the "measures" table.
-You'll see the sampling distribution.
-The picture shows the results from 200 scrambles. 
-
-![scrambler measures](help/art/scrambler-measures.png)
-
-You want to know what proportion of those measures are more extreme than your "test statistic" 
-(which in our case is 5.87, the difference in mean heights).
-
-Here's the trick:
-
-* In the graph, go to the "ruler" palette and press the **Movable Value** button. 
-* Click "Add." A movable line appears on the plot.
-* in the "ruler" palette again, click "percent."
-
-Now you can see what percentage are on each side of the line.
-
-Set the line to 5.87 (you might need to rescale) to see how unusual it is!
-(Chances are, very few of your measures, positive or negative, are that large.)
-
-## When Things Go Wrong
-
-If CODAP and the Scrambler get confused, pressing the "refresh" arrow can help (it's a circular, recyle-y arrow). 
-That will basically restart the scrambler.
-
-## Blame
-Tim Erickson, Senior Scientist, Epistemological Engineering.
+This is where the "ID dictionary" comes in.
+You'll come across it in the code. 
