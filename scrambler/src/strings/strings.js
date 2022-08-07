@@ -29,12 +29,15 @@ limitations under the License.
 scramblerStrings = {
     initializeStrings: async function (iLang = "en") {
 
-        const theStrings = scramblerStrings[iLang];
+        const theStrings = eval(iLang);     //   scramblerStrings[iLang];
 
         //  substitute all the static strings in the UI (by `id`)
-        for (const theID in theStrings.staticStrings) {
-            if (theStrings.staticStrings.hasOwnProperty(theID)) {
-                const theValue = theStrings.staticStrings[theID];
+
+        const theStaticStrings = theStrings.scrambler.staticStrings;
+
+        for (const theID in theStaticStrings) {
+            if (theStaticStrings.hasOwnProperty(theID)) {
+                const theValue = theStaticStrings[theID];
                 try {
                     document.getElementById(theID).innerHTML = theValue;
                     //  console.log(`Set string for ${theID} in ${iLang}`);
@@ -43,16 +46,34 @@ scramblerStrings = {
                 }
             }
         }
-
-        // this.setStrings();  //      other strings that need setting, not static IDs.
-
         return theStrings;
     },
 
-    setStrings : function() {
+    /**
+     * Set some strings on init or language change that only need to be set once
+     *
+     * This does NOT need to be awaited; the UI change can be delayed with no problem.
+     *
+     * @returns {Promise<void>}
+     */
+    setStrings : async function() {
+        //  update the title of the plugin
+        const tMessage = {
+            action : "update",
+            resource : "interactiveFrame",
+            values : {
+                name : DG.plugins.scrambler.name,
+                title : DG.plugins.scrambler.name,
+            }
+        }
+        try {
+            const tChangeTitleResult = await codapInterface.sendRequest(tMessage);
+        } catch (msg) {
+            alert(`problem changing the title of the plugin: ${msg}`);
+        }
 
         //  various help texts
-        document.getElementById(`scrambledDataButtonName`).title = scrambler.strings.shShowScrambledButtonHelpText;
+        document.getElementById(`scrambledDataButtonName`).title = DG.plugins.scrambler.shShowScrambledButtonHelpText;
     },
 
     languages : ['en', 'es', 'de'],
