@@ -8,8 +8,9 @@
     --bg-bottom-color : #234;
     --main-text-color : #cde;
     --main-bg-color : #bcd;
+    --code-bg-color : #567;
+    --code-font-color : #eff;
     --drag-bg-color : #def;
-
 }
 
 body {
@@ -23,8 +24,15 @@ body {
 }
 
 code {
-    color : blue;
-    font-family: monospace;
+    color : var(--code-font-color);
+    font-family: "Sirin Stencil",sans-serif;
+    background-color: var(--code-bg-color);
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 0.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #languageControl {
@@ -32,7 +40,7 @@ code {
 }
 
 .body-no-drag {
-    background-color: var(--main-bg-color);;
+    background-color: var(--main-bg-color);
 
 }
 
@@ -66,6 +74,12 @@ button {
 
 .stripe-element {
     margin-right: 1em;
+    cursor: default;
+}
+
+.flag-element {
+    margin-right: 0;
+    font-size: large;
     cursor: pointer;
 }
 

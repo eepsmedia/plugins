@@ -22,6 +22,11 @@
  *
  * @type {{doScramble: ((function(*): Promise<null>)|*), setSourceDataset: (function(*): Promise<null>), showProgress: scrambler.showProgress, refreshAllData: ((function(): Promise<void>)|*), openHelp: ((function(): Promise<void>)|*), doAlert: scrambler.doAlert, matchUItoState: scrambler.matchUItoState, datasetExists: boolean, handleBigRefresh: ((function(): Promise<void>)|*), scrattributeExists: boolean, strings: null, state: {}, constants: {scrambledPrefix: string, defaultState: {scrambleAttributeName: null, dirtyMeasures: boolean, lastDatasetName: null, iteration: number, numberOfScrambles: number, lang: string}, measuresPrefix: string, pluginName: string, scrambleSetName: string, version: string, dimensions: {width: number, height: number}}, setUpLocalScrambledDataset: (function(): Promise<*>), measuresDataset: null, copeWithAttributeDrop: ((function(*, *): Promise<void>)|*), setUpLocalMeasuresDataset: (function(): Promise<*>), currentlyScrambling: boolean, refreshScramblerStatus: scrambler.refreshScramblerStatus, refreshUIDisplay: scrambler.refreshUIDisplay, changeLanguage: ((function(): Promise<void>)|*), scrattributeIsLeaf: boolean, currentlyDraggingAnAttribute: boolean, scrambledDataset: null, pickAFlag: (function(): *), handleUIChoice: scrambler.handleUIChoice, handleSourceDatasetChange: ((function(*): Promise<void>)|*), sourceDataset: null, datasetHasMeasure: boolean, nDatasets: number, initialize: ((function(): Promise<void>)|*)}}
  */
+
+let DG = {
+    plugins : null,
+};
+
 const scrambler = {
     sourceDataset: null,        //      a CODAPDataset.
     scrambledDataset: null,     //      a CODAPDataset.
@@ -60,7 +65,8 @@ const scrambler = {
 
         //  set up the language
         this.state.lang = pluginLang.figureOutLanguage('en', scramblerStrings.languages);
-        scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+        DG.plugins = await scramblerStrings.initializeStrings(this.state.lang);
+        scramblerStrings.setStrings();
 
         await this.refreshAllData();
     },
@@ -73,37 +79,37 @@ const scrambler = {
             const tAttName = scrambler.state.scrambleAttributeName;
 
             const attReport = (this.scrattributeExists)
-                ? scrambler.strings.sfScrambledAttribute(tAttName) //    `${scrambler.strings.sScramble} ${tAttName}`
-                : scrambler.strings.sNoAttribute;
+                ? tr(DG.plugins.scrambler.sfScrambledAttribute, tAttName) //    `${scrambler.strings.sScramble} ${tAttName}`
+                : DG.plugins.scrambler.sNoAttribute;
 
             document.getElementById("attributeReport").innerHTML = attReport;
 
             if (this.datasetHasMeasure) {
                 if (this.scrattributeExists) {
                     if (this.scrattributeIsLeaf) {
-                        theHTML = scrambler.strings.sfOKtoScramble(tAttName, tDSTitle); //   `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`;
+                        theHTML = tr(DG.plugins.scrambler.sfOKtoScramble, tAttName, tDSTitle); //   `OK to scramble "${tAttName}" in dataset "${tDSTitle}"`;
                     } else {
                         const possibles = scrambler.sourceDataset.possibleScrambleAttributeNames(tAttName); //  this is an object
                         const suchAs = (possibles.array.length == 1)    //  possibles.array is the list of suitable attributes
                             ? `${possibles.array[0]}`
-                            : `${possibles.array[0]} or ${possibles.array[1]}`;
+                            : `${possibles.array[0]}</code> ${DG.plugins.scrambler.sOr} <code>${possibles.array[1]}`;
                         const colls = scrambler.sourceDataset.structure.collections;
                         const lastCollName = colls[colls.length - 1].name;
                         if (possibles.hasFormula) { //  remember: if it has a formula it will not be listed among the leaves
-                            theHTML = scrambler.strings.sfFormulaProblem(tAttName, lastCollName, suchAs);
+                            theHTML = tr(DG.plugins.scrambler.sfFormulaProblem, tAttName, lastCollName, suchAs);
                         } else {
-                            theHTML = scrambler.strings.sfNotALeafProblem(tAttName, lastCollName, suchAs);
+                            theHTML = tr(DG.plugins.scrambler.sfNotALeafProblem, tAttName, lastCollName, suchAs);
                         }
                     }
 
                 } else {
-                    theHTML = scrambler.strings.sNoScrambleAttribute;
+                    theHTML = DG.plugins.scrambler.sNoScrambleAttribute;
                 }
             } else {
-                theHTML = scrambler.strings.sfNoMeasure(tDSTitle);
+                theHTML = tr(DG.plugins.scrambler.sfNoMeasure, tDSTitle);
             }
         } else {
-            theHTML = scrambler.strings.sNoDataset;
+            theHTML = DG.plugins.scrambler.sNoDataset;
         }
 
         document.getElementById(`scramblerStatus`).innerHTML = theHTML;
@@ -434,10 +440,11 @@ const scrambler = {
         }
 
         scrambler.state.lang = theLanguages[theIndex];
-        scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+        //  scrambler.strings = await scramblerStrings.initializeStrings(this.state.lang);
+        DG.plugins = await scramblerStrings.initializeStrings(this.state.lang);
+        scramblerStrings.setStrings();
         scrambler.state.dirtyMeasures = true;
 
-        scramblerStrings.setStrings();
         scrambler.refreshUIDisplay();
     },
 
@@ -447,7 +454,8 @@ const scrambler = {
      * @returns {*}
      */
     pickAFlag: function () {
-        const theFlags = scrambler.strings.flags;
+        const theRawFlags = DG.plugins.scrambler.flags;
+        const theFlags = theRawFlags.split(",");
         const theIndex = Math.floor(Math.random() * theFlags.length);
         return theFlags[theIndex];
     },
@@ -482,8 +490,8 @@ const scrambler = {
 
     constants: {
         pluginName: "scrambler",
-        version: "1.4",
-        dimensions: {height: 188, width: 344},      //      dimensions,
+        version: "1.5",
+        dimensions: {height: 200, width: 366},      //      dimensions,
         defaultState: {
             lastDatasetName: null,
             scrambleAttributeName: null,
