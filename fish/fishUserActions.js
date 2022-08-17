@@ -101,6 +101,10 @@ fish.userActions = {
      * Vital event handler. Updates the current turn with number of fish to be caught,
      * and goes all the way to saving the current turn in the Firebase DB.
      *
+     * Note: it also saves the fact that the player is "playing" to the playerDB.
+     * (so that if the teacher paused you because you were out of the room,
+     * you get "saved."
+     *
      * @returns {Promise<void>}
      */
     catchFish: async function () {
@@ -148,7 +152,8 @@ fish.userActions = {
             thePromises.push(fireConnect.newTurnRecord(theNewTurn));
 
             //  update the player in the database  todo: get rid of dependency on player database every turn
-            thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState}));
+
+            thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState, playing : true}));
 
             await Promise.all(thePromises);
 

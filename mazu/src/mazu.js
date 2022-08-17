@@ -26,11 +26,10 @@ limitations under the License.
 
 */
 
-/*
-Local testing: http://localhost:3000/plugins/mazu
- */
 
-
+let DG = {
+    plugins : null,
+};
 
 const mazu =  {
 
@@ -38,6 +37,8 @@ const mazu =  {
     model : null,
 
     initialize : async function() {
+        DG.plugins = en;        //  temporary til we internationalize
+        connect.initialize();
 
         this.loginName = "";
 
@@ -78,6 +79,7 @@ const mazu =  {
         ui.update();
     },
 
+
     componentDidMount() {
         /*
                 this.timerID = setInterval(
@@ -85,6 +87,14 @@ const mazu =  {
                     mazu.constants.kTimerInterval
                 );
         */
+    },
+
+    /**
+     * sleep or wake the player with the given name.
+     * @param iName
+     */
+    async handleSleepWake(iName) {
+        await this.model.sleepWakePlayerNamed(iName);
     },
 
     componentWillUnmount() {

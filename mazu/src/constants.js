@@ -30,7 +30,7 @@ limitations under the License.
 
 mazu.constants = {
 
-    version: "2022c",
+    version: "2022d",
 
     kTimerInterval: 2500,       //      milliseconds, ordinarily 1000
     kUsingTimer: true,
@@ -48,6 +48,14 @@ mazu.constants = {
     kInProgressString: "in progress",
     kEndedString: "game over",
     kWaitingString: "waiting",      //
+
+    //  CODAP strings
+    kiFrameName : "mazu",
+    kiFrameTitle : "Mazu, Goddess of the Sea",
+    kMazuDatasetName : "game records",
+    kMazuDatasetTitle : "game records",
+    kMazuCollectionName : "player-turns",
+    kMazuCollectionTitle : "player turns",
 }
 
 /**
@@ -57,7 +65,6 @@ mazu.constants = {
  * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
  */
 mazu.fishGameParameters = {
-
 
     albacore: {
         starter: true,

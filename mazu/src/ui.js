@@ -34,8 +34,6 @@ const ui = {
     },
 
     makeHeaderGuts : function() {
-        let guts = "";
-
         if (mazu.playing() || mazu.isGameOver()) {
             guts = `
             <div class="ui-stripe-element">
@@ -83,13 +81,16 @@ const ui = {
                 tBalance = myTurn.after;
             }
 
+            const thePlayingIcon = p.playing ? "./art/slide-on-simplest.png" : "./art/slide-off-simplest.png";
+
             return (
                 `<tr key=${p.playerName} class="playerRow">
-                <td>${p.playerName}</td>
-                <td>${tWanted}</td>
-                <td>${tBalance}</td>
-                <td>${tPlayerState}</td>
-            </tr>`
+                    <td>${p.playerName}</td>
+                    <td>${tWanted}</td>
+                    <td>${tBalance}</td>
+                    <td>${tPlayerState}</td>
+                    <td><img src="${thePlayingIcon}" height="18" onclick="mazu.handleSleepWake('${p.playerName}')"></td>
+                </tr>`
             )
         } else {
             //  we have a player, but no turns yet (mazu has quit and rejoined before game starts)
@@ -108,17 +109,22 @@ const ui = {
     playerList: function (props) {
 
         const thePlayers = mazu.model.thePlayers;
+        const playingPlayers = mazu.model.playingPlayers();
         const theTurns = mazu.model.allTurns;
         const listGuts = thePlayers.map(
             (p) => this.playerRow(p, theTurns)
         );
 
-        const headerText = `${thePlayers.length} ${thePlayers.length === 1 ? "player" :"players"}`;
+        const headerText = (playingPlayers.length === thePlayers.length)
+            ? `${playingPlayers.length} ${playingPlayers.length === 1 ? "player" :"players"}`
+            : `${playingPlayers.length} ${playingPlayers.length === 1 ? "player is" :"players are"}
+                    playing out of ${thePlayers.length} total`;
         const tableHeader = `<tr>
                 <th>name</th>
                 <th>wants</th>
                 <th>balance</th>
                 <th>status</th>
+                <th>playing</th>
             </tr>`;
 
         const wholeThing = thePlayers.length > 0 ?

@@ -143,6 +143,8 @@ const fireConnect = {
         /**
          * Let's be careful here.
          * This is ONLY in order to tell, locally, who has moved and who has not.
+         *
+         * Aug 2022: maybe also to tell if the game thinks we're currently playing or not.
          */
         this.unsubscribeFromPlayers = this.gameDR.collection("players")
             .onSnapshot((iPlayers) => {

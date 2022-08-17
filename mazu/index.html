@@ -6,6 +6,11 @@
 
     http://localhost/plugins/mazu
 
+    or, local CODAP,
+
+    http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/mazu
+
+
 -->
 
 <!DOCTYPE html>
@@ -13,6 +18,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Mazu - Goddess of the Sea</title>
+
+    <!--    CODAP setup-->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
 
     <!--firebase setup-->
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
@@ -37,6 +47,10 @@
     <script src="src/strings.js?000"></script>
     <script src="src/words.js?000"></script>
 
+    <script src="src/connect.js?000"></script>
+
+    <script src="src/strings.en.js?000"></script>
+
 </head>
 
 
@@ -49,7 +63,6 @@
              src="art/refresh.png"  class="ui-stripe-element" />
         <p class="ui-stripe-element">goddess of the sea</p>
         <button class="ui-stripe-element" id="logout-button" onclick="mazu.initialize()" >log out</button>
-
     </div>
 
     <div id="mazuLoginDiv" class="ui-stripe">
@@ -58,6 +71,8 @@
     </div>
 
     <div id="mazuHeader" class="ui-stripe"></div>
+
+<!--    div to hold the startup UI for making a new game (or joining an old one)-->
 
     <div id="mazuStartDiv" class="ui-stripe">
         <div id="newOrOldRadioButtons" class="ui-stripe-element"></div>

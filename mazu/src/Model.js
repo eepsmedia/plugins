@@ -89,6 +89,9 @@ class Model extends Object {
     }
 
     async gotAllTurns(iAllTurns) {
+        if (iAllTurns && !this.allTurns.length) {       //  first time through; need to put these old turns into CODAP
+            connect.emitAllTurns(this.theGame, iAllTurns);
+        }
         this.allTurns = iAllTurns;
         this.gotNewData('allTurns');
     }
@@ -99,7 +102,7 @@ class Model extends Object {
         if (oldPlayers.length !== this.thePlayers.length) {
             console.log(`number of players changes from ${oldPlayers.length} to ${this.thePlayers.length}`);
         }
-        this.thePlayers = iPlayers;
+        //  this.thePlayers = iPlayers;
         this.gotNewData('allPlayers');
     }
 
@@ -126,11 +129,14 @@ class Model extends Object {
         const tN0 = Number(this.theGame['population']);
 
         const theTurns = this.thisYearsTurns();
-        const nPlayers = this.thePlayers.length;
+        const playingPlayers = this.playingPlayers();
+        const nPlayers = playingPlayers.length;         //  was this.thePlayers.length
 
         let tTotalCaughtFish = theTurns.reduce(function (a, v) {
             return {caught: a.caught + Number(v.caught)}
         }, {caught: 0});     //  count up how many fish got caught...
+
+        console.log(`counted ${theTurns.length} turns; compare ${nPlayers} "playing" players`);
 
         //  fish ecology
 
@@ -143,7 +149,7 @@ class Model extends Object {
         }
         this.theGame["population"] = newPopulation;
 
-        const tUnitPrice = this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers);
+        const tUnitPrice = nPlayers ? this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers) : 0;
         console.log(`${this.theGame["turn"]}: pop: ${tN0} to ${newPopulation} caught: ${tTotalCaughtFish.caught} Unit price: ${tUnitPrice}`);
 
         //  update the local copy of the turns
@@ -154,10 +160,11 @@ class Model extends Object {
             t.income = tUnitPrice * Number(t.caught);
             const tAfter = Number(t.before) + t.income - Number(t.expenses);
             t.after = Math.round(tAfter);
+            t.truePopulation = newPopulation;
         });
 
-
-        let thePromises = [];    //  for updating the game in the DB
+        let thePromises = [];       //  for updating the game in the firebaseDB
+        let theItemValues = [];     //  for uploading into CODAP
 
         //  load all the turns to the turnsDB
         //  while we're there, update player records for balance and playerState
@@ -165,6 +172,7 @@ class Model extends Object {
         theTurns.forEach(
             (t) => {
                 thePromises.push(fireConnect.uploadTurnToDB(t));
+                theItemValues.push(t);
 
                 //  todo: do we really need to update the player? Redundant with turns?
                 const playerStuff = {
@@ -174,6 +182,8 @@ class Model extends Object {
                 thePromises.push(fireConnect.updatePlayerToDB(t.playerName, playerStuff));
             }
         );
+
+        connect.emitAllTurns(this.theGame, theItemValues);
 
         //  Turns are done; see if the game is over; update the game.
 
@@ -197,6 +207,34 @@ class Model extends Object {
         }
         ui.update();
     }
+
+    /**
+     * Put the player to sleep or wake them;
+     * this sets the player.playing flag, and also changes that flag in the firebase DB.
+     * Plus any relevant side effects
+     *
+     * @param p
+     */
+    async sleepWakePlayerNamed(iName) {
+        //  compute p...
+        let player = null;
+        this.thePlayers.forEach( p => {
+            if (p.playerName === iName) {
+                player = p;
+            }
+        })
+        if (player) {
+            if (player.playing) {
+                player.playing = false;
+            } else {
+                player.playing = true;
+            }
+        }
+
+        await fireConnect.updatePlayerToDB(player.playerName, {playing : player.playing});
+
+        ui.update();
+    };
 
     births() {
         let tPop = this.theGame.population;
@@ -286,7 +324,7 @@ class Model extends Object {
 
     /**
      * Filter the `allTurns` item to focus on the current year
-     * @returns {*}
+     * @returns  the array of turns
      */
     thisYearsTurns() {
         const year = this.theGame.turn;
@@ -315,7 +353,18 @@ class Model extends Object {
      * @returns {[]}
      */
     playingPlayers() {
-        return this.thePlayers;
+        let playingPlayers = [];
+
+        this.thePlayers.forEach( p => {
+            if (p.playing === undefined) {
+                p.playing = true;
+            }
+
+            if (p.playing) {
+                playingPlayers.push(p);
+            }
+        })
+        return playingPlayers;
     }
 
     /**

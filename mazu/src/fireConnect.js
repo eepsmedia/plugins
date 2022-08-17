@@ -176,7 +176,6 @@ const fireConnect = {
         this.unsubscribeFromGame = this.receiveGameNotification(this.gameDR);
         this.unsubscribeFromPlayers = this.receivePlayersNotification(this.playersCR);
         this.unsubscribeFromTurns = this.receiveTurnsNotification(this.turnsCR);
-
     },
 
     receiveGameNotification : function(iGameDR) {
