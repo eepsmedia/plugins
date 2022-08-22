@@ -26,6 +26,17 @@ limitations under the License.
 
 */
 
+const fishStrings = {
+
+    initialize : async function() {
+
+        const lang = "en";      //  set the language
+
+        const out = eval(lang);     //  this will tirn into DG.plugins.fish
+
+        return out;
+    }
+}
 
 /**
  * FishStrings == FS
@@ -110,22 +121,27 @@ fish.localize = {
 
 let FS = {
 
-
     setBasicStrings: function () {
+        document.getElementById("automateCatchLabel").innerHTML = DG.plugins.fish.staticStrings.automateCatchLabelText;
+        document.getElementById("playerNameLabel").innerHTML = DG.plugins.fish.staticStrings.playerNameLabelText;
+
+        document.getElementById("fishQuantityLabel").innerHTML = DG.plugins.fish.staticStrings.fishQuantityLabelText;
+        document.getElementById("gameCodeTextFieldLabel").innerHTML = DG.plugins.fish.staticStrings.gameCodeTextFieldLabelText;
+        document.getElementById("joinGameButton").innerHTML = DG.plugins.fish.staticStrings.joinGameButton;
+        document.getElementById("catchButton").innerHTML = DG.plugins.fish.staticStrings.catchButton;
+        document.getElementById("setNameButton").innerHTML = DG.plugins.fish.staticStrings.setNameButton;
+
+
+
         $("#automateChairLabel").html(fish.strings.automateChairLabelText);
-        $("#automateCatchLabel").html(fish.strings.automateCatchLabelText);
-        $("#fishQuantityLabel").html(fish.strings.fishQuantityLabelText);
-        $("#playerNameLabel").html(fish.strings.playerNameLabelText);
-        $("#joinExistingGameButtonLabel").html(fish.strings.joinExistingGameButtonLabelText);
+        //  $("#automateCatchLabel").html(fish.strings.automateCatchLabelText);
+        //  $("#playerNameLabel").html(fish.strings.playerNameLabelText);
         $("#makeNewGameButtonLabel").html(fish.strings.makeNewGameButtonLabelText);
-        $("#gameCodeTextFieldLabel").html(fish.strings.gameCodeTextFieldLabelText);
         $("#gameLevelMenuLabel").html(fish.strings.gameLevelMenuLabelText);
         $('#youAreChairText').html(fish.strings.youAreChairText);
+        //  document.getElementById("joinExistingGameButtonLabel").innerHTML = DG.plugins.fish.staticStrings.joinExistingGameButtonLabelText;
 
-        $("#setNameButton").text(fish.strings.setNameButton);
         $("#createGameButton").text(fish.strings.createGameButton);
-        $("#joinGameButton").text(fish.strings.joinGameButton);
-        $("#catchButton").text(fish.strings.catchButton);
         $("#chairEndsTurnButton").text(fish.strings.chairEndsTurnButton);
         $("#startNewGameButton").text(fish.strings.startNewGameButton);
 
@@ -151,12 +167,20 @@ let FS = {
         */
 
         automateChairLabelText: "automate market? ",
-        automateCatchLabelText: "automate? ",
+        //  automateCatchLabelText: "automate? ",
+
+/*
         fishQuantityLabelText: "How many fish? ",
-        playerNameLabelText: "What's your name? ",
         joinExistingGameButtonLabelText: "join existing game",
-        makeNewGameButtonLabelText: "make new game",
         gameCodeTextFieldLabelText: "game code: ",
+        joinGameButton: "Join",
+        catchButton: "Catch",
+        setNameButton: "Set name",
+*/
+
+
+        //  playerNameLabelText: "What's your name? ",
+        makeNewGameButtonLabelText: "make new game",
         gameLevelMenuLabelText: "Game level: ",
         youAreChairText: 'You are in charge of the fish market.',
 
@@ -169,10 +193,7 @@ let FS = {
         lostText: "lost",
         drawText: "neither won nor lost",
 
-        setNameButton: "Set name",
         createGameButton: "Create",
-        joinGameButton: "Join",
-        catchButton: "Catch",
         chairEndsTurnButton: "do fish market",
         startNewGameButton: "OK, start a new game",
 
@@ -196,22 +217,28 @@ let FS = {
             }
         },
 
+        /**
+         * String to report how many players are in the game;
+         * used for the sitrep.
+         *
+         * @returns {string}
+         */
         howManyPlayersString: function () {
             let out = "";
 
             let tN = fish.players.length;
             switch (tN) {
                 case 0:
-                    out += "You will be the first player.";
+                    out += DG.plugins.fish.firstPlayer;
                     break;
                 case 1:
-                    out += "You are playing solo.";
+                    out += DG.plugins.fish.playingSolo;
                     break;
                 case 2:
-                    out += "There is one other player.";
+                    out += DG.plugins.fish.oneOtherPlayer;
                     break;
                 default:
-                    out += "There are " + (tN - 1) + " other players. ";
+                    out += tr(DG.plugins.fish.manyOtherPlayers, tN-1);
                     break
             }
             return out;
@@ -232,7 +259,7 @@ let FS = {
         makeWaitingText: function () {
             const playerReport = fish.otherPlayersInfo();
             if (playerReport.allPlayers.length <= 0) {
-                return "No players yet!";
+                return DG.plugins.fish.noPlayersYet;
             }
             let out = "";
 
@@ -242,28 +269,29 @@ let FS = {
                 waitingFor.splice(yourIndex, 1);        //  remove the element there
             }
             if (yourIndex > -1) {
-                out += "Waiting for <strong>YOU</strong>";
+                out += DG.plugins.fish.waitingForYou;
                 if (waitingFor.length === 1) {
-                    out += " and " + waitingFor[0] + ".";
+                    out += ` ${DG.plugins.fish.sAnd} ${waitingFor[0]}.`;
                 } else if (waitingFor.length > 0) {
-                    out += " and " + waitingFor.length + " more.";
+                    out +=  tr(DG.plugins.fish.andHowManyMore, waitingFor.length);
                 } else {
                     out += ".";
                 }
-                out += " Catch fish!";
+                out += ` ${DG.plugins.fish.catchFishCommand}`;
+
             } else {
                 switch (waitingFor.length) {
                     case 0:
                         out += "Everyone has fished.";
                         break;
                     case 1:
-                        out += "Waiting for " + waitingFor[0] + ".";
+                        out += `${DG.plugins.fish.waitingFor} ${waitingFor[0]}.`;
                         break;
                     case 2:
-                        out += "Waiting for " + waitingFor[0] + " and " + waitingFor[1] + ".";
+                        out += `${DG.plugins.fish.waitingFor} ${waitingFor[0]} ${DG.plugins.fish.sAnd} ${waitingFor[1]}.`;
                         break;
                     default:
-                        out += "Waiting for " + waitingFor[0] + " and " + (waitingFor.length - 1) + " more.";
+                        out += `${DG.plugins.fish.waitingFor} ${waitingFor[0]}  tr(DG.plugins.fish.andHowManyMore, waitingFor.length - 1)`;
                         break;
                 }
             }

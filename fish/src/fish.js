@@ -26,6 +26,10 @@ limitations under the License.
 
 */
 
+let DG = {
+    plugins : null,
+};
+
 /**
  * Top-level singleton, a global.
  *
@@ -82,7 +86,7 @@ let fish = {
     /**
      * Set up initial values, initialize other objects with initializers.
      */
-    initialize: function () {
+    initialize: async function () {
         this.gameCodeFromURL = this.extractGameCodeFromURL();
         fish.setLanguageFromURL();
         fish.state = fish.freshState;       //  todo: implement saving and restoring
@@ -270,9 +274,13 @@ let fish = {
      * Set the UI language
      * @param iCode     two-letter language code, e.g., en, de, es.
      */
-    setLanguage: function (iCode) {
+    setLanguage: async function (iCode) {
         fish.language = iCode;       //  put the thing in here to choose
         fish.strings = FS[iCode];
+
+        //  initialize strings
+        DG.plugins = await fishStrings.initialize();
+
         FS.setBasicStrings();           //  replace strings in the UI
 
     },

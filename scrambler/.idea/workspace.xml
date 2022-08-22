@@ -5,16 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.5. Language json source files">
-      <change afterPath="$PROJECT_DIR$/../mazu/src/connect.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../mazu/src/strings.en.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fish/fireConnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/fireConnect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fish/fishUserActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/fishUserActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/src/Model.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/src/Model.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/src/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/src/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/src/fireConnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/src/fireConnect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/src/mazu.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/src/mazu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/src/ui.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/src/strings/strings.en.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/src/strings/tr.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../nos2/.idea/nos2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fireConnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fireConnect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fish.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fish.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fishCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fishCODAPConnector.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fishGameConfigurations.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fishGameConfigurations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fishHistoricalData.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fishHistoricalData.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fishStrings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/strings/fishStrings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fishUI.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fishUI.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/fishUserActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/fishUserActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/sql/fish_5-23-18_10-46.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +107,8 @@
       <workItem from="1658784504168" duration="46321000" />
       <workItem from="1659103687308" duration="11759000" />
       <workItem from="1660087129290" duration="1382000" />
-      <workItem from="1660486474519" duration="8262000" />
+      <workItem from="1660486474519" duration="12754000" />
+      <workItem from="1660795113488" duration="598000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>
