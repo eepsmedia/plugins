@@ -1,0 +1,174 @@
+/*
+==========================================================================
+
+ * Created by tim on 4/20/18.
+ 
+ 
+ ==========================================================================
+fish in fish
+
+Author:   Tim Erickson
+
+Copyright (c) 2018 by The Concord Consortium, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+*/
+
+
+
+body {
+    margin : 0px;
+    height : 320px;
+    font-family: 'IBM Plex Sans Condensed', "Helvetica Neue", Verdana, sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    background: linear-gradient(#dde, #aab );
+    color : #333;
+    /* max-width: 400px; */
+}
+
+.fish-ui-stripe {
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top : 6px;
+    padding-bottom : 6px;
+    display : flex;
+    min-height: 2em;
+    align-items: center;
+    flex-direction: row;
+}
+
+.fish-stripe-element {
+    margin-right: 1em;
+    font-size: 14px;
+    display : block;
+}
+
+#fish {
+    padding : 0;
+    margin : 0;
+}
+
+#bannerDiv {
+}
+
+#playerName {
+    width : 7em;
+    font-family: 'Rokkitt',sans-serif; font-size: 14px;
+}
+
+#howManyFish {
+    width: 4em;
+}
+
+div#needPlayerNameDIV {
+    background-color: #cde;
+}
+
+div#joinGameDIV {
+    /*height: 80px;*/
+}
+
+#gameInProgress {
+    /*height: 80px;*/
+}
+
+#winLoseDialog {
+    /*height: 96px;*/
+    color: white;
+    background: linear-gradient(#889, #667 );
+    padding: 1em;
+}
+
+
+div#statusDIV {
+    height : 40px;
+    position: relative;
+    background-color: #def;
+}
+
+div#statusText{
+    position: absolute;
+    top: 50%; transform: translate(0, -50%); /* center vert, do nothing horiz */
+}
+
+div#fishingDIV {
+    background-color: #cde;
+}
+
+div#showSeaDIV {
+    display : block;
+    position : relative;
+}
+
+div#catchFishDIV {
+    display: flex;
+    background-color: #cde;
+}
+
+div#sellingDIV {
+    background-color: bisque;
+}
+
+div#showMarketDIV {
+    position : relative;
+}
+
+
+
+div#noticeDIV {
+    background-color: #bcd;
+}
+
+div#aboutPlayersDIV {
+    background-color: #789;
+}
+
+#clock {
+    background-color: yellow;
+    position : absolute;
+    right : 8px;
+    height : 40px;
+    width : 40px;
+    top : 50%; transform : translate(0%, -50%);
+}
+
+
+#statusYear {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+
+
+#aboutPlayersText {
+    color : white;
+    bottom: 42px;
+}
+
+#debug {
+    font-family: 'IBM Plex Sans Condensed', "Helvetica Neue", Verdana, sans-serif;
+    font-size: 10px;
+    color : white;
+    bottom: 8px;
+}
+
+
+.info {
+    font-family: 'Rokkitt',sans-serif;
+    /* color : #227;    */
+    font-weight: 700;
+    /*font-size: 14px;*/
+}
+

@@ -26,17 +26,6 @@ limitations under the License.
 
 */
 
-const fishStrings = {
-
-    initialize : async function() {
-
-        const lang = "en";      //  set the language
-
-        const out = eval(lang);     //  this will tirn into DG.plugins.fish
-
-        return out;
-    }
-}
 
 /**
  * FishStrings == FS
@@ -53,38 +42,11 @@ const fishStrings = {
  */
 
 fish.localize = {
-    /*
-        localizeValuesObject: function (iValues) {
-            let out = {};
-            const lang = fish.language;
-
-            for (var vName in iValues) {
-                if (iValues.hasOwnProperty(vName)) {
-                    let tVarName = this.getLocalVariableName(vName, lang);
-                    out[tVarName] = iValues[vName];
-                }
-            }
-            return out;
-        },
-
-        getLocalVariableName: function (iName, iLang) {
-            let out = iName;
-            if (iLang !== "en") {
-                try {
-                    let tForeignName = this.attributeNameTranslations[iName][iLang];
-                    out = tForeignName;
-                } catch {
-                    out = iName;
-                }
-            }
-            return out;
-        },
-    */
 
     attributeNameTranslations: {
         year: {es: "año", de: "Jahr"},
         seen: {es: "visto", de: "gesehen"},
-        want: {es: "querría", de: "Jahr"},
+        want: {es: "querría", de: "möchte"},
         caught: {es: "atrapó", de: "gefangen"},
         before: {es: "antes", de: "vor"},
         expenses: {es: "gastos", de: "Kosten"},
@@ -97,18 +59,19 @@ fish.localize = {
         level: {es: "nivel", de: "Stufe"},
     },
 
-    getHistoricalDataContextSetupObject: function () {
+    getHistoricalDataContextSetupObject : function() {
 
         if (fish.strings.historicalDataContextSetupObject === undefined) {
             out = FS.en.historicalDataContextSetupObject;
-        } else {
+        }
+        else {
             out = fish.strings.historicalDataContextSetupObject;
         }
 
         return out;
     },
 
-    getFishDataContextSetupObject: function () {
+    getFishDataContextSetupObject : function() {
         if (fish.strings.fishDataContextSetupObject === undefined) {
             out = FS.en.fishDataContextSetupObject;
         } else {
@@ -120,31 +83,21 @@ fish.localize = {
 };
 
 let FS = {
-
-    /**
-     * Set the static, easily translated, use id to find them, UI elements to the current language
-     */
     setBasicStrings: function () {
-        document.getElementById("automateCatchLabel").innerHTML = DG.plugins.fish.staticStrings.automateCatchLabelText;
-        document.getElementById("playerNameLabel").innerHTML = DG.plugins.fish.staticStrings.playerNameLabelText;
-
-        document.getElementById("fishQuantityLabel").innerHTML = DG.plugins.fish.staticStrings.fishQuantityLabelText;
-        document.getElementById("gameCodeTextFieldLabel").innerHTML = DG.plugins.fish.staticStrings.gameCodeTextFieldLabelText;
-        document.getElementById("joinGameButton").innerHTML = DG.plugins.fish.staticStrings.joinGameButton;
-        document.getElementById("catchButton").innerHTML = DG.plugins.fish.staticStrings.catchButton;
-        document.getElementById("setNameButton").innerHTML = DG.plugins.fish.staticStrings.setNameButton;
-
-
-
         $("#automateChairLabel").html(fish.strings.automateChairLabelText);
-        //  $("#automateCatchLabel").html(fish.strings.automateCatchLabelText);
-        //  $("#playerNameLabel").html(fish.strings.playerNameLabelText);
+        $("#automateCatchLabel").html(fish.strings.automateCatchLabelText);
+        $("#fishQuantityLabel").html(fish.strings.fishQuantityLabelText);
+        $("#playerNameLabel").html(fish.strings.playerNameLabelText);
+        $("#joinExistingGameButtonLabel").html(fish.strings.joinExistingGameButtonLabelText);
         $("#makeNewGameButtonLabel").html(fish.strings.makeNewGameButtonLabelText);
+        $("#gameCodeTextFieldLabel").html(fish.strings.gameCodeTextFieldLabelText);
         $("#gameLevelMenuLabel").html(fish.strings.gameLevelMenuLabelText);
         $('#youAreChairText').html(fish.strings.youAreChairText);
-        //  document.getElementById("joinExistingGameButtonLabel").innerHTML = DG.plugins.fish.staticStrings.joinExistingGameButtonLabelText;
 
+        $("#setNameButton").text(fish.strings.setNameButton);
         $("#createGameButton").text(fish.strings.createGameButton);
+        $("#joinGameButton").text(fish.strings.joinGameButton);
+        $("#catchButton").text(fish.strings.catchButton);
         $("#chairEndsTurnButton").text(fish.strings.chairEndsTurnButton);
         $("#startNewGameButton").text(fish.strings.startNewGameButton);
 
@@ -170,132 +123,90 @@ let FS = {
         */
 
         automateChairLabelText: "automate market? ",
-        //  automateCatchLabelText: "automate? ",
-
-/*
+        automateCatchLabelText: "automate? ",
         fishQuantityLabelText: "How many fish? ",
+        playerNameLabelText: "What's your name? ",
         joinExistingGameButtonLabelText: "join existing game",
-        gameCodeTextFieldLabelText: "game code: ",
-        joinGameButton: "Join",
-        catchButton: "Catch",
-        setNameButton: "Set name",
-*/
-
-
-        //  playerNameLabelText: "What's your name? ",
         makeNewGameButtonLabelText: "make new game",
+        gameCodeTextFieldLabelText: "game code: ",
         gameLevelMenuLabelText: "Game level: ",
         youAreChairText: 'You are in charge of the fish market.',
 
-        youAreFishingText: 'You are fishing. Catch fish!<br>Enter a number and press <b>catch</b>.',
-
         waitingToStartText: "Waiting to start a game!",
         successfullyJoinedText: "Successfully joined ",
-        enterAndPressCatchText: "Enter a number and press <b>Catch</b>.",
+        enterAndPressCatchText: "Enter a number and press <b>catch</b>.",
         wonText: "won",
         lostText: "lost",
-        drawText: "neither won nor lost",
 
+        setNameButton: "Set name",
         createGameButton: "Create",
+        joinGameButton: "Join",
+        catchButton: "Catch",
         chairEndsTurnButton: "do fish market",
         startNewGameButton: "OK, start a new game",
 
-        completedAllUpdates: "completed all updates for year ",
-        youWonGame: "You won game",
-        youLostGame: "You lost game",
-        youDrewGame: "You neither won nor lost game",
-        because: "because",
-        youCanDoBetter: "Your business survived and so did the fish...but you can do better!",
+        completedAllUpdates : "completed all updates for year ",
+        youWonGame : "You won game",
+        youLostGame : "You lost game",
+        because : "because",
 
-        fishAtMarketText: function () {
-            const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";
-            if (!fish.state.playerName) {
-                return `Waiting for you to log in`;
-            } else {
-                if (number) {
-                    return `You have ${number} fish at the fish market. <br>Wait for them to be sold`
-                } else {
-                    return `You have no fish at the fish market. <br>Wait for the turn to end`
-                }
-            }
-        },
-
-        /**
-         * String to report how many players are in the game;
-         * used for the sitrep.
-         *
-         * @returns {string}
-         */
-        howManyPlayersString: function () {
+        makeAboutPlayersText: function () {
             let out = "";
 
-            let tN = fish.players.length;
-            switch (tN) {
-                case 0:
-                    out += DG.plugins.fish.firstPlayer;
-                    break;
-                case 1:
-                    out += DG.plugins.fish.playingSolo;
-                    break;
-                case 2:
-                    out += DG.plugins.fish.oneOtherPlayer;
-                    break;
-                default:
-                    out += tr(DG.plugins.fish.manyOtherPlayers, tN-1);
-                    break
-            }
-            return out;
-        },
+            let tN = fish.state.OKtoEndTurnObject.allPlayers.length;
 
+            out += (tN === 1) ?
+                "You are playing solo. " :
+                ((tN === 2) ? "There is one other player. " : "There are " + (tN - 1) + " other players. ");
 
-        sitrep: function () {
-            let out = this.howManyPlayersString();
             out += "<br>";
-            out += this.makeWaitingText();
+            out += this.makeWaitingText(fish.state.OKtoEndTurnObject, fish.state.playerName);
+
+
             return out;
         },
 
         /**
-         * Called only from this file.
-         * text telling who we're waiting for.
+         * Called only from this file
+         *
+         * @param iWaiting  array of names of waiters
+         * @param iYou      your name
          */
-        makeWaitingText: function () {
-            const playerReport = fish.otherPlayersInfo();
-            if (playerReport.allPlayers.length <= 0) {
-                return DG.plugins.fish.noPlayersYet;
-            }
+        makeWaitingText(iEndTurnObject, iYou) {
+
             let out = "";
-
-            let waitingFor = playerReport.missing;
-            const yourIndex = waitingFor.indexOf(fish.state.playerName);
-            if (yourIndex > -1) {
-                waitingFor.splice(yourIndex, 1);        //  remove the element there
-            }
-            if (yourIndex > -1) {
-                out += DG.plugins.fish.waitingForYou;
-                if (waitingFor.length === 1) {
-                    out += ` ${DG.plugins.fish.sAnd} ${waitingFor[0]}.`;
-                } else if (waitingFor.length > 0) {
-                    out +=  tr(DG.plugins.fish.andHowManyMore, waitingFor.length);
+            if (iEndTurnObject.OK) {
+                if (fish.state.isChair) {
+                    out += "Waiting for you to press the fish market button. ";
                 } else {
-                    out += ".";
+                    out += "Your fish are at the market. ";
                 }
-                out += ` ${DG.plugins.fish.catchFishCommand}`;
-
             } else {
-                switch (waitingFor.length) {
-                    case 0:
-                        out += "Everyone has fished.";
-                        break;
-                    case 1:
-                        out += `${DG.plugins.fish.waitingFor} ${waitingFor[0]}.`;
-                        break;
-                    case 2:
-                        out += `${DG.plugins.fish.waitingFor} ${waitingFor[0]} ${DG.plugins.fish.sAnd} ${waitingFor[1]}.`;
-                        break;
-                    default:
-                        out += `${DG.plugins.fish.waitingFor} ${waitingFor[0]}  tr(DG.plugins.fish.andHowManyMore, waitingFor.length - 1)`;
-                        break;
+                let waitingFor = iEndTurnObject.missing;
+                const yourIndex = waitingFor.indexOf(iYou);
+                if (yourIndex > -1) {
+                    waitingFor.splice(yourIndex, 1);        //  remove the element there
+                }
+                if (yourIndex > -1) {
+                    out += "Waiting for <strong>YOU</strong>";
+                    if (waitingFor.length > 0) {
+                        out += " and " + waitingFor.length + " more.";
+                    } else {
+                        out += ".";
+                    }
+                    out += " Catch fish!";
+                } else {
+                    switch (waitingFor.length) {
+                        case 1:
+                            out += "Waiting for " + waitingFor[0] + ".";
+                            break;
+                        case 2:
+                            out += "Waiting for " + waitingFor[0] + " and " + waitingFor[1] + ".";
+                            break;
+                        default:
+                            out += "Waiting for " + waitingFor[0] + " and " + (waitingFor.length - 1) + " more.";
+                            break;
+                    }
                 }
             }
             return out;
@@ -316,12 +227,7 @@ let FS = {
 
                     attrs: [ // note how this is an array of objects.
                         {name: "year", type: 'numeric', precision: 0, description: "game year (i.e., turn)"},
-                        {
-                            name: "seen",
-                            type: 'numeric',
-                            precision: 1,
-                            description: "how many fish you saw before you started fishing"
-                        },
+                        {name: "seen", type: 'numeric', precision: 1, description: "how many fish you saw"},
                         {name: "want", type: 'numeric', precision: 1, description: "how many fish you wanted to catch"},
                         {name: "caught", type: 'numeric', precision: 1, description: "how many fish you caught"},
                         {
@@ -364,12 +270,7 @@ let FS = {
 
                     attrs: [ // note how this is an array of objects.
                         {name: "year", type: 'numeric', precision: 0, description: "game year (i.e., turn)"},
-                        {
-                            name: "seen",
-                            type: 'numeric',
-                            precision: 1,
-                            description: "how many fish you saw before you started fishing"
-                        },
+                        {name: "seen", type: 'numeric', precision: 1, description: "how many fish you saw"},
                         {name: "want", type: 'numeric', precision: 1, description: "how many fish you wanted to catch"},
                         {name: "caught", type: 'numeric', precision: 1, description: "how many fish you caught"},
                         {
@@ -396,7 +297,7 @@ let FS = {
 
 
         makeRecentTurnReport: function (iTurn) {
-            let out = "Your last full turn was year " + iTurn.turn
+            let out = "Your last full turn was year " + iTurn.year
                 + ".<br>You saw " + iTurn.seen + ", wanted " + iTurn.want
                 + " and caught " + iTurn.caught + ".<br>You sold them for $"
                 + iTurn.unitPrice + " each for a total of $" + iTurn.income + ".";
@@ -418,72 +319,41 @@ let FS = {
             return out;
         },
 
-        constructGameEndMessage: function () {
-
-            const theGame = fish.gameFromDB;
+        constructGameEndMessageFrom: function (iReason) {
 
             let out = "";
 
-            let tMessageParts = [];
+            if (iReason.end) {
+                let tMessageParts = [];
 
-            if (theGame.outOfTime) {
-                tMessageParts.push(`The game ends in ${theGame.endingTurn}.<br>`);
-            } else {
-                tMessageParts.push(`The game ended early in ${theGame.turn}.<br>`);
-            }
+                if (iReason.time) {
+                    tMessageParts.push("the game ends at year " + fish.game.endingTurn);
+                }
 
-            switch (theGame.fishStars) {
-                case 5:
-                    tMessageParts.push("🐟🐟🐟🐟🐟 Well done! Five fish out of five! " +
-                        "The fish population is healthy --- and so large that you can catch many fish " +
-                        "without reducing the fish population. " +
-                        "Fishing is now a sustainable source of food.");
-                    break;
-                case 4:
-                    tMessageParts.push("🐟🐟🐟🐟 Your rating is four fish (out of five). " +
-                        "The total number of fish has increased a lot! " +
-                        "You can now catch more fish without reducing the population. " +
-                        "Can you make it to five stars?");
-                    break;
-                case 3:
-                    tMessageParts.push("🐟🐟🐟 Your rating is three fish (out of five). " +
-                        "The total number of fish has increased! Your fishing business is doing well, but it could be better.");
-                    break;
-                case 2:
-                    tMessageParts.push("🐟🐟 Your rating is two fish (out of five). " +
-                        "The total number of fish has gone down. Your fishing business survived, " +
-                        "but the fish population is not healthy.");
-                    break;
-                case 1:
-                    tMessageParts.push("🐟 Your rating is one fish (out of five). " +
-                        "The total number of fish is very low. You might not be able to keep fishing for much longer.");
-                    break;
-                case 0:
-                    if (theGame.brokePlayers.length > 0) {
-                        const brokePart = `💀 Your rating is zero fish (out of five).
-                        You have lost the game because these players have gone bankrupt: ${theGame.brokePlayers}.`;
-                        tMessageParts.push(brokePart);
-                    } else {
-                        tMessageParts.push("💀 Your rating is zero fish (out of five)! " +
-                            "The fish will all soon be gone, and the fishing industry has collapsed.");
-                    }
-                    break;
-                default:
-                    //  no value for fishStars, that is, ended because of bankruptcy.
-                    // tMessageParts.push("(Something odd happened at game end; the number of 'fish' doesn't make sense!)");
-                    break;
-            }
+                switch (iReason.pop) {
+                    case "high":
+                        tMessageParts.push("the total fish population is now large enough to be sustainable");
+                        break;
+                    case "low":
+                        tMessageParts.push("the total fish population is now too small to be sustainable");
+                        break;
+                }
 
+                iReason.broke.forEach((p) => {  //  broke is an array of player names.
+                    tMessageParts.push(p + " has a negative bank balance");
+                });
 
-            if (tMessageParts.length === 0) {
-                out = "...dang! We don't really know why!";
-            } else {
-                out = tMessageParts.join(" ");
+                if (tMessageParts.length === 0) {
+                    out = "...dang! We don't really know why!";
+                } else {
+                    out = tMessageParts.join(", and ") + ".";
+                }
             }
             return out;
-        },
+        }
 
-    },      //  end of en = English
+
+    },
 
     "es": {
         automateChairLabelText: "¿automatizar mercado? ",
@@ -496,14 +366,11 @@ let FS = {
         gameLevelMenuLabelText: "nivel del juego: ",
         youAreChairText: 'Ud es jefe del mercado de pescado',
 
-        youAreFishingText: 'Esta pescando. <br>Entre un número y presione <b>pescar</b>.',
-
         waitingToStartText: "¡Esperando para comenzar un juego!",
         successfullyJoinedText: "Se unió con éxito ",
         enterAndPressCatchText: "Entre un número y presione <b>pescar</b>.",
         wonText: "ganó",
         lostText: "perdió",
-        drawText: "ni ganó ni perdió",
 
         setNameButton: "entrar nombre",
         createGameButton: "crear juego",
@@ -512,39 +379,22 @@ let FS = {
         chairEndsTurnButton: "hacer mercado de pescados",
         startNewGameButton: "listo para iniciar juego nuevo",
 
-        completedAllUpdates: "completado todas las actualizaciones por año ",
-        youWonGame: "Ganó juego",
-        youLostGame: "Perdió juego",
-        youDrewGame: "Ni ganó ni perdió el juego",
-        because: "porque",
-        youCanDoBetter: "Su negocio sobrvivió, y también sobrvivió los peces...pero puede hacerlo mejor!",
-
-        fishAtMarketText: function () {
-            const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";
-            if (!fish.state.playerName) {
-                return `Esperando: Ud necesita entrar.`;
-            } else {
-                if (number) {
-                    return `Tiene ${number} peces en el mercado. <br>Espere hasta que ellos se venden.`;
-                } else {
-                    return `No tiene pescado en el mercado. <br>Espere hasta el final del turno.`;
-                }
-            }
-
-        },
-
+        completedAllUpdates : "completado todas las actualizaciones por año ",
+        youWonGame : "Ganó juego",
+        youLostGame : "Perdió juego",
+        because : "porque",
 
         makeAboutPlayersText: function () {
             let out = "";
 
-            let tN = fish.state.otherPlayersInfo.allPlayers.length;
+            let tN = fish.state.OKtoEndTurnObject.allPlayers.length;
 
             out += (tN === 1) ?
                 "Está jugando solo. " :
                 ((tN === 2) ? "Hay otro jugador. " : "Hay " + (tN - 1) + " otros jugadores. ");
 
             out += "<br>";
-            out += this.makeWaitingText(fish.state.otherPlayersInfo, fish.state.playerName);
+            out += this.makeWaitingText(fish.state.OKtoEndTurnObject, fish.state.playerName);
 
 
             return out;
@@ -573,9 +423,7 @@ let FS = {
                 }
                 if (yourIndex > -1) {
                     out += "Esperando a <strong>USTED</strong>";
-                    if (waitingFor.length === 1) {
-                        out += " y " + waitingFor[0] + ".";
-                    } else if (waitingFor.length > 0) {
+                    if (waitingFor.length > 0) {
                         out += " y " + waitingFor.length + " más.";
                     } else {
                         out += ".";
@@ -583,8 +431,6 @@ let FS = {
                     out += " ¡Pesque!";
                 } else {
                     switch (waitingFor.length) {
-                        case 0:
-                            out += "Todos han pescado.";
                         case 1:
                             out += "Esperando a " + waitingFor[0] + ".";
                             break;
@@ -615,61 +461,31 @@ let FS = {
                     },
 
                     attrs: [ // note how this is an array of objects.
-                        {
-                            name: "year",
-                            title: "año",
-                            type: 'numeric',
-                            precision: 0,
-                            description: "año del juego (i.e., turno)"
-                        },
-                        {name: "seen", title: "visto", type: 'numeric', precision: 1, description: "cuantos peces vió"},
-                        {
-                            name: "want",
-                            title: "querría",
-                            type: 'numeric',
-                            precision: 1,
-                            description: "cuantos peces querría atrapar"
-                        },
-                        {
-                            name: "caught",
-                            title: "atrapó",
-                            type: 'numeric',
-                            precision: 1,
-                            description: "cuantos peces atrapados"
-                        },
+                        {name: "year", title : "año", type: 'numeric', precision: 0, description: "año del juego (i.e., turno)"},
+                        {name: "seen", title : "visto", type: 'numeric', precision: 1, description: "cuantos peces vió"},
+                        {name: "want", title : "querría", type: 'numeric', precision: 1, description: "cuantos peces querría atrapar"},
+                        {name: "caught", title : "atrapó", type: 'numeric', precision: 1, description: "cuantos peces atrapados"},
                         {
                             name: "before",
-                            title: "antes",
+                            title : "antes",
                             type: 'numeric',
                             precision: 0,
                             description: "fondos al inicio del año"
                         },
-                        {name: "expenses", title: "gastos", type: 'numeric', precision: 0, description: "sus gastos"},
+                        {name: "expenses", title : "gastos", type: 'numeric', precision: 0, description: "sus gastos"},
                         {
                             name: "unitPrice",
-                            title: "precio",
+                            title : "precio",
                             type: 'numeric',
                             precision: 2,
                             description: "precio recibido por cada unidad de peces"
                         },
-                        {
-                            name: "income",
-                            title: "ingresos",
-                            type: 'numeric',
-                            precision: 0,
-                            description: "sus ingresos por vender peces"
-                        },
-                        {
-                            name: "after",
-                            title: "después",
-                            type: 'numeric',
-                            precision: 0,
-                            description: "fondos al termino del año"
-                        },
+                        {name: "income", title : "ingresos", type: 'numeric', precision: 0, description: "sus ingresos por vender peces"},
+                        {name: "after", title : "después", type: 'numeric', precision: 0, description: "fondos al termino del año"},
                         {name: "player", title: "jugador", type: 'categorical', description: "nombre del jugador(a)"},
-                        {name: "game", title: "juego", type: 'categorical', description: "codigo del juego"},
-                        {name: "result", title: "resultado", type: 'categorical', description: "resultado del juego"},
-                        {name: "level", title: "nivel", type: 'categorical', description: "tipo de pez"}
+                        {name: "game", title : "juego", type: 'categorical', description: "codigo del juego"},
+                        {name: "result" , title : "resultado", type: 'categorical', description: "resultado del juego"},
+                        {name: "level", title : "nivel", type: 'categorical', description: "tipo de pez"}
                     ]
                 }
             ]
@@ -690,59 +506,29 @@ let FS = {
                     },
 
                     attrs: [ // note how this is an array of objects.
-                        {
-                            name: "year",
-                            title: "año",
-                            type: 'numeric',
-                            precision: 0,
-                            description: "año del juego (i.e., turno)"
-                        },
-                        {name: "seen", title: "visto", type: 'numeric', precision: 1, description: "cuantos peces vió"},
-                        {
-                            name: "want",
-                            title: "querría",
-                            type: 'numeric',
-                            precision: 1,
-                            description: "cuantos peces querría atrapar"
-                        },
-                        {
-                            name: "caught",
-                            title: "atrapó",
-                            type: 'numeric',
-                            precision: 1,
-                            description: "cuantos peces atrapados"
-                        },
+                        {name: "year", title : "año", type: 'numeric', precision: 0, description: "año del juego (i.e., turno)"},
+                        {name: "seen", title : "visto", type: 'numeric', precision: 1, description: "cuantos peces vió"},
+                        {name: "want", title : "querría", type: 'numeric', precision: 1, description: "cuantos peces querría atrapar"},
+                        {name: "caught", title : "atrapó", type: 'numeric', precision: 1, description: "cuantos peces atrapados"},
                         {
                             name: "before",
-                            title: "antes",
+                            title : "antes",
                             type: 'numeric',
                             precision: 0,
                             description: "fondos al inicio del año"
                         },
-                        {name: "expenses", title: "gastos", type: 'numeric', precision: 0, description: "sus gastos"},
+                        {name: "expenses", title : "gastos", type: 'numeric', precision: 0, description: "sus gastos"},
                         {
                             name: "unitPrice",
-                            title: "precio",
+                            title : "precio",
                             type: 'numeric',
                             precision: 2,
                             description: "precio recibido por cada unidad de peces"
                         },
-                        {
-                            name: "income",
-                            title: "ingresos",
-                            type: 'numeric',
-                            precision: 0,
-                            description: "sus ingresos por vender peces"
-                        },
-                        {
-                            name: "after",
-                            title: "después",
-                            type: 'numeric',
-                            precision: 0,
-                            description: "fondos al termino del año"
-                        },
+                        {name: "income", title : "ingresos", type: 'numeric', precision: 0, description: "sus ingresos por vender peces"},
+                        {name: "after", title : "después", type: 'numeric', precision: 0, description: "fondos al termino del año"},
                         {name: "player", title: "jugador", type: 'categorical', description: "nombre del jugador(a)"},
-                        {name: "game", title: "juego", type: 'categorical', description: "codigo del juego"},
+                        {name: "game", title : "juego", type: 'categorical', description: "codigo del juego"},
                     ]
                 }
             ]
