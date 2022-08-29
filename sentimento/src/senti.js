@@ -31,7 +31,7 @@ https://localhost/plugins/sentimento
 let sentimento = {
 
     constants: {
-        version: "2021b",
+        version: "2022a",
         kSentiDataSetName: "text",
         kSentiDataSetTitle: "text data",
         kSentiTextCollectionName: "texts",
@@ -52,7 +52,21 @@ let sentimento = {
 
     setWordList : function() {
         const theListName = document.getElementById("dictionaryChoice").value;
-        this.sentimentWordList =  (theListName === "afinn") ? afinnWordList : vaderWordList;
+        switch (theListName) {
+            case 'afinn':
+                this.sentimentWordList = afinnWordList;
+                break;
+            case 'vader':
+                this.sentimentWordList = vaderWordList;
+                break;
+            case 'afinn.es':
+                this.sentimentWordList = afinnWordListSpanish;
+                break;
+            default:
+                alert('Problem loading the word list!');
+                break;
+
+        }
     },
 
     analyze: function () {
