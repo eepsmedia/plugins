@@ -41,8 +41,8 @@ local in local CODAP:
     http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/fish/?lang=es
 
 local in local CODAP for *** MAZU2 *** :
-    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/mazu2/fish/
-    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/mazu2/fish/?lang=es
+    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/mazu2/fish.html
+    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/mazu2/fish.html?lang=es
 
 
 MySQL general log setup, run this in MYSQL
@@ -68,7 +68,7 @@ todo: fix bug: at end of game, historical records don't include the very last on
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:300, 700' rel='stylesheet'>
 
-    <link rel='stylesheet' type='text/css' href='fish.css'/>
+    <link rel='stylesheet' type='text/css' href='css/fish.css'/>
 
     <script src="../common/iframe-phone.js"></script>
     <script src="../common/codapInterface.js"></script>
@@ -77,18 +77,22 @@ todo: fix bug: at end of game, historical records don't include the very last on
     <script src="../common/jqueryFolder/jquery.min.js"></script>
     <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
 
-    <script src="src/fish.js?001"></script>
+    <script src="src-fish/fish.js?001"></script>
 
-    <script src="src/fishGameConfigurations.js?001"></script>
-    <script src="src/strings/fishStrings.js?001a"></script>
-    <script src="src/strings/strings.en.js?001a"></script>
+    <script src="src-fish/fishGameConfigurations.js?001"></script>
+    <script src="strings/fishStrings.js?001a"></script>
+    <script src="strings/MFS.js?000"></script>
+    <script src="strings/strings.en.js?000"></script>
+    <script src="strings/localizePlugin.js?000"></script>
+    <script src="strings/tr.js?000"></script>
 
-    <script src="src/fireConnect.js?001"></script>
-    <script src="src/fishCODAPConnector.js?001"></script>
-    <script src="src/fishUI.js?001"></script>
-    <script src="src/fishUserActions.js?001"></script>
 
-    <script src="src/fishHistoricalData.js"></script>
+    <script src="src-fish/fireConnect.js?001"></script>
+    <script src="src-fish/fishCODAPConnector.js?001"></script>
+    <script src="src-fish/fishUI.js?001"></script>
+    <script src="src-fish/fishUserActions.js?001"></script>
+
+    <script src="src-fish/fishHistoricalData.js"></script>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
@@ -121,7 +125,7 @@ todo: fix bug: at end of game, historical records don't include the very last on
     <!--     we need the player's name?      -->
 
     <div id="needPlayerNameDIV" class="fish-ui-stripe">
-        <label class="noNameYet fish-stripe-element" id="playerNameLabel" for="playerName">xxx NAME xxx?</label>
+        <label class="noNameYet fish-stripe-element" id="playerNameLabelText" for="playerName">xxx NAME xxx?</label>
         <input class="noNameYet fish-stripe-element" type="text" id="playerName">
         <button id="setNameButton" class="fish-stripe-element"
                 onclick="fish.userActions.pressNameButton('need')"
@@ -133,7 +137,7 @@ todo: fix bug: at end of game, historical records don't include the very last on
 
     <div id="joinGameDIV" class="fish-ui-stripe">
 
-        <label id="gameCodeTextFieldLabel" for="gameCodeTextField" class="fish-stripe-element">xxx GAME CODE xxx</label>
+        <label id="gameCodeTextFieldLabelText" for="gameCodeTextField" class="fish-stripe-element">xxx GAME CODE xxx</label>
         <input type="text" id="gameCodeTextField" class="fish-stripe-element"
                onchange="fish.ui.gameCodeTextFieldChange()">
         <button id="joinGameButton" class="fish-stripe-element" onclick="fish.userActions.clickJoinButton()"
@@ -147,7 +151,7 @@ todo: fix bug: at end of game, historical records don't include the very last on
 
     <!--        user tells how many fish to catch       -->
     <div id="catchFishDIV" class="fish-ui-stripe">
-        <label id="fishQuantityLabel" class="fish-stripe-element"
+        <label id="fishQuantityLabelText" class="fish-stripe-element"
                for="howManyFish">xxx HOW MANY xxx</label>
         <input type="number" id="howManyFish" class="fish-stripe-element">
         <button id="catchButton" class="fish-stripe-element" onclick="fish.userActions.catchFish()"> xxx CATCH xxx

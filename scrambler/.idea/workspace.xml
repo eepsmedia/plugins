@@ -5,10 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.5. Language json source files">
-      <change beforePath="$PROJECT_DIR$/../fish/.idea/webServers.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fish/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../fish/src/strings/fishStrings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/src/strings/fishStrings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mazu2/mazu2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mazu2/strings/MFS.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mazu2/strings/localizePlugin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mazu2/strings/strings.en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/fish.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/fish.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/mazu.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/mazu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-fish/fireConnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-fish/fireConnect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-fish/fish.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-fish/fish.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-fish/fishCODAPConnector.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-fish/fishCODAPConnector.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-fish/fishUI.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-fish/fishUI.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-fish/fishUserActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-fish/fishUserActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/Model.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/Model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/connect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/fireConnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/fireConnect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/mazu.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/mazu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/mazuStart.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/mazuStart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/src-mazu/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/src-mazu/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/strings/fishStrings 2.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/strings/fishStrings 2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/strings/strings.en-f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/strings/strings.en.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/strings/strings.en.deprecate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/strings/strings.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mazu2/strings/tr.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu2/strings/tr.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -101,7 +121,7 @@
       <workItem from="1660486474519" duration="12754000" />
       <workItem from="1660795113488" duration="598000" />
       <workItem from="1661736462869" duration="1191000" />
-      <workItem from="1661798015157" duration="597000" />
+      <workItem from="1661798015157" duration="6456000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>

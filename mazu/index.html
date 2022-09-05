@@ -1,98 +1,97 @@
-<!--
-
-    MAZU index.html
-    Tim Erickson
-
-
-    http://localhost/plugins/mazu
-
-    or, local CODAP,
-
-    http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/mazu
-
-    MAZU2 edition on xyz:
-
-    https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=https://codap.xyz/plugins/mazu2/mazu
-
-
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Mazu - Goddess of the Sea</title>
+    <title>Mazu-Fish Commons Game</title>
+</head>
+<body>
 
-    <!--    CODAP setup-->
-    <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js"></script>
-    <script src="../common/pluginHelper.js"></script>
+<!DOCTYPE html>
+<html lang="en">
 
-    <!--firebase setup-->
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+<!--
+==========================================================================
 
-    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
-
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+ * Created by tim on 3/13/20.
 
 
-    <link rel='stylesheet' type='text/css' href='src/css/mazu.css'/>
+ ==========================================================================
+index in nos
 
-    <script src="src/mazu.js?000"></script>
-    <script src="src/ui.js?000"></script>
-    <script src="src/Model.js?000"></script>
-    <script src="src/mazuStart.js?000"></script>
-    <script src="src/constants.js?000"></script>
-    <script src="src/fireConnect.js?000"></script>
-    <script src="src/startFirestore.js?000"></script>
-    <script src="src/strings.js?000"></script>
-    <script src="src/words.js?000"></script>
+    Author:   Tim Erickson
 
-    <script src="src/connect.js?000"></script>
+Copyright (c) 2020 by Epistemological Engineering. All rights reserved.
 
-    <script src="src/strings.en.js?000"></script>
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>eeps • Nature of Science</title>
+    <link rel='stylesheet' type='text/css' href='css/nos2.css'/>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700' rel="stylesheet">
+
+    <!--    favicon         -->
+    <link rel="shortcut icon" href="../common/art/favicon.ico" type="image/x-icon">
 
 </head>
 
+<body class="indexBody">
 
-<body onload="mazu.initialize()">
+<h1>codap.xyz/plugins/mazu</h1>
+<p>The eeps/codap commons simulation</p>
 
-<div id="mazu">
-    <div id="titleBar" class="ui-stripe">
-        <h1  class="ui-stripe-element">Mazu</h1>
-        <img id="refreshButton" alt="refresh" onclick="ui.update()"
-             src="art/refresh.png"  class="ui-stripe-element" />
-        <p class="ui-stripe-element">goddess of the sea</p>
-        <button class="ui-stripe-element" id="logout-button" onclick="mazu.initialize()" >log out</button>
+<h2>Typically used by students:</h2>
+
+<div class="appSet">
+
+    <div class="appBox">
+        <h2 class = "appBoxText">
+            <a href="https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=https://codap.xyz/plugins/mazu/fish.html"
+               target="_blank">
+                Fisherfolk</a>
+        </h2>
+        <p>This is a game about catching fish ... and a lot more!
+        You don't need any experience at all to start.
+        </p>
     </div>
 
-    <div id="mazuLoginDiv" class="ui-stripe">
-        <input id="loginName" type="text" class="ui-stripe-element">
-        <button id="loginButton"  class="ui-stripe-element" onclick="mazu.handleLogin()">login</button>
-    </div>
-
-    <div id="mazuHeader" class="ui-stripe"></div>
-
-<!--    div to hold the startup UI for making a new game (or joining an old one)-->
-
-    <div id="mazuStartDiv" class="ui-stripe">
-        <div id="newOrOldRadioButtons" class="ui-stripe-element"></div>
-        <div id="startGameControls"  class="ui-stripe-element">
-            <select id="gameTypesMenu" onchange="mazuStart.update()"></select>
-            <select id="oldGamesMenu" onchange="mazuStart.update()"></select>
-        </div>
-        <div id="startGameButton"  class="ui-stripe-element"></div>
-    </div>
-
-    <div id="mazuMarketDiv" class="ui-stripe"></div>
-    <div id="mazuPlayerListDiv" class="ui-stripe"></div>
-
-    <div id="gameOverDiv" class="ui-stripe"></div>
 
 </div>
 
+<h2>Typically used by teachers:</h2>
+
+<div class="appSet">
+
+    <div class="appBox">
+        <h2 class="appBoxText">
+            <a href="https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=https://codap.xyz/plugins/mazu/mazu.html"
+               target="_blank">
+                Mazu</a></h2>
+        <p>You are Mazu, Goddess of the Sea.
+            You create fishing games and monitor their progress.
+            Be sure to read any documentation.
+        </p>
+
+    </div> <!-- Mazu -->
+
+
+</div>
+
+</body>
+</html>
 </body>
 </html>
