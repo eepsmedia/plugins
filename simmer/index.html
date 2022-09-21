@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scratchy</title>
+
+<!--
+    blockly
+-->
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <script src="src/block-defs.js"></script>
+    <script src="src/simmer.js"></script>
+    <script src="src/simmer.connect.js"></script>
+    <script src="src/random-functions.js"></script>
+
+</head>
+<body>
+
+<button id="runButton" onclick="simmer.run()">run</button>
+<div id="blocklyDiv" style="height: 580px; width: 800px;"></div>
+
+<script>
+</script>
+</body>
+
+<script>
+    simmer.initialize();
+</script>
+</html>
