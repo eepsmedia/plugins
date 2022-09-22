@@ -4,6 +4,18 @@ Blockly.common.defineBlocksWithJsonArray([
 
     {
         "type": "codap_emit",
+        "message0": "send variables to CODAP",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 230,
+        "tooltip": "just put it in your program!",
+        "helpUrl": ""
+    },
+
+    //  with input...
+/*
+    {
+        "type": "codap_emit",
         "message0": "emit in CODAP: %1",
         "args0": [
             {
@@ -21,6 +33,7 @@ Blockly.common.defineBlocksWithJsonArray([
         "tooltip": "plug in a list of variables to emit",
         "helpUrl": ""
     },
+*/
 
     //      random integer
 
@@ -48,6 +61,30 @@ Blockly.common.defineBlocksWithJsonArray([
         "colour": 888
     },
 
+    //      random Normal
+
+    {
+        "type": "random_normal",
+        "message0": "random Normal µ = %1 σ = %2",
+        "args0": [
+            {
+                "type": "field_number",
+                "name": "MU",
+                "check" : "Number",
+                "value" : 0,
+            },
+            {
+                "type": "field_number",
+                "name": "SIGMA",
+                "check" : "Number",
+                "value" : 1,
+            },
+
+        ],
+        "output" : "String",
+        "colour": 888
+    },
+
     //      pick from two
 
     {
@@ -57,12 +94,12 @@ Blockly.common.defineBlocksWithJsonArray([
             {
                 "type": "field_input",
                 "name": "ONE",
-                "value" : "heads",
+                "text" : "heads",
             },
             {
                 "type": "field_input",
                 "name": "TWO",
-                "value" : "tails",
+                "text" : "tails",
             },
 
         ],
@@ -122,6 +159,13 @@ Blockly.JavaScript['random_integer'] = function(block) {
     let upper = block.getFieldValue('UPPER');
 
     return [`random_functions.integer(${lower}, ${upper})`, Blockly.JavaScript.ORDER_ADDITION];
+};
+
+Blockly.JavaScript['random_normal'] = function(block) {
+    let mu = block.getFieldValue('MU');
+    let sigma = block.getFieldValue('SIGMA');
+
+    return [`random_functions.randomNormal(${mu}, ${sigma})`, Blockly.JavaScript.ORDER_ADDITION];
 };
 
 Blockly.JavaScript['random_pick_from_two'] = function(block) {

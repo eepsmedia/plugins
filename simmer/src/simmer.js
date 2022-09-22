@@ -2,6 +2,7 @@ const simmer = {
 
     workspace: null,
 
+    variableState : [],
     strings : null,
 
     initialize: function () {
@@ -10,8 +11,8 @@ const simmer = {
         this.workspace = Blockly.inject('blocklyDiv', {toolbox: this.toolbox});
         this.workspace.registerButtonCallback("newVariableKey", this.handleNewVariable);
 
-        const state = {"variables": [{"name": "foo"},{"name": "bar"}]};
-        Blockly.serialization.workspaces.load(state, Blockly.getMainWorkspace());
+        //  const state = {"variables": [{"name": "foo"},{"name": "bar"}]};
+        //  Blockly.serialization.workspaces.load(state, Blockly.getMainWorkspace());
 
         simmer.connect.initialize();
     },
@@ -22,9 +23,17 @@ const simmer = {
         eval(code);             //  dangerous!
     },
 
-    handleNewVariable : function(foo) {
+    handleNewVariable : function() {
         console.log(`handle new variable`);
-        const aVar = Blockly.Variables.createVariableButtonHandler(this.workspace,null,null);
+        const theName = document.getElementById("simmerNewVariableNameBox").value;
+        this.workspace.createVariable(theName);
+/*
+        tOneVarObject = {"name" : theName};
+        this.variableState.push(tOneVarObject);
+        const tState = {"variables": this.variableState};
+        Blockly.serialization.workspaces.load(tState, Blockly.getMainWorkspace());
+*/
+
     },
 
     constants : {
@@ -53,6 +62,10 @@ const simmer = {
                     {
                         'kind': 'block',
                         'type': 'random_pick_from_two'
+                    },
+                    {
+                        'kind': 'block',
+                        'type': 'random_normal'
                     },
                 ]
             },

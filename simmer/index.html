@@ -11,6 +11,9 @@ http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins
     <meta charset="UTF-8">
     <title>Simmer</title>
 
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
+    <link rel='stylesheet' type='text/css' href='css/simmer.css'/>
+
     <!--
         codap
     -->
@@ -33,7 +36,14 @@ http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins
 </head>
 <body>
 
-<button id="runButton" onclick="simmer.run()">run</button>
+<div id="simmerControls">
+    <label for="simmerNewVariableNameBox">new variable name:</label>
+    <input type="text" id="simmerNewVariableNameBox">
+    <button id="newVariableButton" onclick="simmer.handleNewVariable()">make new variable</button>
+    &emsp;
+    <button id="runButton" onclick="simmer.run()">run</button>
+<p>Remember: for now, delete the dataset if you want to include new variables!</p>
+</div>
 <div id="blocklyDiv" style="height: 100vh; width: 100%;"></div>
 
 <script>
