@@ -48,6 +48,28 @@ Blockly.common.defineBlocksWithJsonArray([
         "colour": 888
     },
 
+    //      pick from two
+
+    {
+        "type": "random_pick_from_two",
+        "message0": "pick %1 or %2",
+        "args0": [
+            {
+                "type": "field_input",
+                "name": "ONE",
+                "value" : "heads",
+            },
+            {
+                "type": "field_input",
+                "name": "TWO",
+                "value" : "tails",
+            },
+
+        ],
+        "output" : "String",
+        "colour": 888
+    },
+
     //      random pick
 
     {
@@ -73,15 +95,21 @@ Blockly.JavaScript['codap_emit'] = function(block) {
    // const value_variables = Blockly.JavaScript.valueToCode(block, 'VARIABLES', Blockly.JavaScript.ORDER_ATOMIC);  //  variable names
     //const theNames = (Array.isArray(value_variables)) ? value_variables : [value_variables];
 
-    let code = "let arg = [];\n let oneVar = {};\n";
+    let code = "let arg = []; let oneVar = {}; let oneVal;\n";
     theVariables.forEach( v => {
         vName = v.name;
-        // code += `let oneVar = {"name" : "${vName}", "value" : eval(${vName})};\n`;
-        //      code += `if (typeof ${vName} != undefined) {\n`;    //  in case the variable doesn't exist
-        code += `oneVar = {};\n try {\n `
-        code += `oneVar["${vName}"] = eval(${vName}); arg.push(oneVar);\n`;
-        code += `} catch (msg) { \nconsole.log(msg); \n}\n`;
-        //        code += `}\n`;          //      end of if
+        try {
+            code += `oneVar = {};\n try {\n`;
+            code +=  `oneVal = eval("${vName}")\n`;
+            code += `oneVar["name"] = "${vName}"; \n `
+            code +=  `oneVar["value"] = String(oneVal); \n `;
+            //  code +=  `oneVar["value"] = String(eval(${vName})); \n `;
+            code += `arg.push(oneVar);\n`;
+            code += `} catch (msg) { \n console.log(msg); \n}\n`;
+        } catch (msg) {
+            console.log(`${vName} threw an error...${msg}`);
+        }
+
     })
 
     code += `simmer.connect.codap_emit(arg);\n`
@@ -94,6 +122,13 @@ Blockly.JavaScript['random_integer'] = function(block) {
     let upper = block.getFieldValue('UPPER');
 
     return [`random_functions.integer(${lower}, ${upper})`, Blockly.JavaScript.ORDER_ADDITION];
+};
+
+Blockly.JavaScript['random_pick_from_two'] = function(block) {
+    let one = block.getFieldValue('ONE');
+    let two = block.getFieldValue('TWO');
+    const code = `Math.random() < 0.5 ? "${one}" : "${two}"`;
+    return [code , Blockly.JavaScript.ORDER_ADDITION];
 };
 
 Blockly.JavaScript['random_pick'] = function(block) {

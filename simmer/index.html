@@ -1,15 +1,32 @@
 <!DOCTYPE html>
+
+
+<!--
+LOCAL, TESTING:     https://localhost/plugins/simmer/
+http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/simmer
+-->
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Scratchy</title>
+    <title>Simmer</title>
 
-<!--
-    blockly
--->
+    <!--
+        codap
+    -->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+
+    <!--
+        blockly
+    -->
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+
+
     <script src="src/block-defs.js"></script>
     <script src="src/simmer.js"></script>
+    <script src="src/simmer.text.js"></script>
     <script src="src/simmer.connect.js"></script>
     <script src="src/random-functions.js"></script>
 
@@ -17,7 +34,7 @@
 <body>
 
 <button id="runButton" onclick="simmer.run()">run</button>
-<div id="blocklyDiv" style="height: 580px; width: 800px;"></div>
+<div id="blocklyDiv" style="height: 100vh; width: 100%;"></div>
 
 <script>
 </script>

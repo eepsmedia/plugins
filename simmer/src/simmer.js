@@ -2,11 +2,15 @@ const simmer = {
 
     workspace: null,
 
+    strings : null,
+
     initialize: function () {
+        simmer.text.initialize();   //  defines `simmer.strings` in the correct language
+
         this.workspace = Blockly.inject('blocklyDiv', {toolbox: this.toolbox});
         this.workspace.registerButtonCallback("newVariableKey", this.handleNewVariable);
 
-        var state = {"variables": [{"name": "foo"},{"name": "bar"}]};
+        const state = {"variables": [{"name": "foo"},{"name": "bar"}]};
         Blockly.serialization.workspaces.load(state, Blockly.getMainWorkspace());
 
         simmer.connect.initialize();
@@ -23,6 +27,10 @@ const simmer = {
         const aVar = Blockly.Variables.createVariableButtonHandler(this.workspace,null,null);
     },
 
+    constants : {
+        version : '2022a',
+        dsName : `simmerDataset`,
+    },
 
     toolbox: {
         "kind": "categoryToolbox",
@@ -41,6 +49,10 @@ const simmer = {
                     {
                         'kind': 'block',
                         'type': 'random_pick'
+                    },
+                    {
+                        'kind': 'block',
+                        'type': 'random_pick_from_two'
                     },
                 ]
             },
