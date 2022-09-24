@@ -2,8 +2,8 @@ const simmer = {
 
     workspace: null,
 
-    variableState : [],
-    strings : null,
+    variableState: [],
+    strings: null,
 
     initialize: function () {
         simmer.text.initialize();   //  defines `simmer.strings` in the correct language
@@ -23,22 +23,15 @@ const simmer = {
         eval(code);             //  dangerous!
     },
 
-    handleNewVariable : function() {
+    handleNewVariable: function () {
         console.log(`handle new variable`);
         const theName = document.getElementById("simmerNewVariableNameBox").value;
         this.workspace.createVariable(theName);
-/*
-        tOneVarObject = {"name" : theName};
-        this.variableState.push(tOneVarObject);
-        const tState = {"variables": this.variableState};
-        Blockly.serialization.workspaces.load(tState, Blockly.getMainWorkspace());
-*/
-
     },
 
-    constants : {
-        version : '2022a',
-        dsName : `simmerDataset`,
+    constants: {
+        version: '2022a',
+        dsName: `simmerDataset`,
     },
 
     toolbox: {
@@ -48,9 +41,9 @@ const simmer = {
             //      random
 
             {
-                "kind" : "category",
-                "name" : "Random",
-                "contents"  :   [
+                "kind": "category",
+                "name": "Random",
+                "contents": [
                     {
                         'kind': 'block',
                         'type': 'random_integer'
@@ -73,16 +66,26 @@ const simmer = {
             //      logic
 
             {
-                "kind" : "category",
-                "name" : "Logic & Control",
-                "contents"  :   [
+                "kind": "category",
+                "name": "Logic & Control",
+                "contents": [
                     {
                         "kind": "block",
                         "type": "controls_if"
                     },
                     {
                         "kind": "block",
-                        "type": "controls_repeat_ext"
+                        "type": "controls_repeat_ext",
+                        "inputs": {
+                            "TIMES": {
+                                "block": {
+                                    "type": "math_number",
+                                    "fields": {
+                                        "NUM": 10
+                                    }
+                                }
+                            }
+                        }
                     },
                     {
                         "kind": "block",
@@ -94,14 +97,16 @@ const simmer = {
             //      variables
 
             {
-                "kind" : "category",
-                "name" : "Variables",
-                "contents"  :   [
-                    {
-                        "kind": "button",
-                        "text": "New variable",
-                        "callbackKey": "newVariableKey"
-                    },
+                "kind": "category",
+                "name": "Variables",
+                "contents": [
+                    /*
+                                        {
+                                            "kind": "button",
+                                            "text": "New variable",
+                                            "callbackKey": "newVariableKey"
+                                        },
+                    */
 
                     {
                         "kind": "block",
@@ -121,9 +126,9 @@ const simmer = {
             //      other
 
             {
-                "kind" : "category",
-                "name" : "Other",
-                "contents"  :   [
+                "kind": "category",
+                "name": "Other",
+                "contents": [
                     {
                         "kind": "block",
                         "type": "text_print"
@@ -131,7 +136,7 @@ const simmer = {
                     {
                         "kind": "block",
                         "type": "lists_create_with",
-                        "mutation_items" : "2"
+                        "mutation_items": "2"
                     },
 
                     {
