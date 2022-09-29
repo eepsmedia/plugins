@@ -58,7 +58,7 @@ const ui = {
             ${mazu.model.theGame.configuration} | 
             ${mazu.model.theGame.god}</div>
             <div class="ui-stripe-element">
-            <button onclick="mazu.leaveGame()">leave game</button>
+            <button id="leaveGameButton" onclick="mazu.leaveGame()">leave game</button>
             </div>
             `
         } else {
