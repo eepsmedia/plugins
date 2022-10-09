@@ -7,14 +7,11 @@ mazuStrings.es = {
         "staticStrings": {
             "automateCatchLabel": "automatizar? ",
             "playerNameLabelText": "¿cómo se llama? ",
-            "fishQuantityLabelText": "¿cuántos peces? ",
+            "fishQuantityLabelText": "¿cuántos peces?",
             "gameCodeTextFieldLabelText": "código del juego: ",
-            "joinGameButton": "unirse",
+            "joinGameButton": "juntar",
             "catchButton": "pesque",
-            "setNameButton": "Establezca su nombre",
-            "loginButton": "ingresar",
-            "logoutButton": "cerrar la sesión",
-            "tagline": "diosa del mar"
+            "setNameButton": "Establezca su nombre"
         },
         "attributeNames": {
             "year": "año",
@@ -30,8 +27,7 @@ mazuStrings.es = {
             "player": "jugador(a)",
             "game": "juego",
             "result": "resultado",
-            "level": "nivel",
-            "itemID" : "itemID",
+            "level": "nivel"
         },
         "attributeDescriptions": {
             "year": "año del juego",
@@ -85,27 +81,6 @@ mazuStrings.es = {
         "seenFishReport": "Este año, Ud ha visto %@1 peces.",
         "caughtAllReport": "<br>Ha cogido el %@1 de peces que quería.",
         "caughtSomeReport": "<br>Quería %@1 de peces, pero pescó solo %@2.",
-        "recentTurnReport": "Su último turno completo fue el año %@1.<br>Vio %@2 peces, quizo %@3 y pescó %@4.<br>Los vendió por $%@5 cada uno para un total de $%@6.",
-        "buttons": {
-            "leaveGameButton": "salir del juego",
-            "sellFishButton": "vender pescado",
-            "newGameRadioLabel": "nuevo juego",
-            "oldGameRadioLabel": "viejo juego"
-        },
-        "admin": {
-            "playerTableHeader": "<tr>\n                <th>nombre</th>\n                <th>desea</th>\n                <th>saldo</th>\n                <th>estado</th>\n                <th>juega</th>\n</tr>",
-            "fishMarket": "Pescadería",
-            "noGameYet": "todavía no hay juego",
-            "welcomeBack": "Bienvenido de nuevo",
-            "welcomeToMazu": "Bienvenido a Mazu",
-            "youHaveRejoined": "Ha vuelto a entrar en"
-        },
-        "timeTerms": {
-            "second": "segundos",
-            "minute": "minutos",
-            "hour": "horas",
-            "day": "días",
-            "month": "meses"
-        }
+        "recentTurnReport": "Su último turno completo fue el año %@1.<br>Vio %@2 peces, quizo %@3 y pesc %@4.<br>Los vendiste por $%@5 cada uno para un total de $%@6."
     }
 }

@@ -126,6 +126,8 @@ const fireConnect = {
 
     setNotifications: function () {
 
+        //  set up handler for a change in Turns. (we call updateTurns())
+
         this.unsubscribeFromTurns = this.gameDR.collection('turns')
             .onSnapshot((iTurns) => {
                 let tTurns = [];
@@ -136,10 +138,11 @@ const fireConnect = {
                 this.fish.updateTurns(tTurns);
             });
 
+        //  set up handler for a change in Game (we call updateGame())
         this.unsubscribeFromGame = this.gameDR
             .onSnapshot((iDocSnap) => {
                 const theGame = iDocSnap.data();
-                console.log(`    ¬¬¬ Game listener got ${theGame.gameCode} turn ${theGame.turn} from listener`);
+                console.log(`    ¬¬¬ Game listener got ${theGame.gameCode} turn ${theGame.year}`);
                 this.fish.updateGame(theGame);
             });
 
@@ -215,21 +218,34 @@ const fireConnect = {
         return theTurns;
     },
 
+    /**
+     * Updates the player in Firebase (often to show that we're really playing)
+     * called from fishUserAction.catchFish()
+     * @param theData
+     * @returns {Promise<void>}
+     */
     updatePlayerDocument : async  function(theData) {
         this.meDR.update(theData);
     },
 
-    newTurnRecord: async function (iModelResult) {
-        try {
-            const theRecordName = iModelResult.turn + "_" + iModelResult.playerName;
-            this.turnDR = this.turnsCR.doc(theRecordName);
-            const turnDocRef = await this.turnDR.set(iModelResult);   //      formerly, theValues
+    /**
+     * emit a new turn into the Firebase.
+     *
+     * @param eTurn     turn record object in ENGLISH, including case and item IDs.
+     * @returns {Promise<string|number|*>}
+     */
+    newTurnRecord: async function (eTurn) {
+        eTurn.playerName = eTurn.player;        //  todo: is this needed?
+        const theRecordName = `${eTurn.year}_${eTurn.player}`;       //  e.g., 2032_Monica
+        this.turnDR = this.turnsCR.doc(theRecordName);
 
-            return iModelResult.caught;
+        try {    //  actually post this record to Firebase:
+            const turnDocRef = await this.turnDR.set(eTurn);
+            console.log(`    π   posted turn ${theRecordName}`);
+            return eTurn.caught;
         } catch (msg) {
             console.log('fireConnect newTurnRecord() error: ' + msg);
         }
-
     },
 
 };

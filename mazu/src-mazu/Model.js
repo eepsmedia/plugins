@@ -76,13 +76,15 @@ class Model extends Object {
     async gotNewData(whence) {
         this.theSituation = this.getCurrentSituation();
 
+        //  automate sell, if appropriate
+
         if (whence === "allTurns" &&
             this.theSituation.autoOK &&
             mazu.state.autoSell &&
             this.thePlayers.length > 0 &&
             this.theGame.gameState === mazu.constants.kInProgressString) {
             await this.sellFish();
-            console.log(`*** auto sold *** now it's ${this.theGame.turn}`);
+            console.log(`*** auto sold *** now it's ${this.theGame.year}`);
         }
 
         ui.update();
@@ -124,19 +126,19 @@ class Model extends Object {
      * @returns {Promise<void>}
      */
     async sellFish() {
-        console.log(`${this.theGame.turn}: Selling fish`);
+        console.log(`${this.theGame.year}: Selling fish`);
 
         const tN0 = Number(this.theGame['population']);
 
-        const theTurns = this.thisYearsTurns();
+        const thisYearsTurns = this.thisYearsTurns();
         const playingPlayers = this.playingPlayers();
         const nPlayers = playingPlayers.length;         //  was this.thePlayers.length
 
-        let tTotalCaughtFish = theTurns.reduce(function (a, v) {
+        let tTotalCaughtFish = thisYearsTurns.reduce(function (a, v) {
             return {caught: a.caught + Number(v.caught)}
         }, {caught: 0});     //  count up how many fish got caught...
 
-        console.log(`counted ${theTurns.length} turns; compare ${nPlayers} "playing" players`);
+        console.log(`counted ${thisYearsTurns.length} turns; compare ${nPlayers} "playing" players`);
 
         //  fish ecology
 
@@ -150,12 +152,12 @@ class Model extends Object {
         this.theGame["population"] = newPopulation;
 
         const tUnitPrice = nPlayers ? this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers) : 0;
-        console.log(`${this.theGame["turn"]}: pop: ${tN0} to ${newPopulation} caught: ${tTotalCaughtFish.caught} Unit price: ${tUnitPrice}`);
+        console.log(`${this.theGame["year"]}: pop: ${tN0} to ${newPopulation} caught: ${tTotalCaughtFish.caught} Unit price: ${tUnitPrice}`);
 
         //  update the local copy of the turns
         //  adding unitPrice, income, and after fields
 
-        theTurns.forEach((t) => {
+        thisYearsTurns.forEach((t) => {
             t.unitPrice = tUnitPrice;
             t.income = tUnitPrice * Number(t.caught);
             const tAfter = Number(t.before) + t.income - Number(t.expenses);
@@ -167,15 +169,16 @@ class Model extends Object {
         let thePromises = [];       //  for updating the game in the firebaseDB
         let theItemValues = [];     //  for uploading into CODAP
 
-        //  load all the turns to the turnsDB
+        //  load all the updated turns to the turnsDB
         //  while we're there, update player records for balance and playerState
 
-        theTurns.forEach(
+        thisYearsTurns.forEach(
             (t) => {
                 thePromises.push(fireConnect.uploadTurnToDB(t));
                 theItemValues.push(t);
 
                 //  todo: do we really need to update the player? Redundant with turns?
+                //  note: the PLAYER has ".balance" rather then .before or .after.
                 const playerStuff = {
                     balance: t.after,
                     playerState: mazu.constants.kFishingString,
@@ -195,16 +198,16 @@ class Model extends Object {
             this.theGame.brokePlayers = endCheck.broke.join(", ");
             this.theGame.gameState = mazu.constants.kEndedString;
         } else {
-            this.theGame['turn']++;     //      this is where the date gets incremented. End of turn.
-            console.log(`... end of turn. Updating to ${this.theGame.turn} `);
+            this.theGame['year']++;     //      this is where the date gets incremented. End of turn.
+            console.log(`... end of turn. Updating to ${this.theGame.year} `);
         }
 
-        thePromises.push(fireConnect.uploadGameToDB(this.theGame)); //  todo: if it works, move tghis after the "all" call. Clrity and you could put the endCheck clause there too.
+        thePromises.push(fireConnect.uploadGameToDB(this.theGame)); //  todo: if it works, move this after the "all" call. Clrity and you could put the endCheck clause there too.
 
         await Promise.all(thePromises);     //  updates all the collections in the DB
 
         if (endCheck.end) {
-            fireConnect.endGame();      //  unsubscribe
+            fireConnect.endGame();      //  unsubscribe todo: why isn't this working?
         }
         ui.update();
     }
@@ -271,7 +274,7 @@ class Model extends Object {
             text : "",
         };
 
-        if (this.theGame.turn >= this.theGame.endingTurn) {
+        if (this.theGame.year >= this.theGame.endingYear) {
             tReasonObject.end = true;
             tReasonObject.time = true;
             if (this.theGame.population > this.theGame.winningPopulation) {
@@ -317,7 +320,7 @@ class Model extends Object {
         if (tReasonObject.end) {
             this.theGame.gameState = mazu.constants.kEndedString;      //  side effect; change the game
         } else {
-            tReasonObject.text = "End of year " + this.theGame.turn;
+            tReasonObject.text = "End of year " + this.theGame.year;
         }
 
         return tReasonObject;
@@ -328,10 +331,12 @@ class Model extends Object {
      * @returns  the array of turns
      */
     thisYearsTurns() {
-        const year = this.theGame.turn;
+        const year = this.theGame.year;
         let out = [];
         this.allTurns.forEach(t => {
-            if (t.turn === year) out.push(t);
+            //
+            //  todo: maybe just use t.year if we change it so that the languages substitute the TITLEs not the NAMES.
+            if (t.year === year) out.push(t);
         })
         return out;
     }
@@ -398,7 +403,8 @@ class Model extends Object {
 
             const ok = (tPlayingPlayers.length === tTheseTurns.length);
 
-            console.log(`getting curSit in ${this.theGame.turn} for ${tTheseTurns.length} turns ... ${ok ? "OK" : "not OK"}`);
+            console.log(`getting curSit in ${this.theGame.year} for ${tTheseTurns.length} turns ... ${ok ? 
+                "ready to sell" : "not ready to sell"}`);
 
             if (this.theGame.gameState === mazu.constants.kInProgressString) {
                 return {

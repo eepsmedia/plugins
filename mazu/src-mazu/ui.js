@@ -20,11 +20,11 @@ const ui = {
 
         mazuHeader.style.display = (mazu.loginName.length || playing) ? "flex" : "none";
         mazuLoginDiv.style.display = mazu.loginName.length ? "none" : "flex";
-        mazuStartDiv.style.display = (!playing && mazu.loginName.length) ?  "flex" : "none";
+        mazuStartDiv.style.display = (!playing && mazu.loginName.length) ? "flex" : "none";
         //  mazuOldGames.style.display = (!playing && mazu.loginName.length) ?  "flex" : "none";
-        mazuMarketDiv.style.display = (playing && mazu.loginName.length) ?  "flex" : "none";
-        mazuPlayerListDiv.style.display = (playing && mazu.loginName.length) ?  "flex" : "none";
-        gameOverDiv.style.display = (mazu.isGameOver()) ?  "flex" : "none";
+        mazuMarketDiv.style.display = (playing && mazu.loginName.length) ? "flex" : "none";
+        mazuPlayerListDiv.style.display = (playing && mazu.loginName.length) ? "flex" : "none";
+        gameOverDiv.style.display = (mazu.isGameOver()) ? "flex" : "none";
 
         gameOverDiv.innerHTML = this.makeEndGameMessage();
         mazuHeader.innerHTML = this.makeHeaderGuts();
@@ -37,32 +37,32 @@ const ui = {
             mazuMarketDiv.innerHTML = await this.fishMarket();
             mazuPlayerListDiv.innerHTML = await this.playerList();
         } else {
-
             mazuStart.update();
         }
     },
 
+    //  todo: see if we really don't use this!
     setGameStartControlVisibility: function () {
         const oldGames = document.getElementById("oldGamesMenu");
 
     },
 
 
-    makeHeaderGuts : function() {
+    makeHeaderGuts: function () {
         if (mazu.playing() || mazu.isGameOver()) {
             guts = `
             <div class="ui-stripe-element">
             ${mazu.model.theGame.gameCode} | 
-            ${mazu.model.theGame.turn} | 
+            ${mazu.model.theGame.year} | 
             ${mazu.model.theGame.population} | 
             ${mazu.model.theGame.configuration} | 
             ${mazu.model.theGame.god}</div>
             <div class="ui-stripe-element">
-            <button id="leaveGameButton" onclick="mazu.leaveGame()">leave game</button>
+            <button id="leaveGameButton" onclick="mazu.leaveGame()">${DG.plugins.mazu.buttons.leaveGameButton}</button>
             </div>
             `
         } else {
-            guts = `no game yet | ${mazu.loginName}`
+            guts = `${DG.plugins.mazu.admin.noGameYet} | ${mazu.loginName}`
         }
         return guts;
     },
@@ -80,13 +80,14 @@ const ui = {
      */
     playerRow: function (p, iTurns) {
         let myTurn = mazu.model.mostRecentPlayerTurn(p.playerName); //  if from previous year,
+        const thePlayingIcon = p.playing ? "./art/slide-on-simplest.png" : "./art/slide-off-simplest.png";
 
         if (myTurn) {
             let tPlayerState = mazu.constants.kBetweenString;
             let tWanted = null;
             let tBalance = 0;
 
-            if (myTurn.turn === mazu.model.theGame.turn) {      //  from current year, so PARTIAL turn without after
+            if (myTurn.year === mazu.model.theGame.year) {      //  from current year, so PARTIAL turn without after
                 tWanted = myTurn.want;
                 tPlayerState = mazu.constants.kSellingString;
                 tBalance = myTurn.before;
@@ -95,8 +96,6 @@ const ui = {
                 tPlayerState = mazu.constants.kFishingString;   //  haven't told us how many yet
                 tBalance = myTurn.after;
             }
-
-            const thePlayingIcon = p.playing ? "./art/slide-on-simplest.png" : "./art/slide-off-simplest.png";
 
             return (
                 `<tr key=${p.playerName} class="playerRow">
@@ -115,7 +114,8 @@ const ui = {
                 <td>?</td>
                 <td>?</td>
                 <td>?</td>
-            </tr>`
+                <td><img src="${thePlayingIcon}" height="18" onclick="mazu.handleSleepWake('${p.playerName}')"></td>
+           </tr>`
 
             )
         }
@@ -131,16 +131,19 @@ const ui = {
         );
 
         const headerText = (playingPlayers.length === thePlayers.length)
-            ? `${playingPlayers.length} ${playingPlayers.length === 1 ? "player" :"players"}`
-            : `${playingPlayers.length} ${playingPlayers.length === 1 ? "player is" :"players are"}
+            ? `${playingPlayers.length} ${playingPlayers.length === 1 ? "player" : "players"}`
+            : `${playingPlayers.length} ${playingPlayers.length === 1 ? "player is" : "players are"}
                     playing out of ${thePlayers.length} total`;
-        const tableHeader = `<tr>
-                <th>name</th>
-                <th>wants</th>
-                <th>balance</th>
-                <th>status</th>
-                <th>playing</th>
-            </tr>`;
+        const tableHeader = DG.plugins.mazu.admin.playerTableHeader;
+        /*
+                    `<tr>
+                        <th>name</th>
+                        <th>wants</th>
+                        <th>balance</th>
+                        <th>status</th>
+                        <th>playing</th>
+                    </tr>`;
+        */
 
         const wholeThing = thePlayers.length > 0 ?
             `
@@ -154,7 +157,7 @@ const ui = {
                 </div>
             </div>
         ` : `
-            <h4>no players yet</h4>
+            <h4>${DG.plugins.mazu.noPlayersYet}</h4>
         `;
 
         return `<div>${wholeThing}</div>`;
@@ -163,24 +166,24 @@ const ui = {
     fishMarket: async function () {
 
         const tAutoSellBox = this.autoSellBox();
-        let guts = `<h3 class="ui-stripe-element">Fish Market</h3>`
+        let guts = `<h3 class="ui-stripe-element">${DG.plugins.mazu.admin.fishMarket}</h3>`
 
         if (mazu.model.theSituation.OK) {
-            guts +=  `
+            guts += `
                     <button id="sellFishButton"  class="ui-stripe-element"
-                    onClick="mazu.model.sellFish()">sell fish</button>
+                    onClick="mazu.model.sellFish()">${DG.plugins.mazu.buttons.sellFishButton}</button>
                     ${tAutoSellBox}
                 `;
         } else {
             if (mazu.model.theSituation.missing.length > 0) {
                 const missingPlayerList = mazu.model.theSituation.missing.join(", ");
-                guts +=  `
-                    <span  class="ui-stripe-element">Waiting for ${missingPlayerList}</span>
+                guts += `
+                    <span  class="ui-stripe-element">${DG.plugins.mazu.waitingFor} ${missingPlayerList}</span>
                     ${tAutoSellBox}
                 `;
 
             } else {
-                guts +=  `no fish to sell`
+                guts += `no fish to sell`
             }
         }
 
@@ -208,11 +211,11 @@ const ui = {
                    onChange="mazu.handleAutoSellBoxChange()"
                    ${mazu.state.autoSell ? " checked" : ""}
             />
-            <label htmlFor="autoSellBox">automate market</label>
+            <label htmlFor="autoSellBox">${DG.plugins.mazu.admin.automateMarket}</label>
         `
     },
 
-    makeEndGameMessage : function() {
+    makeEndGameMessage: function () {
         const theGame = mazu.model.theGame;
 
         return `

@@ -103,7 +103,7 @@ fish.userActions = {
      *
      * Note: it also saves the fact that the player is "playing" to the playerDB.
      * (so that if the teacher paused you because you were out of the room,
-     * you get "saved."
+     * you get "saved.")
      *
      * @returns {Promise<void>}
      */
@@ -124,20 +124,13 @@ fish.userActions = {
             return;
         }
 
-        //  $("#catchButton").hide();       //  hide immediately after pressing the button
-
-        if (fish.state.gameTurn < fish.state.gameTurn) {         //  odd occurrence
-            fish.state.gameTurn = fish.state.gameTurn;
-            alert("Your turn number was somehow too low. Let Tim know. We'll catch you up for now.");
-        }
-
         if (fish.readyToCatch()) {      //  check to see if it's OK to catch fish
             fish.state.playerState = fish.constants.kSellingString;     //  set the player state to selling
 
             const tCatchModelResult =  fish.catchFish(tFishWanted);
             fish.state.currentTurnResult = tCatchModelResult;
 
-            console.log("    fish ... " + tCatchModelResult.caught + " in " + tCatchModelResult.turn
+            console.log("    fish ... " + tCatchModelResult.caught + " in " + tCatchModelResult.year
                 + " (" + fish.state.playerState + ")" );
 
             //  todo: don't call this here, but rather in the notification handler when we get the turn back from the DB. (fish.updateTurns)
@@ -153,14 +146,15 @@ fish.userActions = {
 
             //  update the player in the database  todo: get rid of dependency on player database every turn
 
-            thePromises.push(fireConnect.updatePlayerDocument({playerState : fish.state.playerState, playing : true}));
+            const playerDataForDB = {playerState : fish.state.playerState, playing : true};
+            thePromises.push(fireConnect.updatePlayerDocument(playerDataForDB));
 
             await Promise.all(thePromises);
 
             // fish.state.currentTurnResult = tCatchModelResult;
 
         } else {
-            fish.debugThing.html('Gotta wait for everybody else!');
+            fish.debugThing.innerHTML = 'Gotta wait for everybody else!';
         }
 
         // fish.ui.update();

@@ -40,26 +40,45 @@ const connect = {
      * Take the item values from when the model sells fish and emit them into the CODAP dataset
      *
      * @param iGame         the model's "Game." Includes year and population.
-     * @param itemValues    array of item values for each player for this year
+     * @param eValues    array of item values for each player for this year, IN ENGLISH
      *
      */
-    emitAllTurns: function (iGame, itemValues) {
+    emitAllTurns: function (iGame, eValues) {
         //  enhance the values array
-        let theValues = itemValues;
-        theValues.forEach((v) => {
+
+        let localTurns = [];
+
+        eValues.forEach((e) => {
             //  v.pop = iGame.truePopulation;       //  inserted in model.sellFish()
-            v.year = v.turn;        //  the year of the user's turn
-            v.game = iGame.gameCode;
-            v.level = iGame.configuration;
+            e.game = iGame.gameCode;
+            e.level = iGame.configuration;
+            const tLocalTurn = this.translateTurnToLocalLanguage(e);
+            localTurns.push(tLocalTurn);
         })
 
         try {
-            pluginHelper.createItems(theValues, mazu.constants.kMazuDatasetName);     //  could be await...
+            pluginHelper.createItems(localTurns, mazu.constants.kMazuDatasetName);     //  could be await...
             this.makeCaseTableAppear();
         } catch (msg) {
             alert(`Problem for mazu emitting all turns: ${msg}`);
         }
     },
+
+    translateTurnToLocalLanguage: function (iValues) {
+        out = {};
+        for (const a in iValues) {
+            if (iValues.hasOwnProperty(a)) {
+                const index = DG.plugins.mazu.attributeNames[a];
+                if (index) {
+                    out[index] = iValues[a];
+                } else {
+                    out[a] = iValues[a];
+                }
+            }
+        }
+        return out;
+    },
+
 
     /**
      * Make the case table appear. Could be async, but I think it's OK as is.
@@ -82,7 +101,7 @@ const connect = {
         "version": mazu.constants.version,
         "name": mazu.constants.kiFrameName,           //  DG.plugins.mazu.iFrameName,
         "title": mazu.constants.kiFrameName,       //      will be changed,
-        "dimensions": {"width": 500, "height": 500},
+        "dimensions": {"width": 533, "height": 500},
         "preventDataContextReorg": false
     },
 

@@ -30,9 +30,21 @@ const MFS = {
 
     language: 'en',
 
+    attributeNameToEnglish : {},
+
     initialize: function () {
         this.language = localizePlugin.figureOutLanguage('en');
         DG.plugins = mazuStrings[this.language];
+        this.setAttributeNameTranslations();
+    },
+
+    setAttributeNameTranslations : function() {
+        let theLocalizedStrings = DG.plugins.mazu.attributeNames;
+
+        for (const key in theLocalizedStrings) {
+            const localName = theLocalizedStrings[key];
+            this.attributeNameToEnglish[localName] = key;
+        }
     },
 
     setInitialStrings: async function () {
@@ -51,6 +63,26 @@ const MFS = {
             }
         }
 
+    },
+
+    /**
+     * convert the PLAYER turn (whose attributes may be in any language) to English
+     * @param iTurn
+     */
+    convertToEnglish: function(iTurn) {
+        let out = {};
+        out.playerName = iTurn[DG.plugins.mazu.attributeNames.player];
+        out.player = iTurn[DG.plugins.mazu.attributeNames.player];
+        out.year = iTurn[DG.plugins.mazu.attributeNames.year];
+
+        for (key in iTurn) {
+            const english = MFS.attributeNameToEnglish[key];    //      here, key is local, like "antes"
+                //  now english is "before"
+            //  const index = `DG.plugins.mazu.attributeNames.${key}`;
+            out[english] = iTurn[key];      //  out.before = 5700;
+        }
+
+        return out;
     },
 
     /**
@@ -175,7 +207,7 @@ const MFS = {
     makeRecentTurnReport: function (iTurn) {
         const out = tr(
             DG.plugins.mazu.recentTurnReport,
-            iTurn.turn, iTurn.seen, iTurn.want,
+            iTurn.year, iTurn.seen, iTurn.want,
             iTurn.caught, iTurn.unitPrice, iTurn.income
         );
         return out;
@@ -203,7 +235,7 @@ const MFS = {
             let tMessageParts = [];
 
             if (theGame.outOfTime) {
-                const tMess = tr(DG.plugins.mazu.end.timeRanOut, theGame.endingTurn);
+                const tMess = tr(DG.plugins.mazu.end.timeRanOut, theGame.endingYear);
                 tMessageParts.push(tMess);
             } else {
                 const tMess = tr(DG.plugins.mazu.end.endedEarly, theGame.turn);

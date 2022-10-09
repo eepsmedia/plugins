@@ -327,7 +327,7 @@ let FS = {
                 let tMessageParts = [];
 
                 if (iReason.time) {
-                    tMessageParts.push("the game ends at year " + fish.game.endingTurn);
+                    tMessageParts.push("the game ends at year " + fish.game.endingYear);
                 }
 
                 switch (iReason.pop) {
@@ -566,7 +566,7 @@ let FS = {
                 let tMessageParts = [];
 
                 if (iReason.time) {
-                    tMessageParts.push("este juego se termine en el año " + fish.game.endingTurn);
+                    tMessageParts.push("este juego se termine en el año " + fish.game.endingYear);
                 }
 
                 switch (iReason.pop) {

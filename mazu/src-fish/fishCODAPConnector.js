@@ -26,7 +26,7 @@ limitations under the License.
 
 */
 
-/* global codapInterface, pluginHelper */
+/* global codapInterface, pluginHelper, DG */
 
 fish.CODAPConnector = {
 
@@ -53,7 +53,7 @@ fish.CODAPConnector = {
             pluginHelper.initDataSet(this.getFishDataSetupObject()),
             codapInterface.sendRequest(tMutabilityMessage),
             MFS.setFrameTitle(DG.plugins.mazu.fishFrameTitle),
-    ]);
+        ]);
 
         //  restore the state if possible
         fish.state = codapInterface.getInteractiveState();
@@ -89,37 +89,42 @@ fish.CODAPConnector = {
      * Note that this does NOT include attributes that get determined later:
      * unitPrice, income, after.
      *
-     * @param iModelResult
+     * @param eTurn     the catch-fish model result in English
      * @returns {Promise<{year: number, seen: *, want: *, caught: (*|number), before: (number|*), expenses: number, player: (null|*), game: (*|null)}>}
      */
-    addSingleFishItemInCODAP: async function (iModelResult) {
-        let aTurn = {
-            year: Number(fish.state.gameTurn),
-            seen: iModelResult.visible,
-            want: iModelResult.want,
-            caught: iModelResult.caught,
-            before: fish.state.balance,
-            expenses: iModelResult.expenses,
-            player: fish.state.playerName,
-            game: fish.state.gameCode
-        };
+    addSingleFishItemInCODAP: async function (eTurn) {
+
+        let aTurn = {};
+        //      todo: make this into a function in MFS
+
+        //  translate eTurn into local language
+        aTurn[DG.plugins.mazu.attributeNames.year] = Number(eTurn.year);
+        aTurn[DG.plugins.mazu.attributeNames.seen] = eTurn.seen;
+        aTurn[DG.plugins.mazu.attributeNames.want] = eTurn.want;
+        aTurn[DG.plugins.mazu.attributeNames.caught] = eTurn.caught;
+        aTurn[DG.plugins.mazu.attributeNames.before] = fish.state.balance;
+        aTurn[DG.plugins.mazu.attributeNames.expenses] = eTurn.expenses;
+        aTurn[DG.plugins.mazu.attributeNames.player] = eTurn.player;
+        aTurn[DG.plugins.mazu.attributeNames.game] = fish.state.gameCode;
 
         //  const localizedTurn = fish.localize.localizeValuesObject(aTurn);
 
-        console.log(`    fish ... addSingleFishItemInCODAP for ${aTurn.year} caught ${aTurn.caught}`);
+        console.log(`    fish ... addSingleFishItemInCODAP for ${eTurn.year} caught ${eTurn.caught}`);
 
         const theResult = await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
         if (theResult.success) {
-            aTurn.caseID = theResult.caseIDs[0];
-            aTurn.itemID = theResult.itemIDs[0];
+            eTurn.caseID = theResult.caseIDs[0];
+            eTurn.itemID = theResult.itemIDs[0];
         }
         this.makeCaseTableAppear();
+/*
         aTurn["playerName"] = aTurn.player;
         aTurn["turn"] = aTurn.year;
         delete aTurn.player;
         delete aTurn.year;
+*/
 
-        return aTurn;   //  localizedTurn
+        return eTurn;   //  english turn, but with caseID and itemID
     },
 
     /**
@@ -128,23 +133,23 @@ fish.CODAPConnector = {
      * The database has recorded the price for fish (etc) based on everyone's catch.
      * So here, we can fill in what we did not know at the time of fishing: unitPrice, income, and our "after" balance.
      *
-     * @param iTurn     the data from db to be updated
+     * @param eTurn     the data from db to be updated, in ENGLISH
      * @returns {Promise<void>}
      */
-    updateFishItemInCODAP: async function (iTurn) {
+    updateFishItemInCODAP: async function (eTurn) {
         try {
-            const theYear = iTurn.turn;
+            let tValues = {};
 
-            const tValues = {
-                'unitPrice': iTurn.unitPrice,
-                'income': iTurn.income,
-                'after': iTurn.after,
-            };
-            console.log(`    ... updateFishItemInCODAP() ${theYear}, after = ${iTurn.after}`);
+            //  translate new values into local language
+
+            tValues[DG.plugins.mazu.attributeNames.unitPrice] = eTurn.unitPrice;
+            tValues[DG.plugins.mazu.attributeNames.income] = eTurn.income;
+            tValues[DG.plugins.mazu.attributeNames.after] = eTurn.after;
+            console.log(`    ... updateFishItemInCODAP() ${eTurn.year}, after = ${eTurn.after}`);
 
             //  use the item id of the relevant case:
 
-            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemByID[" + iTurn.itemID + "]";
+            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemByID[" + eTurn.itemID + "]";
             let tMessage = {action: "update", resource: tResource};
             tMessage.values = tValues;
             const tUpdateResult = await codapInterface.sendRequest(tMessage);
@@ -154,13 +159,13 @@ fish.CODAPConnector = {
 
             if (!tUpdateResult.success) {
                 const errorString = "    unsuccessful update, item " + theItemID +
-                    " | year: " + theYear + " | error: " + tUpdateResult.values.error +
+                    " | year: " + eTurn.year + " | error: " + tUpdateResult.values.error +
                     " | message: " + JSON.stringify(tMessage);
                 console.log(errorString);
                 return null;
             }
 
-            return iTurn;       //      resolve to the most recent turn.
+            return eTurn;       //      resolve to the most recent turn.
         } catch (msg) {
             console.log("    error in updateFishItemInCODAP(): " + msg);
         }
@@ -269,7 +274,9 @@ fish.CODAPConnector = {
 
                     attrs: [ // note how this is an array of objects.
                         {
-                            name: DG.plugins.mazu.attributeNames.year, type: 'numeric', precision: 0,
+                            name: DG.plugins.mazu.attributeNames.year,
+                            title : DG.plugins.mazu.attributeNames.year,
+                            type: 'numeric', precision: 0,
                             description: DG.plugins.mazu.attributeDescriptions.year
                         },
                         {

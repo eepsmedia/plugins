@@ -119,7 +119,7 @@ const mazu =  {
             this.model.thePlayers.length > 0 &&
             this.playing()) {
             await this.sellFish();
-            console.log(" *** auto sold *** now it's " + this.model.theGame.turn);
+            console.log(" *** auto sold *** now it's " + this.model.theGame.year);
         }
 
         ui.update();
@@ -152,7 +152,7 @@ const mazu =  {
         const theGame = this.model.theGame;
         const nTurns = this.model.thisYearsTurns();
 
-        return "Mazu sitrep: " +  theGame.gameCode + " (" + theGame.gameState + ") turn " + theGame.turn +
+        return "Mazu sitrep: " +  theGame.gameCode + " (" + theGame.gameState + ") turn " + theGame.year +
             " -- " + this.model.thePlayers.length + " players " +
             " -- " + nTurns + ` ${nTurns === 1 ? turn : turns} `
             ;

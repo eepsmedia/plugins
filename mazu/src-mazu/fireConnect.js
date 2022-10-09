@@ -51,13 +51,13 @@ const fireConnect = {
             godDR.update(theContents);
             Swal.fire({
                 icon : "success",
-                text : `Welcome back, ${theName}!`
+                text : `${DG.plugins.mazu.admin.welcomeBack}, ${theName}!`
             })
         } else {
             godDR.set(theContents);
             Swal.fire({
                 icon : "success",
-                text : `Welcome to Mazu, ${theName}!`
+                text : `${DG.plugins.mazu.admin.welcomeToMazu}, ${theName}!`
             })
         }
     },
@@ -80,8 +80,8 @@ const fireConnect = {
     makeNewGame: async function (iGameType) {
         const params = mazu.fishGameParameters[iGameType];
 
-        params['startingTurn'] = new Date().getFullYear();
-        params['endingTurn'] = params.startingTurn + params.duration;
+        params['startingYear'] = new Date().getFullYear();
+        params['endingYear'] = params.startingYear + params.duration;
 
         let newCode = "didn't get a code";
 
@@ -112,16 +112,23 @@ const fireConnect = {
         }
 
         const newGameValues = {
-            turn: params.startingTurn,
-            startingTurn: params.startingTurn,
-            endingTurn : params.endingTurn,
+            year: params.startingYear,
+            startingYear: params.startingYear,
+            endingYear : params.endingYear,
+            openingBalance : params.openingBalance,
             openingPopulation: params.openingPopulation,
             population: params.openingPopulation,
             winningPopulation : params.winningPopulation,
             losingPopulation : params.losingPopulation,
             carryingCapacity : params.carryingCapacity,
+            boatCapacity : params.boatCapacity,
             birthProbability : params.birthProbability,
+            catchProbability : params.catchProbability,
             binomialProbabilityModel : params.binomialProbabilityModel,
+            duration : params.duration,
+            defaultPrice : params.defaultPrice,
+            overhead : params.overhead,
+            visibleProbability : params.visibleProbability,
 
             fishStars : -1,
             brokePlayers : "",
@@ -294,16 +301,16 @@ const fireConnect = {
         const nYears = Math.round(nDays / 365.25);
 
         if (nMinutes < 300) {
-            theUnit = DG.plugins.mazu.minute;
+            theUnit = DG.plugins.mazu.timeTerms.minute;
             theValue = nMinutes;
         } else if (nHours < 75) {
-            theUnit = DG.plugins.mazu.hour;
+            theUnit = DG.plugins.mazu.timeTerms.hour;
             theValue = nHours;
         } else if (nDays < 75) {
-            theUnit = DG.plugins.mazu.day;
+            theUnit = DG.plugins.mazu.timeTerms.day;
             theValue = nDays;
         } else {
-            theUnit = DG.plugins.mazu.month;
+            theUnit = DG.plugins.mazu.timeTerms.month;
             theValue = nMonths;
         }
 
@@ -342,7 +349,7 @@ const fireConnect = {
     },
 
     uploadTurnToDB: async function (iTurn) {
-        const theTurnID = iTurn.turn + "_" + iTurn.playerName;
+        const theTurnID = iTurn.year + "_" + iTurn.playerName;
 
         console.log(`    π   posting turn ${theTurnID} (after = ${iTurn.after})`);
         await this.turnsCR.doc(theTurnID).set(iTurn);

@@ -13,6 +13,9 @@ mazuStrings.en = {
             "joinGameButton"    : "Join",
             "catchButton"   : "Catch",
             "setNameButton" : "Set name",
+            "loginButton" : "log in",
+            "logoutButton" : "log out",
+            "tagline" : "goddess of the sea",
         },
 
         "attributeNames" : {
@@ -30,6 +33,7 @@ mazuStrings.en = {
             "game" : "game",
             "result" : "result",
             "level" : "level",
+            "itemID" : "itemID",
         },
 
         "attributeDescriptions" : {
@@ -47,6 +51,29 @@ mazuStrings.en = {
             "game" : "game code",
             "result" : "game result (how many fish you got out of 5)",
             "level" : "difficulty level",
+        },
+
+        "buttons" : {
+            "sellFishButton" : "sell fish",
+            "leaveGameButton" : "leave game",
+            "newGameRadioLabel" : "new game",
+            "oldGameRadioLabel" : "old game",
+        },
+        
+        "admin" : {
+            "fishMarket" : "Fish Market",
+            "playerTableHeader" : "<tr>\n" +
+                "                <th>name</th>\n" +
+                "                <th>wants</th>\n" +
+                "                <th>balance</th>\n" +
+                "                <th>status</th>\n" +
+                "                <th>playing</th>\n" +
+                "            </tr>",
+            "welcomeToMazu" : "Welcome to Mazu",
+            "welcomeBack" : "Welcome back",
+            "noGameYet" : "no game yet",
+            "youHaveRejoined" : "You have rejoined",
+            "automateMarket" : "automate market",
         },
 
         "mazuFrameTitle" : "Mazu, Goddess of the Sea",
@@ -101,11 +128,13 @@ mazuStrings.en = {
             "bankruptFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>You have lost the game because these players have gone bankrupt: %@1.",
         },
 
-        "second" : "seconds",
-        "minute" : "minutes",
-        "hour" : "hours",
-        "day" : "days",
-        "month" : "months",
+        "timeTerms" : {
+            "second": "seconds",
+            "minute": "minutes",
+            "hour": "hours",
+            "day": "days",
+            "month": "months",
+        }
 
 
     }

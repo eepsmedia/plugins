@@ -64,7 +64,7 @@ let fish = {
     freshState: {
         gameCode: null,     //  three-word nearly-unique code for each game
         gameState: null,    //  is the game in progress?
-        gameTurn: 0,                //  year we are in locally. Usually the same as fish.gameFromDB.turn
+        gameTurn: 0,                //  year we are in locally. Usually the same as fish.gameFromDB.year
 
         gameCodeList: [],
 
@@ -159,20 +159,25 @@ let fish = {
         return tCatchable > iWanted ? iWanted : tCatchable;
     },
 
+    /**
+     * Note: returned object is in English!
+     *
+     * @param iWanted
+     * @returns {{caught: *, visible: number, want, turn: (number|*), player: (string|null|*), expenses: (*|number|number)}}
+     */
     catchFish: function (iWanted) {
 
         try {
-            const tVisible = this.calculateVisible();
-
-            tCaught = this.calculateCaught(iWanted, tVisible);
-
+            const tSeen = this.calculateVisible();
+            tCaught = this.calculateCaught(iWanted, tSeen);
             let tExpenses = fish.gameParameters.overhead;
 
             return {
-                playerName : fish.state.playerName,
-                turn : fish.state.gameTurn,
+                player : fish.state.playerName,
+                year : fish.state.gameTurn,
+                before : fish.state.balance,    //      state.balance; this is the turn object before sales.
                 want: iWanted,
-                visible: tVisible,
+                seen: tSeen,
                 caught: tCaught,
                 expenses: tExpenses
             };
@@ -193,17 +198,18 @@ let fish = {
         this.gameConfig = this.gameFromDB.configuration;
         fish.state.fishStars = this.gameFromDB.fishStars;
 
-        if (this.state.gameTurn !== this.gameFromDB.turn) {
-            console.log(`updating game, turn ${this.state.gameTurn} to ${this.gameFromDB.turn}`);
+        if (this.state.gameTurn !== this.gameFromDB.year) {
+            console.log(`updating game, turn ${this.state.gameTurn} to ${this.gameFromDB.year}`);
 
             //  change of turn! Fish got sold!
             await this.updateTurnFromOldYearInCODAP(this.state.gameTurn); //  gets the turn data and pushes it todo: do we need to do this?
-            this.state.gameTurn = this.gameFromDB.turn;
-
-            const myData = await fireConnect.getMyData();   //  todo: avoid this call through notifications
+            this.state.gameTurn = this.gameFromDB.year;
 
             this.state.playerState = fish.constants.kFishingString;     //  myData.playerState;        //  we are back to fishing
-            this.state.balance = myData.balance;
+
+            //  find the balance
+            const myData = await fireConnect.getMyData();   //  todo: avoid this call through notifications
+            this.state.balance = myData ? myData.balance : iGame.openingBalance;
 
             console.log(`\nfish.updateGame() Year is now ${this.state.gameTurn} (now ${this.state.playerState})`);
             if (fish.state.autoCatch && fish.state.playerState === fish.constants.kFishingString) {
@@ -219,7 +225,7 @@ let fish = {
     },
 
     /**
-     *
+     *  Called when the turns database is updated.
      * @param iTurns        all turns
      * @returns {Promise<void>}
      */
@@ -228,7 +234,10 @@ let fish = {
 
         let thisTurn = null;
         iTurns.forEach( t => {
-            if (t.turn === this.state.gameTurn && t.playerName === this.state.playerName) {
+
+            //  look only at the current turn for this player...
+
+            if (t.year === this.state.gameTurn && t.playerName === this.state.playerName) {
                 fish.state.turnReport = MFS.makeRecentTurnReport(t);   //  t includes caseID
                 fish.CODAPConnector.updateFishItemInCODAP(t);   //  t includes caseID
             }
@@ -236,6 +245,7 @@ let fish = {
     },
 
     updateTurnFromOldYearInCODAP : async function( iTurn ) {
+        console.log(`NOTE! NOTE! We do call updateTurnFromOldYear...`);
         const theTurn = await fireConnect.getOneTurn( this.state.playerName, iTurn );
         fish.CODAPConnector.updateFishItemInCODAP(theTurn);
     },
@@ -381,7 +391,7 @@ let fish = {
     },
 
     constants: {
-        version: "2022d",
+        version: "2022e",
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,

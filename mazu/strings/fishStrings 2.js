@@ -191,7 +191,7 @@ let FS = {
             let tMessageParts = [];
 
             if (theGame.outOfTime) {
-                tMessageParts.push(`The game ends in ${theGame.endingTurn}.<br>`);
+                tMessageParts.push(`The game ends in ${theGame.endingYear}.<br>`);
             } else {
                 tMessageParts.push(`The game ended early in ${theGame.turn}.<br>`);
             }
@@ -544,7 +544,7 @@ let FS = {
                 let tMessageParts = [];
 
                 if (iReason.time) {
-                    tMessageParts.push("este juego se termine en el año " + fish.game.endingTurn);
+                    tMessageParts.push("este juego se termine en el año " + fish.game.endingYear);
                 }
 
                 switch (iReason.pop) {

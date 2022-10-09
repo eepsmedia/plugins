@@ -30,7 +30,7 @@ limitations under the License.
  * This object-with-objects contains parameters for each level of the game.
  * The keys in the "outermost" object (albacore, etc) are the names of the levels
  *
- * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingTurn: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
+ * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
  */
 fish.fishLevels = {
 
@@ -43,7 +43,7 @@ fish.fishLevels = {
         losingPopulation: 100,
         openingBalance: 5000,
         openingTurn: 2020,
-        endingTurn: 2022,          //          2060
+        endingYear: 2022,          //          2060
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -66,7 +66,7 @@ fish.fishLevels = {
         losingPopulation: 100,
         openingBalance: 5000,
         openingTurn: 2020,
-        endingTurn: 2060,          //          2060
+        endingYear: 2060,          //          2060
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -89,7 +89,7 @@ fish.fishLevels = {
         losingPopulation: 100,
         openingBalance: 5000,
         openingTurn: 2020,
-        endingTurn : 2060,
+        endingYear : 2060,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -110,7 +110,7 @@ fish.fishLevels = {
         losingPopulation: 100,
         openingBalance: 3000,
         openingTurn: 2020,
-        endingTurn : 2060,
+        endingYear : 2060,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,
@@ -138,7 +138,7 @@ fish.fishLevels = {
         losingPopulation: 100,
         openingBalance: 3000,
         openingTurn: 2020,
-        endingTurn : 2060,
+        endingYear : 2060,
         defaultPrice: 100,
         overhead: 2000,
         visibleProbability: 0.50,

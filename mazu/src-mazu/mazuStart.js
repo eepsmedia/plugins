@@ -42,7 +42,7 @@ const mazuStart = {
                 `<option key=${key} value=${key}>${key}</option>`
         );
 
-        const oldGameMenuGuts = await this.makeOldGamesMenuGuts();
+        const oldGameMenuGuts = await this.makeOldGamesMenuGuts();  //  todo: see if we need this
         const oldGamesTableGuts = await fireConnect.makeGameListTableGuts(mazu.loginName);
 
         document.getElementById("gameTypesMenu").innerHTML = typesMenuGuts;
@@ -87,12 +87,12 @@ const mazuStart = {
         <label>
             <input type="radio" name="newOrOldGame" value="new" ${newChecked}
                    onChange="mazuStart.handleNewOrOldChange()"
-            /> new game
+            /> ${DG.plugins.mazu.buttons.newGameRadioLabel}
         </label> <br/>
         <label>
             <input type="radio" name="newOrOldGame" value="old" ${oldChecked}
                    onChange="mazuStart.handleNewOrOldChange()"
-            /> old game
+            /> ${DG.plugins.mazu.buttons.oldGameRadioLabel}
         </label>
         `
     },
@@ -105,7 +105,7 @@ const mazuStart = {
     joinOldGameByName : async function(iOldCode) {
         await mazu.model.joinOldGame(iOldCode);
         if (mazu.model.theGame) {
-            const message = `You have rejoined ${mazu.model.theGame.gameCode}`;
+            const message = `${DG.plugins.mazu.admin.youHaveRejoined} ${mazu.model.theGame.gameCode}`;
             Swal.fire({
                 icon: "success",
                 text: message,

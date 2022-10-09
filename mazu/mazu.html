@@ -6,9 +6,10 @@
 
     http://localhost/plugins/mazu/mazu
 
-    or, local CODAP, mazu2....
+    or, local CODAP, ...
 
     http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/mazu/mazu.html
+    http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/mazu/mazu.html?lang=es
 
     MAZU2 edition on xyz:
 
@@ -53,8 +54,9 @@
     <script src="src-mazu/connect.js?000"></script>
 
     <script src="strings/MFS.js?000"></script>
-    <script src="strings/strings.en.js?000"></script>
-    <script src="strings/strings.es.js?000"></script>
+    <script src="strings/strings.en.js?003"></script>
+    <script src="strings/strings.es.js?003"></script>
+    <script src="strings/strings.de.js?003"></script>
     <script src="strings/localizePlugin.js?000"></script>
     <script src="strings/tr.js?000"></script>
     <!--    <script src="strings/strings.en.deprecate.js?000"></script>-->
@@ -69,13 +71,13 @@
         <h1 class="ui-stripe-element">Mazu</h1>
         <img id="refreshButton" alt="refresh" onclick="ui.update()"
              src="art/refresh.png" class="ui-stripe-element"/>
-        <p class="ui-stripe-element">goddess of the sea</p>
-        <button class="ui-stripe-element" id="logout-button" onclick="mazu.initialize()">log out</button>
+        <p class="ui-stripe-element" id="tagline">goddess of the sea</p>
+        <button class="ui-stripe-element" id="logoutButton" onclick="mazu.initialize()">LOG OUT</button>
     </div>
 
     <div id="mazuLoginDiv" class="ui-stripe">
         <input id="loginName" type="text" class="ui-stripe-element">
-        <button id="loginButton" class="ui-stripe-element" onclick="mazu.handleLogin()">login</button>
+        <button id="loginButton" class="ui-stripe-element" onclick="mazu.handleLogin()">LOGIN</button>
     </div>
 
     <div id="mazuHeader" class="ui-stripe"></div>
@@ -91,7 +93,6 @@
         <div id="startGameButton" class="ui-stripe-element"></div>
     </div>
     <div id="mazuOldGames" class="ui-stripe">
-        <!--    <select id="oldGamesMenu" onchange="mazuStart.update()"></select>   -->
         <div id="gameSelectTable"></div>
     </div>
     <div id="mazuMarketDiv" class="ui-stripe"></div>
