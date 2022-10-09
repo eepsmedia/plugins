@@ -3,7 +3,7 @@
         "fishName": "Fisch",
         "mazuName": "Mazu",
         "language": "Deutsch",
-        "flags": "DE, AT, CH",
+        "flags": "🇩🇪, 🇦🇹, 🇨🇭",
         "staticStrings": {
             "automateCatchLabel": "Automatisieren? ",
             "playerNameLabelText": "Wie ist dein Name? ",
@@ -14,11 +14,12 @@
             "setNameButton": "Dein Name",
             "loginButton": "anmelden",
             "logoutButton": "abmelden",
-            "tagline": "Meeresgöttin"
+            "tagline": "Meeresgöttin",
+            "startNewGameButton": "Einem neuen Spiel beitreten"
         },
         "attributeNames": {
             "year": "Jahr",
-            "pop": "Name der Population",
+            "pop": "Fischpop",
             "seen": "gesehen",
             "want": "wollen",
             "caught": "gefangen",
@@ -58,12 +59,12 @@
         "fishDataSetDescription": "Berichte Deiner Erfahrung auf dem Boot",
         "fishHistoricalDataSetTitle": "historische Berichte",
         "fishHistoricalDataSetDescription": "Historische Berichte jedes einzelnen Bootes",
-        "firstPlayer": "Du wirst der erste Spieler sein",
+        "firstPlayer": "Du wirst der erste Spieler sein.",
         "playingSolo": "Du spielst solo",
         "oneOtherPlayer": "Es gibt einen anderen Spieler",
         "manyOtherPlayers": "Es gibt %@1 weitere Spieler",
         "noPlayersYet": "Noch keine Spieler!",
-        "waitingForYou": "Wartend auf DICH",
+        "waitingForYou": "Wartend auf <strong>DICH</strong>",
         "andHowManyMore": " und %@1 mehr.",
         "waitingFor": "Wartend auf",
         "catchFishCommand": "Fange Fische!",
@@ -72,11 +73,11 @@
             "endedEarly": "Das Spiel endete früh in %@1.<br>",
             "fiveFishResult": "🐟🐟🐟🐟🐟 Gut gemacht! Fünf von fünf Fischen! \nDie gesamte Fischpopulation ist gesund --- und so groß, dass man viele Fische fangen kann, ohne die Fischpopulation zu verringern. Die Fischerei ist jetzt eine nachhaltige Nahrungsquelle.",
             "fourFishResult": "\n🐟🐟🐟🐟Deine Bewertung ist nun \"vier Fische (von fünf). <br>, die Gesamtzahl der Fische hat stark zugenommen! Du  kannst jetzt mehr Fische fangen, ohne die Population zu verringern. Schaffst Du  es auf fünf Sterne?",
-            "threeFishResult": "\nLaura Martignon, 56 minutes ago\n🐟🐟🐟Deine Bewertung ist drei Fische (von fünf). <br>die Gesamtzahl der Fische hat zugenommen! Dein Fischereigeschäft läuft gut, aber es könnte besser sein.",
-            "twoFishResult": "\nLaura Martignon, 51 minutes ago\n🐟🐟Deine Bewertung ist zwei Fische (von fünf). <br>die Gesamtzahl der Fische ist zurückgegangen. Dein Fischereigeschäft hat überlebt, aber der Fischbestand ist nicht gesund.",
-            "oneFishResult": "\nLaura Martignon, 51 minutes ago\n🐟 Deine Bewertung ist nur ein Fisch (von fünf). <br>die Gesamtzahl der Fische ist sehr gering. Du kannst möglicherweise nicht mehr lange fischen.",
-            "zeroFishResult": "💀Ihre Bewertung ist null Fische (von fünf)! <br>Die Fische werden alle bald weg sein und die Fischereiindustrie ist zusammengebrochen",
-            "bankruptFishResult": "💀Deine Bewertung ist null Fische (von fünf)! <br>die Fische werden alle bald weg sein und die Fischereiindustrie ist zusammengebrochen"
+            "threeFishResult": "🐟🐟🐟 Deine Bewertung ist drei Fische (von fünf). <br>die Gesamtzahl der Fische hat zugenommen! Dein Fischereigeschäft läuft gut, aber es könnte besser sein.",
+            "twoFishResult": "🐟🐟 Deine Bewertung ist zwei Fische (von fünf). <br>die Gesamtzahl der Fische ist zurückgegangen. Dein Fischereigeschäft hat überlebt, aber der Fischbestand ist nicht gesund.",
+            "oneFishResult": "🐟 Deine Bewertung ist nur ein Fisch (von fünf). <br>die Gesamtzahl der Fische ist sehr gering. Du kannst möglicherweise nicht mehr lange fischen.",
+            "zeroFishResult": "💀 Deine Bewertung ist null Fische (von fünf)! <br>Die Fische werden alle bald weg sein und die Fischereiindustrie ist zusammengebrochen.",
+            "bankruptFishResult": "💀 Deine Bewertung ist null Fische (von fünf)! <br>Du hast das Spiel verloren, weil diese Spieler bankrott gegangen sind: %@1."
         },
         "everyoneHasFished": "Jeder hat Fische gefangen.",
         "waitingForYouToLogIn": "Man wartet darauf, dass Du Dich einloggst.",
@@ -93,7 +94,7 @@
             "oldGameRadioLabel": "altes Spiel"
         },
         "admin": {
-            "playerTableHeader": "<tr>\n                <th>Name</th>\n                <th>xxx</th>\n                <th>xxx</th>\n                <th>xxx</th>\n                <th>xxx</th>\n</tr>",
+            "playerTableHeader": "<tr>\n                <th>Name</th>\n                <th>wollen</th>\n                <th>Saldo</th>\n                <th>Status</th>\n                <th>spielend</th>\n</tr>",
             "fishMarket": "Fischmarkt",
             "noGameYet": "Es gibt noch kein Spiel",
             "welcomeBack": "willkommen zurück",

@@ -48,9 +48,9 @@ fish.userActions = {
         if (gameData) {
             fish.state.gameCode = theCode;
 
-            fish.state.gameTurn = gameData.turn;
+            fish.state.gameTurn = gameData.year;
             fish.state.gameState = gameData.gameState;
-            fish.gameParameters = fish.fishLevels[gameData.configuration];
+            fish.gameParameters = gameData;
             fish.state.playerName = "";
 
             const tJoinNotice = `You joined game ${theCode}`;

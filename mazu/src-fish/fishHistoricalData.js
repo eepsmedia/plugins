@@ -49,23 +49,9 @@ fish.historicalData = {
                 (gameR) => {            //  but each game is an array of turns
                     gameR.forEach(
                         (turnR) => {
-                            turns.push({
-                                player: turnR.playerName,
-                                year: turnR.turn,
-
-                                seen: turnR.seen,
-                                want: turnR.want,
-                                caught: turnR.caught,
-                                before: turnR.before,
-                                expenses: turnR.expenses,
-                                unitPrice: turnR.unitPrice,
-                                income: turnR.income,
-                                after: turnR.after,
-                                game: turnR.game,
-
-                                result: this.makeResultFromFishStars(turnR.result),     //  because CODAP's name for the attribute is result
-                                level: turnR.level
-                            })
+                            turnR.result = this.makeResultFromFishStars(turnR.result);  //  convert number to fish
+                            const tLocalTurn = MFS.translateTurnToLocalLanguage(turnR);
+                            turns.push(tLocalTurn);
                         }
                     )
                 }

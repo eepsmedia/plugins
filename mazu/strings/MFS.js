@@ -47,6 +47,22 @@ const MFS = {
         }
     },
 
+    translateTurnToLocalLanguage: function (iValues) {
+        out = {};
+        for (const a in iValues) {
+            if (iValues.hasOwnProperty(a)) {
+                const index = DG.plugins.mazu.attributeNames[a];
+                if (index) {
+                    out[index] = iValues[a];
+                } else {
+                    out[a] = iValues[a];
+                }
+            }
+        }
+        return out;
+    },
+
+
     setInitialStrings: async function () {
 
         //  substitute all the static strings in the UI (by `id`)
@@ -238,7 +254,7 @@ const MFS = {
                 const tMess = tr(DG.plugins.mazu.end.timeRanOut, theGame.endingYear);
                 tMessageParts.push(tMess);
             } else {
-                const tMess = tr(DG.plugins.mazu.end.endedEarly, theGame.turn);
+                const tMess = tr(DG.plugins.mazu.end.endedEarly, theGame.year);
                 tMessageParts.push(tMess);
             }
 
@@ -260,7 +276,7 @@ const MFS = {
                     break;
                 case 0:
                     if (theGame.brokePlayers.length > 0) {
-                        tMessageParts.push(tr(DG.plugins.mazu.end.zeroFishResult, theGame.brokePlayers));
+                        tMessageParts.push(tr(DG.plugins.mazu.end.bankruptFishResult, theGame.brokePlayers));
                     } else {
                         tMessageParts.push(DG.plugins.mazu.end.zeroFishResult);
                     }

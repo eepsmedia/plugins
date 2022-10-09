@@ -50,7 +50,7 @@ let fish = {
      */
     gameFromDB: null,         //  the game in the DB, updated when it changes
     gameConfig : null,
-    gameParameters : null,      //  a copy from fishGameConfiguration corresponding to config, e.g., "albacore"
+    gameParameters : null,      //  a copy from the game database, set when you join a game
     players: [],
 
     language: null,
@@ -173,6 +173,7 @@ let fish = {
             let tExpenses = fish.gameParameters.overhead;
 
             return {
+                game : fish.state.gameCode,
                 player : fish.state.playerName,
                 year : fish.state.gameTurn,
                 before : fish.state.balance,    //      state.balance; this is the turn object before sales.
@@ -335,8 +336,8 @@ let fish = {
         fish.state.gameTurn = 0;
         fish.state.balance = 0;
 
-        $("#gameCodeTextField").val("");         //  empty the code!
-        $("#howManyFish").val("");         //  empty the code!
+        document.getElementById("gameCodeTextField").value = "";         //  empty the code!
+        document.getElementById("howManyFish").value = "";         //  empty the code!
         fish.ui.update();
     },
 

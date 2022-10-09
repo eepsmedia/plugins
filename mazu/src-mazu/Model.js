@@ -197,6 +197,9 @@ class Model extends Object {
             this.theGame.fishStars = endCheck.fishStars;
             this.theGame.brokePlayers = endCheck.broke.join(", ");
             this.theGame.gameState = mazu.constants.kEndedString;
+
+            //  also, make sure we are no longer automated for selling
+            mazu.state.autoSell = false;
         } else {
             this.theGame['year']++;     //      this is where the date gets incremented. End of turn.
             console.log(`... end of turn. Updating to ${this.theGame.year} `);

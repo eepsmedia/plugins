@@ -72,7 +72,7 @@ fish.ui = {
      *
      * Here is the order of the "stripes"
      *  * statusDIV -- balance, name, year
-     *  * winLoseDiaog -- only appears after a game ends
+     *  * winLoseDialog -- only appears after a game ends
      *  * catchFishDIV -- where you tell how many fish (irrelevant when selling)
      *  * noticeDIV -- what's happening (can change when fishing)
      *  * aboutPlayersDIV -- who are you waiting for
@@ -80,9 +80,6 @@ fish.ui = {
      * @returns {Promise<void>}
      */
     update: async function () {
-
-        //  fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
-
 
         //  Visibility of the main panels
 

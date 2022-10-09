@@ -52,7 +52,7 @@ const connect = {
             //  v.pop = iGame.truePopulation;       //  inserted in model.sellFish()
             e.game = iGame.gameCode;
             e.level = iGame.configuration;
-            const tLocalTurn = this.translateTurnToLocalLanguage(e);
+            const tLocalTurn = MFS.translateTurnToLocalLanguage(e);
             localTurns.push(tLocalTurn);
         })
 
@@ -62,21 +62,6 @@ const connect = {
         } catch (msg) {
             alert(`Problem for mazu emitting all turns: ${msg}`);
         }
-    },
-
-    translateTurnToLocalLanguage: function (iValues) {
-        out = {};
-        for (const a in iValues) {
-            if (iValues.hasOwnProperty(a)) {
-                const index = DG.plugins.mazu.attributeNames[a];
-                if (index) {
-                    out[index] = iValues[a];
-                } else {
-                    out[a] = iValues[a];
-                }
-            }
-        }
-        return out;
     },
 
 

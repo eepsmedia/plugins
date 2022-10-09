@@ -175,6 +175,10 @@ const mazu =  {
         this.state.autoSell = newCheckedState;
         console.log("Auto sell checkbox now " + newCheckedState);
         const currentSituation = mazu.model.getCurrentSituation();
+
+        if (newCheckedState && currentSituation.OK && currentSituation.autoOK) {
+            mazu.model.sellFish();
+        }
     },
 
 }
