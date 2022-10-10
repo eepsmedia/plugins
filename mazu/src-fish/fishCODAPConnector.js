@@ -85,6 +85,34 @@ fish.CODAPConnector = {
     },
 
     /**
+     * Called in userActions.pressNameButton().
+     * Gets the relevant data from Firebase, filters it to include only this player, and emits it into CODAP.
+     *
+     * @param iPlayerName   string  the name of the player
+     * @param iGameCode     string  the game code
+     * @returns {Promise<void>}
+     */
+    getAndEmitMyFishRecords : async function(iPlayerName, iGameCode) {
+
+        const allTurns = await fireConnect.getAllTurnsFromGame(iGameCode);
+        let myTurns = [];
+
+        //  filter to get only this player's turns
+        allTurns.forEach( (t) => {
+            if (t.player === iPlayerName) {
+                const localTurn = MFS.translateTurnToLocalLanguage(t);
+                myTurns.push(localTurn);
+            }
+        })
+
+        console.log(`found ${myTurns.length} old record(s) for ${iPlayerName} in game ${iGameCode}`);
+
+        await this.deleteAllTurnRecords();
+        const theResult = await pluginHelper.createItems(myTurns, fish.constants.kFishDataSetName);
+        this.makeCaseTableAppear();
+    },
+
+    /**
      * Add one case to the fishing data set
      * Note that this does NOT include attributes that get determined later:
      * unitPrice, income, after.
@@ -231,6 +259,7 @@ fish.CODAPConnector = {
             }
         };
         await codapInterface.sendRequest(theMessage);
+        this.makeCaseTableAppear();
     },
 
     makeHistoricalTableAppear: async function () {

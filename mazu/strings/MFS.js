@@ -47,6 +47,12 @@ const MFS = {
         }
     },
 
+    /**
+     * Translate a single turn (object) to the local language.
+     *
+     * @param iValues
+     * @returns {*|{}}
+     */
     translateTurnToLocalLanguage: function (iValues) {
         out = {};
         for (const a in iValues) {

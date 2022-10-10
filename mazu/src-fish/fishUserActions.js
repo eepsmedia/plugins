@@ -86,6 +86,8 @@ fish.userActions = {
             fish.state.playerState = playerData.playerState;
             fish.state.playerName = playerData.playerName;
             fish.state.balance = playerData.balance;
+            fish.CODAPConnector.getAndEmitMyFishRecords(fish.state.playerName, fish.state.gameCode);
+
         } else {
             fish.state.playerName = null;
             fish.state.balance = 0;

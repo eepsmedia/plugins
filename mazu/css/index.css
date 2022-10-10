@@ -34,6 +34,14 @@ body, html, td {
     color : #444;
 }
 
+.flagButton {
+    cursor : pointer;
+    border-radius: 1.0em;
+    font-size: 36px;
+    margin: 0.2em;
+}
+
+
 td {
     padding-left: 1em;
 }
@@ -54,41 +62,7 @@ h2 {
     color : #44a;
 }
 
-#journalNameBox {
-    width : 25em;
-}
 
-#adminStatusBarDiv {
-    background-color: cadetblue;
-    color : white;
-    padding-left: 1em;
-}
-
-#writerStatusBarDiv {
-    background-color: palegoldenrod;
-    color : brown;
-    padding-left: 1em;
-}
-
-#editorStatusBarDiv {
-    background-color: #88f;
-    color : white;
-    padding-left: 1em;
-}
-
-#univStatusBarDiv {
-    background-color: #72bfca; /* CODAP blue    */
-    color : white;
-    padding-left: 1em;
-}
-
-#annualIncomeThou, #grantAmountThou {
-    width : 3em;
-}
-
-#figurePreview {
-    width : 500px;
-}
 
 #savePaperButton, #discardPaperButton, #newPaperButton, #submitPaperButton {
     display: inline-block;

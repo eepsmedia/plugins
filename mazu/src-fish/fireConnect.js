@@ -100,7 +100,7 @@ const fireConnect = {
 
     /**
      * Called from fish.userActions.pressNameButton()
-     * Checks if the name already exists in the players subcollection. If so, return null.
+     * Checks if the name already exists in the players subcollection. If so, return the player data.
      * If not, enter the player data (with playerName as the key) as a new document in players.
      *
      * @param iGameCode
@@ -167,7 +167,7 @@ const fireConnect = {
     // todo: make obsolete
     getMyData : async  function() {
         try {
-            const mySnap = await this.meDR.get();
+            const mySnap = await this.meDR.get();   //  meDR is for PLAYER data
             const myData = mySnap.data();
             return myData;
         } catch(msg) {
