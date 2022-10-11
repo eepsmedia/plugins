@@ -109,7 +109,7 @@ fish.CODAPConnector = {
 
         await this.deleteAllTurnRecords();
         const theResult = await pluginHelper.createItems(myTurns, fish.constants.kFishDataSetName);
-        this.makeCaseTableAppear();
+        //  this.makeCaseTableAppear();
     },
 
     /**
@@ -259,7 +259,7 @@ fish.CODAPConnector = {
             }
         };
         await codapInterface.sendRequest(theMessage);
-        this.makeCaseTableAppear();
+        console.log(`    ç   make case table appear`);
     },
 
     makeHistoricalTableAppear: async function () {
