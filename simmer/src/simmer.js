@@ -1,20 +1,39 @@
+/* global codapInterface, Blockly   */
+
+
 const simmer = {
+
+    state : {},
 
     workspace: null,
 
     variableState: [],
     strings: null,
 
-    initialize: function () {
+    initialize: async function () {
         simmer.text.initialize();   //  defines `simmer.strings` in the correct language
 
         this.workspace = Blockly.inject('blocklyDiv', {toolbox: this.toolbox});
-        this.workspace.registerButtonCallback("newVariableKey", this.handleNewVariable);
+        //  this.workspace.registerButtonCallback("newVariableKey", this.handleNewVariable);
+        bEvents.register();
 
         //  const state = {"variables": [{"name": "foo"},{"name": "bar"}]};
         //  Blockly.serialization.workspaces.load(state, Blockly.getMainWorkspace());
+        await simmer.connect.initialize();
+        simmer.setUpState();
+    },
 
-        simmer.connect.initialize();
+    setUpState : function() {
+        simmer.state = codapInterface.getInteractiveState();
+        if (Object.keys(simmer.state).length === 0) {
+            simmer.state = {
+                blocklyWorkspace: {},
+            }
+            codapInterface.updateInteractiveState(simmer.state);
+
+        } else {
+            bEvents.restore(simmer.state);
+        }
     },
 
     run: function () {
@@ -30,7 +49,7 @@ const simmer = {
     },
 
     constants: {
-        version: '2022a',
+        version: '2022b',
         dsName: `simmerDataset`,
     },
 
@@ -90,6 +109,10 @@ const simmer = {
                     {
                         "kind": "block",
                         "type": "logic_compare"
+                    },
+                    {
+                        "kind": "block",
+                        "type": "controls_whileUntil",
                     },
                 ]
             },
