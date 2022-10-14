@@ -127,12 +127,16 @@ Blockly.common.defineBlocksWithJsonArray([
 ]);
 
 Blockly.JavaScript['codap_emit'] = function(block) {
-    const theVariables = Blockly.getMainWorkspace().getAllVariables();
 
-   // const value_variables = Blockly.JavaScript.valueToCode(block, 'VARIABLES', Blockly.JavaScript.ORDER_ATOMIC);  //  variable names
-    //const theNames = (Array.isArray(value_variables)) ? value_variables : [value_variables];
+    const theVariables = Blockly.getMainWorkspace().getAllVariables();  //  gets variables AND VALUES
 
-    let code = "let arg = []; let oneVar = {}; let oneVal;\n";
+    //  initialize with the "count" attribute, `simmerRun`
+    const simmerRunVar = {
+        "name" : "simmerRun",
+        "value" : simmer.state.simmerRun,
+    };
+    let code = `let arg = [${JSON.stringify(simmerRunVar)}];\n`;
+    code += "let oneVar = {}; let oneVal;\n";
     theVariables.forEach( v => {
         vName = v.name;
         try {
@@ -140,17 +144,14 @@ Blockly.JavaScript['codap_emit'] = function(block) {
             code +=  `oneVal = eval("${vName}")\n`;
             code += `oneVar["name"] = "${vName}"; \n `
             code +=  `oneVar["value"] = String(oneVal); \n `;
-            //  code +=  `oneVar["value"] = String(eval(${vName})); \n `;
             code += `arg.push(oneVar);\n`;
             code += `} catch (msg) { \n console.log(msg); \n}\n`;
         } catch (msg) {
             console.log(`${vName} threw an error...${msg}`);
         }
-
     })
 
     code += `simmer.connect.codap_emit(arg);\n`
-    //  simmer.connect.codap_emit(`${theObjectString}`);
     return code;
 };
 

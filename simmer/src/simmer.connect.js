@@ -1,21 +1,23 @@
 simmer.connect = {
+
     initialize: async function () {
         await codapInterface.init(this.iFrameDescriptor, null);
         //  await pluginHelper.initDataSet(this.simmerDataContextSetupObject);
 
     },
 
+    /**
+     * emit ONE case into CODAP
+     *
+     * @param iVars     array of objects holding name and value of one attribute
+     * @returns {Promise<void>}
+     */
     codap_emit: async function (iVars) {
-        const dataContextSetupObject = this.makeDataContextSetupObject(iVars);
-        await pluginHelper.initDataSet(dataContextSetupObject);
 
         const theValues = this.makeValueObject(iVars);
 
         try {
             const res = await pluginHelper.createItems(theValues, simmer.constants.dsName);
-            //  console.log("Resolving sendCases with " + JSON.stringify(res));
-
-            this.makeTableAppear();
         } catch (msg) {
             console.log("Problem emitting items of vars: " + JSON.stringify(iVars));
             console.log(msg);
@@ -28,7 +30,17 @@ simmer.connect = {
         iValues.forEach(att => {
             out[att.name] = att.value;
         })
+        out['simmerRun'] = simmer.state.simmerRun;
+
         return out;
+    },
+
+    deleteDataset : function() {
+        codapInterface.sendRequest({
+            "action": "delete",
+            "resource": `dataContext[${simmer.constants.dsName}]`,
+        })
+
     },
 
     makeTableAppear: function () {
@@ -44,16 +56,9 @@ simmer.connect = {
 
     /**
      *
-     * @param iValues   array of objects of form {name : value}, one for each attribute
      * @returns {{collections: {name: string, attrs: *[]}, name: string, description: string, title: string}}
      */
-    makeDataContextSetupObject: function (iValues) {
-
-        //  set up all the attributes
-        let theAttrGuts = [];
-        iValues.forEach(att => {
-            theAttrGuts.push({"name": att.name});
-        });
+    makeDataContextSetupObject: function (iVariables) {
 
         // actual setup object
         return {
@@ -63,7 +68,7 @@ simmer.connect = {
             collections: [
                 {
                     name: simmer.strings.collectionName,
-                    attrs: theAttrGuts,
+                    attrs: iVariables,
                 },
             ]
         }
