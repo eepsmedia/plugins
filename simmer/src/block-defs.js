@@ -8,7 +8,7 @@ Blockly.common.defineBlocksWithJsonArray([
         "previousStatement": null,
         "nextStatement": null,
         "colour": 230,
-        "tooltip": "just put it in your program!",
+        "tooltip": "emits any variables you have defined into CODAP!",
         "helpUrl": ""
     },
 
@@ -58,6 +58,7 @@ Blockly.common.defineBlocksWithJsonArray([
 
         ],
         "output" : "String",
+        "tooltip" : "random integer between the two values, inclusive",
         "colour": 888
     },
 
@@ -82,6 +83,7 @@ Blockly.common.defineBlocksWithJsonArray([
 
         ],
         "output" : "String",
+        "tooltip" : "random value, normally distributed, mean = μ, SD = σ.",
         "colour": 888
     },
 
@@ -104,6 +106,7 @@ Blockly.common.defineBlocksWithJsonArray([
 
         ],
         "output" : "String",
+        "tooltip" : "gives you a 50-50 choice",
         "colour": 888
     },
 
@@ -121,7 +124,7 @@ Blockly.common.defineBlocksWithJsonArray([
         ],
         "output": null,
         "colour": 888,
-        "tooltip": "",
+        "tooltip": "plug in an array to pick from",
         "helpUrl": ""
     }
 ]);

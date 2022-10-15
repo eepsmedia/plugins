@@ -63,11 +63,11 @@ simmer.connect = {
         // actual setup object
         return {
             name: simmer.constants.dsName,
-            title: simmer.strings.dsTitle,
-            description: simmer.strings.dsDescription,
+            title: simmer.text.en.dsTitle,
+            description: simmer.text.en.dsDescription,
             collections: [
                 {
-                    name: simmer.strings.collectionName,
+                    name: simmer.text.en.collectionName,
                     attrs: iVariables,
                 },
             ]
@@ -78,7 +78,7 @@ simmer.connect = {
     iFrameDescriptor: {
         version: simmer.constants.version,
         name: 'simmer',
-        title: 'Simulation with block programming',
+        title: simmer.text.en.frameTitle,
         dimensions: {width: 800, height: 400},
         preventDataContextReorg: false
     },
