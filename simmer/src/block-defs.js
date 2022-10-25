@@ -199,7 +199,9 @@ Blockly.JavaScript['codap_emit'] = function(block) {
 
         code += `if (typeof ${vName} !== 'undefined') `;
         try {
-            code += ` { theValues["${vName}"] = eval(${vName}) };\n`;
+            //  const functionVersion = `Function("'use strict'; return (${vName})" )()`;
+            //  code += ` { theValues["${vName}"] = ${functionVersion}  };\n`;
+            code += ` { theValues["${vName}"] = eval("${vName}") };\n`;
         } catch (msg) {
             console.log(`${vName} threw an error...${msg}`);
         }
