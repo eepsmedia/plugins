@@ -192,23 +192,25 @@ Blockly.JavaScript['codap_emit'] = function(block) {
         "name" : "simmerRun",
         "value" : simmer.state.simmerRun,
     };
-    let code = `let arg = [${JSON.stringify(simmerRunVar)}];\n`;
+    let code = `\n//  codap emit \n\nlet arg = [${JSON.stringify(simmerRunVar)}];\n`;
     code += "let oneVar = {}; let oneVal;\n";
     theVariables.forEach( v => {
         const vName = v.name;
+        code += `if (typeof ${vName} !== 'undefined') \n{`;
         try {
-            code += `oneVar = {};\n try {\n`;
-            code +=  `oneVal = eval("${vName}")\n`;
-            code += `oneVar["name"] = "${vName}"; \n `
-            code +=  `oneVar["value"] = String(oneVal); \n `;
-            code += `arg.push(oneVar);\n`;
-            code += `} catch (msg) { \n console.log(msg); \n}\n`;
+            code += `  oneVar = {};\n  try {\n`;
+            code += `    oneVal = eval("${vName}")\n`;
+            code += `    oneVar["name"] = "${vName}"; \n `
+            code += `    oneVar["value"] = String(oneVal); \n `;
+            code += `    arg.push(oneVar);\n`;
+            code += `  } catch (msg) { \n    console.log(msg); \n}\n`;
         } catch (msg) {
             console.log(`${vName} threw an error...${msg}`);
         }
+        code += "  }\n";
     })
 
-    code += `simmer.connect.codap_emit(arg);\n`
+    code += `simmer.connect.codap_emit(arg);\n\n//  end codap emit\n\n`;
     return code;
 };
 

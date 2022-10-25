@@ -82,7 +82,7 @@ const simmer = {
 
         //  actually retrieve the code from Blockly
         let code = Blockly.JavaScript.workspaceToCode(this.workspace);
-        console.log(`the code: ${code}`);
+        console.log(`the code: \n\n${code}`);
         eval(code);             //  dangerous!
         simmer.connect.makeTableAppear();   //  because it's simpler for the user
 
