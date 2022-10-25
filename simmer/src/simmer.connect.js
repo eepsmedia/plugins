@@ -12,14 +12,14 @@ simmer.connect = {
      * @param iVars     array of objects holding name and value of one attribute
      * @returns {Promise<void>}
      */
-    codap_emit: async function (iVars) {
+    codap_emit: async function (iValues) {
 
-        const theValues = this.makeValueObject(iVars);
+        //  const theValues = this.makeValueObject(iVars);
 
         try {
-            const res = await pluginHelper.createItems(theValues, simmer.constants.dsName);
+            const res = await pluginHelper.createItems(iValues, simmer.constants.dsName);
         } catch (msg) {
-            console.log("Problem emitting items of vars: " + JSON.stringify(iVars));
+            console.log("Problem emitting items of vars: " + JSON.stringify(iValues));
             console.log(msg);
         }
 
