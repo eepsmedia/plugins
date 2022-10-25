@@ -4,6 +4,19 @@ simmer.toolbox = {
     "kind": "categoryToolbox",
     "contents": [
 
+        //      CODAP
+
+        {
+            "kind": "category",
+            "name": "CODAP",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "codap_emit"
+                }
+                ]
+        },
+
         //      random
 
         {
@@ -20,7 +33,7 @@ simmer.toolbox = {
                 },
                 {
                     'kind': 'block',
-                    'type': 'random_pick_from_two'
+                    'type': 'random_pick_from_two_advanced'
                 },
                 {
                     'kind': 'block',
@@ -86,10 +99,6 @@ simmer.toolbox = {
             "contents": [
                 {
                     "kind": "block",
-                    "type": "codap_emit"
-                },
-                {
-                    "kind": "block",
                     "type": "variables_set"
                 },
                 {
@@ -99,20 +108,50 @@ simmer.toolbox = {
             ]
         },
 
+        //  arrays and lists
+
+        {
+            "kind": "category",
+            "name": "Arrays and lists",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "lists_create_with",
+                    "message0": "empty list",
+                    "extraState": {
+                        "itemCount": 0 // or whatever the count is
+                    }
+                },
+
+                {
+                    "kind": "block",
+                    "type": "lists_create_with",
+                    "extraState": {
+                        "itemCount": 2 // or whatever the count is
+                    }
+                },
+                {
+                    'kind': 'block',
+                    'type': 'lists_push',
+                },
+
+            ]
+        },
         //      other
 
         {
             "kind": "category",
             "name": "Other",
             "contents": [
+
+                {
+                    "kind": "block",
+                    "type": "procedures_defnoreturn"
+                },
+
                 {
                     "kind": "block",
                     "type": "text_print"
-                },
-                {
-                    "kind": "block",
-                    "type": "lists_create_with",
-                    "mutation_items": "2"
                 },
 
                 {

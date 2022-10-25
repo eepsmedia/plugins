@@ -1,4 +1,4 @@
-/* global codapInterface, Blockly   */
+/* global codapInterface, Blockly, pluginHelper   */
 
 
 const simmer = {
@@ -13,12 +13,21 @@ const simmer = {
     initialize: async function () {
         simmer.text.initialize();   //  defines `simmer.strings` in the correct language
 
-        this.workspace = Blockly.inject('blocklyDiv', {toolbox: this.toolbox});
+        const tOptions = {
+            toolbox: this.toolbox,
+            zoom : {
+                controls : true,
+                wheel : true,
+                startScale : 1,
+                maxScale : 3,
+                minScale : 0.3,
+                scaleSpeed : 1.2
+            }
+        }
+        this.workspace = Blockly.inject('blocklyDiv',tOptions);
         //  this.workspace.registerButtonCallback("newVariableKey", this.handleNewVariable);
         bEvents.register();
 
-        //  const state = {"variables": [{"name": "foo"},{"name": "bar"}]};
-        //  Blockly.serialization.workspaces.load(state, Blockly.getMainWorkspace());
         await simmer.connect.initialize();
         simmer.setUpState();
     },
@@ -34,33 +43,48 @@ const simmer = {
         }
     },
 
+    /**
+     * User presses the **Run** button!
+     *
+     * We retrieve the code from the block workspace and then run it.
+     *
+     * @returns {Promise<void>}
+     */
     run: async function () {
 
+        /**
+         * See if two arrays are equal. We do this because we need to see if the
+         * set of variables has changed.
+         * @param a     one Array
+         * @param b     the other Array
+         * @returns {false|*}   Boolean, if the two arrays are equal
+         */
         function arrayEquality(a, b) {
             const lengthsOK = a.length === b.length;
             const contentsOK = a.every((v, i) => v.name === b[i].name);
             return (lengthsOK && contentsOK);
         }
 
-        simmer.state.simmerRun++;
+        simmer.state.simmerRun++;   //  increment the "run number"
 
-        const theOldVariables = this.theVariables;
-        this.theVariables = simmer.constructVariableNameArray();
+        const theOldVariables = this.state.theVariables;
+        this.state.theVariables = simmer.constructVariableNameArray();
 
-        if (!arrayEquality(theOldVariables, this.theVariables)) {
+        if (!arrayEquality(theOldVariables, this.state.theVariables)) {
+            //  the variables changed. Nuke the old dataset, make a fresh one.
             simmer.connect.deleteDataset();
-            const dataContextSetupObject = simmer.connect.makeDataContextSetupObject(this.theVariables);
+            const dataContextSetupObject = simmer.connect.makeDataContextSetupObject(this.state.theVariables);
             await pluginHelper.initDataSet(dataContextSetupObject);
-            console.log(`change in variables!`);
+            console.log(`Change in variables! New dataset!`);
         } else {
-            console.log(`NO change in variables!`);
-
+            console.log(`NO change in variables! Keep old dataset.`);
         }
 
+        //  actually retrieve the code from Blockly
         let code = Blockly.JavaScript.workspaceToCode(this.workspace);
         console.log(`the code: ${code}`);
         eval(code);             //  dangerous!
-        simmer.connect.makeTableAppear();
+        simmer.connect.makeTableAppear();   //  because it's simpler for the user
 
     },
 
@@ -89,9 +113,10 @@ const simmer = {
     },
 
     constants: {
-        version: '2022c',
+        version: '2022d',
         dsName: `simmerDataset`,
         freshState : {
+            theVariables : [],
             blocklyWorkspace: {},
             simmerRun : 0,
         }

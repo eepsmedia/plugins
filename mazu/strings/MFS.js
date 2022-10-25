@@ -160,7 +160,7 @@ const MFS = {
                 out += DG.plugins.mazu.oneOtherPlayer;
                 break;
             default:
-                out += this.tr(DG.plugins.mazu.manyOtherPlayers, tN - 1);
+                out += this.tr(DG.plugins.mazu.manyOtherPlayers, `${(tN - 1)}`);
                 break
         }
         return out;

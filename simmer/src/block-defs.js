@@ -1,3 +1,5 @@
+/*  global Blockly      */
+
 Blockly.common.defineBlocksWithJsonArray([
 
     //      CODAP emit
@@ -110,6 +112,58 @@ Blockly.common.defineBlocksWithJsonArray([
         "colour": 888
     },
 
+    //      list push
+
+    {
+        "type": "lists_push",
+        "message0": "push %1 onto %2",
+        "args0": [
+            {
+                "type": "input_value",
+                "name": "NEWITEM"
+            },
+            {
+                "type": "input_value",
+                "name": "ARRAY",
+                "check": "Array"
+            }
+        ],
+        "inputsInline": true,
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 230,
+        "tooltip": "",
+        "helpUrl": ""
+    },
+
+    //      pick from two, not 50-50
+
+    {
+        "type": "random_pick_from_two_advanced",
+        "message0": "P = %1 to pick %2, otherwise %3",
+        "args0": [
+            {
+                "type": "field_input",
+                "name": "PROP",
+                "text": "1/2",
+            },
+            {
+                "type": "field_input",
+                "name": "ONE",
+                "text" : "heads",
+            },
+            {
+                "type": "field_input",
+                "name": "TWO",
+                "text" : "tails",
+            },
+
+        ],
+        "output" : "String",
+        "tooltip" : "Pick between 2 options; enter a probability as a fraction, decimal, or percentage.",
+        "colour": 888
+    },
+
     //      random pick
 
     {
@@ -141,7 +195,7 @@ Blockly.JavaScript['codap_emit'] = function(block) {
     let code = `let arg = [${JSON.stringify(simmerRunVar)}];\n`;
     code += "let oneVar = {}; let oneVal;\n";
     theVariables.forEach( v => {
-        vName = v.name;
+        const vName = v.name;
         try {
             code += `oneVar = {};\n try {\n`;
             code +=  `oneVal = eval("${vName}")\n`;
@@ -179,6 +233,24 @@ Blockly.JavaScript['random_pick_from_two'] = function(block) {
     return [code , Blockly.JavaScript.ORDER_ADDITION];
 };
 
+Blockly.JavaScript['random_pick_from_two_advanced'] = function(block) {
+    let prop = block.getFieldValue('PROP');
+    let one = block.getFieldValue('ONE');
+    let two = block.getFieldValue('TWO');
+
+
+    const propNum = utilities.stringFractionDecimalOrPercentToNumber(prop);
+
+    let code;
+    if (propNum.theString) {
+        code = `Math.random() < ${propNum.theNumber} ? "${one}" : "${two}"`;
+    } else {
+        code = `"bad input [${prop}]"`;
+        console.log("Your entry [${prop}] doesn't look like a number.");
+    }
+    return [code , Blockly.JavaScript.ORDER_ADDITION];
+};
+
 Blockly.JavaScript['random_pick'] = function(block) {
     const value_list = Blockly.JavaScript.valueToCode(block, 'LIST', Blockly.JavaScript.ORDER_ATOMIC);
     const code = `random_functions.pickFrom(${value_list})`;
@@ -191,6 +263,47 @@ Blockly.JavaScript['text_print'] = function(block) {
         block, 'TEXT',
         Blockly.JavaScript.ORDER_NONE) || "''";
 
-    return `console.log(${msg});\n`;;
+    return `console.log(${msg});\n`;
 };
+
+Blockly.JavaScript['lists_push'] = function(block) {
+    const value_newItem = Blockly.JavaScript.valueToCode(block, 'NEWITEM', Blockly.JavaScript.ORDER_ATOMIC);
+    let value_array = Blockly.JavaScript.valueToCode(block, 'ARRAY', Blockly.JavaScript.ORDER_ATOMIC);
+
+    var code = `${value_array}.push(${value_newItem});\n`;
+    return code;
+};
+
+
+const utilities =  {
+    stringFractionDecimalOrPercentToNumber: function (iString) {
+        let theNumber;
+        let theString;
+
+        const wherePercent = iString.indexOf("%");
+        const whereSlash = iString.indexOf("/");
+        if (wherePercent !== -1) {
+            const thePercentage = parseFloat(iString.substring(0, wherePercent));
+            theString = `${thePercentage}%`;
+            theNumber = thePercentage / 100.0;
+        } else if (whereSlash !== -1) {
+            const beforeSlash = iString.substring(0, whereSlash);
+            const afterSlash = iString.substring(whereSlash + 1);
+            const theNumerator = parseFloat(beforeSlash);
+            const theDenominator = parseFloat(afterSlash);
+            theNumber = theNumerator / theDenominator;
+            theString = `${theNumerator}/${theDenominator}`;
+        } else {
+            theNumber = parseFloat(iString);
+            theString = `${theNumber}`;
+        }
+
+        if (!isNaN(theNumber)) {
+            return {theNumber: theNumber, theString: theString};
+        } else {
+            return {theNumber: 0, theString: ""};
+        }
+    },
+};
+
 
