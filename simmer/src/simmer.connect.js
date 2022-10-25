@@ -43,6 +43,20 @@ simmer.connect = {
 
     },
 
+    createSimmerDataset : async function(iVariables) {
+        const dataContextSetupObject = this.makeDataContextSetupObject(iVariables);
+        await pluginHelper.initDataSet(dataContextSetupObject);
+    },
+
+    datasetExists : async function(iName) {
+        const aResult = await codapInterface.sendRequest({
+            action : "get",
+            resource : `dataContext[${iName}]`,
+        })
+
+        return aResult.success;
+    },
+
     makeTableAppear: function () {
         codapInterface.sendRequest({
             "action": "create",

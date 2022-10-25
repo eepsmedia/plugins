@@ -73,10 +73,13 @@ const simmer = {
         if (!arrayEquality(theOldVariables, this.state.theVariables)) {
             //  the variables changed. Nuke the old dataset, make a fresh one.
             simmer.connect.deleteDataset();
-            const dataContextSetupObject = simmer.connect.makeDataContextSetupObject(this.state.theVariables);
-            await pluginHelper.initDataSet(dataContextSetupObject);
+            await simmer.connect.createSimmerDataset(this.state.theVariables);
             console.log(`Change in variables! New dataset!`);
         } else {
+            if (!await simmer.connect.datasetExists(simmer.constants.dsName)) {
+                await simmer.connect.createSimmerDataset(this.state.theVariables);
+                console.log(`Had to make a new dataset.`);
+            }
             console.log(`NO change in variables! Keep old dataset.`);
         }
 
