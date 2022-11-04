@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!--
+
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/lotti
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lotti</title>
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+
+    <link rel='stylesheet' type='text/css' href='css/lotti.css'/>
+
+    <!--    CODAP setup     -->
+
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+
+    <!-- plugin-specific        -->
+
+    <script src="src/lotti.js?000"></script>
+    <script src="src/lotteries.js?000"></script>
+    <script src="src/ui.js?000"></script>
+    <script src="src/lotti.connect.js?000"></script>
+    <script src="strings/lotti.strings.js?000"></script>
+    <script src="strings/localizePlugin.js?000"></script>
+    <script src="strings/strings.en.js?000"></script>
+
+</head>
+
+
+<body onload="lotti.initialize()">
+
+<div id="header" class="hBox">
+    Lotti
+    <div id="optionsButton">
+        <span id="optionsIcon" onclick="ui.toggleOptions()">⚙️</span>
+    </div>
+</div>
+
+<div id="game">
+    <div id="choices" class="hBox">
+        <div id="left_choice" class="choice" onclick="lotti.doChoice('left')">
+            <div class="choiceText" id="left_choice_text"></div>
+            <div class="door" id="left_door"></div>
+        </div>
+        <div id="right_choice" class="choice" onclick="lotti.doChoice('right')">
+            <div class="choiceText" id="right_choice_text"></div>
+            <div class="door" id="right_door"></div>
+        </div>
+    </div>
+</div>
+
+<div id="options">
+    <label for="lotteryMenu" id="lotteryMenuLabel">Pick a style for this lottery</label>
+    <select id="lotteryMenu" onchange="ui.changeLottery(this)"></select>
+
+    <br><br>
+
+    <label for="emittingCheckbox" id="emittingCheckboxLabel">emit data into CODAP?</label>
+    <input id="emittingCheckbox" type="checkbox">
+</div>
+
+</body>
+</html>
