@@ -1,0 +1,33 @@
+body {
+    font-family: "Sirin Stencil",sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    margin : 0;
+}
+
+h1 {
+    padding : 0;
+    margin : 0;
+}
+
+p {
+    padding : 0;
+    margin : 0;
+}
+
+#banner {
+    padding: 0.5em;
+    background-color: lightgray;
+}
+
+#controls {
+    padding : 0.5em;
+}
+
+.oneControl {
+    padding : 4px;
+}
+
+.panzerNumberInput {
+    width : 4em;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<!--
+
+http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/panzer/
+
+-->
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Panzer</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
+    <link rel='stylesheet' type='text/css' href='css/panzer.css'/>
+
+    <!--    CODAP setup     -->
+
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+
+
+    <script src="src/panzer.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/strings.js"></script>
+
+</head>
+<body>
+
+<div id="banner">
+    <h1>Panzer</h1>
+    <p>German tank problem sample generator</p>
+</div>
+
+<div id="controls">
+    <div class="oneControl">
+        <input type="number" id="numberOfTanksInput" class="panzerNumberInput" value="1000" min="1" step="1">
+        <label for="numberOfTanksInput">how many tanks</label>
+    </div>
+    <div class="oneControl">
+        <input type="number" id="numberOfSerialNumbers" class="panzerNumberInput" value="4" min="1" step="1">
+        <label for="numberOfSerialNumbers">how many serial numbers</label>
+    </div>
+    <div class="oneControl">
+        <input type="number" id="numberOfRepetitions" class="panzerNumberInput" value="2" min="1" max="200" step="1">
+        <label for="numberOfRepetitions">how many repetitions</label>
+    </div>
+    <div class="oneControl">
+        <button id="goButton" onclick="panzer.go()">go</button>
+    </div>
+</div>
+</body>
+
+<script>
+    panzer.initialize();
+</script>
+
+</html>
