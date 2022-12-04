@@ -8,12 +8,14 @@ You control
 * the number of serial numbers you get (`nSerials`)
 * the number of times this process is repeated.
 
+Press **go** to get a sample of serial numbers.
+
 The result is a hierarchical CODAP table. 
 The actual serial numbers (`serial`) are at the lower level of the hierarchy.
 
 ## Estimating the number of tanks: creating measures
 
-Your goal is to estimate the true number of tanks based solely on the values of `serial`.
+Your goal is to estimate the true number of tanks using only the values of `serial`.
 
 To do that, create a new attribute at the _upper_ level of the hierarchy. 
 You get one for free as an example, called `doubleMedian`. Its formula (unsurprisingly) is `2 * median(serial)`. 
