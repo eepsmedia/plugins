@@ -4,6 +4,8 @@
 
 http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/panzer/
 
+https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=https://codap.xyz/plugins/panzer/
+
 -->
 
 
@@ -13,6 +15,7 @@ http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins
     <title>Panzer</title>
 
     <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=UnifrakturCook:700' rel='stylesheet'>
     <link rel='stylesheet' type='text/css' href='css/panzer.css'/>
 
     <!--    CODAP setup     -->
@@ -32,20 +35,30 @@ http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins
 <div id="banner">
     <h1>Panzer</h1>
     <p>German tank problem sample generator</p>
+
+    <div class="roundIcons">
+        <a target="_blank" href="https://github.com/eepsmedia/plugins/tree/master/panzer">
+            <img class="infoIcon" src="art/info.png" alt="information">
+        </a>
+    </div>
+
 </div>
 
 <div id="controls">
     <div class="oneControl">
         <input type="number" id="numberOfTanksInput" class="panzerNumberInput" value="1000" min="1" step="1">
-        <label for="numberOfTanksInput">how many tanks</label>
+        <label for="numberOfTanksInput">tanks</label>
     </div>
     <div class="oneControl">
         <input type="number" id="numberOfSerialNumbers" class="panzerNumberInput" value="4" min="1" step="1">
-        <label for="numberOfSerialNumbers">how many serial numbers</label>
+        <label for="numberOfSerialNumbers">known serial numbers</label>
     </div>
     <div class="oneControl">
-        <input type="number" id="numberOfRepetitions" class="panzerNumberInput" value="2" min="1" max="200" step="1">
-        <label for="numberOfRepetitions">how many repetitions</label>
+        <input type="number" id="numberOfRepetitions" class="panzerNumberInput"
+               value="2" min="1" max="200" step="1"
+               onchange="panzer.adjustInputValues()"
+        >
+        <label for="numberOfRepetitions">repetitions</label>
     </div>
     <div class="oneControl">
         <button id="goButton" onclick="panzer.go()">go</button>

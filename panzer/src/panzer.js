@@ -38,8 +38,16 @@ const panzer = {
         panzer.connect.emitSerials(theValues);
     },
 
+    adjustInputValues : function () {
+        let tReps = document.getElementById("numberOfRepetitions").value;     //  must be in [1, panzer.constants.maxReps]
+        if (tReps > panzer.constants.maxReps) { tReps = panzer.constants.maxReps }
+        if (tReps < 1) { tReps = 1}
+        document.getElementById("numberOfRepetitions").value = tReps;
+    },
+
     constants: {
         version: "2022a",
+        maxReps : 200,
     },
 
 }

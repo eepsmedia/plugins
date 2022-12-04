@@ -8,6 +8,8 @@ body {
 h1 {
     padding : 0;
     margin : 0;
+    font-family: "UnifrakturCook", serif;
+    font-weight : 700;
 }
 
 p {
@@ -18,6 +20,8 @@ p {
 #banner {
     padding: 0.5em;
     background-color: lightgray;
+    /* display : inline-block;  */
+    position: relative;
 }
 
 #controls {
@@ -30,4 +34,16 @@ p {
 
 .panzerNumberInput {
     width : 4em;
+}
+
+.roundIcons {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.infoIcon {
+    width : 32px;
+    height : 32px;
+
 }
