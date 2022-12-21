@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
-      <change afterPath="$PROJECT_DIR$/../mazu/strings/mazu_Spanish.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/fish.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/fish.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/mazu.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/mazu.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/strings/strings.es.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/strings/strings.es.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mazu/.idea/webServers.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/dropManager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/NodeBoxView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeBoxView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lotti/src/lotteries.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lotti/src/lotteries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lotti/src/lotti.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lotti/src/lotti.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lotti/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lotti/src/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lotti/strings/strings.en.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lotti/strings/strings.en.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +103,7 @@
       <workItem from="1652888424600" duration="612000" />
       <workItem from="1655409883135" duration="664000" />
       <workItem from="1664412858819" duration="640000" />
+      <workItem from="1671560867727" duration="8822000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>

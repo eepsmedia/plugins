@@ -108,7 +108,7 @@ const arbor = {
         codapInterface.on(
             'notify',
             `dragDrop[attribute]`,
-            arbor.dropManager.handleDrop,
+            arbor.dropManager.handleDragDrop,
         );
 
         arbor.state.lang = pluginLang.figureOutLanguage(arbor.constants.kDefaultLanguage, arborStrings.languages);

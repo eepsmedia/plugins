@@ -146,6 +146,9 @@ NodeBoxView.prototype.adjustPaperSize = function () {
 };
 
 NodeBoxView.prototype.highlight = function(iMode) {
+
+    console.log(`... highlight node box ${this.myNode.arborNodeID} type ${iMode}`);
+
     switch(iMode) {
         case "on" :
             this.highlightSVG.attr({

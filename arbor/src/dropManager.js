@@ -10,7 +10,7 @@ arbor.dropManager = {
      * @param iMessage  message sent by CODAP
      * @returns {Promise<void>}
      */
-    handleDrop: async function (iMessage) {
+    handleDragDrop: async function (iMessage) {
 
         switch (iMessage.values.operation) {
             case "dragstart":
@@ -31,25 +31,20 @@ arbor.dropManager = {
                 break;
 
             case "drop":        //  attribute drop using API dragdrop
-                console.log(`Dropped [${iMessage.values.attribute.title}] from CODAP`);
+                const theAttName = iMessage.values.attribute.name;
                 const theDropDatasetName = iMessage.values.context.name;
-
-                if (theDropDatasetName === arbor.state.dataSetName) {
-                    arbor.dropManager.copeWithAttributeDrop(iMessage.values.attribute.name, iMessage.values.position);
-                } else {    //  different data context, do the change!
-                    console.log(`changing to dataset ${theDropDatasetName}`);
-                    await arbor.setDataContext(theDropDatasetName);           //      change DC and make a new empty analysis
-                    await arbor.getAndRestoreModel();
-                    arbor.setDependentVariableByName(iMessage.values.attribute.name);
-                    arbor.redisplay();
-                }
+                console.log(`Dropped [${theAttName}] from [${theDropDatasetName}]`);
+                await arbor.dropManager.copeWithAttributeDrop(theAttName, theDropDatasetName, iMessage.values.position);
+                arbor.redisplay();
                 break;
 
             case "dragenter":
+                console.log(`... drag/drop, entering tree iFrame`);
                 arbor.dropManager.highlightDropZones(true);
                 break;
 
             case "dragleave":
+                console.log(`... drag/drop, leaving tree iFrame`);
                 arbor.dropManager.highlightDropZones(false);
                 break;
 
@@ -78,6 +73,8 @@ arbor.dropManager = {
         if (anElement) {
             out = this.findNodeNumberFromElement(anElement);
         }
+
+        console.log(`     ... found NBV = ${out}`);
         return out;
 
     },
@@ -93,6 +90,8 @@ arbor.dropManager = {
      * @returns {string|*|null}
      */
     findNodeNumberFromElement: function (iElement) {
+        console.log(`   ... traversing element ${iElement.id}`);
+
         if (iElement.id.includes(`NBV`)) {
             return Number(iElement.id.slice(4));    //  return the number of the node
         }
@@ -130,39 +129,51 @@ arbor.dropManager = {
 
     },
 
-    copeWithAttributeDrop: function (iWhat, iWhere) {
-        const theNodeNumber = this.findNBVAt(iWhere);
+    copeWithAttributeDrop: async function (iAtt, iContext, iWhere) {
 
-        if (theNodeNumber) {
-            //  we found some node.
-            if (theNodeNumber === arbor.state.tree.rootNode.arborNodeID) {
-                //  root node drop -> change the dependent variable
-                console.log(`Setting the dependent variable to ${iWhat}`);
-                arbor.setDependentVariableByName(iWhat);    //  also sets the focus split
-                arbor.dispatchTreeChangeEvent(`${iWhat} is the new dependent variable`);
-                focusSplitMgr.showHideAttributeConfigurationSection(true);
-            } else {
-                //  it's the node number
-                const theNode = arbor.state.tree.nodeFromID(theNodeNumber);
+        if (iContext === arbor.state.dataSetName) {     //  no change in dataset
+            console.log(`... drop in current dataset [${iContext}]`)
+            const theNodeNumber = this.findNBVAt(iWhere);
 
-                //  find which `AttInBaum` corresponds to the string in `iWhat`
-                if (theNode) {
-                    const theAttInBaum = arbor.attsInBaum.reduce(function (acc, val) {
-                        return ((val.attributeName === iWhat) ? val : acc);
-                    });
-                    //  make the branch.
-                    theNode.branchThisNode(theAttInBaum);   //   also sets focus node, which redraws
+            if (theNodeNumber) {
+                //  we found some node.
+                if (theNodeNumber === arbor.state.tree.rootNode.arborNodeID) {
+                    //  root node drop -> change the dependent variable
+                    this.setNewRootNode(iAtt);
                 } else {
-                    //  it was not dropped on a node. Nothing happens. But it should be a node!
-                    console.log(`dropManager.copeWithAttributeDrop() expected a node, didn't find it!`);
-                }
-            }
-        } else {  //  aha! We are not in a node!
-            console.log(`Drop not in a node`);
-        }
+                    //  it's the node number
+                    const theNode = arbor.state.tree.nodeFromID(theNodeNumber);
+                    console.log(`drop ... branching node ${theNodeNumber} ...`);
 
+                    //  find which `AttInBaum` corresponds to the string in `iWhat`
+                    if (theNode) {
+                        const theAttInBaum = arbor.attsInBaum.reduce(function (acc, val) {
+                            return ((val.attributeName === iAtt) ? val : acc);
+                        });
+                        //  make the branch.
+                        theNode.branchThisNode(theAttInBaum);   //   also sets focus node, which redraws
+                    } else {
+                        //  it was not dropped on a node. Nothing happens. But it should be a node!
+                        console.log(`dropManager.copeWithAttributeDrop() expected a node, didn't find it!`);
+                    }
+                }
+            } else {  //  aha! We are not in a node!
+                console.log(`Drop not in a node`);
+            }
+        } else {        //  there is no existing context, or it has changed, so this is a new root node
+            console.log(`... drop changes target to dataset ${iContext}`);
+            await arbor.setDataContext(iContext);           //      change DC and make a new empty analysis
+            await arbor.getAndRestoreModel();
+            this.setNewRootNode(iAtt);
+        }
     },
 
+    setNewRootNode : function(iAttName) {
+        console.log(`drop ... Setting the dependent variable to ${iAttName}`);
+        arbor.setDependentVariableByName(iAttName);    //  also sets the focus split
+        arbor.dispatchTreeChangeEvent(`${iAttName} is the new dependent variable`);
+        focusSplitMgr.showHideAttributeConfigurationSection(true);
+    },
 
     /**
      * is the point in the rectangle?
