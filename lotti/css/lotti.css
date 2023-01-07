@@ -1,12 +1,17 @@
+:root {
+    --main-bg-color: green;
+}
+
+
 body {
     padding: 0;
     margin: 0;
-    font-family: IBM+Plex+Sans+Condensed;
+    font-family: 'IBM Plex Sans Condensed';
 
     display: flex;
     align-items: stretch;
     flex-direction: column;
-    background-color: lightgray;
+    background-color: var(--main-bg-color);
 }
 
 #header {
@@ -26,34 +31,35 @@ body {
 }
 
 #game {
-    background-color: lightgray;
+    background-color: var(--main-bg-color);
     height : 100%;
 }
 
-.choice {
-    height: 128px;
-    width: 128px;
-    background-color: navy;
-    margin: 1em;
-    cursor: pointer;
-
+#choices {
+    background-color: var(--main-bg-color);
+    padding: 1em;
     position: relative;     /* parent of the door       */
+}
+
+#story {
+    background-color: var(--main-bg-color);
+    color: lightgray;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    font-family: 'IBM Plex Sans Condensed';
+
 }
 
 .choiceText {
     position: absolute;     /*  child of choice */
-    color: white;
+    color: var(--main-bg-color);
+    /*
     top: 20px;
     left: 20px;
+    */
     font-weight: bold;
     font-size: 24pt;
-
-    /*
-      opacity : 1;    //  start transparent
-  transition: opacity 0.5s;
-    transition-delay:  1.0s;
-    */
-
 }
 
 .door {
@@ -99,23 +105,9 @@ body {
 .hBox {
     display: flex;
     flex-direction: row;
-    /*display:	-webkit-box;
-    display:	-moz-box;
-    display:	box;
-    -webkit-box-orient:	horizontal;
-    -moz-box-orient:	horizontal;
-    box-orient:	horizontal;*/
 }
 
 .vBox {
     display: flex;
     flex-direction: column;
-    /*
-    display:	-webkit-box;
-    display:	-moz-box;
-    display:	box;
-    -webkit-box-orient:	vertical;
-    -moz-box-orient:	vertical;
-    box-orient:	vertical;
-    */
 }

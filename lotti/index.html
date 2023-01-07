@@ -17,6 +17,10 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
     <link rel='stylesheet' type='text/css' href='css/lotti.css'/>
 
+    <!--    D3 setup     -->
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <!--    CODAP setup     -->
 
     <script src="../common/iframe-phone.js"></script>
@@ -46,17 +50,11 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 </div>
 
 <div id="game">
-    <div id="choices" class="hBox">
-        <div id="left_choice" class="choice" onclick="lotti.doChoice('left')">
-            <div class="choiceText" id="left_choice_text"></div>
-            <div class="door" id="left_door"></div>
-        </div>
-        <div id="right_choice" class="choice" onclick="lotti.doChoice('right')">
-            <div class="choiceText" id="right_choice_text"></div>
-            <div class="door" id="right_door"></div>
-        </div>
-    </div>
+    <svg id="choices">
+    </svg>
 </div>
+
+<div id="story">The story goes here</div>
 
 <div id="options">
     <label for="lotteryMenu" id="lotteryMenuLabel">Pick a style for this lottery</label>
