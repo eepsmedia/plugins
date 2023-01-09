@@ -3,17 +3,17 @@ lotti.connect = {
     initialize: async function () {
         await codapInterface.init(this.iFrameDescriptor, null);
 
-/*
-        const tMutabilityMessage = {
-            "action": "update",
-            "resource": "interactiveFrame",
-            "values": {
-                "preventBringToFront": false,
-                "preventDataContextReorg": false
-            }
-        };
-        await codapInterface.sendRequest(tMutabilityMessage);
-*/
+        /*
+                const tMutabilityMessage = {
+                    "action": "update",
+                    "resource": "interactiveFrame",
+                    "values": {
+                        "preventBringToFront": false,
+                        "preventDataContextReorg": false
+                    }
+                };
+                await codapInterface.sendRequest(tMutabilityMessage);
+        */
         this.setIFrameTitle();
     },
 
@@ -110,7 +110,7 @@ lotti.connect = {
         version: lotti.constants.version,
         name: 'lotti',
         title: 'temp title',
-        dimensions: {width: 320, height: 300},
+        dimensions: {width: 320, height: 333},
         preventDataContextReorg: false
     },
 
