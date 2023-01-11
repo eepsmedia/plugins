@@ -30,12 +30,15 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     <!-- plugin-specific        -->
 
     <script src="src/lotti.js?000"></script>
-    <script src="src/lotteries.js?000"></script>
+    <script src="src/scenarios.js?000"></script>
     <script src="src/ui.js?000"></script>
     <script src="src/lotti.connect.js?000"></script>
     <script src="strings/lotti.strings.js?000"></script>
     <script src="strings/localizePlugin.js?000"></script>
+
+
     <script src="strings/strings.en.js?000"></script>
+    <script src="strings/strings.es.js?000"></script>
 
 </head>
 
@@ -49,21 +52,32 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     </div>
 </div>
 
+<div id="story">The story goes here</div>
+
 <div id="game">
     <svg id="choices">
     </svg>
 </div>
 
-<div id="story">The story goes here</div>
+<div id="results" class="hBox">
+    <button id="resetButton" onclick="lotti.resetResults()">reset</button>
+    <div id="resultsText">results, if any, go here</div>
+</div>
 
 <div id="options">
-    <label for="lotteryMenu" id="lotteryMenuLabel">Pick a style for this lottery</label>
-    <select id="lotteryMenu" onchange="ui.changeLottery(this)"></select>
+    <label for="scenarioMenu" id="scenarioMenuLabel">Pick a scenario</label>
+    <select id="scenarioMenu" onchange="ui.changeScenario(this)"></select>
 
     <br><br>
 
-    <label for="emittingCheckbox" id="emittingCheckboxLabel">emit data into CODAP?</label>
-    <input id="emittingCheckbox" type="checkbox">
+    <label for="emittingCheckbox" id="emittingCheckboxLabel">emit option</label>
+    <input id="emittingCheckbox" type="checkbox" onchange="lotti.rememberEmitCODAPOption()">
+    <br>
+    <label for="showResultsCheckbox" id="showResultsCheckboxLabel">show results option</label>
+    <input id="showResultsCheckbox" onchange="lotti.rememberShowResultsOption()" type="checkbox">
+    <br>
+    <label for="showAllScenariosCheckbox" id="showAllScenariosCheckboxLabel">show all scenarios option</label>
+    <input id="showAllScenariosCheckbox" type="checkbox" onchange="lotti.rememberShowAllScenariosOption()">
 </div>
 
 </body>

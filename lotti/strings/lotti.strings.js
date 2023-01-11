@@ -55,4 +55,25 @@ lotti.strings = {
         }
     },
 
+    /**
+     * Translate a single turn (object) to the local language.
+     *
+     * @param iValues
+     * @returns {*|{}}
+     */
+    translateTurnToLocalLanguage: function (iValues) {
+        out = {};
+        for (const a in iValues) {
+            if (iValues.hasOwnProperty(a)) {
+                const index = DG.plugins.lotti.attributeNames[a];
+                if (index) {
+                    out[index] = iValues[a];
+                } else {
+                    out[a] = iValues[a];
+                }
+            }
+        }
+        return out;
+    },
+
 }
