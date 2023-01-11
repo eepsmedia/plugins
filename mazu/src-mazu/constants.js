@@ -30,7 +30,7 @@ limitations under the License.
 
 mazu.constants = {
 
-    version: "2022e",
+    version: "2023a",
 
     kTimerInterval: 2500,       //      milliseconds, ordinarily 1000
     kUsingTimer: true,

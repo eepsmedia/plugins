@@ -392,17 +392,11 @@ let fish = {
     },
 
     constants: {
-        version: "2022f",
+        version: "2023a",
 
         kTimerInterval: 500,       //      milliseconds, ordinarily 1000
         kUsingTimer: true,
         kInitialLanguage: 'en',    //  can override with URL parameter *lang*, e.g., "...index.html?lang=es"
-
-        kBaseURL: {
-            local: "http://localhost:8888/plugins/fish/fish.php",
-            xyz: "https://codap.xyz/projects/fish/fish.php",
-            eeps: "https://www.eeps.com/codap/fish/fish.php"
-        },
 
         kFirebaseConfiguration : {
             apiKey: "AIzaSyAMkheBMSdVmMyUi76UGyeMX3pJpBGS0Hw",
