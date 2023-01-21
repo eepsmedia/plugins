@@ -99,7 +99,7 @@ const lotti = {
     },
 
     constants : {
-        version : "2023c",
+        version : "2023d",
         dsName : "lottiDataset",
         collName : "records",
 

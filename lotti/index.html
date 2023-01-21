@@ -5,6 +5,7 @@
 <!--
 
 http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/lotti
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/lotti?lang=fr
 
 -->
 
@@ -39,6 +40,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
     <script src="strings/strings.en.js?000"></script>
     <script src="strings/strings.es.js?000"></script>
+    <script src="strings/strings.fr.js?000"></script>
 
 </head>
 
@@ -70,14 +72,14 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
     <br><br>
 
-    <label for="emittingCheckbox" id="emittingCheckboxLabel">emit option</label>
-    <input id="emittingCheckbox" type="checkbox" onchange="lotti.rememberEmitCODAPOption()">
-    <br>
-    <label for="showResultsCheckbox" id="showResultsCheckboxLabel">show results option</label>
     <input id="showResultsCheckbox" onchange="lotti.rememberShowResultsOption()" type="checkbox">
+    <label for="showResultsCheckbox" id="showResultsCheckboxLabel">show results option</label>
     <br>
-    <label for="showAllScenariosCheckbox" id="showAllScenariosCheckboxLabel">show all scenarios option</label>
     <input id="showAllScenariosCheckbox" type="checkbox" onchange="lotti.rememberShowAllScenariosOption()">
+    <label for="showAllScenariosCheckbox" id="showAllScenariosCheckboxLabel">show all scenarios option</label>
+    <br>
+    <input id="emittingCheckbox" type="checkbox" onchange="lotti.rememberEmitCODAPOption()">
+    <label for="emittingCheckbox" id="emittingCheckboxLabel">emit option</label>
 </div>
 
 </body>

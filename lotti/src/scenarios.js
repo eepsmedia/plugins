@@ -10,8 +10,8 @@ lotti.allScenarios = {
 
     'allowance_AB': {
         name : "allowance_AB",
-        leftDoorLook : {color : 'dodgerblue'},
-        rightDoorLook : {color : 'orange'},
+        leftDoorLook : {color : 'dodgerblue', image : "images/euro-money-bag-hand.png"},
+        rightDoorLook : {color : 'orange', image : "images/euro-money-bag-hand.png"},
         left : [4],
         right : [0, 0, 0, 25],
         result: function (iSide, L, R) {
@@ -25,8 +25,8 @@ lotti.allScenarios = {
 
     'allowance_CD': {
         name : "allowance_CD",
-        leftDoorLook : {color : 'dodgerblue'},
-        rightDoorLook : {color : 'orange'},
+        leftDoorLook : {color : 'dodgerblue' , image : "images/euro-money-bag-hand.png"},
+        rightDoorLook : {color : 'orange', image : "images/euro-money-bag-hand.png"},
         left : [4],
         right : [0, 0, 0, 0, 0, 0, 0, 25],
         result: function (iSide, L, R) {
@@ -40,8 +40,8 @@ lotti.allScenarios = {
 
     'allowance_EF': {
         name : "allowance_EF",
-        leftDoorLook : {color : 'dodgerblue'},
-        rightDoorLook : {color : 'orange'},
+        leftDoorLook : {color : 'dodgerblue' , image : "images/euro-money-bag-hand.png"},
+        rightDoorLook : {color : 'orange' , image : "images/euro-money-bag-hand.png"},
         left : [8, 10, 12, 9, 11],
         right : [0, 0, 0, 50],
         result: function (iSide, L, R) {
@@ -55,8 +55,8 @@ lotti.allScenarios = {
 
     'allowance_GH': {
         name : "allowance_GH",
-        leftDoorLook : {color : 'dodgerblue'},
-        rightDoorLook : {color : 'orange'},
+        leftDoorLook : {color : 'dodgerblue', image : "images/euro-money-bag-hand.png"},
+        rightDoorLook : {color : 'orange' , image : "images/euro-money-bag-hand.png"},
         left : [0, 25, 30, 40, 50],
         right : [0, 0, 0, 0, 0, 0, 90, 110, 0, 0, 0, 100],
         result: function (iSide, L, R) {
