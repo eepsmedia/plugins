@@ -37,6 +37,8 @@ lotti.connect = {
 
     getDataSetupObject: function () {
 
+        const theScenarioStrings = DG.plugins.lotti.scenarioStrings[lotti.scenario.name];
+
         return {
             name: lotti.constants.dsName,
             title: lotti.scenarioStrings.dsTitle,
@@ -59,11 +61,14 @@ lotti.connect = {
                         {
                             name: DG.plugins.lotti.attributeNames.result,
                             description: DG.plugins.lotti.attributeDescriptions.result,
+                            unit : theScenarioStrings.resultUnitPlural,
                         },
+/*
                         {
                             name: DG.plugins.lotti.attributeNames.units,
                             description: DG.plugins.lotti.attributeDescriptions.units,
                         },
+*/
                         {name: DG.plugins.lotti.attributeNames.scenario, type: 'categorical',
                             description: DG.plugins.lotti.attributeDescriptions.scenario},
                     ]
