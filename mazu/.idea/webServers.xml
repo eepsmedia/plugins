@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ab2a6135-e198-4bd3-b4b0-abbe954287df" name="codapxyz" url="http://184.154.47.42">
+        <fileTransfer rootFolder="/public_html/plugins/mazu" host="184.154.47.42" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
