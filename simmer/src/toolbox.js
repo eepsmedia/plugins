@@ -42,12 +42,18 @@ simmer.toolbox = {
             ]
         },
 
-        //      loops
+        //      loops & Logic
 
         {
             "kind": "category",
-            "name": "Loops",
+            "name": "Control and Loops",
             "contents": [
+                {
+                    "kind": "block",
+                    "type": "controls_if"
+                },
+
+
                 {
                     "kind": "block",
                     "type": "controls_repeat_ext",
@@ -69,16 +75,23 @@ simmer.toolbox = {
             ]
         },
 
-
-        //      logic
+        //      numbers and values
 
         {
             "kind": "category",
-            "name": "Logic & control",
+            "name": "Numbers and values",
             "contents": [
                 {
                     "kind": "block",
-                    "type": "controls_if"
+                    "type": "math_number"
+                },
+                {
+                    "kind": "block",
+                    "type": "math_arithmetic"
+                },
+                {
+                    "kind": "block",
+                    "type": "text"
                 },
                 {
                     "kind": "block",
@@ -90,6 +103,7 @@ simmer.toolbox = {
                 },
             ]
         },
+
 
         //      variables
 
@@ -105,6 +119,21 @@ simmer.toolbox = {
                     "kind": "block",
                     "type": "variables_get"
                 },
+            ]
+        },
+
+
+        //  functions
+
+        {
+            "kind": "category",
+            "name": "Functions",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "procedures_defnoreturn"
+                },
+
             ]
         },
 
@@ -137,35 +166,19 @@ simmer.toolbox = {
 
             ]
         },
+
         //      other
 
         {
             "kind": "category",
-            "name": "Other",
+            "name": "Misc",
             "contents": [
-
-                {
-                    "kind": "block",
-                    "type": "procedures_defnoreturn"
-                },
 
                 {
                     "kind": "block",
                     "type": "text_print"
                 },
 
-                {
-                    "kind": "block",
-                    "type": "math_number"
-                },
-                {
-                    "kind": "block",
-                    "type": "math_arithmetic"
-                },
-                {
-                    "kind": "block",
-                    "type": "text"
-                },
             ]
         },
 

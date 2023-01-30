@@ -69,6 +69,15 @@ simmer.connect = {
     },
 
     /**
+     * shrink (or grow) the IFrame to match the current `simmer.shrink` setting
+     */
+    shrinkFrame: function() {
+        codapInterface.sendRequest(
+            simmer.shrunken ? this.shrinkMessage : this.unShrinkMessage
+        )
+    },
+
+    /**
      *
      * @returns {{collections: {name: string, attrs: *[]}, name: string, description: string, title: string}}
      */
@@ -88,12 +97,35 @@ simmer.connect = {
         }
     },
 
+    shrinkMessage : {
+        action : "update",
+        resource : "interactiveFrame",
+        values : {
+            dimensions : {
+                width : 222,
+                height : 80,
+            }
+        }
+    },
+
+    unShrinkMessage : {
+        action : "update",
+        resource : "interactiveFrame",
+        values : {
+            dimensions : {
+                width : 800,
+                height : 500,
+            }
+        }
+    },
+
+
 
     iFrameDescriptor: {
         version: simmer.constants.version,
         name: 'simmer',
         title: simmer.text.en.frameTitle,
-        dimensions: {width: 800, height: 400},
+        dimensions: {width: 800, height: 500},
         preventDataContextReorg: false
     },
 

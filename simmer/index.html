@@ -39,12 +39,35 @@ http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins
 <body>
 
 <div id="simmerControls">
-    <label for="simmerNewVariableNameBox">new variable name:</label>
-    <input type="text" id="simmerNewVariableNameBox">
-    <button id="newVariableButton" onclick="simmer.handleNewVariable()">make new variable</button>
+    <div>
+        <img id="runButton" src="art/play-button.png" onclick="simmer.run()"/>
+    </div>
+
     &emsp;
-    <button id="runButton" onclick="simmer.run()">run</button>
-<p>If you change the variables, the entire dataset will refresh.</p>
+
+    <div>
+    <span id="newVariableControls">
+        <label for="newVariableNameBox" id="newVariableNameBoxLabel">new variable name:</label>
+        <input type="text" id="newVariableNameBox">
+        <button id="newVariableButton" onclick="simmer.handleNewVariable()">make new variable</button>
+    </span>
+        <p id="variableChangeReminderText" style="margin : 2px">If you change the variables, the entire dataset will
+            refresh.</p>
+
+    </div>
+
+    &emsp;
+
+    <div>
+        <img id="shrinkButton" class="shrinkExpandButton"
+             src="art/minimize-arrows.png" onclick="simmer.shrink()">
+        <img id="expandButton" class="shrinkExpandButton"
+             src="art/expand-screen.png" onclick="simmer.shrink()"
+             style="display : none">
+    </div>
+    &emsp;
+
+    <img id="blocklyLogo" src="art/blockly_logo_built_on.svg">
 </div>
 <div id="blocklyDiv" style="height: 100vh; width: 100%;"></div>
 

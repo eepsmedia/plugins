@@ -1,13 +1,21 @@
 body {
     font-family: "Sirin Stencil",sans-serif;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 400;
     margin : 0;
+    overflow : hidden;  /* eliminate scrolling in the main window & header */
 }
 
 #simmerControls {
-    padding : 1.0em;
+    padding : 0.3em;
     background-color: antiquewhite;
+    top : 0;
+    left : 0;
+    width : 100%;
+    height : 51px;
+    overflow : hidden;
+    display : flex;
+    align-items: center;
 }
 
 #runButton {
@@ -15,8 +23,26 @@ body {
     background-color: green;
     color: white;
     cursor : pointer;
+    height : 3em;
+    border-radius: 2em;
 }
 
 #newVariableButton {
     cursor : pointer;
 }
+
+#blocklyLogo {
+    height : 4em;
+}
+
+#blocklyDiv {
+    height: 100vh;
+    width: 100%;
+    align-self: flex-end;
+}
+
+.shrinkExpandButton {
+    height: 2em;
+    cursor: pointer;
+}
+

@@ -3,9 +3,10 @@
 
 const simmer = {
 
-    state : {},
-    theVariables : [],
+    state: {},
+    theVariables: [],
     workspace: null,
+    shrunken: false,
 
     variableState: [],
     strings: null,
@@ -15,16 +16,16 @@ const simmer = {
 
         const tOptions = {
             toolbox: this.toolbox,
-            zoom : {
-                controls : true,
-                wheel : true,
-                startScale : 1,
-                maxScale : 3,
-                minScale : 0.3,
-                scaleSpeed : 1.2
+            zoom: {
+                controls: true,
+                wheel: true,
+                startScale: 1,
+                maxScale: 3,
+                minScale: 0.3,
+                scaleSpeed: 1.2
             }
         }
-        this.workspace = Blockly.inject('blocklyDiv',tOptions);
+        this.workspace = Blockly.inject('blocklyDiv', tOptions);
         //  this.workspace.registerButtonCallback("newVariableKey", this.handleNewVariable);
         bEvents.register();
 
@@ -32,7 +33,7 @@ const simmer = {
         simmer.setUpState();
     },
 
-    setUpState : function() {
+    setUpState: function () {
         simmer.state = codapInterface.getInteractiveState();
         if (Object.keys(simmer.state).length === 0) {
             simmer.state = simmer.constants.freshState;
@@ -96,35 +97,65 @@ const simmer = {
 
     handleNewVariable: function () {
         console.log(`handle new variable`);
-        const theName = document.getElementById("simmerNewVariableNameBox").value;
+        const theName = document.getElementById("newVariableNameBox").value;
         this.workspace.createVariable(theName);
+    },
+
+    shrink: function () {
+        this.shrunken = !this.shrunken;
+
+        //  hide/unhide  the blockly div
+
+        document.getElementById(`blocklyDiv`).style.display
+            = (this.shrunken) ? "none" : "block";
+
+        //  hide/unhide unnecessary controls
+
+        document.getElementById(`newVariableControls`).style.display
+            = (this.shrunken) ? "none" : "inline";
+
+        //  hide/unhide reminder text
+
+        document.getElementById(`variableChangeReminderText`).style.display
+            = (this.shrunken) ? "none" : "block";
+
+        //  shrink/grow the frame
+
+        simmer.connect.shrinkFrame();
+
+        //  hide/unhide shrink/expand buttons
+
+        document.getElementById("shrinkButton").style.display
+            = simmer.shrunken ? "none" : "inline";
+        document.getElementById("expandButton").style.display
+            = simmer.shrunken ? "inline" : "none";
     },
 
     /**
      * Make an array of the names of all the variables currently defined in the Blockly workspace
      * Each element is {"name" : <the name>}.
      */
-    constructVariableNameArray : function() {
+    constructVariableNameArray: function () {
         const theVariables = Blockly.getMainWorkspace().getAllVariables();
 
         let out = [{
-            "name" : simmer.text.en.simmerRunName,
-            "type" : "categorical",
-            "description" : simmer.text.en.simmerRunDescription,
+            "name": simmer.text.en.simmerRunName,
+            "type": "categorical",
+            "description": simmer.text.en.simmerRunDescription,
         }];    //  the default
-        theVariables.forEach( (v) => {
-            out.push({"name" : v.name});
+        theVariables.forEach((v) => {
+            out.push({"name": v.name});
         })
         return out;
     },
 
     constants: {
-        version: '2022d',
+        version: '2023a',
         dsName: `simmerDataset`,
-        freshState : {
-            theVariables : [],
+        freshState: {
+            theVariables: [],
             blocklyWorkspace: {},
-            simmerRun : 0,
+            simmerRun: 0,
         }
     },
 
