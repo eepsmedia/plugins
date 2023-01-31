@@ -31,9 +31,16 @@ body {
     cursor : pointer;
 }
 
+.shrinkExpandButton {
+    height: 2em;
+    cursor: pointer;
+}
+
 #blocklyLogo {
     height : 4em;
+    margin-left: auto;
 }
+
 
 #blocklyDiv {
     height: 100vh;
@@ -41,8 +48,4 @@ body {
     align-self: flex-end;
 }
 
-.shrinkExpandButton {
-    height: 2em;
-    cursor: pointer;
-}
 

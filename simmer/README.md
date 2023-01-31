@@ -13,6 +13,7 @@ A simple die-rolling simulation might look like this:
 
 ![sample blocks](art/simple-example.png)
 
-<a href="https://www.flaticon.com/free-icons/play-button" title="play button icons">Play button icon created by Roundicons - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/shrink" title="shrink icons">Shrink icon created by Freepik - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/expand" title="expand icons">Expand icon created by Freepik - Flaticon</a>
+### credits
+<a href="https://www.flaticon.com/free-icons/play-button" title="play button icons">Play button icon created by Roundicons - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/shrink" title="shrink icons">Shrink icon created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/expand" title="expand icons">Expand icon created by Freepik - Flaticon</a><br>
