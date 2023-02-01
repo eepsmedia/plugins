@@ -12,7 +12,7 @@ const simmer = {
     strings: null,
 
     initialize: async function () {
-        simmer.text.initialize();   //  defines `simmer.strings` in the correct language
+        simmer.strings.initialize();   //  defines `simmer.strings` in the correct language
 
         const tOptions = {
             toolbox: this.toolbox,
@@ -139,9 +139,9 @@ const simmer = {
         const theVariables = Blockly.getMainWorkspace().getAllVariables();
 
         let out = [{
-            "name": simmer.text.en.simmerRunName,
+            "name": DG.plugins.simmer.simmerRunName,
             "type": "categorical",
-            "description": simmer.text.en.simmerRunDescription,
+            "description": DG.plugins.simmer.simmerRunDescription,
         }];    //  the default
         theVariables.forEach((v) => {
             out.push({"name": v.name});

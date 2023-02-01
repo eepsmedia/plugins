@@ -2,8 +2,7 @@ simmer.connect = {
 
     initialize: async function () {
         await codapInterface.init(this.iFrameDescriptor, null);
-        //  await pluginHelper.initDataSet(this.simmerDataContextSetupObject);
-
+        this.setIFrameTitle();
     },
 
     /**
@@ -68,6 +67,22 @@ simmer.connect = {
         })
     },
 
+    setIFrameTitle : function() {
+        const message = {
+            action : "update",
+            resource : "interactiveFrame",
+            values : {
+                "title" : DG.plugins.simmer.frameTitle,
+            }
+        }
+
+        try {
+            codapInterface.sendRequest(message);
+        } catch (msg) {
+            alert(`ERROR setting the iFrame's title: ${msg}`);
+        }
+    },
+
     /**
      * shrink (or grow) the IFrame to match the current `simmer.shrink` setting
      */
@@ -86,11 +101,11 @@ simmer.connect = {
         // actual setup object
         return {
             name: simmer.constants.dsName,
-            title: simmer.text.en.dsTitle,
-            description: simmer.text.en.dsDescription,
+            title: DG.plugins.simmer.dsTitle,
+            description: DG.plugins.simmer.dsDescription,
             collections: [
                 {
-                    name: simmer.text.en.collectionName,
+                    name: DG.plugins.simmer.collectionName,
                     attrs: iVariables,
                 },
             ]
@@ -114,18 +129,16 @@ simmer.connect = {
         values : {
             dimensions : {
                 width : 800,
-                height : 500,
+                height : 555,
             }
         }
     },
 
-
-
     iFrameDescriptor: {
         version: simmer.constants.version,
         name: 'simmer',
-        title: simmer.text.en.frameTitle,
-        dimensions: {width: 800, height: 500},
+        title: "temp title",
+        dimensions: {width: 800, height: 555},
         preventDataContextReorg: false
     },
 

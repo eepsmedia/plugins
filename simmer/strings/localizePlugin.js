@@ -1,12 +1,11 @@
 const localizePlugin = {
 
-    languages : ['en', 'es', 'de', 'fr', 'it'],
+    languages : ['en', 'es'],
 
     /**
      * Get a two-letter language code from a variety of sources.
      *
      * @param iDefaultLanguage  the default laguage in case none of the following work
-     * @param iSupportedLanguages an array of two-letter codes for the languages the plugin supports
      * @returns {*}     resulting two-letter code
      */
     figureOutLanguage:  function (iDefaultLanguage) {

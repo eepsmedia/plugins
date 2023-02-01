@@ -1,5 +1,3 @@
-
-
 simmer.toolbox = {
     "kind": "categoryToolbox",
     "contents": [
@@ -15,6 +13,52 @@ simmer.toolbox = {
                     "type": "codap_emit"
                 }
                 ]
+        },
+
+        //      variables
+
+        {
+            "kind": "category",
+            "name": "Variables",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "variables_set"
+                },
+                {
+                    "kind": "block",
+                    "type": "variables_get"
+                },
+            ]
+        },
+
+        //      numbers and values
+
+        {
+            "kind": "category",
+            "name": "Numbers and values",
+            "contents": [
+                {
+                    "kind": "block",
+                    "type": "math_number"
+                },
+                {
+                    "kind": "block",
+                    "type": "math_arithmetic"
+                },
+                {
+                    "kind": "block",
+                    "type": "text"
+                },
+                {
+                    "kind": "block",
+                    "type": "logic_compare"
+                },
+                {
+                    "kind": "block",
+                    "type": "logic_operation",
+                },
+            ]
         },
 
         //      random
@@ -74,54 +118,6 @@ simmer.toolbox = {
                 },
             ]
         },
-
-        //      numbers and values
-
-        {
-            "kind": "category",
-            "name": "Numbers and values",
-            "contents": [
-                {
-                    "kind": "block",
-                    "type": "math_number"
-                },
-                {
-                    "kind": "block",
-                    "type": "math_arithmetic"
-                },
-                {
-                    "kind": "block",
-                    "type": "text"
-                },
-                {
-                    "kind": "block",
-                    "type": "logic_compare"
-                },
-                {
-                    "kind": "block",
-                    "type": "logic_operation",
-                },
-            ]
-        },
-
-
-        //      variables
-
-        {
-            "kind": "category",
-            "name": "Variables",
-            "contents": [
-                {
-                    "kind": "block",
-                    "type": "variables_set"
-                },
-                {
-                    "kind": "block",
-                    "type": "variables_get"
-                },
-            ]
-        },
-
 
         //  functions
 

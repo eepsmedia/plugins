@@ -32,8 +32,11 @@ body {
 }
 
 .shrinkExpandButton {
-    height: 2em;
+    height: 1.5em;
+    padding: 0.5em;
     cursor: pointer;
+    background-color: burlywood;
+    border-radius: 0em;
 }
 
 #blocklyLogo {
