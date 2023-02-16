@@ -208,6 +208,7 @@ Blockly.JavaScript['codap_emit'] = function(block) {
     })
 
     code += `simmer.connect.codap_emit(theValues);\n\n//  end codap emit\n\n`;
+
     return code;
 };
 

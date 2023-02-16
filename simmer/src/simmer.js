@@ -6,7 +6,6 @@ const simmer = {
     state: {},
     theVariables: [],
     workspace: null,
-    shrunken: false,
 
     variableState: [],
     strings: null,
@@ -31,6 +30,9 @@ const simmer = {
 
         await simmer.connect.initialize();
         simmer.setUpState();
+        simmer.state.shrunken = !simmer.state.shrunken;
+        this.shrink();
+        this.updateVariableStrip({});
     },
 
     setUpState: function () {
@@ -86,7 +88,7 @@ const simmer = {
 
         //  actually retrieve the code from Blockly
         let code = Blockly.JavaScript.workspaceToCode(this.workspace);
-        console.log(`the code: \n\n${code}`);
+        console.log(`............................the code: \n${code}............................`);
 
         //  const executed = Function(`"use strict"; return (${code})`);
 
@@ -95,29 +97,78 @@ const simmer = {
 
     },
 
-    handleNewVariable: function () {
-        console.log(`handle new variable`);
+    openNewVariableModal: function () {
+        document.getElementById(`newVariableModal`).style.visibility = "visible";
+    },
+
+    closeNewVariableModal: function () {
+        document.getElementById(`newVariableModal`).style.visibility = "hidden";
+    },
+
+    makeNewVariable: async function () {
         const theName = document.getElementById("newVariableNameBox").value;
-        this.workspace.createVariable(theName);
+        console.log(`handle new variable: ${theName}`);
+
+        if (theName.length > 0) {
+            const newVarResult = await this.workspace.createVariable(theName);
+            let newBlock = this.workspace.newBlock('variables_set');
+            const idObject = {"id" : newVarResult.id_};
+            const where = newBlock.getRelativeToSurfaceXY();
+            newBlock.moveBy(222,111);
+
+            //  newBlock.setFieldValue(idObject, 'VAR');
+            newBlock.setFieldValue(newVarResult.id_, 'VAR');
+            this.updateVariableStrip();
+            simmer.closeNewVariableModal();
+        }
+    },
+
+    updateVariableStrip: function (iValues) {
+        let currentPills = ``;
+        let otherPills = ``;
+        const theButton = `
+<div id="addVariableButton" onclick="simmer.openNewVariableModal()" 
+title="${DG.plugins.simmer.newVariableButtonTooltip}">
+<span id="addVariablePlusSign">➕</span>
+</div>
+`;
+        let blocklyVariables = Blockly.getMainWorkspace().getAllVariables();
+        const simmerRunPill = `<div class=variablePill>${DG.plugins.simmer.simmerRunName} = ${simmer.state.simmerRun}</div>`;
+        currentPills += simmerRunPill;
+
+        blocklyVariables.forEach(thisVar => {
+            const theName = thisVar.name;
+            if (iValues && iValues[theName]) {
+                const theValue = iValues[theName];
+                const aPill = `<div class=variablePill>${theName} = ${theValue}</div>`;
+                currentPills += aPill;
+            } else {
+                const aPill = `<div class=variablePill>${theName}</div>`;
+                otherPills += aPill;
+            }
+        });
+
+        const theHTML = `${theButton} ${currentPills} ${otherPills}`;
+        document.getElementById(`variableDisplayStrip`).innerHTML = theHTML;
     },
 
     shrink: function () {
-        this.shrunken = !this.shrunken;
+        simmer.state.shrunken = !simmer.state.shrunken;
 
         //  hide/unhide  the blockly div
 
         document.getElementById(`blocklyDiv`).style.display
-            = (this.shrunken) ? "none" : "block";
+            = (simmer.state.shrunken) ? "none" : "block";
 
         //  hide/unhide unnecessary controls
 
-        document.getElementById(`newVariableControls`).style.display
-            = (this.shrunken) ? "none" : "inline";
+        document.getElementById(`variableDisplayStrip`).style.display
+            = (simmer.state.shrunken) ? "none" : "flex";
 
         //  hide/unhide reminder text
 
         document.getElementById(`variableChangeReminderText`).style.display
-            = (this.shrunken) ? "none" : "block";
+            = (simmer.state.shrunken) ? "none" : "block";
 
         //  shrink/grow the frame
 
@@ -126,9 +177,9 @@ const simmer = {
         //  hide/unhide shrink/expand buttons
 
         document.getElementById("shrinkButton").style.display
-            = simmer.shrunken ? "none" : "inline";
+            = simmer.state.shrunken ? "none" : "inline";
         document.getElementById("expandButton").style.display
-            = simmer.shrunken ? "inline" : "none";
+            = simmer.state.shrunken ? "inline" : "none";
     },
 
     /**
@@ -137,12 +188,13 @@ const simmer = {
      */
     constructVariableNameArray: function () {
         const theVariables = Blockly.getMainWorkspace().getAllVariables();
-
-        let out = [{
+        const tSimmerRunSpecification = { //  the `simmerRun` attribute. It's special!
             "name": DG.plugins.simmer.simmerRunName,
             "type": "categorical",
             "description": DG.plugins.simmer.simmerRunDescription,
-        }];    //  the default
+        };
+        let out = [tSimmerRunSpecification];
+
         theVariables.forEach((v) => {
             out.push({"name": v.name});
         })
@@ -150,12 +202,13 @@ const simmer = {
     },
 
     constants: {
-        version: '2023a',
+        version: '2023b',
         dsName: `simmerDataset`,
         freshState: {
             theVariables: [],
             blocklyWorkspace: {},
             simmerRun: 0,
+            shrunken: false,
         }
     },
 

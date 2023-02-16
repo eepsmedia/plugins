@@ -43,6 +43,6 @@ simmer.strings = {
 
     setButtonNames : async function() {
 
-    }
+    },
 
 }

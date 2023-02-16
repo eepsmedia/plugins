@@ -50,14 +50,6 @@ simmer.toolbox = {
                     "kind": "block",
                     "type": "text"
                 },
-                {
-                    "kind": "block",
-                    "type": "logic_compare"
-                },
-                {
-                    "kind": "block",
-                    "type": "logic_operation",
-                },
             ]
         },
 
@@ -81,7 +73,7 @@ simmer.toolbox = {
                 },
                 {
                     'kind': 'block',
-                    'type': 'random_normal'
+                    'type': 'random_normal',
                 },
             ]
         },
@@ -92,6 +84,19 @@ simmer.toolbox = {
             "kind": "category",
             "name": "Control and Loops",
             "contents": [
+                {
+                    "kind": "block",
+                    "type": "logic_boolean"
+                },
+                {
+                    "kind": "block",
+                    "type": "logic_compare"
+                },
+                {
+                    "kind": "block",
+                    "type": "logic_operation",
+                },
+
                 {
                     "kind": "block",
                     "type": "controls_if"
@@ -128,6 +133,10 @@ simmer.toolbox = {
                 {
                     "kind": "block",
                     "type": "procedures_defnoreturn"
+                },
+                {
+                    "kind": "block",
+                    "type": "procedures_callnoreturn"
                 },
 
             ]

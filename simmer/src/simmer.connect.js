@@ -13,6 +13,8 @@ simmer.connect = {
      */
     codap_emit: async function (iValues) {
 
+        simmer.updateVariableStrip(iValues);
+
         //  const theValues = this.makeValueObject(iVars);
 
         try {
@@ -21,7 +23,6 @@ simmer.connect = {
             console.log("Problem emitting items of vars: " + JSON.stringify(iValues));
             console.log(msg);
         }
-
     },
 
     makeValueObject: function (iValues) {
@@ -88,7 +89,7 @@ simmer.connect = {
      */
     shrinkFrame: function() {
         codapInterface.sendRequest(
-            simmer.shrunken ? this.shrinkMessage : this.unShrinkMessage
+            simmer.state.shrunken ? this.shrinkMessage : this.unShrinkMessage
         )
     },
 

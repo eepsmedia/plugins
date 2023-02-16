@@ -8,15 +8,16 @@ simmerStrings.en = {
         staticStrings : {
             "newVariableNameBoxLabel" : "new variable name:",
             "variableChangeReminderText" : "If you change the variables, the entire dataset will refresh.",
-            "newVariableButton" : "make new variable",
         },
+
+        "newVariableButtonTooltip" : "make a new variable",
 
         "dsTitle" : "results dataset",
         "dsDescription" : "simulation results",
         "collectionName" : "results",
 
         "simmerRunName" : "simmerRun",
-        "simmerRunDescription" : "the run number",
+        "simmerRunDescription" : "The run number, equal to the number of times the Play button has been pressed",
 
         "shrinkButtonDescription" : "shrink",
         "expandButtonDescription" : "expand",
