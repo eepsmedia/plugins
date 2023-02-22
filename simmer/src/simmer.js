@@ -94,7 +94,6 @@ const simmer = {
 
         eval(code);             //  dangerous!
         simmer.connect.makeTableAppear();   //  because it's simpler for the user
-
     },
 
     openNewVariableModal: function () {
@@ -111,13 +110,20 @@ const simmer = {
 
         if (theName.length > 0) {
             const newVarResult = await this.workspace.createVariable(theName);
-            let newBlock = this.workspace.newBlock('variables_set');
-            const idObject = {"id" : newVarResult.id_};
-            const where = newBlock.getRelativeToSurfaceXY();
-            newBlock.moveBy(222,111);
 
-            //  newBlock.setFieldValue(idObject, 'VAR');
-            newBlock.setFieldValue(newVarResult.id_, 'VAR');
+            //      make a "set" block appear in the workspace
+            const blockSpec = {
+                'type': 'variables_set',
+                'x': 30 + 100 * Math.random(), 'y': 10 + 20 * Math.random(),
+                'fields': {
+                    'VAR': {
+                        'id': newVarResult.getId(),
+                    }
+                }
+            }
+
+            const newlyCreatedBlock = Blockly.serialization.blocks.append(blockSpec, this.workspace);
+
             this.updateVariableStrip();
             simmer.closeNewVariableModal();
         }
@@ -202,7 +208,7 @@ title="${DG.plugins.simmer.newVariableButtonTooltip}">
     },
 
     constants: {
-        version: '2023b',
+        version: '2023c',
         dsName: `simmerDataset`,
         freshState: {
             theVariables: [],
