@@ -30,13 +30,33 @@ Leaf = function (iParams) {
 
     this.myNode = iParams.node;   //  the (model) node we are attached to
 
+    /*
+
+    this.paper = d3.create("svg")
+        .attr("width", 100)
+        .attr("height", arbor.constants.leafNodeHeight)
+        .on("click", this.myNode.flipStopType)
+
+    this.bg = this.paper.append("rect")
+        .attr("x", 0).attr("y", 0)
+        .attr("width", 100)
+        .attr("height", 20)
+        .attr("fill", "yellow");
+
+    this.leafLabel = this.paper.append("text")
+        .attr("x", arbor.constants.treeObjectPadding).attr("y", 10)
+        .attr("text", "foo")
+        .attr("fill", arbor.constants.leafTextColor);
+*/
+
+
     this.paper = new Snap(100, arbor.constants.leafNodeHeight)
         .click(function (e) {
             this.myNode.flipStopType();
         }.bind(this));
 
     this.bg = this.paper.rect(0, 0, 100, 20, arbor.constants.leafCornerRadius, arbor.constants.leafCornerRadius)
-        .attr({  fill: "yellow"});
+        .attr({fill: "yellow"});
 
     this.leafLabel = this.paper.text(arbor.constants.treeObjectPadding, 10, "foo")
         .attr({
@@ -80,7 +100,7 @@ Leaf.prototype.leafDimensions = function () {
 
 Leaf.prototype.setLeafColor = function () {
     let tColor = "gray";
-    switch( this.myNode.stopSign ) {
+    switch (this.myNode.stopSign) {
         case arbor.constants.diagnosisPlus:
             tColor = arbor.constants.leafColorPositive;
             break;
@@ -94,11 +114,11 @@ Leaf.prototype.setLeafColor = function () {
 
 };
 
-Leaf.prototype.setToolTip = function() {
+Leaf.prototype.setToolTip = function () {
 
     let tText = "";
 
-    switch( this.myNode.stopSign ) {
+    switch (this.myNode.stopSign) {
         case arbor.constants.diagnosisPlus:
             tText = `${arbor.strings.sYourBestGuess} ${arbor.state.dependentVariableSplit.branchDescription("L")}`;
             break;
@@ -111,6 +131,7 @@ Leaf.prototype.setToolTip = function() {
     }
 
     this.paper.append(
-        Snap.parse("<title>" + tText + "</title>"));
+        Snap.parse("<title>" + tText + "</title>")
+    );
 
 };

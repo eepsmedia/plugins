@@ -47,6 +47,7 @@ TreePanelView = function ( ) {
      * The paper for the entire TreePanelView.
      * @type {*|*|*|*|*}
      */
+
     this.panelPaper = new Snap(document.getElementById(arbor.constants.kTreePanelDOMName));
     this.treePanelBackgroundRect = this.panelPaper
         .rect(0, 0, 10, 10)

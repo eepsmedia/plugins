@@ -32,11 +32,7 @@ limitations under the License.
  */
 arbor.ui = {
 
-    updateConfusionMatrix : function () {
-        const tRes = arbor.state.tree.rootNode.getResultCounts();
-        const kPositive = arbor.state.dependentVariableSplit.leftLabel;
-        const kNegative = arbor.state.dependentVariableSplit.rightLabel;
-
+    updateConfusionMatrix : function(tRes, kPositive, kNegative) {
         document.getElementById("table-head").innerHTML = arbor.strings.sfConfusionCaseCount(tRes);
 
         document.getElementById("truth-positive-head").innerHTML = `${kPositive} (${tRes.TP + tRes.FN + tRes.PU})`;
@@ -52,6 +48,18 @@ arbor.ui = {
         document.getElementById("FN").innerHTML = tRes.FN;
         document.getElementById("PU").innerHTML = tRes.PU;
         document.getElementById("NU").innerHTML = tRes.NU;
+
+    },
+
+
+    updateAlternativeVisualizations : function () {
+        const tRes = arbor.state.tree.rootNode.getResultCounts();
+        const kPositive = arbor.state.dependentVariableSplit.leftLabel;
+        const kNegative = arbor.state.dependentVariableSplit.rightLabel;
+
+        this.updateConfusionMatrix(tRes, kPositive, kNegative);
+        mosaic.update(tRes, kPositive, kNegative);
+
 
     }
 };

@@ -119,6 +119,7 @@ const arbor = {
 
         await this.createOutputDatasets();
 
+        mosaic.initialize();
         arbor.repopulate();
         arbor.redisplay();
     },
@@ -586,7 +587,7 @@ const arbor = {
             this.fixDependentVariableMechanisms();  //  sets appropriate label text
             focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
             this.treePanelView = new TreePanelView();  //  the main view.
-            arbor.ui.updateConfusionMatrix();
+            arbor.ui.updateAlternativeVisualizations();
         } else {
             outputControls.style.display = "none";
             treePaper.style.display = "none";
