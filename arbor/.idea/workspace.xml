@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="Arbor D3 mosaic first steps">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lotti/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../lotti/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lotti/strings/strings.de.js" beforeDir="false" afterPath="$PROJECT_DIR$/../lotti/strings/strings.de.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/.idea/webServers.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/fish.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/fish.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mazu/mazu.html" beforeDir="false" afterPath="$PROJECT_DIR$/../mazu/mazu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/mosaicPlot.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/mosaicPlot.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +40,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/Analysis.js" root0="FORCE_HIGHLIGHTING" />
@@ -69,6 +68,7 @@
     "WebServerToolWindowPanel.toolwindow.show.date": "false",
     "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
     "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "git-widget-placeholder": "arbor__d3",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",

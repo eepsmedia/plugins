@@ -34,6 +34,8 @@ Global: IMPORT THIS:
     local just this: http://localhost/plugins/arbor/
     local in local codap :
         http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/arbor
+    local in local codap GERMAN:
+        http://localhost/codap/static/dg/de/cert/index.html?di=https://localhost/plugins/arbor
 
 
 https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=25898  //  breast cancer, not local
@@ -73,6 +75,9 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <script src="../../common/jquery/jquery.min.js"></script>
     <script src="../../common/jquery/jquery-ui.min.js"></script>
 
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+
     <!--
         Models and Controllers
     -->
@@ -104,6 +109,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <script src="src/views/NodeZoneView.js"></script>
     <script src="src/views/NodeBoxView.js"></script>
     <script src="src/views/DiagnosisView.js"></script>
+    <script src="src/views/mosaicPlot.js"></script>
 
     <!--
         Set up JQUERY-UI stuff
@@ -120,6 +126,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <ul>
         <li class="arbor-tab"><a id="sTreeTab" href="#tree">Tr</a></li>
         <li class="arbor-tab" id="tableTab"><a id="sTableTab" href="#table">Ta</a></li>
+        <li class="arbor-tab" id="mosaicTab"><a id="sMosaicTab" href="#mosaic">Mo</a></li>
         <li class="arbor-tab"><a id="sSettingsTab" href="#settings">Se</a></li>
         <li class="arbor-tab"><a id="sHelpTab" href="#help">?!?!</a></li>
     </ul>
@@ -147,6 +154,16 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         </div>
 
     </div>
+
+    <!--
+        Mosaic plot tab
+    -->
+
+    <div id="mosaic">
+        <svg id="mosaicPlot">
+        </svg>
+    </div>
+
 
     <!--
         Tree tab

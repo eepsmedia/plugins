@@ -14,14 +14,26 @@ const mosaic = {
 
     size : 222,
     paper: null,
+    plotG : null,       //  the <g> for our plot area
     bg : null,
     correctColor : "#aca",
     incorrectColor : "#caa",
+    margins : {top : 10, left : 40, right : 10, bottom : 40},
+    plotSize : {},
 
     initialize: function () {
         this.paper = d3.select("#mosaicPlot")
             .attr("width" , this.size)
             .attr("height" , this.size);
+
+        this.plotSize = {
+            width : this.paper.attr("width") - this.margins.left - this.margins.right,
+            height : this.paper.attr("height") - this.margins.top - this.margins.bottom
+        }
+
+        this.plotG = this.paper.append("g")
+            .attr("transform", `translate(${this.margins.left}, ${this.margins.top})`);
+
         this.update();
 
     },
@@ -30,14 +42,15 @@ const mosaic = {
 
         console.log("updating mosaic plot data");
         const theData = this.constructMosaicData();
-        let boxes = this.paper.selectAll("rect").data(theData);
+        let boxes = this.plotG.selectAll("rect").data(theData);
+        let labels = this.plotG.selectAll("text").data(theData);
 
         scaleX = d3.scaleLinear()
             .domain([0,1])
-            .range([0, this.size]);
+            .range([0, this.plotSize.width]);
         scaleY = d3.scaleLinear()
             .domain([0,1])
-            .range([0, this.size]);
+            .range([0, this.plotSize.height]);
 
         boxes.enter().append("rect")
             .merge(boxes)
@@ -47,6 +60,12 @@ const mosaic = {
             .attr("height", (d, i) => {return scaleY(d.h)})
             .attr("fill", (d, i) => {return d.color})
             .style("stroke", "#fff")
+
+        labels.enter().append("text")
+            .merge(labels)
+            .attr("x", (d, i) => {return scaleX(d.x)})
+            .attr("y", (d, i) => {return scaleY(d.y) + 10})
+            .text((d, i) => {return d.count})
     },
 
     constructMosaicData : function() {
@@ -67,25 +86,25 @@ const mosaic = {
 
         const TPdata = {        //  upper left
             x : 0, y : 0, w : margTrue/N, h : theCounts.TP/margTrue,
-            count : theCounts.TP,
+            count : theCounts.TP ? theCounts.TP : "",
             color : this.correctColor,
         }
 
         const FPdata = {
             x : margTrue/N, y : 0, w : margFalse/N, h : theCounts.FP/margFalse,
-            count : theCounts.FP,
+            count : theCounts.FP ? theCounts.FP : "",
             color : this.incorrectColor,
         };
 
         const FNdata = {
             x : 0, y : theCounts.TP/margTrue, w : margTrue/N, h : theCounts.FN/margTrue,
-            count : theCounts.FN,
+            count : theCounts.FN ? theCounts.FN : "",
             color : this.incorrectColor,
         };
 
         const TNdata = {
             x : margTrue/N, y : theCounts.FP/margFalse, w : margFalse/N, h : theCounts.TN/margFalse,
-            count : theCounts.TN,
+            count : theCounts.TN ? theCounts.TN : "",
             color : this.correctColor,
         }
 
