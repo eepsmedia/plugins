@@ -349,6 +349,7 @@ const arbor = {
             dependentVariableName: null,
             dependentVariableSplit: null,
             tree: null,
+            mosaicOrientation : arbor.constants.kMosaicOrientationTruth,
             oNodeDisplayProportion: arbor.constants.kUsePercentageInNodeBox,
             oNodeDisplayNumber: arbor.constants.kUseOutOfInNodeBox,
             oAlwaysShowConfigurationOnSplit: false,
@@ -961,6 +962,14 @@ arbor.constants = {
     leafNodeHeight: 30,
     leafCornerRadius: 15,
     leafTextColor: "#fff",
+
+    //  for mosaic plots
+    mosaicColorCorrect : "#aca",
+    mosaicColorIncorrect : "#faa",
+    mosaicColorPositive : "#aaf",
+    mosaicColorNegative : "#cc4",
+    kMosaicOrientationTruth : "truth",
+    kMosaicOrientationPrediction : "prediction",
 
     //  context specific?? Xeno??
     diagnosisAttributeName: "Xdiagnosis",

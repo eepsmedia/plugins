@@ -60,6 +60,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <link rel="stylesheet" href="../../common/jquery/jquery-ui.min.css">
     <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
     <link rel='stylesheet' type='text/css' href='css/confusion-matrix.css'/>
+    <link rel='stylesheet' type='text/css' href='css/mosaic.css'/>
 
     <!-- These five scripts take care of the communication with CODAP  -->
     <script src="../../common/src/iframe-phone.js"></script>
@@ -162,6 +163,12 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <div id="mosaic">
         <svg id="mosaicPlot">
         </svg>
+        <button class=""
+                id="sMosaicOrientationButton"
+                onclick="mosaic.changeOrientation()">
+            swap
+        </button>
+
     </div>
 
 
