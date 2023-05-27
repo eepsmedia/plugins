@@ -55,7 +55,8 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" href="../../common/jquery/jquery-ui.min.css">
     <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
@@ -163,6 +164,24 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <div id="mosaic">
         <svg id="mosaicPlot">
         </svg>
+        <div id="mosaicControlDiv" class="hBox">
+            &emsp;
+            <label id="positiveMosaicLabel" for="positiveMosaicSwatch">foo</label>
+            &nbsp;
+            <div id="positiveMosaicSwatch">
+                <svg id="positiveLegendSVG" height="20" width="20">
+                    <rect id="positiveLegendRect" x="0" y="0" width="16" height="16" fill="black"></rect>
+                </svg>
+            </div>
+            &emsp;
+            <label id="negativeMosaicLabel" for="negativeMosaicSwatch">foo</label>
+            &nbsp;
+            <div id="negativeMosaicSwatch">
+                <svg id="negativeLegendSVG"  height="20" width="20">
+                    <rect id="negativeLegendRect" x="0" y="0" width="16" height="16" fill="black"></rect>
+                </svg>
+            </div>
+        </div>
         <button class=""
                 id="sMosaicOrientationButton"
                 onclick="mosaic.changeOrientation()">
@@ -187,9 +206,9 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <!-- the current number of true positives, etc... -->
 
         <div class="hBox" id="resultsDisplay">
-<!--
-            <span id="resultsText"></span>
--->
+            <!--
+                        <span id="resultsText"></span>
+            -->
         </div>
 
         <hr>
@@ -197,7 +216,8 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <summary id="tableSummaryDataControlDetailTitle"></summary>
 
             <div class="vBox">
-                <p class="arbor-ui" id="outputTableIntro">These values will appear in the output table to help you identify the trees.</p>
+                <p class="arbor-ui" id="outputTableIntro">These values will appear in the output table to help you
+                    identify the trees.</p>
                 <div class="hBox">
                     <div class="vBox focusatt">
                         <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>

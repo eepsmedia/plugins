@@ -239,6 +239,14 @@ The other ${theRest} ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed
         sfConfusionCaseCount : function( iResults) {
             return `<span class='confusionHed'> ${arbor.state.dependentVariableName}</span><br> ${iResults.sampleSize} cases`
         },
+
+        //      Mosaic plot strings (mps prefix)
+
+        mpsActuallyPositiveLabel : `actually positive`,
+        mpsActuallyNegativeLabel : `actually negative`,
+        mpsPredictedPositiveLabel : `predicted positive`,
+        mpsPredictedNegativeLabel : `predicted negative`,
+
     },
 
     de: {

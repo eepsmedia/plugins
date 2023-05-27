@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2022b',
+        version: '2023a',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -964,10 +964,13 @@ arbor.constants = {
     leafTextColor: "#fff",
 
     //  for mosaic plots
-    mosaicColorCorrect : "#aca",
-    mosaicColorIncorrect : "#faa",
-    mosaicColorPositive : "#aaf",
-    mosaicColorNegative : "#cc4",
+    //  mosaicColorCorrect : "#aca",
+    //  mosaicColorIncorrect : "#faa",
+    mosaicColorPredictedPositive : "#aaf",
+    mosaicColorPredictedNegative : "#cc4",
+    mosaicColorActuallyPositive : "#88c",
+    mosaicColorActuallyNegative : "#aa4",
+    mosaicMarginalLabelFillOpacity : 0.7,
     kMosaicOrientationTruth : "truth",
     kMosaicOrientationPrediction : "prediction",
 
