@@ -113,13 +113,14 @@ const arbor = {
 
         arbor.state.lang = pluginLang.figureOutLanguage(arbor.constants.kDefaultLanguage, arborStrings.languages);
         arbor.strings = await arborStrings.initializeStrings(this.state.lang);
+        mosaic.initialize();
+
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
 
         await arbor.getAndRestoreViews();   //
 
         await this.createOutputDatasets();
 
-        mosaic.initialize();
         arbor.repopulate();
         arbor.redisplay();
     },

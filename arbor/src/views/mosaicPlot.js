@@ -232,7 +232,7 @@ const mosaic = {
                 y: 0.5,
                 w: N ? margTrue / N : 0,
                 h: margTrue ? (theCounts.TP + theCounts.FN) / margTrue : 0,
-                text: arbor.strings.mpsActuallyPositiveLabel,
+                text: margTrue ? arbor.strings.mpsActuallyPositiveLabel : "",
                 rotation: 90,
                 baseline: "central",     //      "auto",
             };
@@ -242,7 +242,7 @@ const mosaic = {
                 y: 0.5,
                 w: N ? margFalse / N : 0,
                 h: margFalse ? (theCounts.FP + theCounts.TN) / margFalse : 0,
-                text: arbor.strings.mpsActuallyNegativeLabel,
+                text: margFalse ? arbor.strings.mpsActuallyNegativeLabel : "",
                 rotation: 90,
                 baseline: "central",        //  "hanging",
             }
@@ -311,7 +311,7 @@ const mosaic = {
                 y: 0.05,
                 w: margPositive ? (theCounts.TP + theCounts.FP) / margPositive : 0,
                 h: N ? margPositive / N : 0,
-                text: arbor.strings.mpsPredictedPositiveLabel,
+                text: margPositive ? arbor.strings.mpsPredictedPositiveLabel : "",
                 rotation: 0,
                 baseline: "central",    //      "auto",
             };
@@ -321,7 +321,7 @@ const mosaic = {
                 y: 0.95,
                 w: margNegative ? (theCounts.FN + theCounts.TN) / margNegative : 0,
                 h: N ? margNegative / N : 0,
-                text: arbor.strings.mpsPredictedNegativeLabel,
+                text: margNegative ? arbor.strings.mpsPredictedNegativeLabel : "",
                 rotation: 0,
                 baseline: "central",  //     "hanging",
             }
