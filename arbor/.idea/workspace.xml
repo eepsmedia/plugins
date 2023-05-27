@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="Arbor D3 mosaic, 2023a, labels improved.">
+    <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="Arbor 2023a, small bug squashed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arbor-ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor-ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arbor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/arbor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/mosaicPlot.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/mosaicPlot.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +113,7 @@
       <workItem from="1655409883135" duration="664000" />
       <workItem from="1664412858819" duration="640000" />
       <workItem from="1673380932903" duration="2061000" />
-      <workItem from="1684462970539" duration="30727000" />
+      <workItem from="1684462970539" duration="34339000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
@@ -294,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685215928403</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Arbor 2023a, small bug squashed">
+      <created>1685223423545</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1685223423545</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -312,7 +322,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="arbor 2021c. Now showing leaves is saved in state. Also, improved Node tool tips." />
     <MESSAGE value="arbor 2021d. Better, more options including auto-open attribute config on drop." />
     <MESSAGE value="Configuration German text plus more documentation in README.md" />
     <MESSAGE value="2021f. Arbor now accepts drags of attributes from CODAP" />
@@ -337,6 +346,7 @@
     <MESSAGE value="Arbor D3 mosaic working on plot hierarchy" />
     <MESSAGE value="Arbor D3 mosaic with rotated marginal labels" />
     <MESSAGE value="Arbor D3 mosaic, 2023a, labels improved." />
-    <option name="LAST_COMMIT_MESSAGE" value="Arbor D3 mosaic, 2023a, labels improved." />
+    <MESSAGE value="Arbor 2023a, small bug squashed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Arbor 2023a, small bug squashed" />
   </component>
 </project>

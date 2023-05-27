@@ -240,12 +240,19 @@ The other ${theRest} ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed
             return `<span class='confusionHed'> ${arbor.state.dependentVariableName}</span><br> ${iResults.sampleSize} cases`
         },
 
-        //      Mosaic plot strings (mps prefix)
+        //      Mosaic plot strings (mps prefix) (mpsf prefix for functions)
 
         mpsActuallyPositiveLabel : `actually positive`,
         mpsActuallyNegativeLabel : `actually negative`,
         mpsPredictedPositiveLabel : `predicted positive`,
         mpsPredictedNegativeLabel : `predicted negative`,
+
+        mpsfActuallyLabel : function(iWord) {
+            return `actually ${iWord}`;
+        },
+        mpsfPredictedLabel : function(iWord) {
+            return `predicted ${iWord}`;
+        },
 
     },
 

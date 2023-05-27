@@ -58,7 +58,7 @@ arbor.ui = {
         const kNegative = arbor.state.dependentVariableSplit.rightLabel;
 
         this.updateConfusionMatrix(tRes, kPositive, kNegative);
-        mosaic.update(tRes, kPositive, kNegative);
+        mosaic.update(tRes);
 
 
     }

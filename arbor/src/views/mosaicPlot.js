@@ -20,6 +20,9 @@ const mosaic = {
     plotSize: {},
     inset: 6,        //  pixel inset for prediction/truth distinction
 
+    positiveLabel : "positive",
+    negativeLabel : "negative",
+
     xScale: null,
     yScale: null,
 
@@ -46,112 +49,118 @@ const mosaic = {
         this.update();
     },
 
-    update: function (iResult, iPos, iNeg) {
+    update: function (iResult) {
+        try {
+            this.positiveLabel = arbor.state.dependentVariableSplit.leftLabel;
+            this.negativeLabel = arbor.state.dependentVariableSplit.rightLabel;
 
-        console.log("updating mosaic plot data");
-        this.updateMosaicLegend();
-        const allData = this.constructMosaicData();
-        const cellData = allData.cellData;
-        const marginalData = allData.marginalData;
+            console.log(`updating mosaic plot data, ${this.positiveLabel} vs ${this.negativeLabel}.`);
+            this.updateMosaicLegend();
+            const allData = this.constructMosaicData();
+            const cellData = allData.cellData;
+            const marginalData = allData.marginalData;
 
-        let predBoxes = this.plotG.selectAll(".predBox").data(cellData);
-        let truthBoxes = this.plotG.selectAll(".truthBox").data(cellData);
+            let predBoxes = this.plotG.selectAll(".predBox").data(cellData);
+            let truthBoxes = this.plotG.selectAll(".truthBox").data(cellData);
 
-        let marginalLabels = this.plotG.selectAll(".marginalLabelText").data(marginalData);
+            let marginalLabels = this.plotG.selectAll(".marginalLabelText").data(marginalData);
 
-        let cellCountLabels = this.plotG.selectAll(".cellText").data(cellData);
+            let cellCountLabels = this.plotG.selectAll(".cellText").data(cellData);
 
 
-        predBoxes.enter().append("rect")            //  prediction rect, fills everything
-            .attr("class", "predBox")
-            .style("stroke", "#fff")
-            .merge(predBoxes)
-            .transition()
-            .attr("fill", (d, i) => {
-                return d.boxColor
-            })
-            .attr("x", (d, i) => {
-                return this.xScale(d.x)
-            })
-            .attr("y", (d, i) => {
-                return this.yScale(d.y)
-            })
-            .attr("width", (d, i) => {
-                return this.xScale(d.w)
-            })
-            .attr("height", (d, i) => {
-                return this.yScale(d.h)
-            })
+            predBoxes.enter().append("rect")            //  prediction rect, fills everything
+                .attr("class", "predBox")
+                .style("stroke", "#fff")
+                .merge(predBoxes)
+                .transition()
+                .attr("fill", (d, i) => {
+                    return d.boxColor
+                })
+                .attr("x", (d, i) => {
+                    return this.xScale(d.x)
+                })
+                .attr("y", (d, i) => {
+                    return this.yScale(d.y)
+                })
+                .attr("width", (d, i) => {
+                    return this.xScale(d.w)
+                })
+                .attr("height", (d, i) => {
+                    return this.yScale(d.h)
+                })
 
-        /*
-                truthBoxes.enter().append("rect")            //  truth rect, fills inside
-                    .attr("class", "truthBox")
-                    .attr("fill", (d, i) => {
-                        return d.truthColor
-                    })
-                    //  .style("stroke", "#fff")
-                    .merge(truthBoxes)
-                    .transition()
-                    .attr("x", (d, i) => {
-                        return (this.xScale(d.x) + mosaic.inset)
-                    })
-                    .attr("y", (d, i) => {
-                        return (this.yScale(d.y) + mosaic.inset)
-                    })
-                    .attr("width", (d, i) => {
-                        let out = this.xScale(d.w) - 2 * mosaic.inset;
-                        return (out > 0 ? out : 0);
-                    })
-                    .attr("height", (d, i) => {
-                        let out = (this.yScale(d.h) - 2 * mosaic.inset);
-                        return (out > 0 ? out : 0);
-                    })
-        */
+            /*
+                    truthBoxes.enter().append("rect")            //  truth rect, fills inside
+                        .attr("class", "truthBox")
+                        .attr("fill", (d, i) => {
+                            return d.truthColor
+                        })
+                        //  .style("stroke", "#fff")
+                        .merge(truthBoxes)
+                        .transition()
+                        .attr("x", (d, i) => {
+                            return (this.xScale(d.x) + mosaic.inset)
+                        })
+                        .attr("y", (d, i) => {
+                            return (this.yScale(d.y) + mosaic.inset)
+                        })
+                        .attr("width", (d, i) => {
+                            let out = this.xScale(d.w) - 2 * mosaic.inset;
+                            return (out > 0 ? out : 0);
+                        })
+                        .attr("height", (d, i) => {
+                            let out = (this.yScale(d.h) - 2 * mosaic.inset);
+                            return (out > 0 ? out : 0);
+                        })
+            */
 
-        //  labels for positive and negative, spanning two cells
+            //  labels for positive and negative, spanning two cells
 
-        marginalLabels.enter().append("text")
-            .attr("class", "marginalLabelText")
-            .style("text-anchor", "middle")
-            .style("dominant-baseline", (d, i) => {
-                return d.baseline
-            })
-            .merge(marginalLabels)
-            .transition()
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr('fill', 'white')
-            .attr('fill-opacity', arbor.constants.mosaicMarginalLabelFillOpacity)
+            marginalLabels.enter().append("text")
+                .attr("class", "marginalLabelText")
+                .style("text-anchor", "middle")
+                .style("dominant-baseline", (d, i) => {
+                    return d.baseline
+                })
+                .merge(marginalLabels)
+                .transition()
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr('fill', 'white')
+                .attr('fill-opacity', arbor.constants.mosaicMarginalLabelFillOpacity)
 
-            .attr("transform", (d, i) => {
-                    const xText = this.xScale(d.x);
-                    const yText = this.yScale(d.y);
-                    return `translate(${xText}, ${yText}) rotate(${d.rotation})`
-                }
-            )
-            .text((d, i) => {
-                return d.text
-            })
+                .attr("transform", (d, i) => {
+                        const xText = this.xScale(d.x);
+                        const yText = this.yScale(d.y);
+                        return `translate(${xText}, ${yText}) rotate(${d.rotation})`
+                    }
+                )
+                .text((d, i) => {
+                    return d.text
+                })
 
-        //  numbers for cell counts
+            //  numbers for cell counts
 
-        cellCountLabels.enter().append("text")
-            .attr("class", "cellText")
-            .style("text-anchor", "middle")
-            .style("dominant-baseline", "central")
-            .merge(cellCountLabels)
-            .transition()
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("transform", (d, i) => {
-                    const xText = this.xScale(d.x + d.w / 2);
-                    const yText = this.yScale(d.y + d.h / 2);
-                    return `translate(${xText}, ${yText}) `
-                }
-            )
-            .text((d, i) => {
-                return d.count
-            })
+            cellCountLabels.enter().append("text")
+                .attr("class", "cellText")
+                .style("text-anchor", "middle")
+                .style("dominant-baseline", "central")
+                .merge(cellCountLabels)
+                .transition()
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("transform", (d, i) => {
+                        const xText = this.xScale(d.x + d.w / 2);
+                        const yText = this.yScale(d.y + d.h / 2);
+                        return `translate(${xText}, ${yText}) `
+                    }
+                )
+                .text((d, i) => {
+                    return d.count
+                })
+        } catch (msg) {
+            console.log(`innocuous error [${msg}]`)
+        }
     },
 
     constructMosaicData: function () {
@@ -232,7 +241,7 @@ const mosaic = {
                 y: 0.5,
                 w: N ? margTrue / N : 0,
                 h: margTrue ? (theCounts.TP + theCounts.FN) / margTrue : 0,
-                text: margTrue ? arbor.strings.mpsActuallyPositiveLabel : "",
+                text: margTrue ? arbor.strings.mpsfActuallyLabel(mosaic.positiveLabel) : "",
                 rotation: 90,
                 baseline: "central",     //      "auto",
             };
@@ -242,7 +251,7 @@ const mosaic = {
                 y: 0.5,
                 w: N ? margFalse / N : 0,
                 h: margFalse ? (theCounts.FP + theCounts.TN) / margFalse : 0,
-                text: margFalse ? arbor.strings.mpsActuallyNegativeLabel : "",
+                text: margFalse ? arbor.strings.mpsfActuallyLabel(mosaic.negativeLabel) : "",
                 rotation: 90,
                 baseline: "central",        //  "hanging",
             }
@@ -311,7 +320,7 @@ const mosaic = {
                 y: 0.05,
                 w: margPositive ? (theCounts.TP + theCounts.FP) / margPositive : 0,
                 h: N ? margPositive / N : 0,
-                text: margPositive ? arbor.strings.mpsPredictedPositiveLabel : "",
+                text: margPositive ? arbor.strings.mpsfPredictedLabel(mosaic.positiveLabel) : "",
                 rotation: 0,
                 baseline: "central",    //      "auto",
             };
@@ -321,7 +330,7 @@ const mosaic = {
                 y: 0.95,
                 w: margNegative ? (theCounts.FN + theCounts.TN) / margNegative : 0,
                 h: N ? margNegative / N : 0,
-                text: margNegative ? arbor.strings.mpsPredictedNegativeLabel : "",
+                text: margNegative ? arbor.strings.mpsfPredictedLabel(mosaic.negativeLabel) : "",
                 rotation: 0,
                 baseline: "central",  //     "hanging",
             }
@@ -342,10 +351,12 @@ const mosaic = {
         //  are we in vertical, truth mode??
         const truthy = arbor.state.mosaicOrientation === arbor.constants.kMosaicOrientationTruth;
 
+        document.getElementById("targetAttributeNameForMosaicLegend").innerHTML = arbor.state.dependentVariableName;
+
         document.getElementById("positiveMosaicLabel").innerHTML
-            = truthy ? arbor.strings.mpsPredictedPositiveLabel : arbor.strings.mpsActuallyPositiveLabel;
+            = truthy ? arbor.strings.mpsfPredictedLabel(mosaic.positiveLabel) : arbor.strings.mpsfActuallyLabel(mosaic.positiveLabel);
         document.getElementById("negativeMosaicLabel").innerHTML
-            = truthy ? arbor.strings.mpsPredictedNegativeLabel : arbor.strings.mpsActuallyNegativeLabel;
+            = truthy ? arbor.strings.mpsfPredictedLabel(mosaic.negativeLabel) : arbor.strings.mpsfActuallyLabel(mosaic.negativeLabel);
 
         document.getElementById("positiveLegendRect")
             .style.fill = truthy ? arbor.constants.mosaicColorPredictedPositive : arbor.constants.mosaicColorActualPositive;
