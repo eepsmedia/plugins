@@ -1,0 +1,46 @@
+
+body {
+    margin : 0;
+    padding : 0;
+
+    color : #333;
+    font-family: "Sirin Stencil",sans-serif;
+    font-size: small;
+    min-height: 100vh;      /* make <body> fill the plugin */
+}
+
+#titleDIV {
+    width: 100%;
+    background-color: blue;
+    color: white;
+    padding: 0.5em;
+    font-weight: 700;
+    font-size: large;
+}
+
+#xDIV {
+    width: 100%;
+    background-color: lightgray;
+    font-weight: 700;
+    font-size: large;
+    color: black;
+    padding: 0.5em;
+}
+#resultsDIV {
+    width: 100%;
+    background-color: lightgray;
+    color: black;
+    padding: 0.5em;
+}
+
+#configureDIV_oneNumeric {
+    width: 100%;
+    background-color: lightblue;
+    color: black;
+    padding: 0.5em;
+}
+
+
+.short_number_field {
+    width : 4em;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<!--
+
+    local in local codap :
+        http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/testimate
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>testimate</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:700' rel='stylesheet'>
+
+    <link rel='stylesheet' type='text/css' href='css/testimate.css'/>
+
+
+    <!-- These five scripts take care of the communication with CODAP  -->
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
+
+    <script src="jstat/jstat.min.js"></script>
+
+    <script src="src/testimate.js"></script>
+    <script src="src/data.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/handlers.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/dropManager.js"></script>
+
+
+</head>
+
+
+<body>
+
+<div id="entirePluginDIV">
+<!--
+    <div id="titleDIV">testimate</div>
+-->
+
+    <div id="xDIV"> x goes here</div>
+    <div id="resultsDIV"> results go here</div>
+
+    <div id="configureDIV_oneNumeric">
+        <span id="configStart"></span>
+        <input id="sidesButton" type="button" onclick="handlers.changeTestSides()" value="≠">
+        <input id="valueBox"  class="short_number_field" onchange="handlers.changeValue()"
+               type="number" value="0">
+        <label for="alphaBox" id="alpha_label">&alpha; = </label>
+        <input id="alphaBox" class="short_number_field" onchange="handlers.changeAlpha()"
+               type="number" value="0.05" step="0.005"  min="0" max="1.0">
+
+        <input type="button" onclick="handlers.setTestParameters('N1')" value="done">
+
+
+    </div>
+</div>
+</body>
+
+<script>
+    window.onload = function () {
+        testimate.initialize();
+    }
+</script>
+
+
+</html>
