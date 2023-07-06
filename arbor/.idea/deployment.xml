@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" promptOnRemoteOverwrite="CHECK_CONTENT" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="arbor-xyz">
         <serverdata>
@@ -11,14 +11,6 @@
         </serverdata>
       </paths>
       <paths name="arbor2-xyz">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$/../common" web="/" />
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="codapxyz">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$/../common" web="/" />

@@ -34,9 +34,6 @@ NodeBoxView = function (iNode, iZoneView) {
     this.paper.unmouseup(this.mouseUpHandler.bind(this));
     this.paper.mouseup(this.mouseUpHandler.bind(this));
 
-    // this.paper.unmouseover(this.mouseOverHandler.bind(this));
-    // this.paper.mouseover(this.mouseOverHandler.bind(this));
-
     //  We watch this event for changes from the model,
     //  e.g., changes in number or text.
     arbor.eventDispatcher.addEventListener("changeNode", this.handleNodeChange, this);
@@ -266,7 +263,7 @@ NodeBoxView.prototype.makeRootStripes = function () {
     const tStripe = new Stripe(
         this,
         {text: tText, textColor: "white", bgColor: arbor.state.dependentVariableSplit.attColor},
-        "dependent-variable"
+        "dependent-variable-head"
     );
     this.stripes.push(tStripe);
 

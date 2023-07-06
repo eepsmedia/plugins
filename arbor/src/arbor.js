@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2022b',
+        version: '2023b',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -113,6 +113,8 @@ const arbor = {
 
         arbor.state.lang = pluginLang.figureOutLanguage(arbor.constants.kDefaultLanguage, arborStrings.languages);
         arbor.strings = await arborStrings.initializeStrings(this.state.lang);
+        mosaic.initialize();
+
         await arbor.getAndRestoreModel();   //  includes getInteractiveState
 
         await arbor.getAndRestoreViews();   //
@@ -348,6 +350,7 @@ const arbor = {
             dependentVariableName: null,
             dependentVariableSplit: null,
             tree: null,
+            mosaicOrientation : arbor.constants.kMosaicOrientationTruth,
             oNodeDisplayProportion: arbor.constants.kUsePercentageInNodeBox,
             oNodeDisplayNumber: arbor.constants.kUseOutOfInNodeBox,
             oAlwaysShowConfigurationOnSplit: false,
@@ -586,7 +589,7 @@ const arbor = {
             this.fixDependentVariableMechanisms();  //  sets appropriate label text
             focusSplitMgr.displayAttributeConfiguration();   //  the (hidden) HTML on the main page
             this.treePanelView = new TreePanelView();  //  the main view.
-            arbor.ui.updateConfusionMatrix();
+            arbor.ui.updateAlternativeVisualizations();
         } else {
             outputControls.style.display = "none";
             treePaper.style.display = "none";
@@ -960,6 +963,17 @@ arbor.constants = {
     leafNodeHeight: 30,
     leafCornerRadius: 15,
     leafTextColor: "#fff",
+
+    //  for mosaic plots
+    //  mosaicColorCorrect : "#aca",
+    //  mosaicColorIncorrect : "#faa",
+    mosaicColorPredictedPositive : "#aaf",
+    mosaicColorPredictedNegative : "#cc4",
+    mosaicColorActuallyPositive : "#88c",
+    mosaicColorActuallyNegative : "#aa4",
+    mosaicMarginalLabelFillOpacity : 0.7,
+    kMosaicOrientationTruth : "truth",
+    kMosaicOrientationPrediction : "prediction",
 
     //  context specific?? Xeno??
     diagnosisAttributeName: "Xdiagnosis",

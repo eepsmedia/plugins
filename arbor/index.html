@@ -34,6 +34,8 @@ Global: IMPORT THIS:
     local just this: http://localhost/plugins/arbor/
     local in local codap :
         http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/arbor
+    local in local codap GERMAN:
+        http://localhost/codap/static/dg/de/cert/index.html?di=https://localhost/plugins/arbor
 
 
 https://codap.concord.org/releases/latest/static/dg/en/cert/index.html#shared=25898  //  breast cancer, not local
@@ -53,11 +55,13 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=JetBrains+Mono:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" href="../../common/jquery/jquery-ui.min.css">
     <link rel='stylesheet' type='text/css' href='css/arbor.css'/>
     <link rel='stylesheet' type='text/css' href='css/confusion-matrix.css'/>
+    <link rel='stylesheet' type='text/css' href='css/mosaic.css'/>
 
     <!-- These five scripts take care of the communication with CODAP  -->
     <script src="../../common/src/iframe-phone.js"></script>
@@ -72,6 +76,9 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <script src="../../common/src/TEEUtils.js"></script>
     <script src="../../common/jquery/jquery.min.js"></script>
     <script src="../../common/jquery/jquery-ui.min.js"></script>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
 
     <!--
         Models and Controllers
@@ -104,6 +111,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <script src="src/views/NodeZoneView.js"></script>
     <script src="src/views/NodeBoxView.js"></script>
     <script src="src/views/DiagnosisView.js"></script>
+    <script src="src/views/mosaicPlot.js"></script>
 
     <!--
         Set up JQUERY-UI stuff
@@ -120,6 +128,7 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     <ul>
         <li class="arbor-tab"><a id="sTreeTab" href="#tree">Tr</a></li>
         <li class="arbor-tab" id="tableTab"><a id="sTableTab" href="#table">Ta</a></li>
+        <li class="arbor-tab" id="mosaicTab"><a id="sMosaicTab" href="#mosaic">Mo</a></li>
         <li class="arbor-tab"><a id="sSettingsTab" href="#settings">Se</a></li>
         <li class="arbor-tab"><a id="sHelpTab" href="#help">?!?!</a></li>
     </ul>
@@ -149,6 +158,41 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
     </div>
 
     <!--
+        Mosaic plot tab
+    -->
+
+    <div id="mosaic">
+        <svg id="mosaicPlot">
+        </svg>
+        <div id="mosaicControlDiv" class="hBox">
+            <span id="targetAttributeNameForMosaicLegend"></span>: &nbsp;
+
+            <label id="positiveMosaicLabel" for="positiveMosaicSwatch">foo</label>
+            &nbsp;
+            <div id="positiveMosaicSwatch">
+                <svg id="positiveLegendSVG" height="20" width="20">
+                    <rect id="positiveLegendRect" x="0" y="0" width="16" height="16" fill="black"></rect>
+                </svg>
+            </div>
+            &emsp;
+            <label id="negativeMosaicLabel" for="negativeMosaicSwatch">foo</label>
+            &nbsp;
+            <div id="negativeMosaicSwatch">
+                <svg id="negativeLegendSVG"  height="20" width="20">
+                    <rect id="negativeLegendRect" x="0" y="0" width="16" height="16" fill="black"></rect>
+                </svg>
+            </div>
+        </div>
+        <button class=""
+                id="sMosaicOrientationButton"
+                onclick="mosaic.changeOrientation()">
+            swap
+        </button>
+
+    </div>
+
+
+    <!--
         Tree tab
     -->
     <div id="tree">
@@ -163,9 +207,9 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
         <!-- the current number of true positives, etc... -->
 
         <div class="hBox" id="resultsDisplay">
-<!--
-            <span id="resultsText"></span>
--->
+            <!--
+                        <span id="resultsText"></span>
+            -->
         </div>
 
         <hr>
@@ -173,7 +217,8 @@ https://localhost/~tim/codap/static/dg/en/cert/index.html#shared=22607   ACS use
             <summary id="tableSummaryDataControlDetailTitle"></summary>
 
             <div class="vBox">
-                <p class="arbor-ui" id="outputTableIntro">These values will appear in the output table to help you identify the trees.</p>
+                <p class="arbor-ui" id="outputTableIntro">These values will appear in the output table to help you
+                    identify the trees.</p>
                 <div class="hBox">
                     <div class="vBox focusatt">
                         <label for="focusAttributeNameBox" id="focusAttributeNameBoxLabel">att</label>

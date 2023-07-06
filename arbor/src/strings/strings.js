@@ -53,6 +53,7 @@ arborStrings = {
             //  sShowPredictionLeaves: `show prediction "leaves"`,
             sTreeTab: `tree`,
             sTableTab: `table`,
+            sMosaicTab: `mosaic`,
             sSettingsTab: `settings`,
             sHelpTab: `help!`,
             refreshAllButton: `refresh all`,
@@ -238,6 +239,21 @@ The other ${theRest} ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed
         sfConfusionCaseCount : function( iResults) {
             return `<span class='confusionHed'> ${arbor.state.dependentVariableName}</span><br> ${iResults.sampleSize} cases`
         },
+
+        //      Mosaic plot strings (mps prefix) (mpsf prefix for functions)
+
+        mpsActuallyPositiveLabel : `actually positive`,
+        mpsActuallyNegativeLabel : `actually negative`,
+        mpsPredictedPositiveLabel : `predicted positive`,
+        mpsPredictedNegativeLabel : `predicted negative`,
+
+        mpsfActuallyLabel : function(iWord) {
+            return `actually ${iWord}`;
+        },
+        mpsfPredictedLabel : function(iWord) {
+            return `predicted ${iWord}`;
+        },
+
     },
 
     de: {
@@ -249,6 +265,7 @@ The other ${theRest} ${this.sfIsAre(theRest)} (${arbor.informalDVBooleanReversed
             //  sShowPredictionLeaves: `"Label" anzeigen`,
             sTreeTab: `Baum`,
             sTableTab: `Tabelle`,
+            sMosaicTab: `Mosaic`,
             sSettingsTab: `Einstellungen`,
             sHelpTab: `Hilfe`,
             refreshAllButton: `Baum zurücksetzen`,

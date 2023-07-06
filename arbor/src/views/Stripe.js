@@ -1,3 +1,11 @@
+/**
+ * class for one of the stripes that make up a NodeBoxView.
+ *
+ * @param iParent
+ * @param iTextParams
+ * @param iRole     =  {terminal | data | branching | dependent-variable }
+ * @constructor
+ */
 Stripe = function (iParent, iTextParams, iRole) {
 
     this.parent = iParent;      //  the node box view we are embedded in
@@ -70,7 +78,20 @@ Stripe = function (iParent, iTextParams, iRole) {
             this.centeredText = true;
             break;
 
-        case "dependent-variable":
+        case "dependent-variable-head":     //  has a configuration gear
+            this.rightButtonImage = null;
+
+            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.configure, 0, 0, 32, 32)
+                .append(Snap.parse("<title>" + toolTipTexts.configure + "</title>"))
+                .mousedown(
+                    function (iEvent) {
+                        arbor.setFocusNode(this.parent.myNode);
+                        focusSplitMgr.showHideAttributeConfigurationSection(true);   //  arbor.swapFocusSplit();              //  actually do the swap
+                    }.bind(this)
+                );
+            break;
+
+        case "dependent-variable":          //  second stripe. No config gear
             this.rightButtonImage = null;
             break;
 
