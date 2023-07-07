@@ -9,6 +9,9 @@ const testimate = {
         console.log(`initializing...`);
         await this.setUpState();
         await connect.initialize(this.iFrameDescription, null);
+        if (this.state.dataset) {
+            await this.setDataset(this.state.dataset);  //  register for case changes
+        }
 
         ui.redraw();
     },

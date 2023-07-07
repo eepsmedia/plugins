@@ -40,6 +40,7 @@ const data = {
         this.results.tCrit = jStat.studentt.inv((1 - this.parameters.alpha/2), this.results.df);    //  1.96-ish for 0.95
         this.results.CImax = this.results.xbar + this.results.tCrit * this.results.SE;
         this.results.CImin = this.results.xbar - this.results.tCrit * this.results.SE;
+        this.results.t = (this.results.mean - this.parameters.value) / this.results.SE;
 
     },
 
@@ -76,14 +77,14 @@ const data = {
                         //  construct data arrays, omitting missing values
 
                         const theXValue = v.values[xName];
-                        if (this.isNumeric(theXValue)) {
+                        if (typeof theXValue === "number") {
+                            this.xArray.push(theXValue);
+                        } else if (this.isNumeric(theXValue)) {
                             this.xArray.push(parseFloat(theXValue));
                         }
                     })
                 }
             }
-
-
            //    console.log(`constructed x:  ${JSON.stringify(this.xArray)}`);
         } else {
             console.log(`no x variable`);
@@ -119,7 +120,7 @@ const data = {
      * @returns {boolean}
      */
     isNumeric: function (str) {
-        if (typeof str != "string") return false        // we only process strings!
+        if (typeof str != "string") return false;       // we only process strings!
         return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
             !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
     },

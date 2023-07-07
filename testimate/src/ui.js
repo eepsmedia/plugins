@@ -27,19 +27,19 @@ ui = {
         }
 
         const N = data.results.N;
-        const mu = this.numberToString(data.results.xbar, 3);
+        const xbar = this.numberToString(data.results.xbar, 3);
         const s = this.numberToString(data.results.s);
         const SE = this.numberToString(data.results.SE);
-        const P = (data.results.P < 0.00001 ? `< 0.00001` : this.numberToString(data.results.P));
+        const P = (data.results.P < 0.0001) ? `P < 0.0001` : `P = ${this.numberToString(data.results.P)}`;
         const CImin = this.numberToString(data.results.CImin);
         const CImax = this.numberToString(data.results.CImax);
         const tCrit = this.numberToString(data.results.tCrit, 3);
         const df = this.numberToString(data.results.df, 3);
         const confPct = this.numberToString(data.parameters.conf * 100);
 
-        let out = `<bold>${testimate.state.xName}</bold>: `;
-        out += `N = ${N}, µ = ${mu}, s = ${s}, SE = ${SE}<br>`;
-        out += `testing for ${testimate.state.xName} ${theSidesOp} ${data.parameters.value} gives P = ${P}<br>`
+        let out = ``;
+        out += `N = ${N}, xbar = ${xbar}, s = ${s}, SE = ${SE}<br>`;
+        out += `testing µ(${testimate.state.xName}) ${theSidesOp} ${data.parameters.value} gives ${P}<br>`
         out += `${confPct}% CI = [${CImin}, ${CImax}]  t* = ${tCrit} df = ${df}`;
 
         return out;
