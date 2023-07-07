@@ -7,16 +7,19 @@ const data = {
         alpha : 0.05,
         value : 0.0,    //  to be tested against
         sides : 2,
+        conf : 0.90,    //  confidence level 1 - 2 * alpha
     },
     results : {
-        mu : null,
+        xbar : null,
         s : null,       //  sample SD
         SE : null,      //  standard error
         P : null,
         p : null,       //  sample proportion
         N : null,       //  sample size
+        df : null,      //  degrees of freedom
         CImin : null,
         CImax : null,
+        tCrit : null,   //  t critical value
         t : null,
         chisq : null,
         F : null,
@@ -26,10 +29,17 @@ const data = {
     updateResults : function() {
         const jX = jStat(data.xArray);      //  jStat version of x array
 
+        this.parameters.conf = 1 - this.parameters.alpha;
+
         this.results.N = jX.cols();
-        this.results.mu = jX.mean();
+        this.results.df = this.results.N - 1;
+        this.results.xbar = jX.mean();
         this.results.s = jX.stdev(true);    //      true means SAMPLE SD
+        this.results.SE = this.results.s / Math.sqrt(this.results.N);
         this.results.P = jX.ttest(this.parameters.value,this.parameters.sides);
+        this.results.tCrit = jStat.studentt.inv((1 - this.parameters.alpha/2), this.results.df);    //  1.96-ish for 0.95
+        this.results.CImax = this.results.xbar + this.results.tCrit * this.results.SE;
+        this.results.CImin = this.results.xbar - this.results.tCrit * this.results.SE;
 
     },
 
@@ -46,7 +56,6 @@ const data = {
             const result = await codapInterface.sendRequest(theMessage);
             this.dirtyData = false;
             this.dataset = result.values;   //   array of objects, one of whose items is another "values"
-            console.log(`getAllItems() returns ${this.dataset.length}`);
             return true;
         } catch (msg) {
             alert(`Trouble getting data: ${msg}`);
@@ -75,7 +84,7 @@ const data = {
             }
 
 
-            console.log(`constructed x:  ${JSON.stringify(this.xArray)}`);
+           //    console.log(`constructed x:  ${JSON.stringify(this.xArray)}`);
         } else {
             console.log(`no x variable`);
         }
