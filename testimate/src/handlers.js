@@ -5,22 +5,35 @@ const handlers = {
      */
     changeTestSides : function() {
         const iSign = document.getElementById(`sidesButton`).value;    // 1 or 2
-        data.parameters.sides = (iSign === `≠`) ? 1 : 2;
+        tests.parameters.sides = (iSign === `≠`) ? 1 : 2;
+        ui.redraw();
+    },
+
+    changeConf : function() {
+        const a = document.getElementById(`confBox`);
+        tests.parameters.conf = a.value;
+        tests.parameters.alpha = 1 - tests.parameters.conf/100;
         ui.redraw();
     },
 
     changeAlpha : function() {
         const a = document.getElementById(`alphaBox`);
-        data.parameters.alpha = a.value;
+        tests.parameters.alpha = a.value;
+        tests.parameters.conf = 100 * (1 - tests.parameters.alpha);
         ui.redraw();
     },
 
     changeValue : function() {
         const v = document.getElementById(`valueBox`);
-        data.parameters.value = v.value;
+        tests.parameters.value = v.value;
         ui.redraw();
     },
 
+    changeTest : function() {
+        const T = document.getElementById(`testMenu`);
+        testimate.state.test = T.value;
+        ui.redraw();
+    },
 
     setTestParameters : function(iType) {
         switch(iType) {

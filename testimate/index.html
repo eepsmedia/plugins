@@ -13,8 +13,14 @@
     <meta charset="UTF-8">
     <title>testimate</title>
 
-    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:700' rel='stylesheet'>
+    <!--
+        <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:400' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Sirin+Stencil:700' rel='stylesheet'>
+    -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700">
 
     <link rel='stylesheet' type='text/css' href='css/testimate.css'/>
 
@@ -30,6 +36,7 @@
 
     <script src="src/testimate.js"></script>
     <script src="src/data.js"></script>
+    <script src="src/tests.js"></script>
     <script src="src/ui.js"></script>
     <script src="src/handlers.js"></script>
     <script src="src/connect.js"></script>
@@ -42,23 +49,35 @@
 <body>
 
 <div id="entirePluginDIV">
-<!--
-    <div id="titleDIV">testimate</div>
--->
+    <!--
+        <div id="titleDIV">testimate</div>
+    -->
 
-    <div id="xDIV"> x goes here</div>
+    <div id="attributeStrip" class="hBox">
+        <div id="xDIV" class="drag-none"> x goes here</div>
+        <div id="yDIV" class="drag-none"> y goes here</div>
+    </div>
+
+    <div id="testHeaderDIV">test header</div>
     <div id="resultsDIV"> results go here</div>
 
     <div id="configureDIV_oneNumeric">
         <span id="configStart"></span>
         <input id="sidesButton" type="button" onclick="handlers.changeTestSides()" value="≠">
-        <input id="valueBox"  class="short_number_field" onchange="handlers.changeValue()"
+        <input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"
                type="number" value="0">
-        <label for="alphaBox" id="alpha_label">&alpha; = </label>
-        <input id="alphaBox" class="short_number_field" onchange="handlers.changeAlpha()"
-               type="number" value="0.05" step="0.005"  min="0" max="1.0">
+        <label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
+        <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
+               type="number" value="95" step="1" min="0" max="100">%
+        <!--
+                <label for="alphaBox" id="alpha_label">&alpha; = </label>
+                <input id="alphaBox" class="short_number_field" onchange="handlers.changeAlpha()"
+                       type="number" value="0.05" step="0.005"  min="0" max="1.0">
+        -->
 
-        <input type="button" onclick="handlers.setTestParameters('N1')" value="done">
+        <!--
+                <input type="button" onclick="handlers.setTestParameters('N1')" value="done">
+        -->
 
 
     </div>

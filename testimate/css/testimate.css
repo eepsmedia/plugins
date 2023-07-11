@@ -1,4 +1,16 @@
 
+/*
+    define variables for css!
+ */
+:root {
+    --codap-color : #72bfca;
+    --bg-body-color : lightgray;
+    --drag-near-bg-color : #cba;
+    --drag-over-bg-color : #fed;
+    --drag-none-bg-color : lightblue;
+
+}
+
 body {
     margin : 0;
     padding : 0;
@@ -7,8 +19,14 @@ body {
     font-family: "Sirin Stencil",sans-serif;
     font-size: small;
     min-height: 100vh;      /* make <body> fill the plugin */
+    background-color: var(--bg-body-color);
 }
 
+pre {
+    margin : 0;
+    padding : 0;
+    font-family: "Nanum Gothic Coding";
+}
 #titleDIV {
     width: 100%;
     background-color: blue;
@@ -18,19 +36,48 @@ body {
     font-size: large;
 }
 
+#attributeStrip {
+    width : 100%;
+    background-color: blue;
+}
+
 #xDIV {
-    width: 100%;
-    background-color: lightgray;
+    min-width: 40%;
+    border-radius: 6px;
     font-weight: 700;
     font-size: large;
     color: black;
     padding: 0.5em;
+    margin : 0.5em;
 }
+
+#yDIV {
+    min-width: 40%;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: large;
+    color: black;
+    padding: 0.5em;
+    margin : 0.5em;
+}
+
+#testHeaderDIV {
+    width: 100%;
+    background-color: lightblue;
+    color: black;
+    padding: 0.5em;
+    font-size: 12px;
+    line-height: 1.2em;
+
+}
+
 #resultsDIV {
     width: 100%;
     background-color: lightgray;
     color: black;
     padding: 0.5em;
+    font-size: 12px;
+    line-height: 1.2em;
 }
 
 #configureDIV_oneNumeric {
@@ -44,3 +91,43 @@ body {
 .short_number_field {
     width : 4em;
 }
+
+/*      drag-drop highlight classes     */
+
+.drag-none {
+    background-color: var(--drag-none-bg-color);
+}
+.drag-near {
+    background-color: var(--drag-near-bg-color);
+}
+.drag-over {
+    background-color: var(--drag-over-bg-color);
+}
+
+/*		BOX CLASSES		*/
+
+.hBox	{
+    display: flex;
+    flex-direction: row;
+    /*display:	-webkit-box;
+    display:	-moz-box;
+    display:	box;
+    -webkit-box-orient:	horizontal;
+    -moz-box-orient:	horizontal;
+    box-orient:	horizontal;*/
+}
+
+.vBox	{
+    display: flex;
+    flex-direction: column;
+    /*
+    display:	-webkit-box;
+    display:	-moz-box;
+    display:	box;
+    -webkit-box-orient:	vertical;
+    -moz-box-orient:	vertical;
+    box-orient:	vertical;
+    */
+}
+
+

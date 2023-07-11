@@ -2,47 +2,67 @@
 
 const testimate = {
 
-    attributeDragDropSubscriberIndex : null,
+    state : {},
 
     initialize : async function() {
-
         console.log(`initializing...`);
+
         await this.setUpState();
         await connect.initialize(this.iFrameDescription, null);
         if (this.state.dataset) {
             await this.setDataset(this.state.dataset);  //  register for case changes
         }
 
+        ui.initialize();
         ui.redraw();
     },
 
     copeWithAttributeDrop : async function(iDatasetName, iAttributeName, iWhere){
-        const titleElement = document.getElementById(`titleDIV`);
+        //  const titleElement = document.getElementById(`titleDIV`);
         const theElement = document.elementFromPoint(iWhere.x, iWhere.y);
-        const theID = theElement.id;
-        if (theID) {
-            console.log(`dropping ${iAttributeName} from ${iDatasetName} onto ${theID}`);
-        } else {
-            console.log(`dropping ${iAttributeName} from ${iDatasetName} (no element ID)`);
-        }
+
         if (this.state.dataset !== iDatasetName) {
             this.setDataset(iDatasetName);
+            this.setX(null);
+            this.setY(null);    //  change of dataset, remove attributes
         }
-        this.setX(iAttributeName);
+
+        if (theElement === ui.xDIV) {
+            this.setX(iAttributeName);
+        } else if (theElement === ui.yDIV) {
+            this.setY(iAttributeName);
+        } else if (theElement && !this.state.xName) {
+            this.setX(iAttributeName);      //  set x anywhere if it doesn't exist
+        }
+
+        data.dirtyData = true;
+
         ui.redraw();
     },
 
     setDataset : function(iName) {
         this.state.dataset = iName;
+        this.state.test = null;
         connect.registerForCaseChanges(iName);
         console.log(`set dataset to ${iName}`);
-
     },
 
     setX : function(iName) {
         data.dirtyData = true;
         this.state.xName = iName;
+        this.state.test = null;
         console.log(`set X to ${iName}`);
+    },
+
+    setY : function(iName) {
+        data.dirtyData = true;
+        if (this.state.xName) {
+            this.state.yName = iName;
+            this.state.test = null;
+            console.log(`set Y to ${iName}`);
+        } else {
+            this.setX(iName);   //  always fill x first.
+        }
     },
 
     setUpState : async function() {
@@ -60,11 +80,14 @@ const testimate = {
     constants : {
         pluginName : `testimate`,
         version : `2023a`,
-        dimenstions : {height : 256, width : 400},
+        dimensions : {height : 333, width : 466},
 
         defaultState : {
             dataset : null,
+            dataTypes : {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
             xName : null,
+            yName : null,
+            test : null,
             lang : `en`,
         }
     }

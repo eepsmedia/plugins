@@ -5,9 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
+      <change afterPath="$PROJECT_DIR$/../testimate/src/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/css/testimate.css" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/css/testimate.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/connect.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/dropManager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/handlers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/src/testimate.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/testimate.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/ui.js" afterDir="false" />
     </list>
@@ -72,7 +78,8 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm"
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -103,6 +110,7 @@
       <workItem from="1655409883135" duration="664000" />
       <workItem from="1664412858819" duration="640000" />
       <workItem from="1673380932903" duration="2061000" />
+      <workItem from="1688766242514" duration="3579000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>

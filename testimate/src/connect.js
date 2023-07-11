@@ -18,6 +18,29 @@ connect = {
     },
 
     /**
+     * called from data.retrieveDataFromCODAP
+     *
+     * @returns {Promise<boolean>}
+     */
+    getAllItems: async function () {
+        const theMessage = {
+            "action": "get",
+            "resource": `dataContext[${testimate.state.dataset}].itemSearch[*]`
+        }
+
+        try {
+            const result = await codapInterface.sendRequest(theMessage);
+            data.dirtyData = false;
+            data.dataset = result.values;   //   array of objects, one of whose items is another "values"
+            return true;
+        } catch (msg) {
+            alert(`Trouble getting data: ${msg}`);
+            return false;
+        }
+    },
+
+
+    /**
      * Constant descriptor for the iFrame.
      * Find and edit the values in `scrambler.constants`
      */
