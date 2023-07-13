@@ -79,7 +79,7 @@ const testimate = {
 
     constants : {
         pluginName : `testimate`,
-        version : `2023a`,
+        version : `2023b`,
         dimensions : {height : 333, width : 466},
 
         defaultState : {

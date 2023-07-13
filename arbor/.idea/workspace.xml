@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
-      <change afterPath="$PROJECT_DIR$/../testimate/src/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/css/testimate.css" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/css/testimate.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/connect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/dropManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/handlers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/testimate.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/testimate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/src/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/ui.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

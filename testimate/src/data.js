@@ -1,17 +1,17 @@
+
 const data = {
 
     dirtyData: true,
 
     dataset: [],        //  array retrieved from CODAP
-    xAttData: {},
-    yAttData: {},
+    xAttData: null,
+    yAttData: null,
 
     /**
      * called from ui.redraw().
      *
      * Before we write anything on the screen, we verify that the data we have is current.
-     * This includes re-determining which test we are using (it might have changed with a user choice)
-     * and finding the results of the current test.
+     * This includes finding the results of the current test.
      *
      * @returns {Promise<void>}
      */
@@ -20,7 +20,6 @@ const data = {
             await this.retrieveDataFromCODAP();
         }
     },
-
 
     /*      Coping with getting data from CODAP and responding to changes       */
 
@@ -37,68 +36,13 @@ const data = {
             if (this.dirtyData) {
                 const OK = await connect.getAllItems();      //  OK means a successful get of all items, this.dataset is now set
                 if (OK) {
-                    this.xAttData = this.analyzeRawAttributeValues(xName);
-                    this.yAttData = this.analyzeRawAttributeValues(yName);
+                    this.xAttData = new AttData(xName, this.dataset);
+                    this.yAttData = new AttData(yName, this.dataset);
                 }
             }
-
         } else {
             console.log(`no x variable`);
         }
-
-    },
-
-    analyzeRawAttributeValues: function (iName) {
-
-        let numericCount = 0;
-        let nonNumericCount = 0;
-        let missingCount = 0;
-        let values = new Set();
-        let theRawArray = [];
-
-        if (iName) {
-            this.dataset.forEach(aCase => {        //  begin with raw CODAP data, look at each case
-
-                const rawDatum = aCase.values[iName];
-                if (rawDatum == null || rawDatum == '' || rawDatum == undefined) {
-                    theRawArray.push(null);             //      substitute null for any missing data
-                    missingCount++;
-                } else if (typeof rawDatum === "number") {      //  numbers stay type number
-                    theRawArray.push(rawDatum);
-                    numericCount++;
-                    values.add(rawDatum);
-                } else if (this.isNumericString(rawDatum)) {        //  strings that can be numbers get stored as numbers
-                    const cooked = parseFloat(rawDatum);
-                    theRawArray.push(cooked);
-                    numericCount++;
-                    values.add(cooked);
-                } else {        //  non-numeric         //  non-numeric strings are strings
-                    theRawArray.push(rawDatum);
-                    nonNumericCount++;
-                    values.add(rawDatum);
-                }
-            });
-
-            //  default data type, numeric or categorical...
-            //  once a type is chosen, it's recorded for that attribute NAME in `testimate.state.datatypes`.
-
-            if (!testimate.state.dataTypes.hasOwnProperty(iName)) {
-                testimate.state.dataTypes[iName] = (numericCount > nonNumericCount) ? "numeric" : "categorical";
-            }
-        }
-
-        console.log(`${iName} N:${numericCount} C:${nonNumericCount} M:${missingCount} vv:${values} (${values.size})`);
-        return {
-            name: iName,
-            type: testimate.state.dataTypes[iName] ? testimate.state.dataTypes[iName] : null,
-            theRawArray: theRawArray,
-            theArray: theRawArray,        //  until we clean it up...
-            valueSet: values,
-            numericCount: numericCount,
-            nonNumericCount: nonNumericCount,
-            missingCount: missingCount,
-        }
-
     },
 
 
@@ -160,9 +104,17 @@ const data = {
         this.xAttData.theArray = newXArray;
         this.yAttData.theArray = newYArray;
 
-        console.log(`cleaned x = ${JSON.stringify(this.xAttData.theArray)} y = ${JSON.stringify(this.yAttData.theArray)}`)
+        console.log(`cleaned x = ${JSON.stringify(this.xAttData.theArray)} \ncleaned y = ${JSON.stringify(this.yAttData.theArray)}`)
     },
 
+    /**
+     * CODAP has told us that a case has changed.
+     * We set the dirty data flag and ask to be redrawn.
+     * This will cause a re-get of all data and a re-analysis.
+     *
+     * @param iMessage
+     * @returns {Promise<void>}
+     */
     handleCaseChangeNotice: async function (iMessage) {
         const theOp = iMessage.values.operation
         let tMess = theOp;
@@ -195,5 +147,57 @@ const data = {
             !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
     },
 
+}
+
+class AttData {
+    constructor(iName, iData) {
+        this.name = iName;
+        this.theRawArray = [];
+        this.theArray = [];     //  stays empty in constructor
+        this.valueSet = new Set();
+        this.missingCount = 0;
+        this.numericCount = 0;
+        this.nonNumericCount = 0;
+        this.defaultType = "";
+
+        iData.forEach(aCase => {        //  begin with raw CODAP data, look at each case
+
+            const rawDatum = aCase.values[iName];
+            if (rawDatum === null || rawDatum === '' || rawDatum === undefined) {
+                this.theRawArray.push(null);             //      substitute null for any missing data
+                this.missingCount++;
+            } else if (typeof rawDatum === "number") {      //  numbers stay type number
+                this.theRawArray.push(rawDatum);
+                this.numericCount++;
+                this.valueSet.add(rawDatum);
+            } else if (data.isNumericString(rawDatum)) {        //  strings that can be numbers get stored as numbers
+                const cooked = parseFloat(rawDatum);
+                this.theRawArray.push(cooked);
+                this.numericCount++;
+                this.valueSet.add(cooked);
+            } else {        //  non-numeric         //  non-numeric strings are strings
+                this.theRawArray.push(rawDatum);
+                this.nonNumericCount++;
+                this.valueSet.add(rawDatum);
+            }
+        });
+
+        let defType = null;
+        if (this.numericCount > this.nonNumericCount) defType = 'numeric';
+        else if (this.valueSet.size > 0) defType = 'categorical';
+
+        this.defaultType = defType;
+        if (!testimate.state.dataTypes[this.name]) testimate.state.dataTypes[this.name] = this.defaultType;
+    }
+
+    isNumeric() {
+        return testimate.state.dataTypes[this.name] === 'numeric';
+    }
+    isCategorical() {
+        return testimate.state.dataTypes[this.name] === 'categorical';
+    }
+    isBinary() {
+        return this.valueSet.size === 2;
+    }
 }
 

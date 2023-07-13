@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.5. Language json source files">
-      <change afterPath="$PROJECT_DIR$/../testimate/src/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/css/testimate.css" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/css/testimate.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/connect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/dropManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/dropManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/handlers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/testimate.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/testimate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/src/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/ui.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,7 +106,7 @@
       <workItem from="1661736462869" duration="1191000" />
       <workItem from="1661798015157" duration="6456000" />
       <workItem from="1688500263237" duration="7346000" />
-      <workItem from="1688766943771" duration="1230000" />
+      <workItem from="1688766943771" duration="1840000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>

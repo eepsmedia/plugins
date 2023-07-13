@@ -35,6 +35,13 @@ const handlers = {
         ui.redraw();
     },
 
+    changeCN : function(iXY) {
+        const aName = (iXY === 'x') ? testimate.state.xName : testimate.state.yName;
+        const newType = (testimate.state.dataTypes[aName] === 'numeric' ? 'categorical' : 'numeric');
+        testimate.state.dataTypes[aName] = newType;
+        ui.redraw();
+    },
+
     setTestParameters : function(iType) {
         switch(iType) {
             case `N1`:

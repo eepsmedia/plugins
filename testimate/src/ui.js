@@ -7,11 +7,16 @@ ui = {
 
     xDIV : null,
     yDIV : null,
+    xType : null,
+    yType : null,
     resDIV : null,
 
     initialize : function()  {
         this.xDIV = document.getElementById(`xDIV`);
         this.yDIV = document.getElementById(`yDIV`);
+        this.xType = document.getElementById(`xCNbutton`);
+        this.yType = document.getElementById(`yCNbutton`);
+
         this.testHeaderDIV = document.getElementById(`testHeaderDIV`);
         this.resDIV = document.getElementById(`resultsDIV`);
     },
@@ -19,6 +24,10 @@ ui = {
     redraw : async function() {
 
         await data.updateData();        //  make sure we have the current data
+        this.updateAttributeBlocks();
+
+        //  update the tests as necessary
+
         const possibleTestIDs = tests.confirmTestID();
 
         if (testimate.state.test) {
@@ -26,15 +35,29 @@ ui = {
             tests.updateTestResults();      //  with the right data and the test, we can calculate these results.
         }
 
-        this.xDIV.textContent = testimate.state.xName || `drag an attribute in`;
-        this.yDIV.textContent = testimate.state.yName || `drag an attribute in`;
-
         this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
 
         this.resDIV.innerHTML = this.makeResultsString();
         this.updateConfig();    //  reset the appearance of the configuration DIV
+        this.setVisibility();
     },
 
+    setVisibility : function() {
+        document.getElementById('Ybackdrop').style.display = (testimate.state.xName) ? 'block' : 'none';
+        document.getElementById('testHeaderDIV').style.display = (testimate.state.xName) ? 'block' : 'none';
+
+    },
+
+    updateAttributeBlocks : function() {
+        this.xDIV.textContent = testimate.state.xName || `outcome/primary attribute`;
+        this.yDIV.textContent = testimate.state.yName || `predictor/secondary attribute`;
+        if (testimate.state.xName) {
+            this.xType.textContent = testimate.state.dataTypes[testimate.state.xName];
+        }
+        if (testimate.state.yName) {
+            this.yType.textContent = testimate.state.dataTypes[testimate.state.yName];
+        }
+    },
 
     makeResultsString : function() {
         let results = ``;
@@ -72,6 +95,16 @@ ui = {
         const conf = this.numberToString(tests.parameters.conf);
         const alpha = this.numberToString(tests.parameters.alpha);
         const t = this.numberToString(tests.results.t);
+        const n1 = this.numberToString(tests.results.N1);
+        const n2 = this.numberToString(tests.results.N2);
+        const mean1 = this.numberToString(tests.results.mean1);
+        const mean2 = this.numberToString(tests.results.mean2);
+        const s1 = this.numberToString(tests.results.s1);
+        const s2 = this.numberToString(tests.results.s2);
+        const SE1 = this.numberToString(tests.results.SE1);
+        const SE2 = this.numberToString(tests.results.SE2);
+        const slope = this.numberToString(tests.results.slope);
+        const intercept = this.numberToString(tests.results.intercept);
 
         let out = `<pre>`;
 
@@ -83,10 +116,33 @@ ui = {
                 out += `estmating ${testDesc} <br>    ${conf}% CI = [${CImin}, ${CImax}]<br>    t* = ${tCrit} df = ${df}`;
                 break;
             case "NN02":
-                out += `Sorry, no code yet for a two-sample t test in this configuration.`;
+                out += `<h3>Descriptive Stats</h3>`;
+                out += `<table><tr class="headerRow"><th></th><th>N</th><th>mean</th><th>s</th><th>SE</th></tr>`;
+                out += `<tr><td>${testimate.state.xName}</td><td>${n1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
+                out += `<tr><td>${testimate.state.yName}</td><td>${n2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
+                out += `</table>`;
+                out += `<h3>Test</h3>`;
+                out += `<p>diff = ${xbar}, SE = ${SE}, t = ${t}, df = ${df}, ${P}</p>`
+
+                out += `This code has not been checked!`;
                 break;
-            case "NN03":
-                out += `Sorry, no code yet for a linear regression.`;
+            case "NN03":    //      regression
+                const CISmin = this.numberToString(tests.results.slopeCImin);       //  CI of slope
+                const CISmax = this.numberToString(tests.results.slopeCImax);
+                const CIImin = this.numberToString(tests.results.interceptCImin);   //  CI of intercept
+                const CIImax = this.numberToString(tests.results.interceptCImax);
+                const r = this.numberToString(tests.results.r);
+                const rsq = this.numberToString(tests.results.rsq);
+
+                const theSign = intercept >= 0 ? "+" : '-';
+                out += `${testimate.state.xName} = ${slope} ${testimate.state.yName} ${theSign} ${Math.abs(intercept)} <br>`;  //  note reversal!
+                out += `N = ${N}, r = ${r}, r^2 = ${rsq}, t* = ${tCrit}, df = ${df}<br>`;
+                out += `slope:      ${conf}% CI = [${CISmin}, ${CISmax}]<br>`;
+                out += `intercept:  ${conf}% CI = [${CIImin}, ${CIImax}]<br>`;
+                out += `testing ${testDesc} ${theSidesOp} ${tests.parameters.value} <br>    t = ${t}, &alpha; = ${alpha}, ${P}<br>`;
+                break;
+            default:
+                out += `sorry, no code yet for ${tests.testConfigurations[testimate.state.test].name}`;
                 break;
         }
 
@@ -107,7 +163,11 @@ ui = {
             case `NN02`:
                 out += `µ(${testimate.state.yName}) - µ(${testimate.state.xName})`;
                 break;
+            case `NN03`:    //regressions
+                out += `slope`;
+                break;
             default:
+                out += `default: ${tests.testConfigurations[testimate.state.test].name}`;
                 break;
         }
 
@@ -154,7 +214,7 @@ ui = {
     },
 
     makeTestDescription: function(iTest) {
-        out = "";
+        let out = "";
         switch ( iTest ) {
             case "N_01":
                 out += `one-sample t, mean of ${testimate.state.xName}`;
@@ -169,7 +229,7 @@ ui = {
                 out += `regression: ${testimate.state.xName} as a function of ${testimate.state.yName}`;
                 break;
             default:
-                out += "no test specified";
+                out += `default description for ${tests.testConfigurations[iTest].name} (${iTest})`;
                 break;
         }
         return out;

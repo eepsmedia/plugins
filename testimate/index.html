@@ -54,8 +54,19 @@
     -->
 
     <div id="attributeStrip" class="hBox">
-        <div id="xDIV" class="drag-none"> x goes here</div>
-        <div id="yDIV" class="drag-none"> y goes here</div>
+        <div id="Xbackdrop" class="vBox">
+            <div id="xDIV" class="drag-none"> x goes here</div>
+            <div class="hBox">
+                <div id="xCNbutton" onclick="handlers.changeCN('x')"></div>
+            </div>
+        </div>
+        <div id="Ybackdrop" class="vBox">
+            <div id="yDIV" class="drag-none"> y goes here</div>
+            <div class="hBox">
+                <div id="yCNbutton"  onclick="handlers.changeCN('y')"></div>
+            </div>
+
+        </div>
     </div>
 
     <div id="testHeaderDIV">test header</div>
