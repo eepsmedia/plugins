@@ -5,12 +5,15 @@ const tests = {
         alpha: 0.05,
         value: 0.0,    //  to be tested against
         sides: 2,
+        theSidesOp: "≠",   //  the sign
         conf: 95,    //  confidence level 1 - alpha
     },
     nullResults: {
+        groups : [],  //  names of the groups (strings!)
         xbar: null,
         mean1: null,
         mean2: null,
+        diff: null,
         s: null,       //  sample SD
         s1: null,       //  sample SD
         s2: null,       //  sample SD
@@ -69,6 +72,9 @@ const tests = {
             case `NN03`:
                 tests.regression();
                 break;
+            case `NB01`:        // 2-sample t
+                tests.twoSampleT();
+                break;
             default:
                 tests.results = this.nullResults;
                 console.log(`NO CODE AVAILABLE for ${testimate.state.test}`)
@@ -85,18 +91,42 @@ const tests = {
     },
 
     twoSampleT: function () {
+
+        let arrayA = [];
+        let arrayB = [];
+        this.results.groups = [data.xAttData.name, data.yAttData.name];
+
+        if (testimate.state.test === 'NB01') {     //  rejigger the arrays to separate the two atts
+            this.results.groups = [...data.yAttData.valueSet];
+            for (let i = 0; i < data.xAttData.theArray.length; i++) {
+                const X = data.xAttData.theArray[i];
+                const Y = data.yAttData.theArray[i];
+                if (Y === this.results.groups[0]) {
+                    arrayA.push(X)
+                } else {
+                    arrayB.push(X)
+                }
+            }
+        } else {
+            arrayA = data.xAttData.theArray;
+            arrayB = data.yAttData.theArray;
+        }
+        this.twoSampleTCalc(arrayA, arrayB);
+    },
+
+    twoSampleTCalc(A, B) {
         const theCIparam = 1 - this.parameters.alpha / 2;
 
-        const jX = jStat(data.xAttData.theArray);
-        const jY = jStat(data.yAttData.theArray);
+        const j0 = jStat(A);
+        const j1 = jStat(B);
 
-        this.results.N1 = jX.cols();
-        this.results.N2 = jY.cols();
+        this.results.N1 = j0.cols();
+        this.results.N2 = j1.cols();
         this.results.df = this.results.N1 + this.results.N2 - 1;
-        this.results.mean1 = jX.mean();
-        this.results.mean2 = jY.mean();
-        this.results.s1 = jX.stdev(true);    //      true means SAMPLE SD
-        this.results.s2 = jY.stdev(true);    //      true means SAMPLE SD
+        this.results.mean1 = j0.mean();
+        this.results.mean2 = j1.mean();
+        this.results.s1 = j0.stdev(true);    //      true means SAMPLE SD
+        this.results.s2 = j1.stdev(true);    //      true means SAMPLE SD
         this.results.SE1 = this.results.s1 / Math.sqrt(this.results.N1);
         this.results.SE2 = this.results.s2 / Math.sqrt(this.results.N2);
 
@@ -111,11 +141,11 @@ const tests = {
             (this.results.N1 + this.results.N2 - 2);
         this.results.s = Math.sqrt(sArg);       //  pooled SD
         this.results.SE = this.results.s * Math.sqrt((1 / this.results.N1) + (1 / this.results.N2));
-        this.results.xbar = this.results.mean2 - this.results.mean1;
-        this.results.t = (this.results.xbar - this.parameters.value) / this.results.SE;
+        this.results.diff = this.results.mean2 - this.results.mean1;
+        this.results.t = (this.results.diff - this.parameters.value) / this.results.SE;
 
-        const var1oN = jX.variance(true) / this.results.N1;
-        const var2oN = jY.variance(true) / this.results.N2;     //  sample variance/N = s^2/N
+        const var1oN = j0.variance(true) / this.results.N1;
+        const var2oN = j1.variance(true) / this.results.N2;     //  sample variance/N = s^2/N
         const df2 = (var1oN + var2oN) ** 2 / (var1oN ** 2 / (this.results.N1 - 1) + var2oN ** 2 / (this.results.N2)); //  variance for
         const df1 = this.results.N1 + this.results.N2 - 1;
 
@@ -124,6 +154,7 @@ const tests = {
         this.results.tCrit = jStat.studentt.inv(theCIparam, this.results.df);    //  1.96-ish for 0.95
         const tAbs = Math.abs(this.results.t);
         this.results.P = jStat.studentt.cdf(-tAbs, this.results.df);
+        if (this.parameters.sides === 2) this.results.P *= 2;
     },
 
     paired: function () {
@@ -223,47 +254,51 @@ const tests = {
             this.results.t = (this.results.slope - this.parameters.value) / SDslope;
             const tAbs = Math.abs(this.results.t);
             this.results.P = jStat.studentt.cdf(-tAbs, this.results.df);
-
+            if (this.parameters.sides === 2) this.results.P *= 2;
         }
 
     },
 
     /**
-     * Find the possible tests for the current configuration of attrinbutes (numeric, binary, categorical...)
+     * Find the possible tests for the current configuration of attributes (numeric, binary, categorical...)
      *
      * @returns {[]}    Array of test configuration IDs
      */
     filterTestConfigurations: function () {
 
         const X = data.xAttData;
-        const Y = data.yAttData;
+        let out = [];
 
-        const xType = X && testimate.state.dataTypes[X.name];
-        const yType = Y && testimate.state.dataTypes[Y.name];
+        if (X) {
+            const Y = data.yAttData;
 
-        console.log(`finding tests for ${X.name} (${xType}) vs ${Y.name} (${yType}) `);
-
-        const pairable = data.xAttData.theRawArray &&
-            data.yAttData.theRawArray &&
-            (data.xAttData.theRawArray.length === data.yAttData.theRawArray.length);
+            const xType = X && testimate.state.dataTypes[X.name];
+            const yType = Y && testimate.state.dataTypes[Y.name];
 
 
-        out = [];
-        for (let id in this.testConfigurations) {
-            let match = true;
-            const theConfig = this.testConfigurations[id];
+            console.log(`finding tests for ${X && X.name} (${xType}) vs ${Y && Y.name} (${yType}) `);
 
-            if (theConfig.paired && !pairable) match = false;
+            const pairable = X && Y && X.theRawArray &&
+                Y.theRawArray &&
+                (data.xAttData.theRawArray.length === data.yAttData.theRawArray.length);
 
-            if (theConfig.xType === 'binary' && !X.isBinary()) match = false;
-            if (theConfig.yType === 'binary' && !Y.isBinary()) match = false;
-            if (theConfig.xType === 'numeric' && !X.isNumeric()) match = false;
-            if (theConfig.yType === 'numeric' && !Y.isNumeric()) match = false;
-            if (theConfig.xType === 'categorical' && !X.isCategorical()) match = false;
-            if (theConfig.yType === 'categorical' && !Y.isCategorical()) match = false;
 
-            if (match) {
-                out.push(theConfig.id);
+            for (let id in this.testConfigurations) {
+                let match = true;
+                const theConfig = this.testConfigurations[id];
+
+                if (theConfig.paired && !pairable) match = false;
+
+                if (theConfig.xType === 'binary' && !X.isBinary()) match = false;
+                if (Y && theConfig.yType === 'binary' && !Y.isBinary()) match = false;
+                if (theConfig.xType === 'numeric' && !X.isNumeric()) match = false;
+                if (Y && theConfig.yType === 'numeric' && !Y.isNumeric()) match = false;
+                if (theConfig.xType === 'categorical' && !X.isCategorical()) match = false;
+                if (Y && theConfig.yType === 'categorical' && !Y.isCategorical()) match = false;
+
+                if (match) {
+                    out.push(theConfig.id);
+                }
             }
         }
         return out;
@@ -276,6 +311,8 @@ const tests = {
             xType: 'numeric',
             yType: null,
             paired: false,
+            emitted: `N,P`,
+            testing: `xbar`,
         },
         NN01: {
             id: `NN01`,
@@ -283,6 +320,8 @@ const tests = {
             xType: 'numeric',
             yType: 'numeric',
             paired: true,
+            emitted: `N,P`,
+            testing: `xbar`,
         },
         NN02: {
             id: `NN02`,
@@ -290,6 +329,8 @@ const tests = {
             xType: 'numeric',
             yType: 'numeric',
             paired: false,
+            emitted: `N,P,mean1,mean2,diff`,
+            testing: `diff`,
         },
         NN03: {
             id: `NN03`,
@@ -297,6 +338,8 @@ const tests = {
             xType: 'numeric',
             yType: 'numeric',
             paired: true,
+            emitted: `N,P,slope,intercept`,
+            testing: `slope`,
         },
         NB01: {
             id: `NB01`,
@@ -304,6 +347,7 @@ const tests = {
             xType: 'numeric',
             yType: 'binary',
             paired: true,
+            emitted: `N,P,mean1,mean2,diff`,
         },
         NC01: {
             id: `NC01`,
@@ -311,6 +355,7 @@ const tests = {
             xType: 'numeric',
             yType: 'categorical',
             paired: true,
+            emitted: `N,P`,
         },
         C_01: {
             id: `C_01`,
@@ -318,6 +363,7 @@ const tests = {
             xType: 'categorical',
             yType: null,
             paired: false,
+            emitted: `N,P`,
         },
         B_01: {
             id: `B_01`,
@@ -325,6 +371,7 @@ const tests = {
             xType: 'binary',
             yType: null,
             paired: false,
+            emitted: `N,P`,
         },
         B_02: {
             id: `B_02`,
@@ -332,6 +379,7 @@ const tests = {
             xType: 'binary',
             yType: null,
             paired: false,
+            emitted: `N,P`,
         },
         CC01: {
             id: `CC01`,
@@ -339,6 +387,7 @@ const tests = {
             xType: 'categorical',
             yType: `categorical`,
             paired: true,
+            emitted: `N,P`,
         },
         CB01: {
             id: `CB01`,
@@ -346,6 +395,7 @@ const tests = {
             xType: 'categorical',
             yType: `binary`,
             paired: true,
+            emitted: `N,P`,
         },
         BC01: {
             id: `BC01`,
@@ -353,6 +403,7 @@ const tests = {
             xType: 'binary',
             yType: `categorical`,
             paired: true,
+            emitted: `N,P`,
         },
         BB01: {         //  compare props using split
             id: `BB01`,
@@ -360,6 +411,7 @@ const tests = {
             xType: 'binary',
             yType: `binary`,
             paired: true,
+            emitted: `N,P`,
         },
         BB02: {         //  two-sample compare props
             id: `BB02`,
@@ -367,6 +419,7 @@ const tests = {
             xType: 'binary',
             yType: `binary`,
             paired: false,
+            emitted: `N,P`,
         },
         BB03: {
             id: `BB03`,
@@ -374,6 +427,7 @@ const tests = {
             xType: 'binary',
             yType: `binary`,
             paired: true,
+            emitted: `N,P`,
         },
         BN01: {
             id: `BN01`,
@@ -381,6 +435,7 @@ const tests = {
             xType: 'binary',
             yType: `numeric`,
             paired: true,
+            emitted: `N,P`,
         },
         CN01: {
             id: `CN01`,
@@ -388,9 +443,7 @@ const tests = {
             xType: 'categorical',
             yType: `numeric`,
             paired: true,
+            emitted: `N,P`,
         },
-
-
     },
-
 }

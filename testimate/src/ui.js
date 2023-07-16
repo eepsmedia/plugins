@@ -9,7 +9,7 @@ ui = {
     yDIV : null,
     xType : null,
     yType : null,
-    resDIV : null,
+    resultsDIV : null,      //  results DIV
 
     initialize : function()  {
         this.xDIV = document.getElementById(`xDIV`);
@@ -18,7 +18,7 @@ ui = {
         this.yType = document.getElementById(`yCNbutton`);
 
         this.testHeaderDIV = document.getElementById(`testHeaderDIV`);
-        this.resDIV = document.getElementById(`resultsDIV`);
+        this.resultsDIV = document.getElementById(`resultsDIV`);
     },
 
     redraw : async function() {
@@ -33,24 +33,32 @@ ui = {
         if (testimate.state.test) {
             data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
             tests.updateTestResults();      //  with the right data and the test, we can calculate these results.
+            this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
+            this.resultsDIV.innerHTML = this.makeResultsString();
+            this.updateConfig();    //  reset the appearance of the configuration DIV
         }
 
-        this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
-
-        this.resDIV.innerHTML = this.makeResultsString();
-        this.updateConfig();    //  reset the appearance of the configuration DIV
         this.setVisibility();
     },
 
     setVisibility : function() {
-        document.getElementById('Ybackdrop').style.display = (testimate.state.xName) ? 'block' : 'none';
+
+        //  many things are invisible if there is no x-variable, therefore no test
+
+        document.getElementById('Ybackdrop').style.display = (testimate.state.xName) ? 'inline' : 'none';
+        document.getElementById('xCNbutton').style.display = (testimate.state.xName) ? 'inline' : 'none';
         document.getElementById('testHeaderDIV').style.display = (testimate.state.xName) ? 'block' : 'none';
+        document.getElementById('resultsDIV').style.display = (testimate.state.xName) ? 'block' : 'none';
+        document.getElementById('configureDIV_oneNumeric').style.display = (testimate.state.xName) ? 'block' : 'none';
 
     },
 
     updateAttributeBlocks : function() {
         this.xDIV.textContent = testimate.state.xName || `outcome/primary attribute`;
         this.yDIV.textContent = testimate.state.yName || `predictor/secondary attribute`;
+
+        //  set the text in the "types" buttons
+
         if (testimate.state.xName) {
             this.xType.textContent = testimate.state.dataTypes[testimate.state.xName];
         }
@@ -59,6 +67,7 @@ ui = {
         }
     },
 
+/*
     makeResultsString : function() {
         let results = ``;
 
@@ -70,21 +79,25 @@ ui = {
 
         return results;
     },
+*/
 
     /**
-     * Called by makeResultsString, above
+     * Called by redraw, above
      *
      * @returns {string}
      */
-    makeXString : function() {
-        let theSidesOp = "≠";
+    makeResultsString : function() {
+        const theConfig = tests.testConfigurations[testimate.state.test];
+
+        tests.parameters.theSidesOp = "≠";
         if (tests.parameters.sides === 1) {
-            theSidesOp =  (tests.results.xbar > tests.parameters.value ? ">" : "<");
+            tests.parameters.theSidesOp =  (tests.results[theConfig.testing] > tests.parameters.value ? ">" : "<");
         }
-        const testDesc = this.testDescriptionString();
+        const testDesc = this.makeTestDescription(testimate.state.test, false);
 
         const N = tests.results.N;
         const xbar = this.numberToString(tests.results.xbar, 3);
+        const diff = this.numberToString(tests.results.diff, 3);
         const s = this.numberToString(tests.results.s);
         const SE = this.numberToString(tests.results.SE);
         const P = (tests.results.P < 0.0001) ? `P < 0.0001` : `P = ${this.numberToString(tests.results.P)}`;
@@ -112,17 +125,20 @@ ui = {
             case "N_01":
             case "NN01":    //  paired t
                 out += `N = ${N}, mean = ${xbar}, s = ${s}, SE = ${SE}<br>`;
-                out += `testing ${testDesc} ${theSidesOp} ${tests.parameters.value} <br>    t = ${t}, &alpha; = ${alpha}, ${P}<br>`;
+                out += `testing ${testDesc} ${tests.parameters.theSidesOp} ${tests.parameters.value} <br>    t = ${t}, &alpha; = ${alpha}, ${P}<br>`;
                 out += `estmating ${testDesc} <br>    ${conf}% CI = [${CImin}, ${CImax}]<br>    t* = ${tCrit} df = ${df}`;
                 break;
             case "NN02":
-                out += `<h3>Descriptive Stats</h3>`;
-                out += `<table><tr class="headerRow"><th></th><th>N</th><th>mean</th><th>s</th><th>SE</th></tr>`;
-                out += `<tr><td>${testimate.state.xName}</td><td>${n1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
-                out += `<tr><td>${testimate.state.yName}</td><td>${n2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
+            case `NB01`:    //  two-sample t
+                // out += sprintf(`Descriptive stats\n`);
+                // out += sprintf(`%10s%5s%10s%10s%10s\n`,'group','N', 'mean','s','SE');
+                // out += sprintf(`%10s%5d%10.3f%10.3f%10.3f\n`,tests.results.groups[0],n1, mean1,s1,SE1);
+                // out += sprintf(`%10s%5d%10.3f%10.3f%10.3f\n`,tests.results.groups[1],n2, mean2,s2,SE2);
+                out += `<table class="test-results"><tr class="headerRow"><th></th><th>N</th><th>mean</th><th>s</th><th>SE</th></tr>`;
+                out += `<tr><td>${tests.results.groups[0]}</td><td>${n1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
+                out += `<tr><td>${tests.results.groups[1]}</td><td>${n2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
                 out += `</table>`;
-                out += `<h3>Test</h3>`;
-                out += `<p>diff = ${xbar}, SE = ${SE}, t = ${t}, df = ${df}, ${P}</p>`
+                out += `<p>Test: diff = ${diff}, SE = ${SE}, t = ${t}, df = ${df}, ${P}</p>`
 
                 out += `This code has not been checked!`;
                 break;
@@ -139,10 +155,11 @@ ui = {
                 out += `N = ${N}, r = ${r}, r^2 = ${rsq}, t* = ${tCrit}, df = ${df}<br>`;
                 out += `slope:      ${conf}% CI = [${CISmin}, ${CISmax}]<br>`;
                 out += `intercept:  ${conf}% CI = [${CIImin}, ${CIImax}]<br>`;
-                out += `testing ${testDesc} ${theSidesOp} ${tests.parameters.value} <br>    t = ${t}, &alpha; = ${alpha}, ${P}<br>`;
+                out += `testing ${testDesc} ${tests.parameters.theSidesOp} ${tests.parameters.value} <br>    t = ${t}, &alpha; = ${alpha}, ${P}<br>`;
                 break;
+
             default:
-                out += `sorry, no code yet for ${tests.testConfigurations[testimate.state.test].name}`;
+                out += `sorry, no display code yet for ${tests.testConfigurations[testimate.state.test].name}`;
                 break;
         }
 
@@ -166,6 +183,9 @@ ui = {
             case `NN03`:    //regressions
                 out += `slope`;
                 break;
+            case `NB01`:    //regressions
+                out += `difference of means, group ${tests.results.groups[1]} - ${tests.results.groups[0]}`;
+                break;
             default:
                 out += `default: ${tests.testConfigurations[testimate.state.test].name}`;
                 break;
@@ -182,54 +202,78 @@ ui = {
     },
 
     updateConfig : function() {
-        let theSidesOp = "≠";
+        const theTestID = testimate.state.test;
+        const theConfig = tests.testConfigurations[theTestID];
+
+        tests.parameters.theSidesOp = "≠";
         if (tests.parameters.sides === 1) {
-            theSidesOp =  (tests.results.xbar > tests.parameters.value ? ">" : "<");
+            const testStat = tests.results[theConfig.testing];  //  testing what? mean? xbar? diff? slope?
+            tests.parameters.theSidesOp =  (testStat > tests.parameters.value ? ">" : "<");
         }
-        document.getElementById(`configStart`).textContent = `Testing ${this.testDescriptionString()} `;
+        document.getElementById(`configStart`).textContent = `${this.makeTestDescription(theTestID, false)} `;
         document.getElementById(`valueBox`).value = tests.parameters.value;
-        //  document.getElementById(`alphaBox`).value = data.parameters.alpha;
-        document.getElementById(`sidesButton`).value = theSidesOp;
+        document.getElementById(`sidesButton`).value = tests.parameters.theSidesOp;
     },
 
     makeTestHeaderGuts : function(iPossibleIDs) {
-        let out = "";
+        let out = `<div class = "hBox">`;
 
-        const theTestConfig = tests.testConfigurations[testimate.state.test];
-        let thePhrase = this.makeTestDescription(testimate.state.test);
+        if (testimate.state.test) {
+            const theTestConfig = tests.testConfigurations[testimate.state.test];
+            let thePhrase = this.makeTestDescription(testimate.state.test, true);
 
-        if (iPossibleIDs.length === 1) {
-            out += thePhrase;
-        } else if (iPossibleIDs.length > 1) {
-            let theMenu = `<select id='testMenu' onchange='handlers.changeTest()'>`;
-            iPossibleIDs.forEach( theID => {
-                let chosen = testimate.state.test === theID ? "selected" : "";
-                theMenu += `<option value='${theID}' ${chosen}> ${this.makeTestDescription(theID)} </option>`;
-            })
-            theMenu += `</select>`;
-            out += theMenu;
+            if (iPossibleIDs.length === 1) {
+                out += thePhrase;
+            } else if (iPossibleIDs.length > 1) {
+                let theMenu = `<select id='testMenu' onchange='handlers.changeTest()'>`;
+                iPossibleIDs.forEach(theID => {
+                    let chosen = testimate.state.test === theID ? "selected" : "";
+                    theMenu += `<option value='${theID}' ${chosen}> ${this.makeTestDescription(theID), true} </option>`;
+                })
+                theMenu += `</select>`;
+                out += theMenu;
+            }
+
+            out += `<div id="emitButton" class="testimateButton" onclick="handlers.emit()">emit</div>`;
+        } else {
+            out = "no tests available with these settings!";
         }
 
+        out += `</div>`;    //  close the hBox DIV
         return out;
     },
 
-    makeTestDescription: function(iTest) {
+    /**
+     * Make a text description of the test configuration.
+     * The basic structure is something like,
+     * "Compare mean(post) to mean(pre)"
+     *
+     * @param iTest         The ID of the test we're doing.
+     * @param iIncludeName  Precede that with the name? (Boolean), e.g., "Two-sample t.
+     * @returns {string}
+     */
+    makeTestDescription: function(iTest, iIncludeName) {
         let out = "";
+        const nameString = iIncludeName ? tests.testConfigurations[iTest].name : "";
+
         switch ( iTest ) {
             case "N_01":
-                out += `one-sample t, mean of ${testimate.state.xName}`;
+                out += `${nameString}, mean of ${testimate.state.xName}`;
                 break;
             case "NN01":
-                out += `paired t, mean of (${testimate.state.yName} - ${testimate.state.xName})`;
+                out += `${nameString}, mean of (${testimate.state.yName} - ${testimate.state.xName})`;
                 break;
             case "NN02":
-                out += `two-sample t, compare µ(${testimate.state.yName}) to µ(${testimate.state.xName})`;
+                out += `${nameString}, compare µ(${testimate.state.yName}) to µ(${testimate.state.xName})`;
                 break;
             case "NN03":
-                out += `regression: ${testimate.state.xName} as a function of ${testimate.state.yName}`;
+                out += `${nameString}: ${testimate.state.xName} as a function of ${testimate.state.yName}`;
+                break;
+            case "NB01":
+                out += `${nameString}, compare µ(${testimate.state.yName} = ${tests.results.groups[0]}) to µ(${tests.results.groups[1]})`;
                 break;
             default:
-                out += `default description for ${tests.testConfigurations[iTest].name} (${iTest})`;
+                out += `default description for ${nameString} (${iTest})`;
                 break;
         }
         return out;

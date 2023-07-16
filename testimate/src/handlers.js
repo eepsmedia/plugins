@@ -35,11 +35,23 @@ const handlers = {
         ui.redraw();
     },
 
+    /**
+     * Change the TYPE (categorical or numeric = CN) of the attribute
+     * @param iXY
+     */
     changeCN : function(iXY) {
         const aName = (iXY === 'x') ? testimate.state.xName : testimate.state.yName;
         const newType = (testimate.state.dataTypes[aName] === 'numeric' ? 'categorical' : 'numeric');
         testimate.state.dataTypes[aName] = newType;
         ui.redraw();
+    },
+
+    /**
+     * emit test results to CODAP
+     */
+    emit : function() {
+        console.log(`N = ${tests.results.N}, P = ${tests.results.P}`);
+        connect.emitTestData();
     },
 
     setTestParameters : function(iType) {
