@@ -4,6 +4,8 @@ const testimate = {
 
     state : {},
 
+    theTest : null,
+
     initialize : async function() {
         console.log(`initializing...`);
 
@@ -42,7 +44,7 @@ const testimate = {
 
     setDataset : function(iName) {
         this.state.dataset = iName;
-        this.state.test = null;
+        this.state.testID = null;
         connect.registerForCaseChanges(iName);
         console.log(`set dataset to ${iName}`);
     },
@@ -50,7 +52,7 @@ const testimate = {
     setX : function(iName) {
         data.dirtyData = true;
         this.state.xName = iName;
-        this.state.test = null;
+        //  this.state.testID = null;
         console.log(`set X to ${iName}`);
     },
 
@@ -58,7 +60,7 @@ const testimate = {
         data.dirtyData = true;
         if (this.state.xName) {
             this.state.yName = iName;
-            this.state.test = null;
+            //  this.state.testID = null;
             console.log(`set Y to ${iName}`);
         } else {
             this.setX(iName);   //  always fill x first.
@@ -89,7 +91,7 @@ const testimate = {
             dataTypes : {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
             xName : null,
             yName : null,
-            test : null,
+            testID : null,
             lang : `en`,
         }
     }

@@ -5,34 +5,49 @@ const handlers = {
      */
     changeTestSides : function() {
         const iSign = document.getElementById(`sidesButton`).value;    // 1 or 2
-        tests.parameters.sides = (iSign === `≠`) ? 1 : 2;
+        testimate.theTest.parameters.sides = (iSign === `≠`) ? 1 : 2;
         ui.redraw();
     },
 
     changeConf : function() {
         const a = document.getElementById(`confBox`);
-        tests.parameters.conf = a.value;
-        tests.parameters.alpha = 1 - tests.parameters.conf/100;
+        const theTest = testimate.theTest;
+        theTest.parameters.conf = a.value;
+        theTest.parameters.alpha = 1 - theTest.parameters.conf/100;
         ui.redraw();
     },
 
     changeAlpha : function() {
         const a = document.getElementById(`alphaBox`);
-        tests.parameters.alpha = a.value;
-        tests.parameters.conf = 100 * (1 - tests.parameters.alpha);
+        const theTest = testimate.theTest;
+        theTest.parameters.alpha = a.value;
+        theTest.parameters.conf = 100 * (1 - theTest.parameters.alpha);
         ui.redraw();
     },
 
     changeValue : function() {
         const v = document.getElementById(`valueBox`);
-        tests.parameters.value = v.value;
+        testimate.theTest.parameters.value = v.value;
         ui.redraw();
     },
 
     changeTest : function() {
         const T = document.getElementById(`testMenu`);
-        testimate.state.test = T.value;
+        Test.makeFreshTest(T.value) ; //  need for state and restore
         ui.redraw();
+    },
+
+    changeGroup0 : function() {
+        const initialGroup = testimate.theTest.parameters.group;
+        const valueSet = [...data.xAttData.valueSet];
+        testimate.theTest.parameters.group = this.nextValueInList(valueSet, initialGroup);
+        ui.redraw();
+    },
+
+    nextValueInList : function(iList, iValue) {
+        const iOrig = iList.indexOf(iValue);
+        const iNext = (iOrig + 1 > iList.length) ? 0 : iOrig + 1;
+        return iList[iNext];
     },
 
     /**
@@ -50,21 +65,9 @@ const handlers = {
      * emit test results to CODAP
      */
     emit : function() {
-        console.log(`N = ${tests.results.N}, P = ${tests.results.P}`);
+        const theTest = testimate.theTest;
+        console.log(`N = ${theTest.results.N}, P = ${theTest.results.P}`);
         connect.emitTestData();
-    },
-
-    setTestParameters : function(iType) {
-        switch(iType) {
-            case `N1`:
-                const theValue = document.getElementById("valueBox").value;
-                const theAlpha = document.getElementById("alphaBox").value;
-                const theSides = document.getElementById("sidesButton").value;
-                break;
-
-            default:
-                break;
-        }
     },
 
 }

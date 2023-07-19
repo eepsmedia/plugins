@@ -37,11 +37,17 @@
 
     <script src="src/testimate.js"></script>
     <script src="src/data.js"></script>
-    <script src="src/tests.js"></script>
     <script src="src/ui.js"></script>
     <script src="src/handlers.js"></script>
     <script src="src/connect.js"></script>
     <script src="src/dropManager.js"></script>
+
+    <script src="src/Test.js"></script>
+    <script src="src/tests/one-sample-t.js"></script>
+    <script src="src/tests/two-sample-t.js"></script>
+    <script src="src/tests/one-sample-p.js"></script>
+    <script src="src/tests/goodness.js"></script>
+    <script src="src/tests/regression.js"></script>
 
 
 </head>
@@ -70,10 +76,10 @@
         </div>
     </div>
 
-    <div id="testHeaderDIV">test header</div>
+    <div id="testHeaderDIV">testID header</div>
     <div id="resultsDIV"> results go here</div>
 
-    <div id="configureDIV_oneNumeric">
+    <div id="configureDIV">
         <span id="configStart"></span>
         <input id="sidesButton" type="button" onclick="handlers.changeTestSides()" value="≠">
         <input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"

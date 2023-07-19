@@ -46,8 +46,8 @@ const tests = {
      */
     confirmTestID: function () {
         const possibleTestIDs = this.filterTestConfigurations();
-        if (!possibleTestIDs.includes(testimate.state.test)) {
-            testimate.state.test = possibleTestIDs[0];
+        if (!possibleTestIDs.includes(testimate.state.testID)) {
+            testimate.state.testID = possibleTestIDs[0];
         }
         return (possibleTestIDs);   //  to ui to make a menu if necessary
     },
@@ -59,7 +59,7 @@ const tests = {
      */
     updateTestResults: function () {
 
-        switch (testimate.state.test) {
+        switch (testimate.state.testID) {
             case `N_01`:
                 tests.oneSampleT();
                 break;
@@ -77,7 +77,7 @@ const tests = {
                 break;
             default:
                 tests.results = this.nullResults;
-                console.log(`NO CODE AVAILABLE for ${testimate.state.test}`)
+                console.log(`NO CODE AVAILABLE for ${testimate.state.testID}`)
                 break;
         }
 
@@ -96,7 +96,7 @@ const tests = {
         let arrayB = [];
         this.results.groups = [data.xAttData.name, data.yAttData.name];
 
-        if (testimate.state.test === 'NB01') {     //  rejigger the arrays to separate the two atts
+        if (testimate.state.testID === 'NB01') {     //  rejigger the arrays to separate the two atts
             this.results.groups = [...data.yAttData.valueSet];
             for (let i = 0; i < data.xAttData.theArray.length; i++) {
                 const X = data.xAttData.theArray[i];

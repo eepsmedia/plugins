@@ -48,12 +48,12 @@ const data = {
 
     removeInappropriateCases: function ( ) {
 
-        if (!testimate.state.test) return;
+        if (!testimate.theTest) return;
 
         let newXArray = []
         let newYArray = []
 
-        const paired = tests.testConfigurations[testimate.state.test].paired;
+        const paired = Test.configs[testimate.theTest.testID].paired;
 
         const xMustBeNumeric = (testimate.state.dataTypes[testimate.state.xName] === 'numeric');
         const yMustBeNumeric = (testimate.state.dataTypes[testimate.state.yName] === 'numeric');

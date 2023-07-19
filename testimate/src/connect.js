@@ -93,7 +93,7 @@ connect = {
 
         //  make a new output dataset if necessary
         //  todo: test for dataset existence (user may have deleted it)
-        if (testimate.state.test !== this.mostRecentEmittedTest) {
+        if (testimate.state.testID !== this.mostRecentEmittedTest) {
             await this.deleteOutputDataset();
 
             const theMessage = {
@@ -115,18 +115,19 @@ connect = {
 
         //  now emit one item...
 
-        const theConfig = tests.testConfigurations[testimate.state.test];
+        const theTest = testimate.theTest;
+        const theConfig = theTest.theConfig;
 
         let theItemValues = {
             outcome: testimate.state.xName,
             predictor : testimate.state.yName,
             procedure : theConfig.name,
-            sign : tests.parameters.theSidesOp,
-            value : tests.parameters.value,
+            sign : theTest.parameters.theSidesOp,
+            value : theTest.parameters.value,
         };
 
         theConfig.emitted.split(",").forEach(att => {
-            theItemValues[att] =  tests.results[att]
+            theItemValues[att] =  theTest.results[att]
         });
 
 
@@ -153,9 +154,9 @@ connect = {
     constructEmitDatasetObject: function () {
         let out = {};
 
-        if (testimate.state.test) {
-            this.mostRecentEmittedTest = testimate.state.test;
-            const theConfig = tests.testConfigurations[testimate.state.test];
+        if (testimate.state.testID) {
+            this.mostRecentEmittedTest = testimate.state.testID;
+            const theConfig = Test.configs[testimate.state.testID];
 
             //  first construct the "attrs" array
             let theAttrs = [

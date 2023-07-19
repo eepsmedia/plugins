@@ -1,36 +1,62 @@
-
-
-
 class Test {
 
-    static testID = null;
-
-    data0 = null;       //  this will be of type AttData
-    data1 = null;
-
+    testID = null;
+    
     results = {};
-
-    constructor() {
+    parameters =  {
+        alpha: 0.05,
+        value: 0.0,    //  to be tested against
+        sides: 2,
+        theSidesOp: "≠",   //  the sign
+        conf: 95,    //  confidence level 1 - alpha
+        group : null,
     }
 
-    setData0(iAttData) {
-        this.data0 = iAttData;
+    theConfig = null;
+
+    constructor(iID) {
+        this.testID = iID;
+        this.theConfig = Test.configs[iID];
     }
 
-    setData1(iAttData) {
-        this.data1 = iAttData;
+    updateTestResults() {
+        this.results.N = data.xAttData.theArray.length;
     }
 
-    static setTestID(iTestID) {
-        Test.testID = iTestID;
-        testimate.state.test = iTestID;
-    }
+    makeResultsString() {
 
-    static checkTestID(iTestID) {
-        const possibleTestIDs = this.filterTestConfigurations();
-        if (!possibleTestIDs.includes(Test.testID)) {
-            Test.setTestID(possibleTestIDs[0]);
+        this.parameters.theSidesOp = "≠";
+        if (this.parameters.sides === 1) {
+            this.parameters.theSidesOp = (this.results[this.theConfig.testing] > this.parameters.value ? ">" : "<");
         }
+
+        const N = this.results.N;
+
+        const out = `<pre>N = ${N}<br>That's all we know!</pre>`;
+        return out;
+    }
+
+    makeTestDescription(iTestID, includeName) {
+        return `this is a default description for a test (${iTestID})`;
+    }
+
+    
+    static makeFreshTest(iID) {
+        testimate.theTest = Test.configs[iID].fresh(iID, data.xAttData, data.yAttData);
+        testimate.state.testID = iID;
+    }
+
+    static checkTestConfiguration() {
+        const possibleTestIDs = this.filterTestConfigurations();
+
+        if (testimate.theTest) {
+            if (!possibleTestIDs.includes(testimate.theTest.testID)) {
+                Test.makeFreshTest(possibleTestIDs[0])
+            }
+        } else if (possibleTestIDs.length) {
+            Test.makeFreshTest(possibleTestIDs[0])
+        }
+
         return (possibleTestIDs);   //  to ui to make a menu if necessary
     }
 
@@ -39,7 +65,7 @@ class Test {
      *
      * @returns {[]}    Array of test configuration IDs
      */
-    static filterTestConfigurations()  {
+    static filterTestConfigurations() {
 
         const X = data.xAttData;
         let out = [];
@@ -79,6 +105,50 @@ class Test {
     };
 
     /**
+     * Make a text description of the test configuration.
+     * The basic structure is something like,
+     * "Compare mean(post) to mean(pre)"
+     *
+     * @param iTest         The ID of the test we're doing.
+     * @param iIncludeName  Precede that with the name? (Boolean), e.g., "Two-sample t.
+     * @returns {string}
+     */
+    static makeTestDescription( ) {
+        const theID = testimate.state.testID;
+        const theName = Test.configs[theID].name;
+        return `default description for ${theName} (${theID})`;
+    }
+
+    static makeMenuString(iiD) {
+
+        const theID = iiD ? iiD : testimate.state.testID;
+        const theName = Test.configs[theID].name;
+        return `placeholder menu string for ${theName} (${theID})`;
+    }
+
+    /**
+     * Splits the first argument (an Array) into two arrays depending on the values in the second.
+     *
+     * @param iData
+     * @param iGroups
+     * @param iLabel    the value of "iGroups" that goes into the first output array
+     *
+     * */
+    static splitByGroup(iData, iGroups, iLabel) {
+        let A = [];
+        let B = [];
+
+        for (let i = 0; i < iData.length; i++ ) {
+            if (iGroups[i] === iLabel) {
+                A.push(iData[i]);
+            } else {
+                B.push(iData[i]);
+            }
+        }
+        return [A, B];
+    }
+
+    /**
      * configurations for all possible tests
      * @type {{B_02: {xType: string, yType: null, emitted: string, name: string, id: string, paired: boolean}, B_01: {xType: string, yType: null, emitted: string, name: string, id: string, paired: boolean}, C_01: {xType: string, yType: null, emitted: string, name: string, id: string, paired: boolean}, NN01: {xType: string, yType: string, emitted: string, testing: string, name: string, id: string, paired: boolean}, NN02: {xType: string, yType: string, emitted: string, testing: string, name: string, id: string, paired: boolean}, NN03: {xType: string, yType: string, emitted: string, testing: string, name: string, id: string, paired: boolean}, NB01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, NC01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, BN01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, CN01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, N_01: {xType: string, yType: null, emitted: string, testing: string, name: string, id: string, paired: boolean}, BB02: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, BC01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, BB03: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, CC01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, CB01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}, BB01: {xType: string, yType: string, emitted: string, name: string, id: string, paired: boolean}}}
      */
@@ -90,7 +160,12 @@ class Test {
             yType: null,
             paired: false,
             emitted: `N,P`,
-            testing: `xbar`,
+            testing: `mean`,
+            makeMenuString: ( ) => {return OneSampleT.makeMenuString(`N_01`);},
+            fresh: (ix) => {
+                return new OneSampleT(ix)
+            },
+
         },
         NN01: {
             id: `NN01`,
@@ -99,7 +174,9 @@ class Test {
             yType: 'numeric',
             paired: true,
             emitted: `N,P`,
-            testing: `xbar`,
+            testing: `mean`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`NN01`);},
+            fresh: (ix) => { return new Test(ix)  },
         },
         NN02: {
             id: `NN02`,
@@ -109,6 +186,8 @@ class Test {
             paired: false,
             emitted: `N,P,mean1,mean2,diff`,
             testing: `diff`,
+            makeMenuString: ( ) => {return TwoSampleT.makeMenuString(`NN02`);},
+            fresh: (ix) => { return new TwoSampleT(ix, false)  },
         },
         NN03: {
             id: `NN03`,
@@ -117,6 +196,8 @@ class Test {
             yType: 'numeric',
             paired: true,
             emitted: `N,P,slope,intercept`,
+            makeMenuString: ( ) => {return Regression.makeMenuString(`NN03`);},
+            fresh: (ix) => { return new Regression(ix)  },
             testing: `slope`,
         },
         NB01: {
@@ -126,22 +207,9 @@ class Test {
             yType: 'binary',
             paired: true,
             emitted: `N,P,mean1,mean2,diff`,
-        },
-        NC01: {
-            id: `NC01`,
-            name: `ANOVA`,
-            xType: 'numeric',
-            yType: 'categorical',
-            paired: true,
-            emitted: `N,P`,
-        },
-        C_01: {
-            id: `C_01`,
-            name: `goodness of fit`,
-            xType: 'categorical',
-            yType: null,
-            paired: false,
-            emitted: `N,P`,
+            testing : 'diff',
+            makeMenuString: ( ) => {return TwoSampleT.makeMenuString(`NB01`);},
+            fresh: (ix) => { return new TwoSampleT(ix, true)  },
         },
         B_01: {
             id: `B_01`,
@@ -149,39 +217,10 @@ class Test {
             xType: 'binary',
             yType: null,
             paired: false,
-            emitted: `N,P`,
-        },
-        B_02: {
-            id: `B_02`,
-            name: `goodness of fit`,
-            xType: 'binary',
-            yType: null,
-            paired: false,
-            emitted: `N,P`,
-        },
-        CC01: {
-            id: `CC01`,
-            name: `independence`,
-            xType: 'categorical',
-            yType: `categorical`,
-            paired: true,
-            emitted: `N,P`,
-        },
-        CB01: {
-            id: `CB01`,
-            name: `independence`,
-            xType: 'categorical',
-            yType: `binary`,
-            paired: true,
-            emitted: `N,P`,
-        },
-        BC01: {
-            id: `BC01`,
-            name: `independence`,
-            xType: 'binary',
-            yType: `categorical`,
-            paired: true,
-            emitted: `N,P`,
+            emitted: `N,p,P,SE,CImin,CImax,z,zCrit`,
+            testing : 'p',
+            makeMenuString: () => {return OneSampleP.makeMenuString();},
+            fresh: (ix ) => {return new OneSampleP(ix)},
         },
         BB01: {         //  compare props using split
             id: `BB01`,
@@ -190,6 +229,8 @@ class Test {
             yType: `binary`,
             paired: true,
             emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`BB01`);},
+            fresh: (ix) => { return new Test(ix)  },
         },
         BB02: {         //  two-sample compare props
             id: `BB02`,
@@ -198,6 +239,58 @@ class Test {
             yType: `binary`,
             paired: false,
             emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`BB02`);},
+            fresh: (ix) => { return new Test(ix)  },
+        },
+        B_02: {
+            id: `B_02`,
+            name: `goodness of fit`,
+            xType: 'binary',
+            yType: null,
+            paired: false,
+            emitted: `N,P,chisq,df,chisqCrit,alpha`,
+            makeMenuString: ( ) => {return Goodness.makeMenuString(`B_02`);},
+            fresh: (ix) => { return new Goodness(ix)  },
+        },
+        C_01: {
+            id: `C_01`,
+            name: `goodness of fit`,
+            xType: 'categorical',
+            yType: null,
+            paired: false,
+            emitted: `N,P,chisq,df,chisqCrit,alpha`,
+            makeMenuString: ( ) => {return Goodness.makeMenuString(`C_01`);},
+            fresh: (ix) => { return new Goodness(ix)  },
+        },
+        CC01: {
+            id: `CC01`,
+            name: `independence`,
+            xType: 'categorical',
+            yType: `categorical`,
+            paired: true,
+            emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`CC01`);},
+            fresh: (ix) => { return new Test(ix)  },
+        },
+        CB01: {
+            id: `CB01`,
+            name: `independence`,
+            xType: 'categorical',
+            yType: `binary`,
+            paired: true,
+            emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`CB01`);},
+            fresh: (ix) => { return new Test(ix)  },
+        },
+        BC01: {
+            id: `BC01`,
+            name: `independence`,
+            xType: 'binary',
+            yType: `categorical`,
+            paired: true,
+            emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`BC01`);},
+            fresh: (ix) => { return new Test(ix)  },
         },
         BB03: {
             id: `BB03`,
@@ -206,6 +299,18 @@ class Test {
             yType: `binary`,
             paired: true,
             emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`BB03`);},
+            fresh: (ix) => { return new Test(ix)  },
+        },
+        NC01: {
+            id: `NC01`,
+            name: `ANOVA`,
+            xType: 'numeric',
+            yType: 'categorical',
+            paired: true,
+            emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`NC01`);},
+            fresh: (ix) => { return new Test(ix)  },
         },
         BN01: {
             id: `BN01`,
@@ -214,6 +319,8 @@ class Test {
             yType: `numeric`,
             paired: true,
             emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`BN01`);},
+            fresh: (ix) => { return new Test(ix)  },
         },
         CN01: {
             id: `CN01`,
@@ -222,6 +329,8 @@ class Test {
             yType: `numeric`,
             paired: true,
             emitted: `N,P`,
+            makeMenuString: ( ) => {return Test.makeMenuString(`CN01`);},
+            fresh: (ix) => { return new Test(ix)  },
         },
     };
 
