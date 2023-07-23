@@ -52,11 +52,11 @@ class Paired extends Test {
         const alpha = ui.numberToString(this.parameters.alpha);
         let out = "<pre>";
 
-        out += `N = ${N}, mean = ${mean}, s = ${s}, SE = ${SE}`;
-        out += `<br>paired test of ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}`;
-        out += `<br>    t = ${t},  df = ${df}, ${P}`;
-        out += `<br>estmating ${testDesc} `
-        out += `<br>    &alpha; = ${alpha}, t* = ${tCrit} ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `Is the (paired) mean difference of each (${testDesc}) ${this.parameters.theSidesOp} ${this.parameters.value}?`;
+        out += `<br><br>    N = ${N}, t = ${t},  ${P}`;
+        out += `<br>    paired mean difference = ${mean}, ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `<br>    s = ${s}, SE = ${SE}, df = ${df}, &alpha; = ${alpha}, t* = ${tCrit} `;
+        out += `<br> `;
 
         out += `</pre>`;
         return out;

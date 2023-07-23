@@ -70,13 +70,18 @@ class Independence extends Test {
         const conf = ui.numberToString(this.parameters.conf);
         const alpha = ui.numberToString(this.parameters.alpha);
 
+        const TIdetails = document.getElementById("TIdetails");
+        const TIopen = TIdetails && TIdetails.hasAttribute("open");
 
         let out = "<pre>";
+        out += `Are ${data.yAttData.name} and ${data.xAttData.name} independent?`;
+        out += `<br>    N = ${N}, ${this.results.columnLabels.length} columns by ${this.results.rowLabels.length} rows, `
+        out += `chisquare = ${chisq}, ${P}`;
+        out += `<details id="TIdetails" ${TIopen ? "open" : ""}>`;
+        out += `<summary>Testing independence. Chi-square procedure</summary>`;
         out += this.makeIndependenceTable();
-        out += `<br>Testing independence of ${data.yAttData.name} from ${data.xAttData.name}`;
-        out += `<br>    N = ${N}, ${this.results.columnLabels.length} columns by  ${this.results.rowLabels.length} rows<br>`;
-        out += `    df = ${df}, chisq* = ${chisqCrit} <br>`;
-        out += `    &alpha; = ${alpha}, chisquare = ${chisq}, ${P}`;
+        out += `<br>    df = ${df}, &alpha; = ${alpha}, chisq* = ${chisqCrit} <br>`;
+        out += `</details>`;
 
         out += `</pre>`;
         return out;
@@ -128,8 +133,6 @@ class Independence extends Test {
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
         const conf = ui.confBoxHTML(this.parameters.conf);
         let theHTML = `Test for independence of ${data.yAttData.name} from ${data.xAttData.name}: ${conf}`;
 

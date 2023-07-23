@@ -88,14 +88,27 @@ class Regression extends Test {
 
         const theSign = intercept >= 0 ? "+" : '-';
 
+        const X = testimate.state.x.name;
+        const Y = testimate.state.y.name;
+
+        const DSdetails = document.getElementById("DSdetails");
+        const DSopen = DSdetails && DSdetails.hasAttribute("open");
 
         let out = "<pre>";
-        out += `${testimate.state.x.name} = ${slope} ${testimate.state.y.name} ${theSign} ${Math.abs(intercept)} <br>`;  //  note reversal!
-        out += `N = ${N}, r = ${r}, r^2 = ${rsq}, t* = ${tCrit}, df = ${df}<br>`;
+
+        out += `How does (${X}) depend on (${Y})?`
+        out += `<br>    LSRL: ${X} = ${slope} ${Y} ${theSign} ${Math.abs(intercept)} `;  //  note reversal!
+        out += `<br>    N = ${N}, r = ${r}, r^2 = ${rsq}<br>`;
+        out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
+        out += `<summary>Regression details</summary>`;
         out += `slope:      ${conf}% CI = [${CISmin}, ${CISmax}]<br>`;
         out += `intercept:  ${conf}% CI = [${CIImin}, ${CIImax}]<br>`;
+        out += `<br> `;
         out += `testing slope ${this.parameters.theSidesOp} ${this.parameters.value} `
-        out += `<br>    t = ${t}, &alpha; = ${alpha}, ${P}`;
+        out += `<br>    t = ${t}, ${P}`;
+        out += `<br>    df = ${df},  &alpha; = ${alpha}, t* = ${tCrit}, `
+        out += `</details>`;
+        out += `<br> `;
         out += `</pre>`;
 
         return out;

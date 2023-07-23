@@ -34,6 +34,8 @@ class TwoSampleT extends Test {
 
         this.results.N1 = j0.cols();
         this.results.N2 = j1.cols();
+        this.results.N = this.results.N1 + this.results.N2;
+
         this.results.df = this.results.N1 + this.results.N2 - 1;
         this.results.mean1 = j0.mean();
         this.results.mean2 = j1.mean();
@@ -77,18 +79,12 @@ class TwoSampleT extends Test {
         //  const testDesc = `mean of ${testimate.state.x.name}`;
 
         const N = this.results.N;
-        const N2 = this.results.N2;
-        const N1 = this.results.N1;
         const diff = ui.numberToString(this.results.diff, 3);
         const s = ui.numberToString(this.results.s);
         const SE = ui.numberToString(this.results.SE);
 
         const mean1 = ui.numberToString(this.results.mean1);
         const mean2 = ui.numberToString(this.results.mean2);
-        const s1 = ui.numberToString(this.results.s1);
-        const s2 = ui.numberToString(this.results.s2);
-        const SE1 = ui.numberToString(this.results.SE1);
-        const SE2 = ui.numberToString(this.results.SE2);
         const P = (this.results.P < 0.0001) ?
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
@@ -102,25 +98,60 @@ class TwoSampleT extends Test {
 
         let out = "<pre>";
 
-        out += `<table class="test-results"><tr class="headerRow"><th></th><th>N</th><th>mean</th><th>s</th><th>SE</th></tr>`;
-        out += `<tr><td>${this.results.groups[0]}</td><td>${N1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
-        out += `<tr><td>${this.results.groups[1]}</td><td>${N2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
-        out += `</table>`;
+        const DSdetails = document.getElementById("DSdetails");
+        const DSopen = DSdetails && DSdetails.hasAttribute("open");
 
-        out += `<p>Difference of means test: <br>`
-        out += `    diff = ${diff}, pooled SE = ${SE}<br>`;
-        out += `    t = ${t}, t* = ${tCrit}, df = ${df}, ${P}</p>`
+        const comparison = `${this.parameters.theSidesOp} ${this.parameters.value}`;
 
-        out += `<p>Estimate: ${conf}% CI = [${CImin}, ${CImax}]  </p>`;
-        out += `This code has not been checked!`;
+        const resultHed = (this.grouping) ?
+            `Is the difference of means of (${testimate.state.x.name}): group ${this.results.groups[0]} - group ${this.results.groups[1]} ${comparison}?` :
+            `Is the difference mean(${testimate.state.x.name}) - mean(${testimate.state.y.name}) ${comparison}?`;
+
+        out += `${resultHed} <br>`;
+        out += `<br>    N = ${N}, t = ${t}, ${P}`;
+        out += `<br>    diff = ${diff},  ${conf}% CI = [${CImin}, ${CImax}] `;
+
+        out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
+        out += `<summary>Difference of means, <i>t</i> procedure</summary>`;
+        out += this.makeTwoSampleTable();
+        out += `<br>    df = ${df}, &alpha; = ${alpha},  t* = ${tCrit}`
+        out += `</details>`;
+
+        out += `<br>These results have not been checked!`;
 
         out += `</pre>`;
 
         return out;
     }
 
-    makeTestDescription() {
+    makeTwoSampleTable() {
+        const N2 = this.results.N2;
+        const N1 = this.results.N1;
+        const s1 = ui.numberToString(this.results.s1);
+        const s2 = ui.numberToString(this.results.s2);
+        const SE1 = ui.numberToString(this.results.SE1);
+        const SE2 = ui.numberToString(this.results.SE2);
+        const mean1 = ui.numberToString(this.results.mean1);
+        const mean2 = ui.numberToString(this.results.mean2);
 
+        const N = this.results.N;
+        const diff = ui.numberToString(this.results.diff, 3);
+        const s = ui.numberToString(this.results.s);
+        const SE = ui.numberToString(this.results.SE);
+
+        const groupColHed = this.grouping ? `${testimate.state.y.name}` : "group";
+        const meanColHead = this.grouping ? `mean(${testimate.state.x.name})` : `mean`;
+
+        let out = "";
+        out += `<table class="test-results"><tr class="headerRow"><th>${groupColHed}</th><th>N</th><th>${meanColHead}</th><th>s</th><th>SE</th></tr>`;
+        out += `<tr><td>${this.results.groups[0]}</td><td>${N1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
+        out += `<tr><td>${this.results.groups[1]}</td><td>${N2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
+        out += `<tr><td>pooled</td><td>${N}</td><td>diff = <br>${diff}</td><td>${s}</td><td>${SE}</td></tr>`;
+        out += `</table>`;
+        return out;
+    }
+
+    makeTestDescription() {
         return (this.grouping) ?
             `two-sample t difference of means of (${testimate.state.x.name}): ${this.results.groups[0]} - ${this.results.groups[1]}` :
             `two-sample t difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;

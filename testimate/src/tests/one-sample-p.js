@@ -40,7 +40,7 @@ class OneSampleP extends Test {
     }
 
     makeResultsString() {
-        const testDesc = `proportion of ${data.xAttData.name} = ${this.parameters.group}`;
+        const testDesc = `proportion of (${data.xAttData.name} = ${this.parameters.group})`;
 
         const N = this.results.N;
         const p = ui.numberToString(this.results.p, 4);
@@ -56,10 +56,11 @@ class OneSampleP extends Test {
         const alpha = ui.numberToString(this.parameters.alpha);
         let out = "<pre>";
 
-        out += `N = ${N}, p = ${p}, SE = ${SE}<br>`;
-        out += `testing ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value} <br>    `;
-        out += `z = ${z}, &alpha; = ${alpha}, ${P}<br>`;
-        out += `estmating ${testDesc} <br>   z* = ${zCrit}, ${conf}% CI = [${CImin}, ${CImax}]<br>`
+        out += `Is the ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}? `;
+        out += `<br><br>    N = ${N}, z = ${z}, ${P}`;
+        out += `<br>    sample p = ${p}, ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `<br>    SE = ${SE}, &alpha; = ${alpha}, z* = ${zCrit}`;
+        out += `<br> `;
 
         out += `</pre>`;
         return out;

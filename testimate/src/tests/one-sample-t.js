@@ -40,11 +40,12 @@ class OneSampleT extends Test {
         const alpha = ui.numberToString(this.parameters.alpha);
         let out = "<pre>";
 
-        out += `N = ${N}, mean = ${mean}, s = ${s}, SE = ${SE}`;
-        out += `<br>testing ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}`;
-        out += `<br>    t = ${t},  df = ${df}, ${P}`;
-        out += `<br>estmating ${testDesc} `
-        out += `<br>    &alpha; = ${alpha}, t* = ${tCrit} ${conf}% CI = [${CImin}, ${CImax}]`;
+
+        out += `Is the ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}?`;
+        out += `<br><br>    N = ${N}, t = ${t},  ${P}`;
+        out += `<br>    sample mean = ${mean},  ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `<br>    s = ${s}, SE = ${SE}, df = ${df}, &alpha; = ${alpha}, t* = ${tCrit}`;
+        out += `<br> `;
 
         out += `</pre>`;
         return out;

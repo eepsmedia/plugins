@@ -32,7 +32,14 @@ ui = {
         const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a test ID
         this.theTest = testimate.theTest;
 
+
         if (this.theTest && this.theTest.testID) {
+            //  set the sides op universally
+            this.theTest.parameters.theSidesOp = "≠";
+            if (this.theTest.parameters.sides === 1) {
+                this.theTest.parameters.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > this.theTest.parameters.value ? ">" : "<");
+            }
+
             data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
             this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
             this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
@@ -73,10 +80,25 @@ ui = {
     },
 
     numberToString: function (iValue, iFigs = 4) {
-        return new Intl.NumberFormat(
+        let out = "";
+        let multiplier = 1;
+        let suffix = "";
+
+        if (iValue > 1.0e10) {
+            multiplier = 1.0e9;
+            iValue /= multiplier;
+            suffix = " B";
+        } else if (iValue > 1.0e7) {
+            multiplier = 1.0e6;
+            iValue /= multiplier;
+            suffix = " M";
+        }
+        out = new Intl.NumberFormat(
             testimate.constants.lang,
-            {maximumSignificantDigits: iFigs}
+            {maximumSignificantDigits: iFigs, useGrouping: false}
         ).format(iValue);
+
+        return `${out}${suffix}`;
     },
 
     sidesBoxHTML: function (iSides) {
@@ -105,7 +127,7 @@ ui = {
     confBoxHTML : function(iConf) {
         return `<label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
         <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
-               type="number" value="${iConf}" step="1" min="0" max="100">%`
+               type="number" value="${iConf}" step="1" min="0" max="100">%`;
     },
 
     updateConfig: function () {

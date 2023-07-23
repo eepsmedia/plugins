@@ -27,6 +27,16 @@ pre {
     padding : 0;
     font-family: "Nanum Gothic Coding", monospace;
 }
+
+details {
+    padding-top: 1em;
+}
+
+summary {
+    font-weight: bold;
+    padding-bottom: 0.5em;
+}
+
 #titleDIV {
     width: 100%;
     color: white;
@@ -105,6 +115,12 @@ pre {
 
 .short_number_field {
     width : 4em;
+    font-family: "Nanum Gothic Coding", monospace;
+    font-size: small;
+}
+
+.probability {
+
 }
 
 /*      test results table classes      */

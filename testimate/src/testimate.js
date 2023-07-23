@@ -27,15 +27,15 @@ const testimate = {
             await this.setDataset(iDataset);
         } else if (this.state.dataset.name !== iDataset.name) {
             await this.setDataset(iDataset);
-            this.setX(null);
-            this.setY(null);    //  change of dataset, remove attributes
+            this.setX(this.emptyAttribute);
+            this.setY(this.emptyAttribute);    //  change of dataset, remove attributes
         }
 
         if (theElement === ui.xDIV) {
             await this.setX(iAttribute);
         } else if (theElement === ui.yDIV) {
             await this.setY(iAttribute);
-        } else if (theElement && !this.state.x) {
+        } else if (theElement && !this.state.x.name) {
             await this.setX(iAttribute);      //  set x anywhere if it doesn't exist
         }
 
@@ -47,6 +47,9 @@ const testimate = {
     setDataset : async function(iDataset) {
         this.state.dataset = iDataset;
         this.state.testID = null;
+        this.setX(this.emptyAttribute);
+        this.setY(this.emptyAttribute);    //  change of dataset, remove attributes
+
         await connect.registerForCaseChanges(this.state.dataset.name);
         //  await connect.getDatasetInfo(iName);
         console.log(`set dataset to ${iDataset.name}`);
@@ -70,6 +73,12 @@ const testimate = {
         }
     },
 
+    emptyAttribute : {
+        name : "",
+        title : "",
+        id : -1,
+    },
+
     setUpState : async function() {
         this.state = await codapInterface.getInteractiveState();    //  get stored state of any
 
@@ -84,8 +93,8 @@ const testimate = {
 
     constants : {
         pluginName : `testimate`,
-        version : `2023d`,
-        dimensions : {height : 333, width : 466},
+        version : `2023e`,
+        dimensions : {height : 555, width : 444},
 
         datasetName : `tests and estimates`,
 

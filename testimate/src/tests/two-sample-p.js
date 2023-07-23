@@ -3,14 +3,26 @@ class TwoSampleP extends Test {
     constructor(iID, iGrouping) {
         super(iID);
         this.grouping = iGrouping;
-        this.results.groupA = null;      //  label for principal value for A
-        this.results.groupB = null;      //  label for principal value for B
-        if (this.grouping) {
-            const theValues = [...data.xAttData.valueSet];  //  possible values for groups ("birds" "mammals")
-            this.parameters.group = theValues[0];   //  the default principal group = the first, by default
-        } else {
-            this.parameters.group = null;       //  we're comparing two attributes, not split by a grouping var
+        this.results.successValueA = null;      //  label for principal value for group A
+        this.results.successValueB = null;      //  label for principal value for B
+
+    }
+
+    static rotateSuccessValueA() {
+        const initialValue = testimate.theTest.results.successValueA;
+        const valueSet = [...data.xAttData.valueSet];
+        testimate.theTest.results.successValueA = handlers.nextValueInList(valueSet, initialValue);
+
+        if (testimate.theTest.grouping) {
+            testimate.theTest.results.successValueB = testimate.theTest.results.successValueA;
         }
+        ui.redraw();
+    }
+    static rotateSuccessValueB() {
+        const initialValue = testimate.theTest.results.successValueB;
+        const valueSet = [...data.yAttData.valueSet];
+        testimate.theTest.results.successValueB = handlers.nextValueInList(valueSet, initialValue);
+        ui.redraw();
     }
 
     updateTestResults() {
@@ -18,59 +30,82 @@ class TwoSampleP extends Test {
 
         let A = data.xAttData.theArray;
         let B = data.yAttData.theArray;
-        this.results.groups[0] = data.xAttData.name;
-        this.results.groups[1] = data.yAttData.name;
 
         if (this.grouping) {
-            [A, B] = Test.splitByGroup(A, B, this.parameters.group);
-            console.log(`A = ${A}, B = ${B}`);
-            this.results.groups[0] = this.parameters.group;     //  the name of a value in the second att
-            this.results.groups[1] = data.yAttData.isBinary() ?
-                handlers.nextValueInList([...data.yAttData.valueSet], this.parameters.group) :  //  the OTHER value
-                `not ${this.parameters.group}`          //   or a more general label, NOT "a"
+            //  A (X) holds the data and values
+            //  B (Y) holds the group membership.
+
+            const theGroups = [...data.yAttData.valueSet];
+            this.results.labelA = theGroups[0];
+            this.results.labelB = data.xAttData.isBinary() ?
+                handlers.nextValueInList(theGroups, this.results.labelA) :  //  the OTHER value
+                `not ${this.results.labelA}`
+
+            const theValues = [...data.xAttData.valueSet];
+            this.results.successValueA = this.results.successValueA || theValues[0];   //  the default principal group = the first, by default
+            this.results.successValueB = this.results.successValueB || theValues[0];   // must be the same as for A if we're grouped
+
+            [A, B] = Test.splitByGroup(A, B, this.results.labelA);
+
+        } else {
+            this.results.labelA = data.xAttData.name;
+            this.results.labelB = data.yAttData.name;
+
+            const theAValues = [...data.xAttData.valueSet];
+            this.results.successValueA = this.results.successValueA || theAValues[0];   //  the default principal group = the first, by default
+            const theBValues = [...data.yAttData.valueSet];
+            if (theBValues.includes(this.results.successValueA)) {
+                //  we don't do the "or" here so that if the value exists in A,
+                //  a change will "drag" B along.
+                //  There is a chance this is not what the user wants.
+                this.results.successValueB = this.results.successValueA;
+            } else {
+                this.results.successValueB =  this.results.successValueB || theBValues[0];
+            }
         }
 
-
-        const principalValueA = this.parameters.group;
-
+        //  count cases and successes in "A"
         this.results.N1 = 0;
         let successesA = 0;
         A.forEach( a => {
             this.results.N1++;
-            if (a === principalValueA) successesA++
+            if (a === this.results.successValueA) successesA++
         })
 
-
+        //  count cases and successes in "B"
         this.results.N2 = 0;
         let successesB = 0;
         B.forEach( b => {
             this.results.N2++;
-            if (b === labelB) successesB++
+            if (b === this.results.successValueB) successesB++
         })
 
+        this.results.N = this.results.N1 + this.results.N2;
+        if (this.results.N1 > 0 && this.results.N2 > 0) {
+            this.results.p = (successesA + successesB) / this.results.N;
+            this.results.p1 = successesA /this.results.N1;
+            this.results.p2 = successesB /this.results.N2;
+            this.results.SE1 = Math.sqrt(this.results.p1 * (1 - this.results.p1) / this.results.N1);
+            this.results.SE2 = Math.sqrt(this.results.p2 * (1 - this.results.p2) / this.results.N2);
 
+            this.results.SE = Math.sqrt(
+                (this.results.p1) * (1 - this.results.p1) / this.results.N1 +
+                (this.results.p2) * (1 - this.results.p2) / this.results.N2
+            );
 
+            //  the test p1 - p2
+            this.results.pDiff = this.results.p1 - this.results.p2;
 
-        let N = 0;
-        let successes = 0;
-        A.forEach( x => {
-            N++;
-            if (x === G) successes++;
-        })
-
-        if (N > 0) {
-            this.results.N = N;
-            this.results.p = successes / N;
-            this.results.SE = Math.sqrt((this.results.p) * (1 - this.results.p) / this.results.N);
-            this.results.z = (this.results.p - this.parameters.value) / this.results.SE;
-
+            //  test statistic = z
+            this.results.z = (this.results.pDiff - this.parameters.value) / this.results.SE;
             this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
+
             const zAbs = Math.abs(this.results.z);
             this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
             if (this.parameters.sides === 2) this.results.P *= 2;
 
-            this.results.CImax = this.results.p + this.results.zCrit * this.results.SE;
-            this.results.CImin = this.results.p - this.results.zCrit * this.results.SE;
+            this.results.CImax = this.results.pDiff + this.results.zCrit * this.results.SE;
+            this.results.CImin = this.results.pDiff - this.results.zCrit * this.results.SE;
         }
     }
 
@@ -80,51 +115,86 @@ class TwoSampleP extends Test {
         const N = this.results.N;
         const N2 = this.results.N2;
         const N1 = this.results.N1;
-        const diff = ui.numberToString(this.results.diff, 3);
-        const s = ui.numberToString(this.results.s);
+        const pDiff = ui.numberToString(this.results.pDiff, 3);
         const SE = ui.numberToString(this.results.SE);
 
-        const mean1 = ui.numberToString(this.results.mean1);
-        const mean2 = ui.numberToString(this.results.mean2);
-        const s1 = ui.numberToString(this.results.s1);
-        const s2 = ui.numberToString(this.results.s2);
-        const SE1 = ui.numberToString(this.results.SE1);
-        const SE2 = ui.numberToString(this.results.SE2);
+        const p1 = ui.numberToString(this.results.p1);
+        const p2 = ui.numberToString(this.results.p2);
+
         const P = (this.results.P < 0.0001) ?
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
         const CImin = ui.numberToString(this.results.CImin);
         const CImax = ui.numberToString(this.results.CImax);
-        const tCrit = ui.numberToString(this.results.tCrit, 3);
-        const df = ui.numberToString(this.results.df, 3);
-        const t = ui.numberToString(this.results.t, 3);
+        const zCrit = ui.numberToString(this.results.zCrit, 3);
+
+        const z = ui.numberToString(this.results.z, 3);
         const conf = ui.numberToString(this.parameters.conf);
         const alpha = ui.numberToString(this.parameters.alpha);
 
+        const DSdetails = document.getElementById("DSdetails");
+        const DSopen = DSdetails && DSdetails.hasAttribute("open");
+
         let out = "<pre>";
 
-        out += `<table class="test-results"><tr class="headerRow"><th></th><th>N</th><th>mean</th><th>s</th><th>SE</th></tr>`;
-        out += `<tr><td>${this.results.groups[0]}</td><td>${N1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
-        out += `<tr><td>${this.results.groups[1]}</td><td>${N2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
-        out += `</table>`;
+        const groupingPhrase = `(${testimate.state.x.name} = ${this.results.successValueA}): ${this.results.labelA} - ${this.results.labelB}`;
+        const nonGroupingPhrase = `(${testimate.state.x.name} = ${this.results.successValueA}) - (${testimate.state.y.name} = ${this.results.successValueB})`;
 
-        out += `<p>Difference of means test: <br>`
-        out += `    diff = ${diff}, pooled SE = ${SE}<br>`;
-        out += `    t = ${t}, t* = ${tCrit}, df = ${df}, ${P}</p>`
+        const comparison = `${this.parameters.theSidesOp} ${this.parameters.value}`;
+        const resultHed = (this.grouping) ?
+            `Is the difference of proportions of ${groupingPhrase} ${comparison}?` :
+            `Is the difference of proportions of ${nonGroupingPhrase} ${comparison}?`;
 
-        out += `<p>Estimate: ${conf}% CI = [${CImin}, ${CImax}]  </p>`;
-        out += `This code has not been checked!`;
+        out += `${resultHed} <br>`;
+        out += `<br>    N = ${N}, SE = ${SE}, z = ${z}, ${P}`;
+        out += `<br>    diff = ${pDiff},  ${conf}% CI = [${CImin}, ${CImax}] `;
+
+        out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
+        out += `<summary>Difference of proportions, <i>z</i> procedure</summary>`;
+        out += this.makeTwoSampleTable();
+        out += `<br>     &alpha; = ${alpha}, z* = ${zCrit}</p>`
+        out += `</details>`;
+
+        out += `<br>These results have not been checked!`;
 
         out += `</pre>`;
 
         return out;
     }
 
-    makeTestDescription() {
+    makeTwoSampleTable() {
+        const SE1 = ui.numberToString(this.results.SE1);
+        const SE2 = ui.numberToString(this.results.SE2);
+        const SE = ui.numberToString(this.results.SE);
+        const N2 = this.results.N2;
+        const N1 = this.results.N1;
+        const N = this.results.N;
+        const p1 = ui.numberToString(this.results.p1);
+        const p2 = ui.numberToString(this.results.p2);
+        const p = ui.numberToString(this.results.p);
 
+        const groupColHead = this.grouping ?  `${data.yAttData.name}` : 'groups';
+        const ungroupedPropString = this.results.successValueA === this.results.successValueB ?
+            `value = ${this.results.successValueA}` : `values = ${this.results.successValueA}, ${this.results.successValueB}`;
+        const propColHead = this.grouping ?
+            `proportion<br>${data.xAttData.name} = ${this.results.successValueA}` :
+            `proportion<br>${ungroupedPropString}`;
+        let out = "";
+
+        out += `<table class="test-results">`;
+        out += `<tr class="headerRow"><th>${groupColHead}</th><th>N</th><th>${propColHead}</th><th>SE</th></tr>`;
+        out += `<tr><td>${this.results.labelA}</td><td>${N1}</td><td>${p1}</td><td>${SE1}</td></tr>`;
+        out += `<tr><td>${this.results.labelB}</td><td>${N2}</td><td>${p2}</td><td>${SE2}</td></tr>`;
+        out += `<tr><td>pooled</td><td>${N}</td><td>${p}</td><td></td></tr>`;
+        out += `</table>`;
+
+        return out
+    }
+
+    makeTestDescription() {
         return (this.grouping) ?
-            `two-sample t difference of means of (${testimate.state.x.name}): ${this.results.groups[0]} - ${this.results.groups[1]}` :
-            `two-sample t difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;
+            `two-sample t difference of props of (${testimate.state.x.name} = ${this.successValueButtonA()}): ${this.results.labelA} - ${this.results.labelB}` :
+            `two-sample t difference of props: (${testimate.state.x.name} = ${this.results.successValueA}) - (${testimate.state.y.name} = ${this.successValueButtonB()})`;
     }
 
     /**
@@ -132,28 +202,34 @@ class TwoSampleP extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString(iID) {
-        if (iID === `NN02`) {
-            return `two sample t difference of means: ${testimate.state.x.name} vs ${testimate.state.y.name} `;
+        if (iID === `BB02`) {
+            return `difference of proportions: ${testimate.state.x.name} vs ${testimate.state.y.name} `;
         } else {
-            return `two-sample t difference of means: ${testimate.state.x.name} grouped by ${testimate.state.y.name}`;
+            return `difference of proportions: ${testimate.state.x.name} grouped by ${testimate.state.y.name}`;
         }
     }
 
     makeConfigureGuts() {
-//  todo: make it so the groups[0] value (the label) can be changed with a button.
-        const group0rep = (this.grouping) ?
-            this.results.groups[0] :
-            this.results.groups[0];
 
         const intro = (this.grouping) ?
-            `difference of means of ${testimate.state.x.name}: ${group0rep} - ${this.results.groups[1]}` :
-            `difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;
+            `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) : ${this.results.labelA} - ${this.results.labelB}` :
+            `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) - (${testimate.state.y.name} = ${this.successValueButtonB()}) `;
         const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
+        const value = ui.valueBoxHTML(this.parameters.value, 1, .05);
         const conf = ui.confBoxHTML(this.parameters.conf);
-        let theHTML = `Testing ${intro} ${sides} ${value} ${conf}`;
+        let theHTML = `${intro} ${sides} ${value} <br>&emsp;${conf}`;
 
         return theHTML;
+    }
+
+    successValueButtonA( ) {
+        return `<input id="successButtonA" type="button" onclick="TwoSampleP.rotateSuccessValueA()" 
+                value="${this.results.successValueA}">`
+    }
+
+    successValueButtonB( ) {
+        return `<input id="successButtonB" type="button" onclick="TwoSampleP.rotateSuccessValueB()" 
+                value="${this.results.successValueB}">`
     }
 
 }

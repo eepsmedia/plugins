@@ -4,19 +4,21 @@ class Goodness extends Test {
         super(iID);
         this.results.expected = {};
         this.results.observed = {};
-        this.results.values = [];
-
+        this.results.groupNames = [];
+        this.parameters.groupProportions = {};
     }
 
     updateTestResults() {
 
         const A = data.xAttData.theArray;
         this.results.N = A.length;
-        this.results.values = [...data.xAttData.valueSet];
+        this.results.groupNames = [...data.xAttData.valueSet];
 
-        this.results.values.forEach( v => {
+        this.parameters.groupProportions = this.getExpectations();
+
+        this.results.groupNames.forEach( v => {
             this.results.observed[v] = 0;
-            this.results.expected[v] = this.results.N / this.results.values.length;
+            this.results.expected[v] = this.results.N * this.parameters.groupProportions[v];
         })
 
         //`count the observed values in each category
@@ -28,14 +30,14 @@ class Goodness extends Test {
 
         this.results.chisq = 0;
 
-        this.results.values.forEach( v => {
+        this.results.groupNames.forEach( v => {
             const cellValue = (this.results.observed[v] - this.results.expected[v])**2
                 / this.results.expected[v];
             this.results.chisq += cellValue;
         })
 
         const theCIparam = 1 - this.parameters.alpha / 2;   //  the large number
-        this.results.df = this.results.values.length - 1;
+        this.results.df = this.results.groupNames.length - 1;
         this.results.chisqCrit = jStat.chisquare.inv(theCIparam, this.results.df);    //
         this.results.P = 1 - jStat.chisquare.cdf(this.results.chisq, this.results.df);
     }
@@ -52,12 +54,17 @@ class Goodness extends Test {
         const conf = ui.numberToString(this.parameters.conf);
         const alpha = ui.numberToString(this.parameters.alpha);
 
+        const GFdetails = document.getElementById("GFdetails");
+        const GFopen = GFdetails && GFdetails.hasAttribute("open");
 
         let out = "<pre>";
+        out += `Are the proportions of ${data.xAttData.name} as hypothesized?`;
+        out += `<br>    N = ${N}, ${this.results.groupNames.length} groups, chisquare = ${chisq}, ${P}`;
+        out += `<details id="GFdetails" ${GFopen ? "open" : ""}>`;
+        out += `<summary>Testing goodness of fit. Chi-square procedure</summary>`
         out += this.makeGoodnessTable();
-        out += `<br>Testing goodness of fit. N = ${N}, ${this.results.values.length} values <br>`;
-        out += `    chisq* = ${chisqCrit}, df = ${df}, &alpha; = ${alpha} <br>`;
-        out += `    chisquare = ${chisq}, ${P}`;
+        out += `    df = ${df}, &alpha; = ${alpha}, chisq* = ${chisqCrit} <br>`;
+        out += `</details>`;
 
         out += `</pre>`;
         return out;
@@ -69,7 +76,7 @@ class Goodness extends Test {
         let observedRow = `<tr><td>observed</td>`;
         let expectedRow = `<tr><td>expected</td>`;
 
-        this.results.values.forEach( v => {
+        this.results.groupNames.forEach( v => {
             nameRow += `<th>${v}</th>`;
             observedRow += `<td>${this.results.observed[v]}</td>`;
             expectedRow += `<td>${ui.numberToString(this.results.expected[v], 3)}</td>`;
@@ -80,6 +87,48 @@ class Goodness extends Test {
         expectedRow += `</tr>`;
 
         return `<table class="test-results">${nameRow}${observedRow}${expectedRow}</table>`;
+    }
+
+    getExpectations() {
+        let out = {};
+
+        let needFresh = false;
+
+        const oldGroups = Object.keys(this.parameters.groupProportions);
+        const newGroups = this.results.groupNames;
+
+        let sum = 0;
+
+        /*
+            for each old group, if it's also a new group,
+            give it that old proportion as a first guess
+         */
+        oldGroups.forEach( old => {
+            if (newGroups.includes(old)) {  //      there is a match!
+                const oldSum = sum;
+                let newVal = this.parameters.groupProportions[old];
+                if (sum + newVal > 1) {
+                    newVal = 1 - sum;
+                }
+                out[old] = newVal;
+                sum += newVal;
+            }
+        })
+
+        //  how many do we still have to find?
+        const leftOut = newGroups.length - Object.keys(out).length;
+
+        /*
+            for each new group, is it left out?
+            if so, give it that fraction of what's left to be allocated.
+         */
+        newGroups.forEach(n => {
+            if (!out.hasOwnProperty(n))   {       //  haven't done it yet!
+                out[n] = (1 - sum)/leftOut;
+            }
+        })
+
+        return out;
     }
 
     makeTestDescription( ) {
@@ -95,11 +144,30 @@ class Goodness extends Test {
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
         const conf = ui.confBoxHTML(this.parameters.conf);
-        let theHTML = `Goodness of fit test on ${data.xAttData.name}: ${conf}`;
 
+        let theHTML = "Configure goodness-of-fit test: <br><br>";
+
+        let nameRow =   `<tr><th>${testimate.state.x.name} = </th>`;
+        let valueRow =   `<tr><th>hypoth prop:</th>`;
+
+        theHTML += `<table class="test-results">`
+
+        const lastGroupName = this.results.groupNames[this.results.groupNames.length - 1];
+        this.results.groupNames.forEach( g => {
+            const theProp  = ui.numberToString(this.parameters.groupProportions[g],3)
+            nameRow += `<th>${g}</th>`;
+            valueRow += (g === lastGroupName) ?   //  (the last one)
+                `<td id="lastProp">${theProp}</td>` :
+                `<td><input type="number" class="short_number_field" value="${theProp}"
+                    step=".01" min="0" max="1"
+                    id="GProp_${g}"
+                    onchange="handlers.changeGoodnessProp('${lastGroupName}')"></input></td>`;
+        })
+
+        theHTML += `${nameRow}${valueRow}</table>`;
+
+        theHTML += conf;
         return theHTML;
     }
 

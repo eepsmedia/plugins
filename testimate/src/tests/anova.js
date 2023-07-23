@@ -5,7 +5,6 @@ class ANOVA extends Test {
         this.results.expected = {};
         this.results.observed = {};
         this.results.values = [];
-
     }
 
     updateTestResults() {
@@ -33,7 +32,6 @@ class ANOVA extends Test {
             }
 
             this.results.mean = this.results.sum / this.results.N;      //  grand mean
-            this.results.SSR = 0;       //  between-group error (sum of squares of regression)
 
             //  calculate group means (loop over groups...)
             for (let ix = 0; ix < this.results.groupNames.length; ix++) {
@@ -47,6 +45,7 @@ class ANOVA extends Test {
 
             //  calculate within-group errors, add between-group errors
 
+            this.results.SSR = 0;       //  between-group error (sum of squares of regression)
             this.results.SSE = 0;       //  sum of squares of error (within group)
 
             for (let ix = 0; ix < A.length; ix++) {
@@ -74,6 +73,11 @@ class ANOVA extends Test {
         }
     }
 
+    static toggleDS() {
+        this.openDS = !this.openDS;
+        console.log(`descriptive details now ${this.openDS ? 'open' : 'closed'}.`);
+    }
+
     makeResultsString() {
 
         const N = this.results.N;
@@ -85,20 +89,31 @@ class ANOVA extends Test {
         const conf = ui.numberToString(this.parameters.conf);
         const alpha = ui.numberToString(this.parameters.alpha);
 
+        const DSdetails = document.getElementById("DSdetails");
+        const DSopen = DSdetails && DSdetails.hasAttribute("open");
+        const Fdetails = document.getElementById("Fdetails");
+        const Fopen = Fdetails && Fdetails.hasAttribute("open");
 
         let out = "<pre>";
+        out += `Is the mean of ${data.xAttData.name} the same across ${data.yAttData.name}?`
+        out += `<br>    N = ${N}, F = ${F}, ${P}<br>`;
+        out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
+        out += `<summary>Descriptive statistics</summary>`;
         out += this.makeDescriptiveTable();
-        out += `<br>`;
+        out += `</details>`;
+        out += `<details id="Fdetails" ${Fopen ? "open" : ""}>`;
+        out += `<summary>One-way ANOVA, F procedure</summary>`;
         out += this.makeANOVATable();
-        out += `N = ${N}, F* = ${FCrit}, F = ${F}, ${P}`;
+        out += `<br>    &alpha; = ${alpha}, F* = ${FCrit}`;
+        out += `</details>`;
         out += `</pre>`;
         return out;
     }
 
     makeANOVATable() {
-        const dfT = ui.numberToString(this.results.dfTreatment, 3);
-        const dfE = ui.numberToString(this.results.dfError, 3);
-        const dfTotal = ui.numberToString(this.results.dfTotal, 3);
+        const dfT = this.results.dfTreatment;
+        const dfE = this.results.dfError;
+        const dfTotal = this.results.dfTotal;
         const SSR = ui.numberToString(this.results.SSR, 5);
         const SSE = ui.numberToString(this.results.SSE, 5);
         const SST = ui.numberToString(this.results.SST, 5);
@@ -109,9 +124,12 @@ class ANOVA extends Test {
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
 
+        //  const treatmentString = `Treatment<br>(i.e., ${data.yAttData.name})`;
+        const treatmentString = `${data.yAttData.name}`;
+
         let theHTML = "<table class = 'test-results'>";
-        theHTML += "<tr><th>Source</th><th>Sum of Squares (SS)</th><th>df</th><th>Mean Squares (MS)</th><th>F</th><th>P</th></tr>";
-        theHTML += `<tr><th>Treatment</th><td>${SSR}</td><td>${dfT}</td><td>${MST}</td><td>${F}</td><td>${P}</td></tr>`
+        theHTML += "<tr><th>Source</th><th>(SS)</th><th>df</th><th>(MS)</th><th>F</th><th>P</th></tr>";
+        theHTML += `<tr><th>${treatmentString}</th><td>${SSR}</td><td>${dfT}</td><td>${MST}</td><td>${F}</td><td>${P}</td></tr>`
         theHTML += `<tr><th>Error</th><td>${SSE}</td><td>${dfE}</td><td>${MSE}</td><td></td></tr>`
         theHTML += `<tr><th>Total</th><td>${SST}</td><td>${dfTotal}</td><td></td><td></td></tr>`
         theHTML += `</table>`
@@ -122,7 +140,7 @@ class ANOVA extends Test {
     makeDescriptiveTable() {
         let nameRow = `<tr><th>${data.yAttData.name} =</th>`;
         let countRow = `<tr><td>count</td>`;
-        let meanRow = `<tr><td>mean</td>`;
+        let meanRow = `<tr><td>mean(${data.xAttData.name})</td>`;
 
         for (let ix = 0; ix < this.results.groupNames.length; ix++) {
             nameRow += `<th>${this.results.groupNames[ix]}</th>`;
@@ -135,7 +153,7 @@ class ANOVA extends Test {
         countRow += `</tr>`;
         meanRow += `</tr>`;
 
-        return `<table class="test-results">${nameRow}${countRow}${meanRow}</table>`;
+        return `<table class="test-results">${nameRow}${meanRow}${countRow}</table>`;
 
     }
 
@@ -155,7 +173,7 @@ class ANOVA extends Test {
         const sides = ui.sidesBoxHTML(this.parameters.sides);
         const value = ui.valueBoxHTML(this.parameters.value);
         const conf = ui.confBoxHTML(this.parameters.conf);
-        let theHTML = `Goodness of fit test on ${data.xAttData.name}: ${conf}`;
+        let theHTML = `ANOVA on ${data.xAttData.name}: ${conf}`;
 
         return theHTML;
     }

@@ -129,7 +129,11 @@ connect = {
         };
 
         theConfig.emitted.split(",").forEach(att => {
-            theItemValues[att] = theTest.results[att]
+            if (theTest.results[att]) {
+                theItemValues[att] = theTest.results[att]
+            } else {
+                theItemValues[att] = theTest.parameters[att]
+            }
         });
 
 
@@ -138,18 +142,12 @@ connect = {
             resource: `dataContext[${testimate.constants.datasetName}].item`,
             values: theItemValues,       //      sending ONE item
         }
-        try {
             const result = await codapInterface.sendRequest(itemMessage);
             if (result.success) {
                 console.log(`success creating item id=${result.itemIDs[0]}`);
             } else {
                 console.log(`problem creating item`);
             }
-
-        } catch (msg) {
-            alert(`problem creating item on: ${testimate.constants.datasetName}`);
-        }
-
         this.makeTableAppear();
     },
 
