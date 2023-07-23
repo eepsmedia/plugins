@@ -38,22 +38,9 @@ class Goodness extends Test {
         this.results.df = this.results.values.length - 1;
         this.results.chisqCrit = jStat.chisquare.inv(theCIparam, this.results.df);    //
         this.results.P = 1 - jStat.chisquare.cdf(this.results.chisq, this.results.df);
-
-
-/*
-        this.results.mean = jX.mean();
-        this.results.s = jX.stdev(true);    //      true means SAMPLE SD
-        this.results.SE = this.results.s / Math.sqrt(this.results.N);
-
-        this.results.tCrit = jStat.studentt.inv(theCIparam, this.results.df);    //  1.96-ish for 0.95
-        this.results.CImax = this.results.mean + this.results.tCrit * this.results.SE;
-        this.results.CImin = this.results.mean - this.results.tCrit * this.results.SE;
-        this.results.t = (this.results.mean - this.parameters.value) / this.results.SE;
-*/
     }
 
     makeResultsString() {
-        const testDesc = `goodness of fit for ${testimate.state.xName}`;
 
         const N = this.results.N;
         const chisq = ui.numberToString(this.results.chisq);
@@ -96,7 +83,7 @@ class Goodness extends Test {
     }
 
     makeTestDescription( ) {
-        return `goodness of fit: ${testimate.state.xName}`;
+        return `goodness of fit: ${testimate.state.x.name}`;
     }
 
     /**
@@ -104,16 +91,16 @@ class Goodness extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `goodness of fit for ${testimate.state.xName}`;
+        return `goodness of fit for ${testimate.state.x.name}`;
     }
 
     makeConfigureGuts() {
         const sides = ui.sidesBoxHTML(this.parameters.sides);
         const value = ui.valueBoxHTML(this.parameters.value);
         const conf = ui.confBoxHTML(this.parameters.conf);
-        let theHTML = `Testing mean(${data.xAttData.name}) ${sides} ${value} ${conf}`;
+        let theHTML = `Goodness of fit test on ${data.xAttData.name}: ${conf}`;
 
-        return `Goodness of fit configuration (not yet!)`;
+        return theHTML;
     }
 
 }

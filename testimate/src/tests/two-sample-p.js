@@ -1,20 +1,21 @@
-class TwoSampleT extends Test {
+class TwoSampleP extends Test {
 
     constructor(iID, iGrouping) {
         super(iID);
         this.grouping = iGrouping;
-        this.results.groups = [];       //  names of the two groups to be displayed (depends on grouping)
+        this.results.groupA = null;      //  label for principal value for A
+        this.results.groupB = null;      //  label for principal value for B
         if (this.grouping) {
-            const theValues = [...data.yAttData.valueSet];  //  possible values for groups
-            this.parameters.group = theValues[0];   //  the first, by default
+            const theValues = [...data.xAttData.valueSet];  //  possible values for groups ("birds" "mammals")
+            this.parameters.group = theValues[0];   //  the default principal group = the first, by default
         } else {
-            this.parameters.group = null;
+            this.parameters.group = null;       //  we're comparing two attributes, not split by a grouping var
         }
     }
 
     updateTestResults() {
-
         const theCIparam = 1 - this.parameters.alpha / 2;
+
         let A = data.xAttData.theArray;
         let B = data.yAttData.theArray;
         this.results.groups[0] = data.xAttData.name;
@@ -29,48 +30,48 @@ class TwoSampleT extends Test {
                 `not ${this.parameters.group}`          //   or a more general label, NOT "a"
         }
 
-        const j0 = jStat(A);
-        const j1 = jStat(B);
 
-        this.results.N1 = j0.cols();
-        this.results.N2 = j1.cols();
-        this.results.df = this.results.N1 + this.results.N2 - 1;
-        this.results.mean1 = j0.mean();
-        this.results.mean2 = j1.mean();
-        this.results.s1 = j0.stdev(true);    //      true means SAMPLE SD
-        this.results.s2 = j1.stdev(true);    //      true means SAMPLE SD
-        this.results.SE1 = this.results.s1 / Math.sqrt(this.results.N1);
-        this.results.SE2 = this.results.s2 / Math.sqrt(this.results.N2);
+        const principalValueA = this.parameters.group;
 
-        /*
-        See https://en.wikipedia.org/wiki/Student%27s_t-test#Independent_two-sample_t-test.
-        I'm using "Equal or unequal sample sizes, similar variance."
-        Maybe we should go one further and use Welch's, which follows
-        in that wikipedia article.
-         */
-        const sArg = ((this.results.N1 - 1) * this.results.s1 ** 2 +
-                (this.results.N2 - 1) * this.results.s2 ** 2) /
-            (this.results.N1 + this.results.N2 - 2);
-        this.results.s = Math.sqrt(sArg);       //  pooled SD
-        this.results.SE = this.results.s * Math.sqrt((1 / this.results.N1) + (1 / this.results.N2));
-        this.results.diff = this.results.mean1 - this.results.mean2;
-        this.results.t = (this.results.diff - this.parameters.value) / this.results.SE;
+        this.results.N1 = 0;
+        let successesA = 0;
+        A.forEach( a => {
+            this.results.N1++;
+            if (a === principalValueA) successesA++
+        })
 
-        const var1oN = j0.variance(true) / this.results.N1;
-        const var2oN = j1.variance(true) / this.results.N2;     //  sample variance/N = s^2/N
-        const df2 = (var1oN + var2oN) ** 2 / (var1oN ** 2 / (this.results.N1 - 1) + var2oN ** 2 / (this.results.N2)); //  variance for
-        const df1 = this.results.N1 + this.results.N2 - 1;
 
-        this.results.df = df2;
+        this.results.N2 = 0;
+        let successesB = 0;
+        B.forEach( b => {
+            this.results.N2++;
+            if (b === labelB) successesB++
+        })
 
-        this.results.tCrit = jStat.studentt.inv(theCIparam, this.results.df);    //  1.96-ish for 0.95
-        const tAbs = Math.abs(this.results.t);
-        this.results.P = jStat.studentt.cdf(-tAbs, this.results.df);
-        if (this.parameters.sides === 2) this.results.P *= 2;
 
-        this.results.CImax = this.results.diff + this.results.tCrit * this.results.SE;
-        this.results.CImin = this.results.diff - this.results.tCrit * this.results.SE;
 
+
+        let N = 0;
+        let successes = 0;
+        A.forEach( x => {
+            N++;
+            if (x === G) successes++;
+        })
+
+        if (N > 0) {
+            this.results.N = N;
+            this.results.p = successes / N;
+            this.results.SE = Math.sqrt((this.results.p) * (1 - this.results.p) / this.results.N);
+            this.results.z = (this.results.p - this.parameters.value) / this.results.SE;
+
+            this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
+            const zAbs = Math.abs(this.results.z);
+            this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
+            if (this.parameters.sides === 2) this.results.P *= 2;
+
+            this.results.CImax = this.results.p + this.results.zCrit * this.results.SE;
+            this.results.CImin = this.results.p - this.results.zCrit * this.results.SE;
+        }
     }
 
     makeResultsString() {

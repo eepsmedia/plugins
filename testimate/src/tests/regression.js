@@ -66,7 +66,7 @@ class Regression extends Test {
     }
 
     makeResultsString() {
-        //  const testDesc = `mean of ${testimate.state.xName}`;
+        //  const testDesc = `mean of ${testimate.state.x.name}`;
         const N = this.results.N;
 
         const slope = ui.numberToString(this.results.slope);       //  CI of slope
@@ -90,7 +90,7 @@ class Regression extends Test {
 
 
         let out = "<pre>";
-        out += `${testimate.state.xName} = ${slope} ${testimate.state.yName} ${theSign} ${Math.abs(intercept)} <br>`;  //  note reversal!
+        out += `${testimate.state.x.name} = ${slope} ${testimate.state.y.name} ${theSign} ${Math.abs(intercept)} <br>`;  //  note reversal!
         out += `N = ${N}, r = ${r}, r^2 = ${rsq}, t* = ${tCrit}, df = ${df}<br>`;
         out += `slope:      ${conf}% CI = [${CISmin}, ${CISmax}]<br>`;
         out += `intercept:  ${conf}% CI = [${CIImin}, ${CIImax}]<br>`;
@@ -102,7 +102,7 @@ class Regression extends Test {
     }
 
     makeTestDescription() {
-        return `linear regression of (${testimate.state.xName}) as a function of (${testimate.state.yName})`;
+        return `linear regression of (${testimate.state.x.name}) as a function of (${testimate.state.y.name})`;
     }
 
     /**
@@ -110,7 +110,7 @@ class Regression extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `linear regression of (${testimate.state.xName}) as a function of (${testimate.state.yName})`;
+        return `linear regression of (${testimate.state.x.name}) as a function of (${testimate.state.y.name})`;
     }
 
     makeConfigureGuts() {

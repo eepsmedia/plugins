@@ -55,7 +55,7 @@ const handlers = {
      * @param iXY
      */
     changeCN : function(iXY) {
-        const aName = (iXY === 'x') ? testimate.state.xName : testimate.state.yName;
+        const aName = (iXY === 'x') ? testimate.state.x.name : testimate.state.y.name;
         const newType = (testimate.state.dataTypes[aName] === 'numeric' ? 'categorical' : 'numeric');
         testimate.state.dataTypes[aName] = newType;
         ui.redraw();

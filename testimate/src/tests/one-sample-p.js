@@ -66,7 +66,7 @@ class OneSampleP extends Test {
     }
 
     makeTestDescription(iTestID, includeName) {
-        return `mean of ${testimate.state.xName}`;
+        return `mean of ${testimate.state.x.name}`;
     }
 
     /**
@@ -76,7 +76,7 @@ class OneSampleP extends Test {
     static makeMenuString() {
         const valueSet = data.xAttData.valueSet;
         const theValues = [...valueSet];
-        return `one-sample proportion of ${testimate.state.xName} = ${theValues[0]}`;
+        return `one-sample proportion of ${testimate.state.x.name} = ${theValues[0]}`;
     }
 
     makeConfigureGuts() {

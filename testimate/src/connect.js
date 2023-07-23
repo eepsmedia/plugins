@@ -10,6 +10,7 @@ connect = {
     caseChangeSubscriberIndex: null,
     attributeDragDropSubscriberIndex: null,
     mostRecentEmittedTest: null,
+    datasetInfo: null,      //  don't need it!
 
     initialize: async function () {
 
@@ -24,20 +25,21 @@ connect = {
      * @returns {Promise<boolean>}
      */
     getAllItems: async function () {
+
+        let out = null;
         const theMessage = {
             "action": "get",
-            "resource": `dataContext[${testimate.state.dataset}].itemSearch[*]`
+            "resource": `dataContext[${testimate.state.dataset.name}].itemSearch[*]`
         }
 
-        try {
-            const result = await codapInterface.sendRequest(theMessage);
+        const result = await codapInterface.sendRequest(theMessage);
+        if (result.success) {
             data.dirtyData = false;
-            data.dataset = result.values;   //   array of objects, one of whose items is another "values"
-            return true;
-        } catch (msg) {
-            alert(`Trouble getting data: ${msg}`);
-            return false;
+            out = result.values;   //   array of objects, one of whose items is another "values"
+        } else {
+            alert(`Big trouble getting data!`)
         }
+        return out;
     },
 
 
@@ -97,9 +99,9 @@ connect = {
             await this.deleteOutputDataset();
 
             const theMessage = {
-                action : "create",
-                resource : "dataContext",
-                values : this.constructEmitDatasetObject(),
+                action: "create",
+                resource: "dataContext",
+                values: this.constructEmitDatasetObject(),
             }
             try {
                 const result = await codapInterface.sendRequest(theMessage);
@@ -119,22 +121,22 @@ connect = {
         const theConfig = theTest.theConfig;
 
         let theItemValues = {
-            outcome: testimate.state.xName,
-            predictor : testimate.state.yName,
-            procedure : theConfig.name,
-            sign : theTest.parameters.theSidesOp,
-            value : theTest.parameters.value,
+            outcome: testimate.state.x.name,
+            predictor: testimate.state.y.name,
+            procedure: theConfig.name,
+            sign: theTest.parameters.theSidesOp,
+            value: theTest.parameters.value,
         };
 
         theConfig.emitted.split(",").forEach(att => {
-            theItemValues[att] =  theTest.results[att]
+            theItemValues[att] = theTest.results[att]
         });
 
 
         const itemMessage = {
-            action : 'create',
-            resource : `dataContext[${testimate.constants.datasetName}].item`,
-            values : theItemValues,       //      sending ONE item
+            action: 'create',
+            resource: `dataContext[${testimate.constants.datasetName}].item`,
+            values: theItemValues,       //      sending ONE item
         }
         try {
             const result = await codapInterface.sendRequest(itemMessage);
@@ -168,7 +170,7 @@ connect = {
             ];
 
             theConfig.emitted.split(",").forEach(att => {
-                theAttrs.push({name: att, type: 'numeric', precision : 4});
+                theAttrs.push({name: att, type: 'numeric', precision: 4});
             });
 
             //  this will become the "values" item in the call
@@ -197,16 +199,16 @@ connect = {
         }
     },
 
-    makeTableAppear : function() {
+    makeTableAppear: function () {
         const caseTableObject = {
-            type : `caseTable`,
-            dataContext : testimate.constants.datasetName,
+            type: `caseTable`,
+            dataContext: testimate.constants.datasetName,
         };
 
         const message = {
-            action : 'create',
-            resource : `component`,
-            values : caseTableObject,
+            action: 'create',
+            resource: `component`,
+            values: caseTableObject,
         };
 
         codapInterface.sendRequest(message);

@@ -77,6 +77,7 @@ class Test {
             const yType = Y && testimate.state.dataTypes[Y.name];
 
             console.log(`finding tests for ${X && X.name} (${xType}) vs ${Y && Y.name} (${yType}) `);
+            let passed = "";
 
             const pairable = X && Y && X.theRawArray &&
                 Y.theRawArray &&
@@ -101,6 +102,7 @@ class Test {
                 }
             }
         }
+        console.log(`    ... passed ${out.join(", ")}`);
         return out;
     };
 
@@ -124,6 +126,17 @@ class Test {
         const theID = iiD ? iiD : testimate.state.testID;
         const theName = Test.configs[theID].name;
         return `placeholder menu string for ${theName} (${theID})`;
+    }
+
+    makeConfigureGuts() {
+/*
+        const sides = ui.sidesBoxHTML(this.parameters.sides);
+        const value = ui.valueBoxHTML(this.parameters.value);
+        const conf = ui.confBoxHTML(this.parameters.conf);
+        let theHTML = `Testing mean(${data.xAttData.name}) ${sides} ${value} ${conf}`;
+*/
+
+        return `no configuration for logistic regression yet`;
     }
 
     /**
@@ -159,7 +172,7 @@ class Test {
             xType: 'numeric',
             yType: null,
             paired: false,
-            emitted: `N,P`,
+            emitted: `N,mean,df,SE,t,P,conf,tCrit,CImin,CImax`,
             testing: `mean`,
             makeMenuString: ( ) => {return OneSampleT.makeMenuString(`N_01`);},
             fresh: (ix) => {
@@ -173,10 +186,10 @@ class Test {
             xType: 'numeric',
             yType: 'numeric',
             paired: true,
-            emitted: `N,P`,
+            emitted: `N,mean,df,SE,t,P,conf,tCrit,CImin,CImax`,
             testing: `mean`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`NN01`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return Paired.makeMenuString(`NN01`);},
+            fresh: (ix) => { return new Paired(ix)  },
         },
         NN02: {
             id: `NN02`,
@@ -224,24 +237,25 @@ class Test {
         },
         BB01: {         //  compare props using split
             id: `BB01`,
-            name: `compare proportions`,
+            name: `compare proportions (grouped)`,
             xType: 'binary',
             yType: `binary`,
             paired: true,
             emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`BB01`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return TwoSampleP.makeMenuString(`BB01`);},
+            fresh: (ix) => { return new TwoSampleP(ix, true)  },
         },
         BB02: {         //  two-sample compare props
             id: `BB02`,
-            name: `compare proportions`,
+            name: `compare proportions (two sample)`,
             xType: 'binary',
             yType: `binary`,
             paired: false,
             emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`BB02`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return TwoSampleP.makeMenuString(`BB02`);},
+            fresh: (ix) => { return new TwoSampleP(ix, false)  },
         },
+/*
         B_02: {
             id: `B_02`,
             name: `goodness of fit`,
@@ -252,6 +266,7 @@ class Test {
             makeMenuString: ( ) => {return Goodness.makeMenuString(`B_02`);},
             fresh: (ix) => { return new Goodness(ix)  },
         },
+*/
         C_01: {
             id: `C_01`,
             name: `goodness of fit`,
@@ -269,10 +284,10 @@ class Test {
             yType: `categorical`,
             paired: true,
             emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`CC01`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return Independence.makeMenuString(`CC01`);},
+            fresh: (ix) => { return new Independence(ix)  },
         },
-        CB01: {
+/*        CB01: {
             id: `CB01`,
             name: `independence`,
             xType: 'categorical',
@@ -301,7 +316,7 @@ class Test {
             emitted: `N,P`,
             makeMenuString: ( ) => {return Test.makeMenuString(`BB03`);},
             fresh: (ix) => { return new Test(ix)  },
-        },
+        },*/
         NC01: {
             id: `NC01`,
             name: `ANOVA`,
@@ -309,8 +324,8 @@ class Test {
             yType: 'categorical',
             paired: true,
             emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`NC01`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return ANOVA.makeMenuString(`NC01`);},
+            fresh: (ix) => { return new ANOVA(ix)  },
         },
         BN01: {
             id: `BN01`,
@@ -319,8 +334,8 @@ class Test {
             yType: `numeric`,
             paired: true,
             emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`BN01`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return Logistic.makeMenuString(`BN01`);},
+            fresh: (ix) => { return new Logistic(ix)  },
         },
         CN01: {
             id: `CN01`,
@@ -329,8 +344,8 @@ class Test {
             yType: `numeric`,
             paired: true,
             emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`CN01`);},
-            fresh: (ix) => { return new Test(ix)  },
+            makeMenuString: ( ) => {return Logistic.makeMenuString(`CN01`);},
+            fresh: (ix) => { return new Logistic(ix)  },
         },
     };
 

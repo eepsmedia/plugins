@@ -22,8 +22,8 @@ testimate.dropManager = {
                 break;
             case   `drop`:
                 testimate.copeWithAttributeDrop(
-                    iMessage.values.context.name,
-                    iMessage.values.attribute.name,
+                    iMessage.values.context,
+                    iMessage.values.attribute,
                     iMessage.values.position
                 );
                 break;

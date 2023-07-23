@@ -25,23 +25,24 @@ const data = {
 
     /**
      * called from this.updateData()
+     * Construct xAttData and yAttData, the INTERNAL Arrays of the data in each attribute.
      *
      * @returns {Promise<void>}
      */
     retrieveDataFromCODAP: async function () {
-        const xName = testimate.state.xName;
-        const yName = testimate.state.yName;
+        if (testimate.state.dataset) {
 
-        if (xName) {
-            if (this.dirtyData) {
-                const OK = await connect.getAllItems();      //  OK means a successful get of all items, this.dataset is now set
-                if (OK) {
-                    this.xAttData = new AttData(xName, this.dataset);
-                    this.yAttData = new AttData(yName, this.dataset);
+            if (testimate.state.x) {
+                if (this.dirtyData) {
+                    this.dataset = await connect.getAllItems();      //  this.dataset is now set
+                    if (this.dataset) {
+                        this.xAttData =  new AttData(testimate.state.x, this.dataset);
+                        this.yAttData =  new AttData(testimate.state.y, this.dataset);
+                    }
                 }
+            } else {
+                console.log(`no x variable`);
             }
-        } else {
-            console.log(`no x variable`);
         }
     },
 
@@ -55,28 +56,33 @@ const data = {
 
         const paired = Test.configs[testimate.theTest.testID].paired;
 
-        const xMustBeNumeric = (testimate.state.dataTypes[testimate.state.xName] === 'numeric');
-        const yMustBeNumeric = (testimate.state.dataTypes[testimate.state.yName] === 'numeric');
 
         //  make intermediate arrays that have only the right type of values (e.g., numeric)
         //  same length as original!
 
         let xIntermediate = [];
-        this.xAttData.theRawArray.forEach( xx => {
-            if (xMustBeNumeric) {
-                xIntermediate.push( typeof xx === 'number' ? xx : null);
-            } else {
-                xIntermediate.push(xx);     //  strings and nulls
-            }
-        })
+        if (testimate.state.x) {
+            const xMustBeNumeric = (testimate.state.dataTypes[testimate.state.x.name] === 'numeric');
+            this.xAttData.theRawArray.forEach(xx => {
+                if (xMustBeNumeric) {
+                    xIntermediate.push(typeof xx === 'number' ? xx : null);
+                } else {
+                    xIntermediate.push(xx);     //  strings and nulls
+                }
+            })
+        }
+
         let yIntermediate = [];
-        this.yAttData.theRawArray.forEach( xx => {
-            if (yMustBeNumeric) {
-                yIntermediate.push( typeof xx === 'number' ? xx : null);
-            } else {
-                yIntermediate.push(xx);     //  strings and nulls
-            }
-        })
+        if (testimate.state.y) {
+            const yMustBeNumeric = (testimate.state.dataTypes[testimate.state.y.name] === 'numeric');
+            this.yAttData.theRawArray.forEach(xx => {
+                if (yMustBeNumeric) {
+                    yIntermediate.push(typeof xx === 'number' ? xx : null);
+                } else {
+                    yIntermediate.push(xx);     //  strings and nulls
+                }
+            })
+        }
 
         //  now go through the intermediate arrays prudently eliminating null values
 
@@ -104,7 +110,8 @@ const data = {
         this.xAttData.theArray = newXArray;
         this.yAttData.theArray = newYArray;
 
-        console.log(`cleaned x = ${JSON.stringify(this.xAttData.theArray)} \ncleaned y = ${JSON.stringify(this.yAttData.theArray)}`)
+        if (this.xAttData.theArray.length < 20)
+            console.log(`cleaned x = ${JSON.stringify(this.xAttData.theArray)} \ncleaned y = ${JSON.stringify(this.yAttData.theArray)}`)
     },
 
     /**
@@ -123,12 +130,35 @@ const data = {
             case 'createCases':
             case 'updateCases':
             case 'deleteCases':
+            case `dependentCases`:      //  fires on rerandomize
 
                 tMess += " *";
                 data.dirtyData = true;      //  "this" is the notification, not "data"
                 await ui.redraw();
                 break;
 
+            case `updateAttributes`:
+                //      includes attribute name change!
+                const theUpdatedAtts = iMessage.values.result.attrs;    //  array of objects, form {name : newName...}
+                theUpdatedAtts.forEach( att => {
+                    if (testimate.state.x && att.id === testimate.state.x.id) {    //  saved id of x-attribute
+                        const oldName = testimate.state.x.name;
+                        console.log(`att X changing from ${oldName} to ${att.title}`);
+                        testimate.state.x.title = att.title;       //  new name
+                        testimate.state.x.name = att.name;       //  new name
+                        testimate.state.dataTypes[att.name] = testimate.state.dataTypes[oldName];
+                    }
+                    if (testimate.state.y && att.id === testimate.state.y.id) {    //  save id of y-attribute
+                        const oldName = testimate.state.y.name;
+                        console.log(`att Y changing from ${oldName} to ${att.title}`);
+                        testimate.state.y.title = att.title;       //  new name
+                        testimate.state.y.name = att.name;       //  new name
+                        testimate.state.dataTypes[att.name] = testimate.state.dataTypes[oldName];
+                    }
+                })
+                data.dirtyData = true;
+                ui.redraw();
+                break;
             default:
                 break;
         }
@@ -150,8 +180,8 @@ const data = {
 }
 
 class AttData {
-    constructor(iName, iData) {
-        this.name = iName;
+    constructor(iAtt, iData) {
+        this.name = iAtt ? iAtt.name : null;
         this.theRawArray = [];
         this.theArray = [];     //  stays empty in constructor
         this.valueSet = new Set();
@@ -162,7 +192,7 @@ class AttData {
 
         iData.forEach(aCase => {        //  begin with raw CODAP data, look at each case
 
-            const rawDatum = aCase.values[iName];
+            const rawDatum = aCase.values[this.name];
             if (rawDatum === null || rawDatum === '' || rawDatum === undefined) {
                 this.theRawArray.push(null);             //      substitute null for any missing data
                 this.missingCount++;

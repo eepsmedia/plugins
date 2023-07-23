@@ -112,6 +112,9 @@ pre {
 .test-results {
     border-spacing: 1.0em 0;
     font-family: "Nanum Gothic Coding", monospace;
+background-color: #eee;
+    padding-top : 0.5em;
+    padding-bottom: 0.5em;
 }
 
 .headerRow {
@@ -120,6 +123,15 @@ pre {
     border-width: 4px;
     background-color: lightblue;
     */
+}
+
+table tr:nth-child(odd) td{
+    background-color: #aaa;
+    padding: 0.5em;
+}
+table tr:nth-child(even) td{
+    background-color: #ccc;
+    padding: 0.5em;
 }
 
 /*      drag-drop highlight classes     */

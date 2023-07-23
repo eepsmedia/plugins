@@ -1,11 +1,23 @@
-class OneSampleT extends Test {
+class Paired extends Test {
 
     constructor(iID) {
         super(iID);
     }
 
     updateTestResults() {
-        const jX = jStat(data.xAttData.theArray);      //  jStat version of x array
+        const X = data.xAttData.theArray;
+        const Y = data.yAttData.theArray;
+        const N = X.length;
+        if (N !== Y.length) {
+            alert(`Paired arrays are not the same length! Bogus results ahead!`);
+        }
+        let Z = [];
+
+        for (let i = 0; i < N; i++) {
+            Z[i] = X[i] - Y[i];
+        }
+
+        const jX = jStat(Z);      //  jStat version of difference array
 
         const theCIparam = 1 - this.parameters.alpha / 2;
 
@@ -22,7 +34,7 @@ class OneSampleT extends Test {
     }
 
     makeResultsString() {
-        const testDesc = `mean of ${testimate.state.x.name}`;
+        const testDesc = `${testimate.state.x.name} - ${testimate.state.y.name} `;
 
         const N = this.results.N;
         const mean = ui.numberToString(this.results.mean, 3);
@@ -41,7 +53,7 @@ class OneSampleT extends Test {
         let out = "<pre>";
 
         out += `N = ${N}, mean = ${mean}, s = ${s}, SE = ${SE}`;
-        out += `<br>testing ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}`;
+        out += `<br>paired test of ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}`;
         out += `<br>    t = ${t},  df = ${df}, ${P}`;
         out += `<br>estmating ${testDesc} `
         out += `<br>    &alpha; = ${alpha}, t* = ${tCrit} ${conf}% CI = [${CImin}, ${CImax}]`;
@@ -51,7 +63,7 @@ class OneSampleT extends Test {
     }
 
     makeTestDescription( ) {
-        return `mean of ${testimate.state.x.name}`;
+        return `paired test of ${data.xAttData.name} - ${data.yAttData.name}`;
     }
 
     /**
@@ -59,14 +71,14 @@ class OneSampleT extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `one-sample t mean of ${testimate.state.x.name}`;
+        return `paired test of ${data.xAttData.name} - ${data.yAttData.name}`;
     }
 
     makeConfigureGuts() {
         const sides = ui.sidesBoxHTML(this.parameters.sides);
         const value = ui.valueBoxHTML(this.parameters.value);
         const conf = ui.confBoxHTML(this.parameters.conf);
-        let theHTML = `Testing mean(${data.xAttData.name}) ${sides} ${value} ${conf}`;
+        let theHTML = `Paired test of (${data.xAttData.name} - ${data.yAttData.name}) ${sides} ${value} ${conf}`;
 
         return theHTML;
     }
