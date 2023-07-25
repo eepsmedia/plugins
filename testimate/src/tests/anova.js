@@ -10,8 +10,11 @@ class ANOVA extends Test {
     updateTestResults() {
 
         const A = data.xAttData.theArray;
-        const G = data.yAttData.theArray;
-        this.results.groupNames = [...data.yAttData.valueSet];
+        const tempG = data.yAttData.theArray;
+        const G = tempG.map( n => String(n));   //  make string values for group names
+
+        const tempNames = [...data.yAttData.valueSet];
+        this.results.groupNames  = tempNames.map( n => String(n));   //  make string values for group names
 
         this.results.N = A.length;
 

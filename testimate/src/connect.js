@@ -122,7 +122,7 @@ connect = {
 
         let theItemValues = {
             outcome: testimate.state.x.name,
-            predictor: testimate.state.y.name,
+            predictor: (testimate.state.y && testimate.state.y.name) ? testimate.state.y.name : "",
             procedure: theConfig.name,
             sign: theTest.parameters.theSidesOp,
             value: theTest.parameters.value,

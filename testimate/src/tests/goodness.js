@@ -12,7 +12,8 @@ class Goodness extends Test {
 
         const A = data.xAttData.theArray;
         this.results.N = A.length;
-        this.results.groupNames = [...data.xAttData.valueSet];
+        const tempNames = [...data.xAttData.valueSet];
+        this.results.groupNames  = tempNames.map( n => String(n));
 
         this.parameters.groupProportions = this.getExpectations();
 
@@ -96,8 +97,7 @@ class Goodness extends Test {
 
         const oldGroups = Object.keys(this.parameters.groupProportions);
         //  problem here: oldGroups is now an array of STRINGS, even if the keys were numbers.
-        //  (Titanic "Class", rendered as categorical, now we're doing goodness of fit.)
-
+        //  (Titanic "Class", {1,2,3} rendered as categorical, now we're doing goodness of fit.)
 
         const newGroups = this.results.groupNames;
 
