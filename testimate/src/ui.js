@@ -1,12 +1,11 @@
-
-
 let ui;
-
 
 ui = {
 
     xDIV: null,
+    xNameDIV : null,
     yDIV: null,
+    yNameDIV: null,
     xType: null,
     yType: null,
     resultsDIV: null,      //  results DIV
@@ -19,6 +18,9 @@ ui = {
         this.xType = document.getElementById(`xCNbutton`);
         this.yType = document.getElementById(`yCNbutton`);
 
+        this.xNameDIV = document.getElementById(`xAttributeName`);
+        this.yNameDIV = document.getElementById(`yAttributeName`);
+        this.datasetDIV = document.getElementById(`datasetDIV`);
         this.testHeaderDIV = document.getElementById(`testHeaderDIV`);
         this.resultsDIV = document.getElementById(`resultsDIV`);
         this.configDIV = document.getElementById(`configureDIV`);
@@ -29,9 +31,8 @@ ui = {
         this.updateAttributeBlocks();
 
         //  update the tests as necessary
-        const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a test ID
+        const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
         this.theTest = testimate.theTest;
-
 
         if (this.theTest && this.theTest.testID) {
             //  set the sides op universally
@@ -45,6 +46,7 @@ ui = {
             this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
             this.resultsDIV.innerHTML = this.theTest.makeResultsString();
             this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
+            this.datasetDIV.innerHTML = this.makeDatasetGuts();
             //  this.updateConfig();    //  reset the appearance of the configuration DIV
         }
 
@@ -56,7 +58,7 @@ ui = {
         //  many things are invisible if there is no x-variable, therefore no test
 
         document.getElementById('Ybackdrop').style.display = (testimate.state.x) ? 'inline' : 'none';
-        document.getElementById('xCNbutton').style.display = (testimate.state.x) ? 'inline' : 'none';
+       // document.getElementById('xCNbutton').style.display = (testimate.state.x) ? 'inline' : 'none';
         document.getElementById('testHeaderDIV').style.display = (testimate.state.x) ? 'block' : 'none';
         document.getElementById('resultsDIV').style.display = (testimate.state.x) ? 'block' : 'none';
         document.getElementById('configureDIV').style.display = (testimate.state.x) ? 'block' : 'none';
@@ -64,17 +66,34 @@ ui = {
     },
 
     updateAttributeBlocks: function () {
+        const xType = document.getElementById(`xCNbutton`);
+        const yType = document.getElementById(`yCNbutton`);
+        const xTrash = document.getElementById(`xTrashAttButton`);
+        const yTrash = document.getElementById(`yTrashAttButton`);
+
         if (testimate.state.x && testimate.state.x.name) {
-            this.xDIV.textContent = testimate.state.x.name;
-            this.xType.textContent = testimate.state.dataTypes[testimate.state.x.name];
-        } else {
-            this.xDIV.textContent = `outcome/primary attribute`;
+            this.xNameDIV.textContent = testimate.state.x.name;
+            xType.value = testimate.state.dataTypes[testimate.state.x.name] == 'numeric' ? '123' : 'abc';
+            xTrash.style.display = "inline";
+            xType.style.display = "inline";
+            this.xDIV.className = "drag-none";
+        } else { // x attribute waiting for drop!
+            this.xNameDIV.textContent = `drop attribute here`;
+            xTrash.style.display = "none";
+            xType.style.display = "none";
+            this.xDIV.className = "drag-empty";
         }
         if (testimate.state.y && testimate.state.y.name) {
-            this.yDIV.textContent = testimate.state.y.name;
-            this.yType.textContent = testimate.state.dataTypes[testimate.state.y.name];
+            this.yNameDIV.textContent = testimate.state.y.name;
+            yType.value = testimate.state.dataTypes[testimate.state.y.name] == 'numeric' ? '123' : 'abc';
+            yTrash.style.display = "inline";
+            yType.style.display = "inline";
+            this.yDIV.className = "drag-none";
         } else {
-            this.yDIV.textContent = `predictor/secondary attribute`;
+            this.yNameDIV.textContent = `drop attribute here`;
+            yTrash.style.display = "none";
+            yType.style.display = "none";
+            this.yDIV.className = "drag-empty";
         }
 
     },
@@ -165,5 +184,9 @@ ui = {
 
         out += `</div>`;    //  close the hBox DIV
         return out;
+    },
+
+    makeDatasetGuts : function() {
+        return `Dataset: <strong>${testimate.state.dataset.name}</strong>, ${data.dataset.length} cases`;
     },
 }

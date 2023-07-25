@@ -8,6 +8,7 @@
     --drag-near-bg-color : #cba;
     --drag-over-bg-color : #fed;
     --drag-none-bg-color : lightblue;
+    --drag-empty-bg-color : lightgray;
 
 }
 
@@ -47,13 +48,31 @@ summary {
 
 #attributeStrip {
     width : 100%;
-    background-color: blue;
+    background-color: var(--bg-body-color);
+}
+
+.attributeHint {
+    font-size: x-small;
+    font-weight: 400;
+}
+
+#xCNbutton, #yCNbutton {
+    background-color: lightslategrey;
+    color : white;
+    border-radius: 6px;
+    margin : 0.2em;
+    padding: 0.2em;
+    cursor: pointer;
 }
 
 #Xbackdrop, #Ybackdrop {
     width : 50%;
     padding : 0.5em;
     background-color: aliceblue;
+}
+
+.textButton {
+    cursor: pointer;
 }
 
 .testimateButton {
@@ -66,14 +85,6 @@ summary {
 }
 
 
-#xCNbutton, #yCNbutton {
-    background-color: lightslategrey;
-    color : white;
-    border-radius: 6px;
-    margin : 0.5em;
-    padding: 0.5em;
-    cursor: pointer;
-}
 
 #xDIV, #yDIV {
     border-radius: 6px;
@@ -160,6 +171,9 @@ table tr:nth-child(even) td{
 }
 .drag-over {
     background-color: var(--drag-over-bg-color);
+}
+.drag-empty {
+    background-color: var(--drag-empty-bg-color);
 }
 
 /*		BOX CLASSES		*/

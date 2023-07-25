@@ -129,9 +129,9 @@ connect = {
         };
 
         theConfig.emitted.split(",").forEach(att => {
-            if (theTest.results[att]) {
+            if (theTest.results.hasOwnProperty(att)) {
                 theItemValues[att] = theTest.results[att]
-            } else {
+            } else {    //  not a result? Maybe it's a parameter!!
                 theItemValues[att] = theTest.parameters[att]
             }
         });
@@ -160,15 +160,16 @@ connect = {
 
             //  first construct the "attrs" array
             let theAttrs = [
-                {name: "outcome", type: "categorical"},
-                {name: "predictor", type: "categorical"},
-                {name: "procedure", type: "categorical"},
-                {name: "sign", type: "categorical"},
-                {name: "value", type: "numeric", precision: 3},
+                {name: "outcome", type: "categorical", description : testimate.strings.attributeDescriptions.outcome},
+                {name: "predictor", type: "categorical", description : testimate.strings.attributeDescriptions.predictor},
+                {name: "procedure", type: "categorical", description : testimate.strings.attributeDescriptions.procedure},
+                {name: "sign", type: "categorical", description : testimate.strings.attributeDescriptions.sign},
+                {name: "value", type: "numeric", precision: 3, description : testimate.strings.attributeDescriptions.value},
             ];
 
             theConfig.emitted.split(",").forEach(att => {
-                theAttrs.push({name: att, type: 'numeric', precision: 4});
+                const theTip = testimate.strings.attributeDescriptions[att];
+                theAttrs.push({name: att, type: 'numeric', description : theTip, precision: 4});
             });
 
             //  this will become the "values" item in the call

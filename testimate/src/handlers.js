@@ -88,6 +88,20 @@ const handlers = {
     },
 
     /**
+     * remove the attribute indicated
+     * @param iXY
+     */
+    trashAttribute: function(iXY) {
+        console.log(`removing attribute [${iXY}]`);
+        testimate.state[iXY] = null;
+        testimate.theTest = null;
+        data.xAttData = null;
+        data.yAttData = null;
+        data.dirtyData = true;
+        ui.redraw();
+    },
+
+    /**
      * emit test results to CODAP
      */
     emit: function () {

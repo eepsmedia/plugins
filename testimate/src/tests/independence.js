@@ -76,11 +76,11 @@ class Independence extends Test {
         let out = "<pre>";
         out += `Are ${data.yAttData.name} and ${data.xAttData.name} independent?`;
         out += `<br>    N = ${N}, ${this.results.columnLabels.length} columns by ${this.results.rowLabels.length} rows, `
-        out += `chisquare = ${chisq}, ${P}`;
+        out += `&chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="TIdetails" ${TIopen ? "open" : ""}>`;
-        out += `<summary>Testing independence. Chi-square procedure</summary>`;
+        out += `<summary>Testing independence. &chi;<sup>2</sup> procedure</summary>`;
         out += this.makeIndependenceTable();
-        out += `<br>    df = ${df}, &alpha; = ${alpha}, chisq* = ${chisqCrit} <br>`;
+        out += `<br>    df = ${df}, &alpha; = ${alpha}, critical &chi;<sup>2</sup> = ${chisqCrit} <br>`;
         out += `</details>`;
 
         out += `</pre>`;

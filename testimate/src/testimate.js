@@ -15,13 +15,16 @@ const testimate = {
             await this.setDataset(this.state.dataset);  //  register for case changes
         }
 
+        this.strings = strings;      //      todo: fix this, make it robust
+
         ui.initialize();
         ui.redraw();
     },
 
     copeWithAttributeDrop : async function(iDataset, iAttribute, iWhere){
         //  const titleElement = document.getElementById(`titleDIV`);
-        const theElement = document.elementFromPoint(iWhere.x, iWhere.y);
+        const initialElement = document.elementFromPoint(iWhere.x, iWhere.y);
+        const theElement = initialElement.closest('#xDIV, #yDIV');
 
         if (!this.state.dataset) {
             await this.setDataset(iDataset);
@@ -93,7 +96,7 @@ const testimate = {
 
     constants : {
         pluginName : `testimate`,
-        version : `2023e`,
+        version : `2023f`,
         dimensions : {height : 555, width : 444},
 
         datasetName : `tests and estimates`,

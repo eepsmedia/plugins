@@ -59,11 +59,11 @@ class Goodness extends Test {
 
         let out = "<pre>";
         out += `Are the proportions of ${data.xAttData.name} as hypothesized?`;
-        out += `<br>    N = ${N}, ${this.results.groupNames.length} groups, chisquare = ${chisq}, ${P}`;
+        out += `<br>    N = ${N}, ${this.results.groupNames.length} groups, &chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="GFdetails" ${GFopen ? "open" : ""}>`;
-        out += `<summary>Testing goodness of fit. Chi-square procedure</summary>`
+        out += `<summary>Testing goodness of fit. &chi;<sup>2</sup> procedure</summary>`
         out += this.makeGoodnessTable();
-        out += `    df = ${df}, &alpha; = ${alpha}, chisq* = ${chisqCrit} <br>`;
+        out += `    df = ${df}, &alpha; = ${alpha}, critical &chi;<sup>2</sup> = ${chisqCrit} <br>`;
         out += `</details>`;
 
         out += `</pre>`;
@@ -95,6 +95,10 @@ class Goodness extends Test {
         let needFresh = false;
 
         const oldGroups = Object.keys(this.parameters.groupProportions);
+        //  problem here: oldGroups is now an array of STRINGS, even if the keys were numbers.
+        //  (Titanic "Class", rendered as categorical, now we're doing goodness of fit.)
+
+
         const newGroups = this.results.groupNames;
 
         let sum = 0;
@@ -105,7 +109,6 @@ class Goodness extends Test {
          */
         oldGroups.forEach( old => {
             if (newGroups.includes(old)) {  //      there is a match!
-                const oldSum = sum;
                 let newVal = this.parameters.groupProportions[old];
                 if (sum + newVal > 1) {
                     newVal = 1 - sum;
@@ -165,10 +168,29 @@ class Goodness extends Test {
                     onchange="handlers.changeGoodnessProp('${lastGroupName}')"></input></td>`;
         })
 
+        valueRow += `<td>${this.equalExpectationsButton( )}</td>`;
         theHTML += `${nameRow}${valueRow}</table>`;
 
         theHTML += conf;
         return theHTML;
     }
+
+    equalExpectationsButton( ) {
+        return `<input id="equalExpectationsButton" type="button" onclick="Goodness.equalizeExpectations()" 
+                value="=" title="make all expected valeus equal">`
+    }
+
+    static equalizeExpectations() {
+        const theProportions = testimate.theTest.parameters.groupProportions;
+        const theShares = Object.keys(theProportions).length;
+        const theEqualShare = 1.0 / theShares;
+        for (let group in theProportions) {
+            if (theProportions.hasOwnProperty(group)) {
+                theProportions[group] = theEqualShare;
+            }
+        }
+        ui.redraw();
+    }
+
 
 }
