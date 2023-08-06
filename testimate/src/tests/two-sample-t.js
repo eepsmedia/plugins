@@ -6,27 +6,27 @@ class TwoSampleT extends Test {
         this.results.groups = [];       //  names of the two groups to be displayed (depends on grouping)
         if (this.grouping) {
             const theValues = [...data.yAttData.valueSet];  //  possible values for groups
-            this.parameters.group = theValues[0];   //  the first, by default
+            testimate.state.testParams.group = theValues[0];   //  the first, by default
         } else {
-            this.parameters.group = null;
+            testimate.state.testParams.group = null;
         }
     }
 
     updateTestResults() {
 
-        const theCIparam = 1 - this.parameters.alpha / 2;
+        const theCIparam = 1 - testimate.state.testParams.alpha / 2;
         let A = data.xAttData.theArray;
         let B = data.yAttData.theArray;
         this.results.groups[0] = data.xAttData.name;
         this.results.groups[1] = data.yAttData.name;
 
         if (this.grouping) {
-            [A, B] = Test.splitByGroup(A, B, this.parameters.group);
+            [A, B] = Test.splitByGroup(A, B, testimate.state.testParams.group);
             console.log(`A = ${A}, B = ${B}`);
-            this.results.groups[0] = this.parameters.group;     //  the name of a value in the second att
+            this.results.groups[0] = testimate.state.testParams.group;     //  the name of a value in the second att
             this.results.groups[1] = data.yAttData.isBinary() ?
-                handlers.nextValueInList([...data.yAttData.valueSet], this.parameters.group) :  //  the OTHER value
-                `not ${this.parameters.group}`          //   or a more general label, NOT "a"
+                handlers.nextValueInList([...data.yAttData.valueSet], testimate.state.testParams.group) :  //  the OTHER value
+                `not ${testimate.state.testParams.group}`          //   or a more general label, NOT "a"
         }
 
         const j0 = jStat(A);
@@ -56,7 +56,7 @@ class TwoSampleT extends Test {
         this.results.s = Math.sqrt(sArg);       //  pooled SD
         this.results.SE = this.results.s * Math.sqrt((1 / this.results.N1) + (1 / this.results.N2));
         this.results.diff = this.results.mean1 - this.results.mean2;
-        this.results.t = (this.results.diff - this.parameters.value) / this.results.SE;
+        this.results.t = (this.results.diff - testimate.state.testParams.value) / this.results.SE;
 
         const var1oN = j0.variance(true) / this.results.N1;
         const var2oN = j1.variance(true) / this.results.N2;     //  sample variance/N = s^2/N
@@ -68,7 +68,7 @@ class TwoSampleT extends Test {
         this.results.tCrit = jStat.studentt.inv(theCIparam, this.results.df);    //  1.96-ish for 0.95
         const tAbs = Math.abs(this.results.t);
         this.results.P = jStat.studentt.cdf(-tAbs, this.results.df);
-        if (this.parameters.sides === 2) this.results.P *= 2;
+        if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
         this.results.CImax = this.results.diff + this.results.tCrit * this.results.SE;
         this.results.CImin = this.results.diff - this.results.tCrit * this.results.SE;
@@ -93,15 +93,15 @@ class TwoSampleT extends Test {
         const tCrit = ui.numberToString(this.results.tCrit, 3);
         const df = ui.numberToString(this.results.df, 3);
         const t = ui.numberToString(this.results.t, 3);
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
         let out = "<pre>";
 
         const DSdetails = document.getElementById("DSdetails");
         const DSopen = DSdetails && DSdetails.hasAttribute("open");
 
-        const comparison = `${this.parameters.theSidesOp} ${this.parameters.value}`;
+        const comparison = `${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}`;
 
         const resultHed = (this.grouping) ?
             `Is the difference of means of (${testimate.state.x.name}): group ${this.results.groups[0]} - group ${this.results.groups[1]} ${comparison}?` :
@@ -178,9 +178,9 @@ class TwoSampleT extends Test {
         const intro = (this.grouping) ?
             `difference of means of ${testimate.state.x.name}: ${group0rep} - ${this.results.groups[1]}` :
             `difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `Testing ${intro} ${sides} ${value} ${conf}`;
 
         return theHTML;

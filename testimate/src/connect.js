@@ -124,15 +124,15 @@ connect = {
             outcome: testimate.state.x.name,
             predictor: (testimate.state.y && testimate.state.y.name) ? testimate.state.y.name : "",
             procedure: theConfig.name,
-            sign: theTest.parameters.theSidesOp,
-            value: theTest.parameters.value,
+            sign: testimate.state.testParams.theSidesOp,
+            value: testimate.state.testParams.value,
         };
 
         theConfig.emitted.split(",").forEach(att => {
             if (theTest.results.hasOwnProperty(att)) {
                 theItemValues[att] = theTest.results[att]
             } else {    //  not a result? Maybe it's a parameter!!
-                theItemValues[att] = theTest.parameters[att]
+                theItemValues[att] = testimate.state.testParams[att]
             }
         });
 

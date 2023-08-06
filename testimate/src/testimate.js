@@ -9,16 +9,29 @@ const testimate = {
     initialize : async function() {
         console.log(`initializing...`);
 
-        await this.setUpState();
+        Object.assign(this.state, this.constants.defaultState);     //  test
+
+        //  await this.setUpState();
         await connect.initialize(this.iFrameDescription, null);
+        this.state = await codapInterface.getInteractiveState();    //  get stored state of any
         if (this.state.dataset) {
-            await this.setDataset(this.state.dataset);  //  register for case changes
+            await this.restoreState();
+           // await this.setDataset(this.state.dataset);  //  register for case changes
         }
 
         this.strings = strings;      //      todo: fix this, make it robust
 
         ui.initialize();
         ui.redraw();
+    },
+
+    restoreState : async function() {
+        await connect.registerForCaseChanges(this.state.dataset.name);
+        this.dirtyData = true;
+        // if (this.state.x) {
+        //     this.setX(this.state.x);
+        // }
+
     },
 
     copeWithAttributeDrop : async function(iDataset, iAttribute, iWhere){
@@ -96,18 +109,19 @@ const testimate = {
 
     constants : {
         pluginName : `testimate`,
-        version : `2023f`,
+        version : `2023g`,
         dimensions : {height : 555, width : 444},
 
         datasetName : `tests and estimates`,
 
         defaultState : {
+            lang : `en`,
             dataset : null,     //      whole dataset info, includes .name
             dataTypes : {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
             x : null,           //      attribute info, complete
             y : null,
             testID : null,
-            lang : `en`,
+            testParams : {},
         }
     }
 }

@@ -1,22 +1,21 @@
 class Test {
 
     testID = null;
-    
     results = {};
-    parameters =  {
-        alpha: 0.05,
-        value: 0.0,    //  to be tested against
-        sides: 2,
-        theSidesOp: "≠",   //  the sign
-        conf: 95,    //  confidence level 1 - alpha
-        group : null,
-    }
 
     theConfig = null;
 
     constructor(iID) {
-        this.testID = iID;
+        this.testID = iID;      //  do we need this or is it in testimate.state?
         this.theConfig = Test.configs[iID];
+        testimate.state.testParams = {
+            alpha: 0.05,
+            value: 0.0,    //  to be tested against
+            sides: 2,
+            theSidesOp: "≠",   //  the sign
+            conf: 95,    //  confidence level 1 - alpha
+            group : null,
+        }
     }
 
     updateTestResults() {
@@ -24,10 +23,11 @@ class Test {
     }
 
     makeResultsString() {
+        const theParams = testimate.state.testParams;
 
-        this.parameters.theSidesOp = "≠";
-        if (this.parameters.sides === 1) {
-            this.parameters.theSidesOp = (this.results[this.theConfig.testing] > this.parameters.value ? ">" : "<");
+        theParams.theSidesOp = "≠";
+        if (theParams.sides === 1) {
+            theParams.theSidesOp = (this.results[this.theConfig.testing] > theParams.value ? ">" : "<");
         }
 
         const N = this.results.N;
@@ -129,13 +129,6 @@ class Test {
     }
 
     makeConfigureGuts() {
-/*
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
-        const conf = ui.confBoxHTML(this.parameters.conf);
-        let theHTML = `Testing mean(${data.xAttData.name}) ${sides} ${value} ${conf}`;
-*/
-
         return `no configuration for logistic regression yet`;
     }
 

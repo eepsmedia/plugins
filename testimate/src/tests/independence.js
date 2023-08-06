@@ -53,7 +53,7 @@ class Independence extends Test {
         }
 
 
-        const theCIparam = 1 - this.parameters.alpha / 2;   //  the large number
+        const theCIparam = 1 - testimate.state.testParams.alpha / 2;   //  the large number
         this.results.df = (this.results.rowLabels.length - 1) * (this.results.columnLabels.length - 1);
         this.results.chisqCrit = jStat.chisquare.inv(theCIparam, this.results.df);    //
         this.results.P = 1 - jStat.chisquare.cdf(this.results.chisq, this.results.df);
@@ -67,8 +67,8 @@ class Independence extends Test {
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
         const df = ui.numberToString(this.results.df, 3);
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
         const TIdetails = document.getElementById("TIdetails");
         const TIopen = TIdetails && TIdetails.hasAttribute("open");
@@ -133,7 +133,7 @@ class Independence extends Test {
     }
 
     makeConfigureGuts() {
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `Test for independence of ${data.yAttData.name} from ${data.xAttData.name}: ${conf}`;
 
         return theHTML;

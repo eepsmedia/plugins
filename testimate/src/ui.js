@@ -33,12 +33,13 @@ ui = {
         //  update the tests as necessary
         const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
         this.theTest = testimate.theTest;
+        const theParams = testimate.state.testParams;
 
         if (this.theTest && this.theTest.testID) {
             //  set the sides op universally
-            this.theTest.parameters.theSidesOp = "≠";
-            if (this.theTest.parameters.sides === 1) {
-                this.theTest.parameters.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > this.theTest.parameters.value ? ">" : "<");
+            theParams.theSidesOp = "≠";
+            if (theParams.sides === 1) {
+                theParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
             }
 
             data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
@@ -121,14 +122,15 @@ ui = {
     },
 
     sidesBoxHTML: function (iSides) {
-        this.theTest.parameters.theSidesOp = "≠";
+        const theParams = testimate.state.testParams;
+        theParams.theSidesOp = "≠";
         if (iSides === 1) {
             const testStat = this.theTest.results[this.theTest.theConfig.testing];  //  testing what? mean? xbar? diff? slope?
-            this.theTest.parameters.theSidesOp = (testStat > this.theTest.parameters.value ? ">" : "<");
+            theParams.theSidesOp = (testStat > theParams.value ? ">" : "<");
         }
 
         return `<input id="sidesButton" type="button" onclick="handlers.changeTestSides()" 
-                value="${this.theTest.parameters.theSidesOp}">`
+                value="${theParams.theSidesOp}">`
     },
 
     group0ButtonHTML : function(iGroup) {
@@ -151,10 +153,11 @@ ui = {
 
     updateConfig: function () {
         const theConfig = Test.configs[testimate.theTest.testID];
+        const theParams = testimate.state.testParams;
 
         document.getElementById(`configStart`).textContent = `${testimate.theTest.makeTestDescription(this.theTestID, false)} `;
-        document.getElementById(`valueBox`).value = this.theTest.parameters.value;
-        document.getElementById(`sidesButton`).value = this.theTest.parameters.theSidesOp;
+        document.getElementById(`valueBox`).value = theParams.value;
+        document.getElementById(`sidesButton`).value = theParams.theSidesOp;
     },
 
     makeTestHeaderGuts: function (iPossibleIDs) {

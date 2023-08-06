@@ -6,13 +6,13 @@ class OneSampleP extends Test {
 
         //  get a default "group" -- the value we count as "success" for proportions
         const theValues = [...data.xAttData.valueSet];
-        this.parameters.group = theValues[0];   //  the first, by default
-        this.parameters.value = 0.5;
+        testimate.state.testParams.group = theValues[0];   //  the first, by default
+        testimate.state.testParams.value = 0.5;
     }
 
     updateTestResults() {
         const A = data.xAttData.theArray;
-        const G = this.parameters.group;
+        const G = testimate.state.testParams.group;
 
         let N = 0;
         let successes = 0;
@@ -21,18 +21,18 @@ class OneSampleP extends Test {
             if (x === G) successes++;
         })
 
-        const theCIparam = 1 - this.parameters.alpha / 2;
+        const theCIparam = 1 - testimate.state.testParams.alpha / 2;
 
         if (N > 0) {
             this.results.N = N;
             this.results.p = successes / N;
             this.results.SE = Math.sqrt((this.results.p) * (1 - this.results.p) / this.results.N);
-            this.results.z = (this.results.p - this.parameters.value) / this.results.SE;
+            this.results.z = (this.results.p - testimate.state.testParams.value) / this.results.SE;
 
             this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
             const zAbs = Math.abs(this.results.z);
             this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
-            if (this.parameters.sides === 2) this.results.P *= 2;
+            if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
             this.results.CImax = this.results.p + this.results.zCrit * this.results.SE;
             this.results.CImin = this.results.p - this.results.zCrit * this.results.SE;
@@ -40,7 +40,7 @@ class OneSampleP extends Test {
     }
 
     makeResultsString() {
-        const testDesc = `proportion of (${data.xAttData.name} = ${this.parameters.group})`;
+        const testDesc = `proportion of (${data.xAttData.name} = ${testimate.state.testParams.group})`;
 
         const N = this.results.N;
         const p = ui.numberToString(this.results.p, 4);
@@ -52,11 +52,11 @@ class OneSampleP extends Test {
         const CImax = ui.numberToString(this.results.CImax);
         const zCrit = ui.numberToString(this.results.zCrit, 3);
         const z = ui.numberToString(this.results.z, 3);
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
         let out = "<pre>";
 
-        out += `Is the ${testDesc} ${this.parameters.theSidesOp} ${this.parameters.value}? `;
+        out += `Is the ${testDesc} ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}? `;
         out += `<br><br>    N = ${N}, z = ${z}, ${P}`;
         out += `<br>    sample p = ${p}, ${conf}% CI = [${CImin}, ${CImax}]`;
         out += `<br>    SE = ${SE}, &alpha; = ${alpha}, z* = ${zCrit}`;
@@ -81,10 +81,10 @@ class OneSampleP extends Test {
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value, 1.0, 0.05);
-        const conf = ui.confBoxHTML(this.parameters.conf);
-        const group = ui.group0ButtonHTML(this.parameters.group);
+        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value, 1.0, 0.05);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
+        const group = ui.group0ButtonHTML(testimate.state.testParams.group);
         let theHTML = `Testing p(${data.xAttData.name} = ${group}) ${sides} ${value} ${conf}`;
 
         return theHTML;

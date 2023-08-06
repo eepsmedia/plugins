@@ -26,7 +26,7 @@ class TwoSampleP extends Test {
     }
 
     updateTestResults() {
-        const theCIparam = 1 - this.parameters.alpha / 2;
+        const theCIparam = 1 - testimate.state.testParams.alpha / 2;
 
         let A = data.xAttData.theArray;
         let B = data.yAttData.theArray;
@@ -97,12 +97,12 @@ class TwoSampleP extends Test {
             this.results.pDiff = this.results.p1 - this.results.p2;
 
             //  test statistic = z
-            this.results.z = (this.results.pDiff - this.parameters.value) / this.results.SE;
+            this.results.z = (this.results.pDiff - testimate.state.testParams.value) / this.results.SE;
             this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
 
             const zAbs = Math.abs(this.results.z);
             this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
-            if (this.parameters.sides === 2) this.results.P *= 2;
+            if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
             this.results.CImax = this.results.pDiff + this.results.zCrit * this.results.SE;
             this.results.CImin = this.results.pDiff - this.results.zCrit * this.results.SE;
@@ -129,8 +129,8 @@ class TwoSampleP extends Test {
         const zCrit = ui.numberToString(this.results.zCrit, 3);
 
         const z = ui.numberToString(this.results.z, 3);
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
         const DSdetails = document.getElementById("DSdetails");
         const DSopen = DSdetails && DSdetails.hasAttribute("open");
@@ -140,7 +140,7 @@ class TwoSampleP extends Test {
         const groupingPhrase = `(${testimate.state.x.name} = ${this.results.successValueA}): ${this.results.labelA} - ${this.results.labelB}`;
         const nonGroupingPhrase = `(${testimate.state.x.name} = ${this.results.successValueA}) - (${testimate.state.y.name} = ${this.results.successValueB})`;
 
-        const comparison = `${this.parameters.theSidesOp} ${this.parameters.value}`;
+        const comparison = `${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}`;
         const resultHed = (this.grouping) ?
             `Is the difference of proportions of ${groupingPhrase} ${comparison}?` :
             `Is the difference of proportions of ${nonGroupingPhrase} ${comparison}?`;
@@ -214,9 +214,9 @@ class TwoSampleP extends Test {
         const intro = (this.grouping) ?
             `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) : ${this.results.labelA} - ${this.results.labelB}` :
             `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) - (${testimate.state.y.name} = ${this.successValueButtonB()}) `;
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value, 1, .05);
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value, 1, .05);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `${intro} ${sides} ${value} <br>&emsp;${conf}`;
 
         return theHTML;

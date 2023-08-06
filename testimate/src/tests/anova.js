@@ -60,7 +60,7 @@ class ANOVA extends Test {
             }
 
             this.results.SST = this.results.SSR + this.results.SSE;
-            const theCIparam = 1 - this.parameters.alpha / 2;   //  the large number
+            const theCIparam = 1 - testimate.state.testParams.alpha / 2;   //  the large number
 
             this.results.dfTreatment = this.results.groupNames.length - 1;      //  "numerator" between groups
             this.results.dfError = this.results.N - this.results.groupNames.length; //  "denominator" within
@@ -89,8 +89,8 @@ class ANOVA extends Test {
         const P = (this.results.P < 0.0001) ?
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
         const DSdetails = document.getElementById("DSdetails");
         const DSopen = DSdetails && DSdetails.hasAttribute("open");
@@ -173,9 +173,9 @@ class ANOVA extends Test {
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `ANOVA on ${data.xAttData.name}: ${conf}`;
 
         return theHTML;

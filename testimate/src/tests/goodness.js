@@ -5,7 +5,7 @@ class Goodness extends Test {
         this.results.expected = {};
         this.results.observed = {};
         this.results.groupNames = [];
-        this.parameters.groupProportions = {};
+        testimate.state.testParams.groupProportions = {};
     }
 
     updateTestResults() {
@@ -15,11 +15,11 @@ class Goodness extends Test {
         const tempNames = [...data.xAttData.valueSet];
         this.results.groupNames  = tempNames.map( n => String(n));
 
-        this.parameters.groupProportions = this.getExpectations();
+        testimate.state.testParams.groupProportions = this.getExpectations();
 
         this.results.groupNames.forEach( v => {
             this.results.observed[v] = 0;
-            this.results.expected[v] = this.results.N * this.parameters.groupProportions[v];
+            this.results.expected[v] = this.results.N * testimate.state.testParams.groupProportions[v];
         })
 
         //`count the observed values in each category
@@ -37,7 +37,7 @@ class Goodness extends Test {
             this.results.chisq += cellValue;
         })
 
-        const theCIparam = 1 - this.parameters.alpha / 2;   //  the large number
+        const theCIparam = 1 - testimate.state.testParams.alpha / 2;   //  the large number
         this.results.df = this.results.groupNames.length - 1;
         this.results.chisqCrit = jStat.chisquare.inv(theCIparam, this.results.df);    //
         this.results.P = 1 - jStat.chisquare.cdf(this.results.chisq, this.results.df);
@@ -52,8 +52,8 @@ class Goodness extends Test {
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
         const df = ui.numberToString(this.results.df, 3);
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
         const GFdetails = document.getElementById("GFdetails");
         const GFopen = GFdetails && GFdetails.hasAttribute("open");
@@ -95,7 +95,7 @@ class Goodness extends Test {
 
         let needFresh = false;
 
-        const oldGroups = Object.keys(this.parameters.groupProportions);
+        const oldGroups = Object.keys(testimate.state.testParams.groupProportions);
         //  problem here: oldGroups is now an array of STRINGS, even if the keys were numbers.
         //  (Titanic "Class", {1,2,3} rendered as categorical, now we're doing goodness of fit.)
 
@@ -109,7 +109,7 @@ class Goodness extends Test {
          */
         oldGroups.forEach( old => {
             if (newGroups.includes(old)) {  //      there is a match!
-                let newVal = this.parameters.groupProportions[old];
+                let newVal = testimate.state.testParams.groupProportions[old];
                 if (sum + newVal > 1) {
                     newVal = 1 - sum;
                 }
@@ -147,18 +147,32 @@ class Goodness extends Test {
     }
 
     makeConfigureGuts() {
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
 
-        let theHTML = "Configure goodness-of-fit test: <br><br>";
+        let theHTML = "Configure goodness-of-fit test &emsp;";
+        theHTML += conf;
 
-        let nameRow =   `<tr><th>${testimate.state.x.name} = </th>`;
-        let valueRow =   `<tr><th>hypoth prop:</th>`;
+        let nameRow =   `<tr><th>${testimate.state.x.name} &rarr; </th>`;
+        let valueRow =   `<tr><th>${this.equalExpectationsButton()}</th>`;
+
+        //  is the goodness-of-fit configuration details element [extant and] open?
+
+        const GFConfigDetails = document.getElementById("GFConfigDetails");
+        const GFConfigOpen = GFConfigDetails && GFConfigDetails.hasAttribute("open");
+
+        //  start the GF details element
+
+        theHTML += `<details id="GFConfigDetails" ${GFConfigOpen ? "open" : ""}>`;
+        theHTML += `<summary>Set hypothesized proportions</summary>`
+
+        //  start the table of values. These are not results per se, but we class the table that way.
 
         theHTML += `<table class="test-results">`
 
+        //  the last group name will absorb any leftover proportion
         const lastGroupName = this.results.groupNames[this.results.groupNames.length - 1];
         this.results.groupNames.forEach( g => {
-            const theProp  = ui.numberToString(this.parameters.groupProportions[g],3)
+            const theProp  = ui.numberToString(testimate.state.testParams.groupProportions[g],3)
             nameRow += `<th>${g}</th>`;
             valueRow += (g === lastGroupName) ?   //  (the last one)
                 `<td id="lastProp">${theProp}</td>` :
@@ -168,20 +182,20 @@ class Goodness extends Test {
                     onchange="handlers.changeGoodnessProp('${lastGroupName}')"></input></td>`;
         })
 
-        valueRow += `<td>${this.equalExpectationsButton( )}</td>`;
         theHTML += `${nameRow}${valueRow}</table>`;
+        theHTML += `</details>`;
 
-        theHTML += conf;
         return theHTML;
     }
 
     equalExpectationsButton( ) {
+        const theLabel = `equalize` + "&nbsp;&rarr;";
         return `<input id="equalExpectationsButton" type="button" onclick="Goodness.equalizeExpectations()" 
-                value="=" title="make all expected valeus equal">`
+                value=${theLabel} title="make all expected values equal">`
     }
 
     static equalizeExpectations() {
-        const theProportions = testimate.theTest.parameters.groupProportions;
+        const theProportions = testimate.state.testParams.groupProportions;
         const theShares = Object.keys(theProportions).length;
         const theEqualShare = 1.0 / theShares;
         for (let group in theProportions) {

@@ -43,9 +43,9 @@ class Logistic extends Test {
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `Logistic regression predicting ${data.xAttData.name} from ${data.yAttData.name} ${conf}`;
 
         return theHTML;

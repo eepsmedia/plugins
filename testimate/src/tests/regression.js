@@ -6,7 +6,7 @@ class Regression extends Test {
 
     updateTestResults() {
 
-        const theCIparam = 1 - this.parameters.alpha / 2;
+        const theCIparam = 1 - testimate.state.testParams.alpha / 2;
 
         let sumXY = 0;
         let sumX = 0;
@@ -57,10 +57,10 @@ class Regression extends Test {
             this.results.interceptCImax = intercept + this.results.tCrit * SDintercept;
 
             //   test slope against value
-            this.results.t = (this.results.slope - this.parameters.value) / SDslope;
+            this.results.t = (this.results.slope - testimate.state.testParams.value) / SDslope;
             const tAbs = Math.abs(this.results.t);
             this.results.P = jStat.studentt.cdf(-tAbs, this.results.df);
-            if (this.parameters.sides === 2) this.results.P *= 2;
+            if (testimate.state.testParams.sides === 2) this.results.P *= 2;
         }
 
     }
@@ -80,8 +80,8 @@ class Regression extends Test {
         const rsq = ui.numberToString(this.results.rsq);
         const t = ui.numberToString(this.results.t, 3);
         const tCrit = ui.numberToString(this.results.tCrit, 3);
-        const conf = ui.numberToString(this.parameters.conf);
-        const alpha = ui.numberToString(this.parameters.alpha);
+        const conf = ui.numberToString(testimate.state.testParams.conf);
+        const alpha = ui.numberToString(testimate.state.testParams.alpha);
         const P = (this.results.P < 0.0001) ?
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
@@ -104,7 +104,7 @@ class Regression extends Test {
         out += `slope:      ${conf}% CI = [${CISmin}, ${CISmax}]<br>`;
         out += `intercept:  ${conf}% CI = [${CIImin}, ${CIImax}]<br>`;
         out += `<br> `;
-        out += `testing slope ${this.parameters.theSidesOp} ${this.parameters.value} `
+        out += `testing slope ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value} `
         out += `<br>    t = ${t}, ${P}`;
         out += `<br>    df = ${df},  &alpha; = ${alpha}, t* = ${tCrit}, `
         out += `</details>`;
@@ -127,9 +127,9 @@ class Regression extends Test {
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(this.parameters.sides);
-        const value = ui.valueBoxHTML(this.parameters.value);
-        const conf = ui.confBoxHTML(this.parameters.conf);
+        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value);
+        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `Testing slope ${sides} ${value} ${conf}`;
 
         return theHTML;

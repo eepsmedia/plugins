@@ -4,29 +4,29 @@ const handlers = {
      */
     changeTestSides: function () {
         const iSign = document.getElementById(`sidesButton`).value;    // 1 or 2
-        testimate.theTest.parameters.sides = (iSign === `≠`) ? 1 : 2;
+        testimate.state.testParams.sides = (iSign === `≠`) ? 1 : 2;
         ui.redraw();
     },
 
     changeConf: function () {
         const a = document.getElementById(`confBox`);
         const theTest = testimate.theTest;
-        theTest.parameters.conf = a.value;
-        theTest.parameters.alpha = 1 - theTest.parameters.conf / 100;
+        testimate.state.testParams.conf = a.value;
+        testimate.state.testParams.alpha = 1 - testimate.state.testParams.conf / 100;
         ui.redraw();
     },
 
     changeAlpha: function () {
         const a = document.getElementById(`alphaBox`);
         const theTest = testimate.theTest;
-        theTest.parameters.alpha = a.value;
-        theTest.parameters.conf = 100 * (1 - theTest.parameters.alpha);
+        testimate.state.testParams.alpha = a.value;
+        testimate.state.testParams.conf = 100 * (1 - testimate.state.testParams.alpha);
         ui.redraw();
     },
 
     changeValue: function () {
         const v = document.getElementById(`valueBox`);
-        testimate.theTest.parameters.value = v.value;
+        testimate.state.testParams.value = v.value;
         ui.redraw();
     },
 
@@ -37,9 +37,9 @@ const handlers = {
     },
 
     changeGroup0: function () {
-        const initialGroup = testimate.theTest.parameters.group;
+        const initialGroup = testimate.state.testParams.group;
         const valueSet = [...data.xAttData.valueSet];
-        testimate.theTest.parameters.group = this.nextValueInList(valueSet, initialGroup);
+        testimate.state.testParams.group = this.nextValueInList(valueSet, initialGroup);
         ui.redraw();
     },
 
@@ -65,7 +65,7 @@ const handlers = {
                 const theLastBox = document.getElementById("lastProp");
                 theLastBox.innerHTML = ui.numberToString(theBoxValue);
             }
-            theTest.parameters.groupProportions[g] = (theBoxValue);
+            testimate.state.testParams.groupProportions[g] = (theBoxValue);
         })
         ui.redraw();
     },
