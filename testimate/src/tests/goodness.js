@@ -5,7 +5,9 @@ class Goodness extends Test {
         this.results.expected = {};
         this.results.observed = {};
         this.results.groupNames = [];
-        testimate.state.testParams.groupProportions = {};
+        if (!testimate.restoringFromSave) {
+            testimate.state.testParams.groupProportions = {};
+        }
     }
 
     updateTestResults() {

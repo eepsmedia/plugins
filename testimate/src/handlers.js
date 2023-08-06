@@ -32,7 +32,7 @@ const handlers = {
 
     changeTest: function () {
         const T = document.getElementById(`testMenu`);
-        Test.makeFreshTest(T.value); //  need for state and restore
+        testimate.makeFreshTest(T.value); //  need for state and restore
         ui.redraw();
     },
 

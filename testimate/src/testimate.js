@@ -1,22 +1,20 @@
-
-
 const testimate = {
 
-    state : {},
+    state: {},
+    restoringFromSave : false,
 
-    theTest : null,
+    theTest: null,
 
-    initialize : async function() {
+    initialize: async function () {
         console.log(`initializing...`);
 
-        Object.assign(this.state, this.constants.defaultState);     //  test
-
-        //  await this.setUpState();
         await connect.initialize(this.iFrameDescription, null);
         this.state = await codapInterface.getInteractiveState();    //  get stored state of any
         if (this.state.dataset) {
             await this.restoreState();
-           // await this.setDataset(this.state.dataset);  //  register for case changes
+            // await this.setDataset(this.state.dataset);  //  register for case changes
+        } else {
+            Object.assign(this.state, this.constants.defaultState);     //  test
         }
 
         this.strings = strings;      //      todo: fix this, make it robust
@@ -25,8 +23,13 @@ const testimate = {
         ui.redraw();
     },
 
-    restoreState : async function() {
+    restoreState: async function () {
         await connect.registerForCaseChanges(this.state.dataset.name);
+        if (testimate.state.testID) {
+            this.restoringFromSave = true;
+            await data.updateData();
+            this.makeFreshTest(testimate.state.testID);
+        }
         this.dirtyData = true;
         // if (this.state.x) {
         //     this.setX(this.state.x);
@@ -34,7 +37,13 @@ const testimate = {
 
     },
 
-    copeWithAttributeDrop : async function(iDataset, iAttribute, iWhere){
+    makeFreshTest: function (iID) {
+        this.theTest = Test.configs[iID].fresh(iID, data.xAttData, data.yAttData);
+        testimate.state.testID = iID;
+        this.restoringFromSave = false;
+    },
+
+    copeWithAttributeDrop: async function (iDataset, iAttribute, iWhere) {
         //  const titleElement = document.getElementById(`titleDIV`);
         const initialElement = document.elementFromPoint(iWhere.x, iWhere.y);
         const theElement = initialElement.closest('#xDIV, #yDIV');
@@ -60,7 +69,7 @@ const testimate = {
         ui.redraw();
     },
 
-    setDataset : async function(iDataset) {
+    setDataset: async function (iDataset) {
         this.state.dataset = iDataset;
         this.state.testID = null;
         this.setX(this.emptyAttribute);
@@ -71,14 +80,14 @@ const testimate = {
         console.log(`set dataset to ${iDataset.name}`);
     },
 
-    setX : async function(iAtt) {
+    setX: async function (iAtt) {
         data.dirtyData = true;
         this.state.x = iAtt;
         //  this.state.testID = null;
         console.log(`set X to ${iAtt.name}`);
     },
 
-    setY : async function(iAtt) {
+    setY: async function (iAtt) {
         data.dirtyData = true;
         if (this.state.x) {
             this.state.y = iAtt;
@@ -89,13 +98,14 @@ const testimate = {
         }
     },
 
-    emptyAttribute : {
-        name : "",
-        title : "",
-        id : -1,
+    emptyAttribute: {
+        name: "",
+        title: "",
+        id: -1,
     },
 
-    setUpState : async function() {
+/*
+    setUpState: async function () {
         this.state = await codapInterface.getInteractiveState();    //  get stored state of any
 
         //  but what if there is none? Make a new one...
@@ -107,21 +117,22 @@ const testimate = {
         }
     },
 
-    constants : {
-        pluginName : `testimate`,
-        version : `2023g`,
-        dimensions : {height : 555, width : 444},
+*/
+    constants: {
+        pluginName: `testimate`,
+        version: `2023g`,
+        dimensions: {height: 555, width: 444},
 
-        datasetName : `tests and estimates`,
+        datasetName: `tests and estimates`,
 
-        defaultState : {
-            lang : `en`,
-            dataset : null,     //      whole dataset info, includes .name
-            dataTypes : {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
-            x : null,           //      attribute info, complete
-            y : null,
-            testID : null,
-            testParams : {},
+        defaultState: {
+            lang: `en`,
+            dataset: null,     //      whole dataset info, includes .name
+            dataTypes: {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
+            x: null,           //      attribute info, complete
+            y: null,
+            testID: null,
+            testParams: {},
         }
     }
 }

@@ -155,8 +155,6 @@ class TwoSampleP extends Test {
         out += `<br>     &alpha; = ${alpha}, z* = ${zCrit}</p>`
         out += `</details>`;
 
-        out += `<br>These results have not been checked!`;
-
         out += `</pre>`;
 
         return out;

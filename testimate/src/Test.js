@@ -8,13 +8,15 @@ class Test {
     constructor(iID) {
         this.testID = iID;      //  do we need this or is it in testimate.state?
         this.theConfig = Test.configs[iID];
-        testimate.state.testParams = {
-            alpha: 0.05,
-            value: 0.0,    //  to be tested against
-            sides: 2,
-            theSidesOp: "≠",   //  the sign
-            conf: 95,    //  confidence level 1 - alpha
-            group : null,
+        if (!testimate.restoringFromSave) {
+            testimate.state.testParams = {
+                alpha: 0.05,
+                value: 0.0,    //  to be tested against
+                sides: 2,
+                theSidesOp: "≠",   //  the sign
+                conf: 95,    //  confidence level 1 - alpha
+                group: null,
+            }
         }
     }
 
@@ -40,23 +42,16 @@ class Test {
         return `this is a default description for a test (${iTestID})`;
     }
 
-    
-    static makeFreshTest(iID) {
-        testimate.theTest = Test.configs[iID].fresh(iID, data.xAttData, data.yAttData);
-        testimate.state.testID = iID;
-    }
-
     static checkTestConfiguration() {
         const possibleTestIDs = this.filterTestConfigurations();
 
         if (testimate.theTest) {
-            if (!possibleTestIDs.includes(testimate.theTest.testID)) {
-                Test.makeFreshTest(possibleTestIDs[0])
+            if (!possibleTestIDs.includes(testimate.state.testID)) {
+                testimate.makeFreshTest(possibleTestIDs[0])
             }
         } else if (possibleTestIDs.length) {
-            Test.makeFreshTest(possibleTestIDs[0])
+            testimate.makeFreshTest(possibleTestIDs[0])
         }
-
         return (possibleTestIDs);   //  to ui to make a menu if necessary
     }
 

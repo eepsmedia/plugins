@@ -141,7 +141,7 @@ class ANOVA extends Test {
     }
 
     makeDescriptiveTable() {
-        let nameRow = `<tr><th>${data.yAttData.name} =</th>`;
+        let nameRow = `<tr><th>${data.yAttData.name} &rarr;</th>`;
         let countRow = `<tr><td>count</td>`;
         let meanRow = `<tr><td>mean(${data.xAttData.name})</td>`;
 
@@ -149,7 +149,6 @@ class ANOVA extends Test {
             nameRow += `<th>${this.results.groupNames[ix]}</th>`;
             countRow += `<td>${this.results.groupNs[ix]}</td>`;
             meanRow += `<td>${ui.numberToString(this.results.groupMeans[ix], 3)}</td>`;
-
         }
 
         nameRow += `</tr>`;

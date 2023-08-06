@@ -6,7 +6,9 @@ class TwoSampleT extends Test {
         this.results.groups = [];       //  names of the two groups to be displayed (depends on grouping)
         if (this.grouping) {
             const theValues = [...data.yAttData.valueSet];  //  possible values for groups
-            testimate.state.testParams.group = theValues[0];   //  the first, by default
+            if (!testimate.restoringFromSave) {
+                testimate.state.testParams.group = theValues[0];   //  the first, by default
+            }
         } else {
             testimate.state.testParams.group = null;
         }
@@ -116,8 +118,6 @@ class TwoSampleT extends Test {
         out += this.makeTwoSampleTable();
         out += `<br>    df = ${df}, &alpha; = ${alpha},  t* = ${tCrit}`
         out += `</details>`;
-
-        out += `<br>These results have not been checked!`;
 
         out += `</pre>`;
 
