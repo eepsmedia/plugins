@@ -104,20 +104,6 @@ const testimate = {
         id: -1,
     },
 
-/*
-    setUpState: async function () {
-        this.state = await codapInterface.getInteractiveState();    //  get stored state of any
-
-        //  but what if there is none? Make a new one...
-        if (Object.keys(this.state).length === 0) {
-            Object.assign(this.state, this.constants.defaultState);
-            await codapInterface.updateInteractiveState(this.state);    //  store this
-            console.log(`No interactive state retrieved. Got a new one...: 
-            ${JSON.stringify(this.state)}`);
-        }
-    },
-
-*/
     constants: {
         pluginName: `testimate`,
         version: `2023g`,
@@ -133,6 +119,7 @@ const testimate = {
             y: null,
             testID: null,
             testParams: {},
+            mostRecentEmittedTest : null,
         }
     }
 }

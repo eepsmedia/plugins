@@ -95,7 +95,7 @@ connect = {
 
         //  make a new output dataset if necessary
         //  todo: test for dataset existence (user may have deleted it)
-        if (testimate.state.testID !== this.mostRecentEmittedTest) {
+        if (testimate.state.testID !== testimate.state.mostRecentEmittedTest) {
             await this.deleteOutputDataset();
 
             const theMessage = {
@@ -155,7 +155,7 @@ connect = {
         let out = {};
 
         if (testimate.state.testID) {
-            this.mostRecentEmittedTest = testimate.state.testID;
+            testimate.state.mostRecentEmittedTest = testimate.state.testID;
             const theConfig = Test.configs[testimate.state.testID];
 
             //  first construct the "attrs" array
