@@ -8,6 +8,7 @@ let connect;
 connect = {
 
     caseChangeSubscriberIndex: null,
+    attributeChangeSubscriberIndex: null,
     attributeDragDropSubscriberIndex: null,
     mostRecentEmittedTest: null,
     datasetInfo: null,      //  don't need it!
@@ -54,8 +55,29 @@ connect = {
         dimensions: testimate.constants.dimensions,      //      dimensions,
     },
 
+    registerForAttributeEvents: function(iDatasetName) {
+        const sResource = `dataContext[${iDatasetName}].attribute`;
+
+        if (this.attributeChangeSubscriberIndex) {        //  zero is a valid index... :P but it should be the "get"
+            codapInterface.off(this.attributeChangeSubscriberIndex);    //  blank that subscription.
+        }
+
+        try {
+            this.attributeChangeSubscriberIndex = codapInterface.on(
+                'notify',
+                sResource,
+                data.handleAttributeChangeNotice
+            );
+            console.log(`registered for attribute changes in ${iDatasetName}. Index ${this.attributeChangeSubscriberIndex}`);
+        } catch (msg) {
+            console.log(`problem registering for attribute changes: ${msg}`);
+        }
+    },
+
     /**
-     * Register for the dragDrop[attribute] event
+     * Register for the dragDrop[attribute] event.
+     *
+     * Called from connect.initialize();
      */
     registerForDragDropEvents: function () {
         const tResource = `dragDrop[attribute]`;

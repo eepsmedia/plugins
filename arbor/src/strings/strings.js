@@ -142,7 +142,8 @@ Then we ask about`,
         sRegressTreeDataSetTitle: "Regression Tree Records",
         sClassTreeDataSetDescription : `Data about regression trees`,
 
-        //  emitted data attribute names and descriptions. Prefixes; `san` and `sad`
+        //  emitted data attribute names and descriptions. Prefixes; `san` (string attribute name)
+        //  and `sad` (string attribute description_
 
         sanPredict : `predict`,
         sanN : `N`,

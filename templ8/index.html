@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<!--
+local just this: http://localhost/plugins/templ8/
+local in local codap :
+http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/templ8
+
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>templ8</title>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+
+    <link rel='stylesheet' type='text/css' href='css/templ8.css'/>
+
+    <script src="src/templ8.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/handlers.js"></script>
+
+    <!-- These five scripts take care of the communication with CODAP  -->
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
+
+
+</head>
+<body>
+
+<h2>A plugin</h2>
+<div id="status"></div>
+
+</body>
+
+<script>
+    window.onload = function () {
+        templ8.initialize();
+    }
+</script>
+
+</html>

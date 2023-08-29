@@ -76,6 +76,7 @@ const testimate = {
         this.setY(this.emptyAttribute);    //  change of dataset, remove attributes
 
         await connect.registerForCaseChanges(this.state.dataset.name);
+        await connect.registerForAttributeEvents(this.state.dataset.name);
         //  await connect.getDatasetInfo(iName);
         console.log(`set dataset to ${iDataset.name}`);
     },

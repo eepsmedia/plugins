@@ -166,6 +166,10 @@ const data = {
 
     },
 
+    handleAttributeChangeNotice : async function(iMessage) {
+        console.log(`attribute change!`);
+    },
+
     /**
      * from https://stackoverflow.com/questions/175739/how-can-i-check-if-a-string-is-a-valid-number
      * @param str
