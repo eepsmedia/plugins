@@ -1,0 +1,19 @@
+body {
+    background-color: aliceblue;
+    font-family: "Sirin Stencil",sans-serif;
+}
+
+div {
+    font-family: "Sirin Stencil",sans-serif;
+
+}
+
+label {
+    font-family: Monaco, monospace;
+    font-size: small;
+}
+
+h3 {
+    margin: 0;
+    margin-bottom: 0.3em;
+}
