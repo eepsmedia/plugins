@@ -1,3 +1,0 @@
-const cred = {
-    token : "XYMtyBtfgNMlwHKGadTjKhWkHjVWsOPu",
-}

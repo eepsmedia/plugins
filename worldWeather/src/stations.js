@@ -1,8 +1,139 @@
+/**
+ * Singleton that handles everything to do with stations -- including CODAP selection and the map, etc.
+ *
+ * @type {{stationList: [{elevation: number, latitude: number, name: string, name2: string, stationid: string, longitude: number},{elevation: number, latitude: number, name: string, name2: string, stationid: string, longitude: number},{elevation: number, latitude: number, name: string, name2: string, stationid: string, longitude: number},{elevation: number, latitude: number, name: string, name2: string, stationid: string, longitude: number},{elevation: number, latitude: number, name: string, name2: string, stationid: string, longitude: number},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null], makeStationMenuGuts: (function(): string)}}
+ */
+const stations = {
 
-const stationList =
-    [
+    initialize : async function() {
+        await this.makeNewStationsDataset();
+        await this.fillStationsDataset();
+
+        //  register interest in a selection of a station (e.g., in the map)
+        codapInterface.on(
+            'notify',
+            `dataContextChangeNotice[${wweather.constants.stationsDatasetName}]`,
+            'selectCases',
+            stations.selectStation
+        );
+    },
+
+    getStationInfo : function(iID) {
+        let out = {};
+        this.stationList.forEach(stn => {
+            if (stn.stationid === iID) {
+                out = stn;
+            }
+
+        });
+        return out;
+    },
+
+    makeNewStationsDataset : async function() {
+        //  await this.deleteDataset();
+        const theSetupObject = this.getDatasetSetupObject()
+        await pluginHelper.initDataSet(theSetupObject);
+    },
+
+    fillStationsDataset : async function() {
+
+        const theItems = this.stationList;
+
+        try {
+            const res = await pluginHelper.createItems(theItems, wweather.constants.stationsDatasetName);
+            //  this.makeTableAppear();     //  we don't want to see the Stations table!
+        } catch (msg) {
+            console.log("Problem emitting station items: " + JSON.stringify(theItems));
+            console.log(msg);
+        }
+    },
+
+    makeStationMenuGuts : function() {
+        let out = ``;
+        this.stationList.forEach( station => {
+            out += `<option value="${station.stationid}">${station.name}</option>\n`;
+        })
+        return out;
+    },
+
+    /**
+     * User has selected a station (e.g., in the map).
+     * We figure out which station and ask that one to be selected in the station menu.
+     *
+     * @returns {Promise<void>}
+     */
+    selectStation : async  function(iCommand) {
+        const tResourceString = iCommand.resource;
+        const tCases = (iCommand.values.result.cases) ? pluginHelper.arrayify(iCommand.values.result.cases) : [];
+        if (tCases.length === 1) {
+            const tValues = tCases[0].values;
+            ui.setStationMenuTo(tValues.stationid);
+        } else {
+            console.log(`    ....    I cannot cope when you select ${tCases.length} cases!`)
+        }
+
+    },
+
+    makeMapAppear: function () {
+        codapInterface.sendRequest({
+            "action": "create",
+            "resource": "component",
+            dataContext : wweather.constants.stationsDatasetName,
+            "values": {
+                "type": "map",
+                "name": wweather.constants.stationsMapName,
+            }
+        })
+    },
+
+    getDatasetSetupObject : function(){
+        return {
+            name: wweather.constants.stationsDatasetName,
+
+            collections: [
+                {
+                    name: wweather.constants.stationsDatasetName,
+                    labels: {
+                        singleCase: "station",
+                    },
+                    attrs: [
+                        {
+                            name: DG.plugins.wweather.attributeNames.sName,
+                            description: DG.plugins.wweather.attributeDescriptions.station,
+                        },
+                        {
+                            name: DG.plugins.wweather.attributeNames.sID,
+                            description: DG.plugins.wweather.attributeDescriptions.sID,
+                        },
+                        {
+                            name: DG.plugins.wweather.attributeNames.sLat,
+                            description: DG.plugins.wweather.attributeDescriptions.sLat,
+                            unit : '°',
+                        },
+                        {
+                            name: DG.plugins.wweather.attributeNames.sLon,
+                            description: DG.plugins.wweather.attributeDescriptions.sLon,
+                            unit : '°',
+                        },
+                        {
+                            name: DG.plugins.wweather.attributeNames.sElev,
+                            description: DG.plugins.wweather.attributeDescriptions.sElev,
+                            unit : 'm',
+                        },
+                        {
+                            name: DG.plugins.wweather.attributeNames.sName2,
+                            description: DG.plugins.wweather.attributeDescriptions.sName2,
+                        },
+
+                    ]
+                }
+            ]
+        }
+    },
+
+    stationList: [
         {
-            "name": "Auckland",
+            "name": "Auckland, NZ",
             "stationid": "NZM00093110",
             "latitude": -37,
             "longitude": 174.8,
@@ -18,7 +149,7 @@ const stationList =
             "name2": "WELLINGTON AERO"
         },
         {
-            "name": "Christchurch",
+            "name": "Christchurch, NZ ",
             "stationid": "NZM00093781",
             "latitude": -43.489,
             "longitude": 172.532,
@@ -114,6 +245,22 @@ const stationList =
             "name2": "MADRID CUATROVIENTOS"
         },
         {
+            "name": "Berlin",
+            "stationid": "GME00127930",
+            "latitude": 52.3819,
+            "longitude": 13.5325,
+            "elevation": 46,
+            "name2": "BERLIN SCHONEFELD"
+        },
+        {
+            "name": "Perm (Russia)",
+            "stationid": "RSM00028224",
+            "latitude": 58.0167,
+            "longitude": 56.3,
+            "elevation": 171,
+            "name2": "PERM (RUSSIA)"
+        },
+        {
             "name": "Athens",
             "stationid": "GR000016716",
             "latitude": 37.9,
@@ -160,6 +307,14 @@ const stationList =
             "longitude": 139.767,
             "elevation": 36,
             "name2": "TOKYO"
+        },
+        {
+            "name": "Vladivostok",
+            "stationid": "RSM00031960",
+            "latitude": 43.1167,
+            "longitude": 131.933,
+            "elevation": 187,
+            "name2": "VLADIVOSTOK"
         },
         {
             "name": "New Delhi",
@@ -251,11 +406,11 @@ const stationList =
         },
         {
             "name": "Honolulu",
-            "stationid": "US1HIHN0014",
-            "latitude": 21.39,
-            "longitude": -157.92,
-            "elevation": 175,
-            "name2": "AIEA (HONOLULU, HI)"
+            "stationid": "USW00022521",
+            "latitude": 21.32402,
+            "longitude": -157.93946,
+            "elevation": 1.9,
+            "name2": "HONOLULU INTL AP"
         },
         {
             "name": "Cape Town",
@@ -280,6 +435,16 @@ const stationList =
             "longitude": -58.483000000000004,
             "elevation": 25,
             "name2": "BUENOS AIRES OBSERV"
+        },
+        {
+            "name": "Bogotá",
+            "stationid": "CO000080222",
+            "latitude": 4.7010000000000005,
+            "longitude": -74.15,
+            "elevation": 2548,
+            "name2": "BOGOTA ELDORADO"
         }
     ]
 
+
+}

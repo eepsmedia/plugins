@@ -12,9 +12,9 @@ const handlers = {
         const datatypes = `&datatypeid=TMIN&datatypeid=TMAX&datatypeid=TAVG&datatypeid=PRCP`;
         const dates = `&startdate=${wweather.state.startDate}&enddate=${wweather.state.endDate}`;
         const station =   `&stationid=GHCND:${wweather.state.focusStation}`;
-        const limit = `&limit=${wweather.state.limit}`;
+        const limit = `&limit=${wweather.state.limit}`;     //
 
-        const theURL = `${wweather.constants.dailyURL}${datatypes}${dates}${limit}${station}`;
+        const theURL = `${wweather.constants.dailyURL}${limit}${datatypes}${dates}${station}`;
 
         console.log(`    fetch from: ${theURL}`);
 
@@ -32,7 +32,7 @@ const handlers = {
         try {
             result = await fetch(theURL, options);
         } catch (msg) {
-            console.log(`problem with weather fetch: ${msg}`);
+            console.log(`problem with weather fetch: ${msg} stationID: ${wweather.state.focusStation}`);
         }
 
         if (result.status === 200) {

@@ -30,7 +30,7 @@ const connect = {
         let thisCase = {};
         let theItems = [];
 
-        const theStation = wweather.getStationInfo(wweather.state.focusStation);
+        const theStation = stations.getStationInfo(wweather.state.focusStation);
 
         iData.forEach( data => {
             if (data.date !== currentDate) {
@@ -84,7 +84,8 @@ const connect = {
 
     },
 
-    makeTableAppear: function () {
+    makeTableAppear:  function () {
+        console.log(`making table for ${wweather.constants.datasetName} appear`);
         codapInterface.sendRequest({
             "action": "create",
             "resource": "component",

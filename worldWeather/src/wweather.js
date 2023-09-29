@@ -21,6 +21,7 @@ wweather = {
 
         //  this.strings = strings;      //      todo: fix this, make it robust
 
+        await stations.initialize();
         ui.initialize();
         ui.redraw();
 
@@ -47,22 +48,14 @@ wweather = {
         this.state.datasetName = iDataset.name;
     },
 
-    getStationInfo : function(iID) {
-        let out = {};
-        stationList.forEach(stn => {
-            if (stn.stationid === iID) {
-                out = stn;
-            }
-
-        });
-        return out;
-    },
 
     constants: {
         pluginName: `wweather`,
         datasetName : `worldWeather`,
+        stationsDatasetName : `stations`,
+        stationsMapName : `stations-map`,
         collectionName : `daily observations`,
-        version: `2023a`,
+        version: `2023b`,
         dimensions: {height: 222, width: 222},
         baseURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/`,
         locURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/locations?datasetid=GHCND`,

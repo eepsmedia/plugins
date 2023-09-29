@@ -12,7 +12,7 @@ const ui = {
         this.resultDIV = document.getElementById(`result`);
 
         this.stationMenu = document.getElementById(`stationMenu`);
-        this.stationMenu.innerHTML = this.makeStationMenuGuts();
+        this.stationMenu.innerHTML = stations.makeStationMenuGuts();
 
         this.startDateInput = document.getElementById(`startDateInput`);
         this.startDateInput.value = wweather.state.startDate;
@@ -31,12 +31,8 @@ const ui = {
         //  this.resultDIV.innerHTML = JSON.stringify(wweather.tResult);
     },
 
-    makeStationMenuGuts : function() {
-        let out = ``;
-        stationList.forEach( station => {
-            out += `<option value="${station.stationid}">${station.name}</option>\n`;
-        })
-        return out;
+    setStationMenuTo : function(iID) {
+        this.stationMenu.value = iID;
     },
 
     getStation : function() {
