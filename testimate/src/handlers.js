@@ -10,7 +10,6 @@ const handlers = {
 
     changeConf: function () {
         const a = document.getElementById(`confBox`);
-        const theTest = testimate.theTest;
         testimate.state.testParams.conf = a.value;
         testimate.state.testParams.alpha = 1 - testimate.state.testParams.conf / 100;
         ui.redraw();
@@ -18,7 +17,6 @@ const handlers = {
 
     changeAlpha: function () {
         const a = document.getElementById(`alphaBox`);
-        const theTest = testimate.theTest;
         testimate.state.testParams.alpha = a.value;
         testimate.state.testParams.conf = 100 * (1 - testimate.state.testParams.alpha);
         ui.redraw();
@@ -27,6 +25,18 @@ const handlers = {
     changeValue: function () {
         const v = document.getElementById(`valueBox`);
         testimate.state.testParams.value = v.value;
+        ui.redraw();
+    },
+
+    changeIterations: function () {
+        const v = document.getElementById(`iterBox`);
+        testimate.state.testParams.iter = v.value;
+        ui.redraw();
+    },
+
+    changeRate: function () {
+        const v = document.getElementById(`rateBox`);
+        testimate.state.testParams.rate = v.value;
         ui.redraw();
     },
 
@@ -52,7 +62,7 @@ const handlers = {
 
         theTest.results.groupNames.forEach(g => {
             let theBoxValue = 0;
-            if (g != lastGroup) {
+            if (g !== lastGroup) {
                 theBoxValue = Number(document.getElementById(`GProp_${g}`).value);
                 const oldPropSum = propSum
                 propSum += theBoxValue;

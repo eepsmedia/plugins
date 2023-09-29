@@ -26,6 +26,11 @@ ui = {
         this.configDIV = document.getElementById(`configureDIV`);
     },
 
+    /**
+     * Main UI function. Redraws the screen.
+     *
+     * @returns {Promise<void>}
+     */
     redraw: async function () {
         await data.updateData();        //  make sure we have the current data
         this.updateAttributeBlocks();
@@ -121,6 +126,15 @@ ui = {
         return `${out}${suffix}`;
     },
 
+    /**
+     * returns the "sides" HTML, as in, is this a 1 or 2-sided test,
+     * and what does that mean?
+     * This is in the form of a clickable button so you can change it.
+     *
+     * @param iSides
+     * @returns {"<input id=\"sidesButton\" type=\"button\" onclick=\"handlers.changeTestSides()\"
+                value=\"≠\">"}
+     */
     sidesBoxHTML: function (iSides) {
         const theParams = testimate.state.testParams;
         theParams.theSidesOp = "≠";
@@ -133,11 +147,28 @@ ui = {
                 value="${theParams.theSidesOp}">`
     },
 
+    /**
+     * Button that changes which group is compared to everybody else
+     * (when a categorical app needs to be made binary)
+     * @param iGroup
+     * @returns {`<input id="group0Button" type="button" onclick="handlers.changeGroup0()"
+                value="${string}">`}
+     */
     group0ButtonHTML : function(iGroup) {
         return `<input id="group0Button" type="button" onclick="handlers.changeGroup0()" 
                 value="${iGroup}">`
     },
 
+    /**
+     * Construct a number <input> to receive a value such as
+     * the value to be compared to
+     *
+     * @param iVal
+     * @param iMax
+     * @param iStep
+     * @returns {`<input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"
+               ${string|string} ${string|string} type="number" value="${string}">`}
+     */
     valueBoxHTML : function(iVal, iMax, iStep) {
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
@@ -145,6 +176,29 @@ ui = {
                ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
     },
 
+    iterBoxHTML : function(iVal, iMax, iStep) {
+        const maxPhrase = iMax ? `max="${iMax}"` : "";
+        const stepPhrase = iStep ? `step="${iStep}"` : "";
+        return `<input id="iterBox" class="short_number_field" onchange="handlers.changeIterations()"
+               ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
+    },
+
+    rateBoxHTML : function(iVal, iMax, iStep) {
+        const maxPhrase = iMax ? `max="${iMax}"` : "";
+        const stepPhrase = iStep ? `step="${iStep}"` : "";
+        return `<input id="rateBox" class="short_number_field" onchange="handlers.changeRate()"
+               ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
+    },
+
+    /**
+     * Construct a number <input> to receive a
+     * a confidence level. Also includes a <label>
+     *
+     * @param iConf
+     * @returns {`<label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
+        <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
+               type="number" value="${string}" step="1" min="0" max="100">%`}
+     */
     confBoxHTML : function(iConf) {
         return `<label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
         <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"

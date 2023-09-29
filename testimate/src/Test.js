@@ -1,3 +1,6 @@
+/**
+ * The base class for all of our tests
+ */
 class Test {
 
     testID = null;
@@ -321,7 +324,7 @@ class Test {
             xType: 'binary',
             yType: `numeric`,
             paired: true,
-            emitted: `N,P`,
+            emitted: `N,P,w,b,rate,iter`,
             makeMenuString: ( ) => {return Logistic.makeMenuString(`BN01`);},
             fresh: (ix) => { return new Logistic(ix)  },
         },
@@ -331,7 +334,7 @@ class Test {
             xType: 'categorical',
             yType: `numeric`,
             paired: true,
-            emitted: `N,P`,
+            emitted: `N,P,w,b,rate,iter`,
             makeMenuString: ( ) => {return Logistic.makeMenuString(`CN01`);},
             fresh: (ix) => { return new Logistic(ix)  },
         },
