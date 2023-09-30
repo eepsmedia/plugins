@@ -7,7 +7,8 @@ class TwoSampleT extends Test {
         if (this.grouping) {
             const theValues = [...data.yAttData.valueSet];  //  possible values for groups
             if (!testimate.restoringFromSave) {
-                testimate.state.testParams.group = theValues[0];   //  the first, by default
+                testimate.setNewGroupingValue(theValues[0]);
+                //  testimate.state.testParams.group = theValues[0];   //  the first, by default
             }
         } else {
             testimate.state.testParams.group = null;

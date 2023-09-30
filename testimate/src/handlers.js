@@ -40,6 +40,12 @@ const handlers = {
         ui.redraw();
     },
 
+    changeLogisticRegressionProbe: function () {
+        const LRP = document.getElementById(`logisticRegressionProbeBox`);
+        testimate.state.testParams.probe = LRP.value; //  need for state and restore
+        ui.redraw();
+    },
+
     changeTest: function () {
         const T = document.getElementById(`testMenu`);
         testimate.makeFreshTest(T.value); //  need for state and restore
@@ -49,7 +55,8 @@ const handlers = {
     changeGroup0: function () {
         const initialGroup = testimate.state.testParams.group;
         const valueSet = [...data.xAttData.valueSet];
-        testimate.state.testParams.group = this.nextValueInList(valueSet, initialGroup);
+        const nextValue = this.nextValueInList(valueSet, initialGroup);
+        testimate.setNewGroupingValue(nextValue);
         ui.redraw();
     },
 
@@ -80,9 +87,14 @@ const handlers = {
         ui.redraw();
     },
 
+    showLogisticGraph() {
+        const formulas = testimate.theTest.makeFormulaString();
+        connect.showLogisticGraph(formulas.longFormula);
+    },
+
     nextValueInList: function (iList, iValue) {
         const iOrig = iList.indexOf(iValue);
-        const iNext = (iOrig + 1 > iList.length) ? 0 : iOrig + 1;
+        const iNext = (iOrig > iList.length) ? 0 : iOrig + 1;
         return iList[iNext];
     },
 
@@ -101,7 +113,7 @@ const handlers = {
      * remove the attribute indicated
      * @param iXY
      */
-    trashAttribute: function(iXY) {
+    trashAttribute: function (iXY) {
         console.log(`removing attribute [${iXY}]`);
         testimate.state[iXY] = null;
         testimate.theTest = null;

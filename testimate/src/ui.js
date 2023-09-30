@@ -48,7 +48,7 @@ ui = {
             }
 
             data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
-            this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
+            await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
             this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
             this.resultsDIV.innerHTML = this.theTest.makeResultsString();
             this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
@@ -108,20 +108,31 @@ ui = {
         let out = "";
         let multiplier = 1;
         let suffix = "";
+        let exponential = false;
 
-        if (iValue > 1.0e10) {
+        if (Math.abs(iValue) > 1.0e15) {
+            exponential = true;
+        } else if (Math.abs(iValue) < 1.0e-4) {
+            exponential = true;
+        } else if (Math.abs(iValue) > 1.0e10) {
             multiplier = 1.0e9;
             iValue /= multiplier;
             suffix = " B";
-        } else if (iValue > 1.0e7) {
+        } else if (Math.abs(iValue) > 1.0e7) {
             multiplier = 1.0e6;
             iValue /= multiplier;
             suffix = " M";
         }
+
+
         out = new Intl.NumberFormat(
             testimate.constants.lang,
             {maximumSignificantDigits: iFigs, useGrouping: false}
         ).format(iValue);
+
+        if (exponential) {
+            out = Number.parseFloat(iValue).toExponential(iFigs);
+        }
 
         return `${out}${suffix}`;
     },
@@ -159,6 +170,13 @@ ui = {
                 value="${iGroup}">`
     },
 
+    showLogisticGraphButtonHTML : function(iGroup) {
+        const theLabel = "show graph";
+        return `<input id="logisticGraphButton" type="button" 
+                onclick="handlers.showLogisticGraph()" 
+                value="${theLabel}">`
+    },
+
     /**
      * Construct a number <input> to receive a value such as
      * the value to be compared to
@@ -187,6 +205,13 @@ ui = {
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
         return `<input id="rateBox" class="short_number_field" onchange="handlers.changeRate()"
+               ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
+    },
+
+    logisticRegressionProbeBoxHTML : function(iVal, iMax, iStep) {
+        const maxPhrase = iMax ? `max="${iMax}"` : "";
+        const stepPhrase = iStep ? `step="${iStep}"` : "";
+        return `<input id="logisticRegressionProbeBox" class="short_number_field" onchange="handlers.changeLogisticRegressionProbe()"
                ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
     },
 

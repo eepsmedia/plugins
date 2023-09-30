@@ -38,7 +38,8 @@ const testimate = {
     },
 
     makeFreshTest: function (iID) {
-        this.theTest = Test.configs[iID].fresh(iID, data.xAttData, data.yAttData);
+        const theConfigs = Test.configs[iID];
+        this.theTest = theConfigs.fresh(iID, data.xAttData, data.yAttData);
         testimate.state.testID = iID;
         this.restoringFromSave = false;
     },
@@ -88,6 +89,17 @@ const testimate = {
         console.log(`set X to ${iAtt.name}`);
     },
 
+    setNewGroupingValue: async function(iValue) {
+        let f = "no formula needed";
+        const theConfig = Test.configs[testimate.state.testID];
+        const theAxis = theConfig.groupAxis;
+        if (theAxis) {
+            f = await connect.updateDatasetForLogisticGroups(iValue, theAxis);
+        }
+        testimate.state.testParams.group = iValue;
+        console.log(`changing grouping: new formula : [${f}]`);
+    },
+
     setY: async function (iAtt) {
         data.dirtyData = true;
         if (this.state.x) {
@@ -107,10 +119,12 @@ const testimate = {
 
     constants: {
         pluginName: `testimate`,
-        version: `2023g`,
+        version: `2023h`,
         dimensions: {height: 555, width: 444},
 
-        datasetName: `tests and estimates`,
+        datasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
+        logisticGroupAttributeName : `_logisticGroup`,  //  to add to the original dataset
+        logisticGraphName : "logistic graph",
 
         defaultState: {
             lang: `en`,

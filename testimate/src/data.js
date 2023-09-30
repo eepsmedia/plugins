@@ -2,6 +2,7 @@
 const data = {
 
     dirtyData: true,
+    secondaryCleanupNeeded : false,
 
     dataset: [],        //  array retrieved from CODAP
     xAttData: null,

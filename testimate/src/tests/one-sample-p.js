@@ -7,7 +7,7 @@ class OneSampleP extends Test {
         //  get a default "group" -- the value we count as "success" for proportions
         const theValues = [...data.xAttData.valueSet];
         if (!testimate.restoringFromSave) {
-            testimate.state.testParams.group = theValues[0];   //  the first, by default
+            testimate.setNewGroupingValue(theValues[0]);
             testimate.state.testParams.value = 0.5;
         }
     }
