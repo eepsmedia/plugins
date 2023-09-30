@@ -38,9 +38,9 @@ const testimate = {
     },
 
     makeFreshTest: function (iID) {
+        testimate.state.testID = iID;
         const theConfigs = Test.configs[iID];
         this.theTest = theConfigs.fresh(iID, data.xAttData, data.yAttData);
-        testimate.state.testID = iID;
         this.restoringFromSave = false;
     },
 

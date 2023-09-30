@@ -35,9 +35,11 @@ class Logistic extends Test {
         //}
 
         this.graphShowing = false;
+        this.newRegression = true;      //  would be false if we were addiing on additional iterations
+        this.moreIterations = 0;        //  and that's how many!
     }
 
-    async updateTestResults(newRegression = true) {
+    async updateTestResults( ) {
         const X0 = data.xAttData.theArray;
         const Y = data.yAttData.theArray;
         const N = X0.length;
@@ -57,7 +59,9 @@ class Logistic extends Test {
             return (x === testimate.state.testParams.group) ? 1 : 0;
         })
 
-        if (newRegression) {
+        let iterations = testimate.state.testParams.iter;
+
+        if (this.newRegression) {
             //  compute mean of Y to give initial value for pos
             let pos0 = 0;
             Y.forEach(y => {
@@ -69,12 +73,20 @@ class Logistic extends Test {
             if (!testimate.state.testParams.probe) testimate.state.testParams.probe = pos0;
             this.results.pos = pos0;
             this.results.slope = 0;
+            this.results.iterations = 0;
+
+            //  note: results.iterations is the total number of iterations (and its get emitted);
+            //  testParams.iter is the number we're running right now
+        } else {
+            iterations = this.moreIterations;
+            this.newRegression = true;      //      reset!
         }
 
         const theResult
             = await this.logisticRegressionUsingCurvature(
             X, Y,
-            testimate.state.testParams.rate, testimate.state.testParams.iter,
+            testimate.state.testParams.rate,
+            iterations,        //  how many we're running now
             this.results.slope, this.results.pos
         );
 
@@ -82,6 +94,7 @@ class Logistic extends Test {
             content.showLogisticGraph(this.makeFormulaString().longFormula);
         }
 
+        this.results.iterations += Number(iterations);
         this.results.slope = theResult.currentSlope;
         this.results.pos =  theResult.currentPos;
         this.results.cost = theResult.currentCost;
@@ -100,19 +113,24 @@ class Logistic extends Test {
 
     makeResultsString() {
         const N = this.results.N;
+        const cost = ui.numberToString(this.results.cost, 4);
         const slope = ui.numberToString(this.results.slope, 4);
         const pos = ui.numberToString(this.results.pos, 4);
         const LRPbox = ui.logisticRegressionProbeBoxHTML(testimate.state.testParams.probe);
         const graphButton = ui.showLogisticGraphButtonHTML();
         const theFormula = this.makeFormulaString().shortFormula;
+        const more10button = `<input type = "button" value = "10 more" onclick = "handlers.doMoreIterations(10)"`;
 
         let out = "<pre>";
 
-        out += `This plugin tries to do logistic regression.`;
-        out += `<br>    N = ${N}. Probability = 1/2 at ${data.yAttData.name} = ${pos}. There, slope = ${slope}`;
-        out += `<br><br>prob(${data.xAttData.name} = ${testimate.state.testParams.group}) = ${theFormula}`;
+        out += `This plugin does simple logistic regression.`;
+        out += `<br>       N = ${N}, ${this.results.iterations} iterations, cost = ${cost} ${more10button}<br>`;
+        out += `<br>Model: Probability = 1/2 at ${data.yAttData.name} = ${pos}. `
+        out += `<br>       There, slope = ${slope}<br>`;
+        out += `<br>    so the probability function is`
+        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.group}) = ${theFormula}`;
 
-        out += `<br><br>${graphButton}`;
+        out += `<br><br>${graphButton}&emsp;`;
         out += `<input type='button' value="copy formula" onclick="navigator.clipboard.writeText(testimate.theTest.makeFormulaString().longFormula)">`;
 
         out += `<br><br>Find the probability P(${data.xAttData.name} = ${testimate.state.testParams.group}) <br>    at ${data.yAttData.name} = ${LRPbox}`;
