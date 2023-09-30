@@ -60,7 +60,7 @@ const handlers = {
         ui.redraw();
     },
 
-    changeGoodnessProp(iLast) {
+    changeGoodnessProp: function(iLast) {
         console.log(`changing goodness prop for ${iLast}`);
         const theTest = testimate.theTest;
 
@@ -87,7 +87,17 @@ const handlers = {
         ui.redraw();
     },
 
-    showLogisticGraph() {
+    /**
+     * for logistic regression
+     * @param iHowMany  how many more iterations
+     */
+    doMoreIterations : function(iHowMany) {
+        testimate.theTest.moreIterations = iHowMany;
+        testimate.theTest.newRegression = false;        //      we will add on
+        ui.redraw();
+    },
+
+    showLogisticGraph: function() {
         const formulas = testimate.theTest.makeFormulaString();
         connect.showLogisticGraph(formulas.longFormula);
     },
