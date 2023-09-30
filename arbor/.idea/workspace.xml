@@ -5,17 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4b008c9-0a74-4920-ab1a-66ca1c4b9b60" name="Changes" comment="2022b. Fix Horton save bug.">
-      <change afterPath="$PROJECT_DIR$/../templ8/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../templ8/css/templ8.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../templ8/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../templ8/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../templ8/src/templ8.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../worldWeather/src/stations.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/NodeZoneView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/connect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/data.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/testimate.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/testimate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/data/stationList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../worldWeather/src/connect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/src/cred.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../worldWeather/src/handlers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../worldWeather/src/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/src/wweather.js" beforeDir="false" afterPath="$PROJECT_DIR$/../worldWeather/src/wweather.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../worldWeather/strings/strings.en.js" beforeDir="false" afterPath="$PROJECT_DIR$/../worldWeather/strings/strings.en.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,6 +111,10 @@
       <workItem from="1688766242514" duration="3579000" />
       <workItem from="1692044153947" duration="5460000" />
       <workItem from="1692654198105" duration="784000" />
+      <workItem from="1693417849934" duration="1081000" />
+      <workItem from="1693441658372" duration="172000" />
+      <workItem from="1694269649215" duration="1376000" />
+      <workItem from="1695067601115" duration="17000" />
     </task>
     <task id="LOCAL-00001" summary="arbor 2021b. More translation, more cleanup.">
       <created>1632269509560</created>
