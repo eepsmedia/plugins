@@ -63,9 +63,13 @@ class Logistic extends Test {
 
         if (this.newRegression) {
             //  compute mean of Y to give initial value for pos
+            let theMax = -Infinity;
+            let theMin = Infinity;
             let pos0 = 0;
             Y.forEach(y => {
                 pos0 += y;
+                if (y > theMax) theMax = y;
+                if (y < theMin) theMin = y;
             })        //  add up all the pos
             pos0 /= N;      //  to get the mean position
 
@@ -74,6 +78,7 @@ class Logistic extends Test {
             this.results.pos = pos0;
             this.results.slope = 0;
             this.results.iterations = 0;
+            this.results.rangeX = theMax - theMin;
 
             //  note: results.iterations is the total number of iterations (and its get emitted);
             //  testParams.iter is the number we're running right now
@@ -105,8 +110,11 @@ class Logistic extends Test {
         const shortSlope = ui.numberToString(this.results.slope, 4);
         const shortPos = ui.numberToString(this.results.pos, 4);
         const longPos = this.results.pos;
+
+        //  shortFormula is for screen display, so has the attribute name
+        //  longFormula is for actual use, and uses "x". Avoids trying to insert backtick...
         const shortFormula = `1/(1 + e^(-4 * ${shortSlope} * (${data.yAttData.name} - ${shortPos})))`;
-        const longFormula = `1/(1 + e^(-4 * ${longSlope} * (${data.yAttData.name} - ${longPos})))`;
+        const longFormula = `1/(1 + e^(-4 * ${longSlope} * (x - ${longPos})))`;
 
         return {shortFormula, longFormula};
     }
@@ -208,30 +216,36 @@ class Logistic extends Test {
             return theCost;
         }
 
-        function gradientPartials(slope, pos, h = 0.01) {
+        function gradientPartials(slope, pos, hs, hp) {
+
             const theCost = getCost(slope, pos),
-                costPlusSlope = getCost(slope + h, pos),
-                costMinusSlope = getCost(slope - h, pos),
-                costPlusPos = getCost(slope, pos + h),
-                costMinusPos = getCost(slope, pos - h);
+                costPlusSlope = getCost(slope + hs, pos),
+                costMinusSlope = getCost(slope - hs, pos),
+                costPlusPos = getCost(slope, pos + hp),
+                costMinusPos = getCost(slope, pos - hp);
 
-            const dCostdSlope = (costPlusSlope - costMinusSlope) / (2 * h),
-                dCostdSlopePlus = (costPlusSlope - theCost) / h,
-                dCostdSlopeMinus = (theCost - costMinusSlope) / h;
-            const dCostdPos = (costPlusPos - costMinusPos) / (2 * h),
-                dCostdPosPlus = (costPlusPos - theCost) / h,
-                dCostdPosMinus = (theCost - costMinusPos) / h;
+            const dCostdSlope = (costPlusSlope - costMinusSlope) / (2 * hs),
+                dCostdSlopePlus = (costPlusSlope - theCost) / hs,
+                dCostdSlopeMinus = (theCost - costMinusSlope) / hs;
+            const dCostdPos = (costPlusPos - costMinusPos) / (2 * hp),
+                dCostdPosPlus = (costPlusPos - theCost) / hp,
+                dCostdPosMinus = (theCost - costMinusPos) / hp;
 
 
-            const d2CostdSlope2 = (dCostdSlopePlus - dCostdSlopeMinus) / h;
-            const d2CostdPos2 = (dCostdPosPlus - dCostdPosMinus) / h;
+            const d2CostdSlope2 = (dCostdSlopePlus - dCostdSlopeMinus) / hs;
+            const d2CostdPos2 = (dCostdPosPlus - dCostdPosMinus) / hp;
 
             return {theCost, dCostdSlope, d2CostdSlope2, dCostdPos, d2CostdPos2};
         }
 
         function descendPartialOneIteration(slope, pos, alpha) {
 
-            const gradientStuff = gradientPartials(slope, pos);
+            const theResults = testimate.theTest.results;
+
+            const hs = 1 / theResults.rangeX / 1.0e4;      //  h for slope calculations
+            const hp = theResults.rangeX / 1.0e4;    //  h for p (pos) calculations
+
+            const gradientStuff = gradientPartials(slope, pos, hs, hp);
             const projectedDSlope = (gradientStuff.d2CostdSlope2 !== 0) ? -gradientStuff.dCostdSlope / gradientStuff.d2CostdSlope2 : 0,
                 projectedDPos = (gradientStuff.d2CostdPos2 !== 0) ? -gradientStuff.dCostdPos / gradientStuff.d2CostdPos2 : 0;
 
@@ -240,12 +254,12 @@ class Logistic extends Test {
                 newPos = pos + projectedDPos * alpha,
                 theCost = gradientStuff.theCost;
 
-            return {newSlope, newPos, theCost};
+            return {newSlope, newPos, theCost, hs, hp};
         }
 
         //      Done with defining functions. Actual method starts here!
 
-        let record = "iter, m, p, cost";
+        let record = "iter, m, p, cost, hm, hp";
         let currentSlope = slope0;
         let currentPos = pos0;
         let currentCost = 0;
@@ -258,7 +272,7 @@ class Logistic extends Test {
             currentCost = newVals.theCost;
 
             if (iter % 17 === 0 || iter < 6) {
-                record += `\n${iter}, ${currentSlope}, ${currentPos}, ${currentCost}`;
+                record += `\n${iter}, ${currentSlope}, ${currentPos}, ${currentCost}, ${newVals.hs}, ${newVals.hp}`;
             }
         }
 
@@ -266,6 +280,7 @@ class Logistic extends Test {
         return {currentSlope, currentPos, currentCost};
     }
 
+/*
     GPT_LogisticRegression(x, y, alpha, iterations) {
         // Initialize weights and bias
         let w = 0;
@@ -277,7 +292,7 @@ class Logistic extends Test {
         // Number of samples
         const N = x.length;
 
-        record += "iter, m, p, costper";
+        record += "iter, m, p, costper, hs, hp";
 
         for (let iter = 1; iter < iterations; iter++) {
             let cost = 0;
@@ -304,8 +319,6 @@ class Logistic extends Test {
             }
 
             // Update weights and bias
-            w -= alpha * dw / N;
-            b -= alpha * db / N;
             slope = w / 4;
             pos = -b / w;
 
@@ -314,16 +327,17 @@ class Logistic extends Test {
                 record += `\n${iter},${slope},${pos},${cost / N}`;
             }
             // Print the cost for every 1000 iterations
-            /*
+            /!*
                         if (iter % 1000 === 0) {
                             console.log(`Iteration ${iter}: Cost = ${cost / N}`);
                         }
-            */
+            *!/
         }
 
         console.log('\n' + record);
 
         return {w, b};
     }
+*/
 
 }

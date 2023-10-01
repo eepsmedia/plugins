@@ -159,7 +159,7 @@ connect = {
             description: `equal to 1 if ${data.xAttData.name} = ${testimate.state.testParams.group}, zero otherwise`,
             editable: false,
             formula: theFormula,
-            //  hidden: true
+            hidden: true
         }
         const getInfoMessage = {
             action: "get",
