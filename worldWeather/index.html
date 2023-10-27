@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<!--
+local just this: http://localhost/~tim/plugins/worldWeather/
+local in local codap :
+http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/worldWeather
+
+Sonoma:
+http://~tim/localhost/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/worldWeather
+
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>wweather</title>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+
+    <link rel='stylesheet' type='text/css' href='css/wweather.css'/>
+
+    <script src="src/wweather.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/handlers.js"></script>
+    <script src="src/stations.js"></script>
+
+    <script src="cred/cred.js"></script>
+
+    <script src="strings/strings.js"></script>
+    <script src="strings/strings.en.js"></script>
+
+    <!-- These five scripts take care of the communication with CODAP  -->
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
+
+
+</head>
+<body>
+
+<h3>world weather</h3>
+<label for="stationMenu">&nbsp;site:</label>
+<select id='stationMenu'></select>
+<br>
+<label for="startDateInput">start:</label>
+<input id="startDateInput" type="date">
+<br>
+<label for="endDateInput">&nbsp;&nbsp;end:</label>
+<input id="endDateInput" type="date">
+<br>limit: about 6 months
+<br><input type="button" onclick="stations.makeMapAppear()" value="show map">
+<br><input type="button" onclick="handlers.getWeather()" value="get weather">
+<!--
+<div id="result"></div>
+<div id="status"></div>
+-->
+
+</body>
+
+<script>
+    window.onload = function () {
+        wweather.initialize();
+    }
+</script>
+
+</html>
