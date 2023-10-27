@@ -55,7 +55,7 @@ wweather = {
         stationsDatasetName : `stations`,
         stationsMapName : `stations-map`,
         collectionName : `daily observations`,
-        version: `2023b`,
+        version: `2023c`,
         dimensions: {height: 222, width: 222},
         baseURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/`,
         locURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/locations?datasetid=GHCND`,

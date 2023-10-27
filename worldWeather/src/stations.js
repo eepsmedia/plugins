@@ -245,6 +245,14 @@ const stations = {
             "name2": "MADRID CUATROVIENTOS"
         },
         {
+            "name": "Granada",
+            "stationid": "SPE00120089",
+            "latitude": 37.1894,
+            "longitude": -3.7892,
+            "elevation": 567,
+            "name2": "GRANADA AEROPUERTO"
+        },
+        {
             "name": "Berlin",
             "stationid": "GME00127930",
             "latitude": 52.3819,
