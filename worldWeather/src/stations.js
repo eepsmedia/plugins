@@ -248,7 +248,7 @@ const stations = {
             "name": "Granada",
             "stationid": "SPE00120089",
             "latitude": 37.1894,
-            "longitude": -3.7892,
+            "longitude": -3.6,
             "elevation": 567,
             "name2": "GRANADA AEROPUERTO"
         },

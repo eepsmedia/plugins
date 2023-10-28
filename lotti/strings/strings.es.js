@@ -7,7 +7,7 @@ lottiStringSources.es = {
         "right": "derecho",
         "staticStrings": {
             "scenarioMenuLabel": "¿cuál escenario? ",
-            "emittingCheckboxLabel": "¿emitir datos a CODAP? ",
+            "emittingCheckboxLabel": "¿emitir datos en CODAP? \n",
             "showResultsCheckboxLabel": "¿mostrar los resultados en la página principal? ",
             "showAllScenariosCheckboxLabel": "¿mostrar todos escenarios? "
         },
@@ -25,9 +25,9 @@ lottiStringSources.es = {
         },
         "scenarioStrings": {
             "allowance_AB": {
-                "label": "mesada AB",
-                "dsTitle": "datos de mesada",
-                "dsDescription": "un registro de tu experiencia en este juego",
+                "label": "paga AB",
+                "dsTitle": "datos sobre la paga",
+                "dsDescription": "un registro de lo sucedido en el juego\n\n\n \n",
                 "collTitle": "resultados",
                 "resultUnitSingular": "€",
                 "resultUnitPlural": "€",
@@ -38,21 +38,21 @@ lottiStringSources.es = {
                 "rightLabel": "plan B"
             },
             "allowance_CD": {
-                "label": "mesada CD",
-                "dsTitle": "datos de mesada",
+                "label": "paga CD",
+                "dsTitle": "datos sobre la paga",
                 "dsDescription": "un registro de tu experiencia en este juego",
                 "collTitle": "resultados",
                 "resultUnitSingular": "€ ",
                 "resultUnitPlural": "€ ",
                 "turnUnitSingular": " semana",
                 "turnUnitPlural": " semanas",
-                "story": "Escoja un plan para mesada semanal",
+                "story": "Escoje un plan para tu pagueta semanal",
                 "leftLabel": "plan C",
                 "rightLabel": "plan D"
             },
             "allowance_EF": {
-                "label": "mesada EF",
-                "dsTitle": "datos de mesada",
+                "label": "paga EF",
+                "dsTitle": "datos sobre la paga",
                 "dsDescription": "un registro de tu experiencia en este juego",
                 "collTitle": "resultados",
                 "resultUnitSingular": "€",
@@ -64,8 +64,8 @@ lottiStringSources.es = {
                 "rightLabel": "plan F"
             },
             "allowance_GH": {
-                "label": "mesada GH",
-                "dsTitle": "datos de mesada",
+                "label": "paga GH",
+                "dsTitle": "datos sobre la paga",
                 "dsDescription": "un registro de tu experiencia en este juego",
                 "collTitle": "resultados",
                 "resultUnitSingular": "€",
