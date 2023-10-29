@@ -33,7 +33,7 @@ lottiStringSources.es = {
                 "resultUnitPlural": "€",
                 "turnUnitSingular": " semana",
                 "turnUnitPlural": " semanas",
-                "story": "Escoja un plan para mesada semanal",
+                "story": "Escoje un plan para tu paga semanal",
                 "leftLabel": "plan A",
                 "rightLabel": "plan B"
             },
@@ -46,7 +46,7 @@ lottiStringSources.es = {
                 "resultUnitPlural": "€ ",
                 "turnUnitSingular": " semana",
                 "turnUnitPlural": " semanas",
-                "story": "Escoje un plan para tu pagueta semanal",
+                "story": "Escoje un plan para tu paga semanal",
                 "leftLabel": "plan C",
                 "rightLabel": "plan D"
             },
@@ -59,7 +59,7 @@ lottiStringSources.es = {
                 "resultUnitPlural": "€",
                 "turnUnitSingular": " semana",
                 "turnUnitPlural": " semanas",
-                "story": "Escoja un plan para mesada semanal",
+                "story": "Escoje un plan para tu paga semanal",
                 "leftLabel": "plan E",
                 "rightLabel": "plan F"
             },
@@ -72,7 +72,7 @@ lottiStringSources.es = {
                 "resultUnitPlural": "€",
                 "turnUnitSingular": " semana",
                 "turnUnitPlural": " semanas",
-                "story": "Escoja un plan para mesada semanal",
+                "story": "Escoje un plan para tu paga semanal",
                 "leftLabel": "plan G",
                 "rightLabel": "plan H"
             },
