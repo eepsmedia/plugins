@@ -6,8 +6,7 @@ local in local codap :
 http://localhost/codap/static/dg/en/cert/index.html?di=https://localhost/plugins/worldWeather
 
 Sonoma:
-http://~tim/localhost/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/worldWeather
-
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/worldWeather
 -->
 
 <html lang="en">
@@ -51,7 +50,10 @@ http://~tim/localhost/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <br>
 <label for="endDateInput">&nbsp;&nbsp;end:</label>
 <input id="endDateInput" type="date">
-<br>limit: about 6 months
+<br>
+<label for="isDailyInput">daily:</label>
+<input id="isDailyInput" type="checkbox">
+<br>daily limit: about 6 months
 <br><input type="button" onclick="stations.makeMapAppear()" value="show map">
 <br><input type="button" onclick="handlers.getWeather()" value="get weather">
 <!--

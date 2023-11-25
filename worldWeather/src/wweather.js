@@ -55,11 +55,12 @@ wweather = {
         stationsDatasetName : `stations`,
         stationsMapName : `stations-map`,
         collectionName : `daily observations`,
-        version: `2023c`,
-        dimensions: {height: 222, width: 222},
+        version: `2023d`,
+        dimensions: {height: 242, width: 222},
         baseURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/`,
-        locURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/locations?datasetid=GHCND`,
+        //  locURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/locations?datasetid=GHCND`,
         dailyURL :      `https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GHCND&units=metric`,
+        monthlyURL :    `https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GSOM&units=metric`,
         aprilInParis :  `https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GHCND&startdate=2023-04-01&enddate=2023-04-30&limit=100&stationid=GHCND:FRM00007150`,
         aprilInAuckland :  `https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GHCND&startdate=2023-04-01&enddate=2023-04-30&limit=100&stationid=GHCND:NZM00093110`,
 
@@ -68,7 +69,7 @@ wweather = {
             datasetName : null,     //  the name of the dataset we're working with
             focusStation : null,
             startDate : `2023-04-01`,
-            endDate : `2023-04-30`,
+            endDate : `2023-05-01`,
             limit : 1000,
         }
 

@@ -9,14 +9,28 @@ const handlers = {
 
 
         let out = null;
-        const datatypes = `&datatypeid=TMIN&datatypeid=TMAX&datatypeid=TAVG&datatypeid=PRCP`;
+        const isDaily = document.getElementById("isDailyInput").checked;
+        const datasetCode = isDaily ? 'GHCND' : 'GSOM';
+        const units = '&units=metric';
+
+        //  const datatypes = `&datatypeid=TMIN&datatypeid=TMAX&datatypeid=TAVG&datatypeid=PRCP`;
+        const datatypes = `&datatypeid=TMAX`;
         const dates = `&startdate=${wweather.state.startDate}&enddate=${wweather.state.endDate}`;
+        //  const station =   `&stationid=${datasetCode}:${wweather.state.focusStation}`;
         const station =   `&stationid=GHCND:${wweather.state.focusStation}`;
         const limit = `&limit=${wweather.state.limit}`;     //
+        const datasetURL = `${wweather.constants.baseURL}data?datasetid=${datasetCode}`;
 
-        const theURL = `${wweather.constants.dailyURL}${limit}${datatypes}${dates}${station}`;
+        //          dailyURL :      `https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GHCND&units=metric`,
+        //          baseURL : `https://www.ncei.noaa.gov/cdo-web/api/v2/`,
+        //  const AucklandURL = "https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GHCND&stationid=GHCND:NZM00093110&datatypeid=TMAX&startdate=2023-01-01&enddate=2023-04-30&units=metric&limit=1000";
+        const newAuckURL  = `https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=${datasetCode}&stationid=GHCND:NZM00093110&datatypeid=TMAX&startdate=2023-01-01&enddate=2023-04-30&units=metric&limit=1000`;
 
-        console.log(`    fetch from: ${theURL}`);
+        const theURL = `${datasetURL}${station}${datatypes}${dates}${limit}${units}`;
+
+        console.log(`  fetch: ${theURL}`);
+        console.log(`  newAk: ${newAuckURL}`);
+
 
         const options = {
             method: "GET",
@@ -30,6 +44,7 @@ const handlers = {
         let result;
 
         try {
+            //  result = await fetch(newAuckURL, options);
             result = await fetch(theURL, options);
         } catch (msg) {
             console.log(`problem with weather fetch: ${msg} stationID: ${wweather.state.focusStation}`);
