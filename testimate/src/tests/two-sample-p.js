@@ -82,19 +82,19 @@ class TwoSampleP extends Test {
 
         this.results.N = this.results.N1 + this.results.N2;
         if (this.results.N1 > 0 && this.results.N2 > 0) {
-            this.results.p = (successesA + successesB) / this.results.N;
-            this.results.p1 = successesA /this.results.N1;
-            this.results.p2 = successesB /this.results.N2;
-            this.results.SE1 = Math.sqrt(this.results.p1 * (1 - this.results.p1) / this.results.N1);
-            this.results.SE2 = Math.sqrt(this.results.p2 * (1 - this.results.p2) / this.results.N2);
+            this.results.prop = (successesA + successesB) / this.results.N;
+            this.results.prop1 = successesA /this.results.N1;
+            this.results.prop2 = successesB /this.results.N2;
+            this.results.SE1 = Math.sqrt(this.results.prop1 * (1 - this.results.prop1) / this.results.N1);
+            this.results.SE2 = Math.sqrt(this.results.prop2 * (1 - this.results.prop2) / this.results.N2);
 
             this.results.SE = Math.sqrt(
-                (this.results.p1) * (1 - this.results.p1) / this.results.N1 +
-                (this.results.p2) * (1 - this.results.p2) / this.results.N2
+                (this.results.prop1) * (1 - this.results.prop1) / this.results.N1 +
+                (this.results.prop2) * (1 - this.results.prop2) / this.results.N2
             );
 
             //  the test p1 - p2
-            this.results.pDiff = this.results.p1 - this.results.p2;
+            this.results.pDiff = this.results.prop1 - this.results.prop2;
 
             //  test statistic = z
             this.results.z = (this.results.pDiff - testimate.state.testParams.value) / this.results.SE;
@@ -118,8 +118,8 @@ class TwoSampleP extends Test {
         const pDiff = ui.numberToString(this.results.pDiff, 3);
         const SE = ui.numberToString(this.results.SE);
 
-        const p1 = ui.numberToString(this.results.p1);
-        const p2 = ui.numberToString(this.results.p2);
+        const p1 = ui.numberToString(this.results.prop1);
+        const p2 = ui.numberToString(this.results.prop2);
 
         const P = (this.results.P < 0.0001) ?
             `P < 0.0001` :
@@ -167,9 +167,9 @@ class TwoSampleP extends Test {
         const N2 = this.results.N2;
         const N1 = this.results.N1;
         const N = this.results.N;
-        const p1 = ui.numberToString(this.results.p1);
-        const p2 = ui.numberToString(this.results.p2);
-        const p = ui.numberToString(this.results.p);
+        const p1 = ui.numberToString(this.results.prop1);
+        const p2 = ui.numberToString(this.results.prop2);
+        const prop = ui.numberToString(this.results.prop);
 
         const groupColHead = this.grouping ?  `${data.yAttData.name}` : 'groups';
         const ungroupedPropString = this.results.successValueA === this.results.successValueB ?
@@ -213,7 +213,7 @@ class TwoSampleP extends Test {
             `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) : ${this.results.labelA} - ${this.results.labelB}` :
             `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) - (${testimate.state.y.name} = ${this.successValueButtonB()}) `;
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
-        const value = ui.valueBoxHTML(testimate.state.testParams.value, 1, .05);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value, 0.0, 1.0, .05);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         let theHTML = `${intro} ${sides} ${value} <br>&emsp;${conf}`;
 

@@ -32,6 +32,11 @@ ui = {
      * @returns {Promise<void>}
      */
     redraw: async function () {
+        //  check if the state variable has this member, fix if it doesn't.
+        if (!testimate.state.rrEmitNumber) {
+            testimate.state.rrEmitNumber = testimate.constants.defaultState.rrEmitNumber;
+        }
+
         await data.updateData();        //  make sure we have the current data
         this.updateAttributeBlocks();
 
@@ -84,7 +89,7 @@ ui = {
             xType.style.display = "inline";
             this.xDIV.className = "drag-none";
         } else { // x attribute waiting for drop!
-            this.xNameDIV.textContent = `drop attribute here`;
+            this.xNameDIV.textContent = localize.getString("dropAttributeHere");
             xTrash.style.display = "none";
             xType.style.display = "none";
             this.xDIV.className = "drag-empty";
@@ -96,7 +101,7 @@ ui = {
             yType.style.display = "inline";
             this.yDIV.className = "drag-none";
         } else {
-            this.yNameDIV.textContent = `drop attribute here`;
+            this.yNameDIV.textContent =  localize.getString("dropAttributeHere");
             yTrash.style.display = "none";
             yType.style.display = "none";
             this.yDIV.className = "drag-empty";
@@ -138,13 +143,12 @@ ui = {
     },
 
     /**
-     * returns the "sides" HTML, as in, is this a 1 or 2-sided test,
-     * and what does that mean?
+     * returns the "sides" button HTML, which controls whether this is a 1- or 2-sided test.
+     * The button therefore changes from "≠" to either ">" or "<", and back again.
      * This is in the form of a clickable button so you can change it.
      *
      * @param iSides
-     * @returns {"<input id=\"sidesButton\" type=\"button\" onclick=\"handlers.changeTestSides()\"
-                value=\"≠\">"}
+     * @returns string containing the html for that button
      */
     sidesBoxHTML: function (iSides) {
         const theParams = testimate.state.testParams;
@@ -160,6 +164,7 @@ ui = {
 
     /**
      * Button that changes which group is compared to everybody else
+     * (we will call this group "group0"
      * (when a categorical app needs to be made binary)
      * @param iGroup
      * @returns {`<input id="group0Button" type="button" onclick="handlers.changeGroup0()"
@@ -187,11 +192,12 @@ ui = {
      * @returns {`<input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"
                ${string|string} ${string|string} type="number" value="${string}">`}
      */
-    valueBoxHTML : function(iVal, iMax, iStep) {
+    valueBoxHTML : function(iVal, iMin, iMax, iStep) {
+        const minPhrase = iMin ? `min="${iMin}"` : "";
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
         return `<input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"
-               ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
+               ${minPhrase} ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
     },
 
     iterBoxHTML : function(iVal, iMax, iStep) {
@@ -259,7 +265,11 @@ ui = {
                 out += theMenu;
             }
 
+            const emitButtonTitle = `RR emit ${testimate.state.rrEmitNumber}x`;
+
             out += `<div id="emitButton" class="testimateButton" onclick="handlers.emit()">emit</div>`;
+            out += `<div id="rrEmitButton" class="testimateButton" onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})">${emitButtonTitle}</div>`;
+
         } else {
             out = "no tests available with these settings!";
         }

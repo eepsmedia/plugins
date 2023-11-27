@@ -104,7 +104,7 @@ const handlers = {
 
     nextValueInList: function (iList, iValue) {
         const iOrig = iList.indexOf(iValue);
-        const iNext = (iOrig > iList.length) ? 0 : iOrig + 1;
+        const iNext = (iOrig + 1 >= iList.length) ? 0 : iOrig + 1;
         return iList[iNext];
     },
 
@@ -142,4 +142,13 @@ const handlers = {
         connect.emitTestData();
     },
 
+    /**
+     * re-randomize and then emit results to CODAP.
+     */
+    rrEmit: async function(iTimes) {
+        for (let i = 0; i < iTimes; i++) {
+            await connect.rerandomizeSource(testimate.state.dataset.name);
+            this.emit();
+        }
+    },
 }

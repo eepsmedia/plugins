@@ -13,6 +13,7 @@ class OneSampleP extends Test {
     }
 
     updateTestResults() {
+        //  todo: use exact binomial for small N, prop near 0 or 1
         const A = data.xAttData.theArray;
         const G = testimate.state.testParams.group;
 
@@ -27,25 +28,26 @@ class OneSampleP extends Test {
 
         if (N > 0) {
             this.results.N = N;
-            this.results.p = successes / N;
-            this.results.SE = Math.sqrt((this.results.p) * (1 - this.results.p) / this.results.N);
-            this.results.z = (this.results.p - testimate.state.testParams.value) / this.results.SE;
+            this.results.prop = successes / N;
+            this.results.SE = Math.sqrt((this.results.prop) * (1 - this.results.prop) / this.results.N);
+            this.results.z = (this.results.prop - testimate.state.testParams.value) / this.results.SE;
 
             this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
             const zAbs = Math.abs(this.results.z);
             this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
             if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
-            this.results.CImax = this.results.p + this.results.zCrit * this.results.SE;
-            this.results.CImin = this.results.p - this.results.zCrit * this.results.SE;
+            this.results.CImax = this.results.prop + this.results.zCrit * this.results.SE;
+            this.results.CImin = this.results.prop - this.results.zCrit * this.results.SE;
         }
     }
 
     makeResultsString() {
-        const testDesc = `proportion of (${data.xAttData.name} = ${testimate.state.testParams.group})`;
+        const testDesc = localize.getString("tests.oneSampleP.testDescription",
+            data.xAttData.name, testimate.state.testParams.group, testimate.state.testParams.theSidesOp,testimate.state.testParams.value);
 
         const N = this.results.N;
-        const p = ui.numberToString(this.results.p, 4);
+        const prop = ui.numberToString(this.results.prop, 4);
         const SE = ui.numberToString(this.results.SE);
         const P = (this.results.P < 0.0001) ?
             `P < 0.0001` :
@@ -58,9 +60,10 @@ class OneSampleP extends Test {
         const alpha = ui.numberToString(testimate.state.testParams.alpha);
         let out = "<pre>";
 
-        out += `Is the ${testDesc} ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}? `;
-        out += `<br><br>    N = ${N}, z = ${z}, ${P}`;
-        out += `<br>    sample p = ${p}, ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `Is the ${testDesc}? `;
+        out += `<br><br>    sample proportion = ${prop}, N = ${N}`;
+        out += `<br>    z = ${z}, ${P}`;
+        out += `<br>    ${conf}% CI = [${CImin}, ${CImax}]`;
         out += `<br>    SE = ${SE}, &alpha; = ${alpha}, z* = ${zCrit}`;
         out += `<br> `;
 
@@ -70,6 +73,7 @@ class OneSampleP extends Test {
 
     makeTestDescription(iTestID, includeName) {
         return `mean of ${testimate.state.x.name}`;
+        return
     }
 
     /**
@@ -79,15 +83,17 @@ class OneSampleP extends Test {
     static makeMenuString() {
         const valueSet = data.xAttData.valueSet;
         const theValues = [...valueSet];
-        return `one-sample proportion of ${testimate.state.x.name} = ${theValues[0]}`;
+        //  return `one-sample proportion of ${testimate.state.x.name} = ${theValues[0]}`;
+        //  return `one-sample proportion of ${testimate.state.x.name} = ${testimate.state.testParams.group}`;
+        return localize.getString("tests.oneSampleP.menuString", testimate.state.x.name, testimate.state.testParams.group);
     }
 
     makeConfigureGuts() {
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
-        const value = ui.valueBoxHTML(testimate.state.testParams.value, 1.0, 0.05);
+        const value = ui.valueBoxHTML(testimate.state.testParams.value, 0.0, 1.0, 0.05);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         const group = ui.group0ButtonHTML(testimate.state.testParams.group);
-        let theHTML = `Testing p(${data.xAttData.name} = ${group}) ${sides} ${value} ${conf}`;
+        let theHTML = `Testing prop(${data.xAttData.name} = ${group}) ${sides} ${value} ${conf}`;
 
         return theHTML;
     }

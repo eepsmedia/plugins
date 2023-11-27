@@ -19,9 +19,9 @@ To change the type of an attribute, click the `123/abc` button.
 
 |  |  numeric on left  |  categorical on left  |
 |------------------|---------------|-------------|
-|  nothing on the right    |   test mean (t)   |   test proportion (z) <br>goodness of fit (chisq)  |
-|  numeric on right | difference of means (t, two sample) <br>paired difference (t)<br>linear regression | logistic regression<br>(not implemented yet) |
-| categorical on right | difference of means (t, grouped) <br>one-way ANOVA (F) | difference of proportions (z)<br>difference of proportions(grouped)<br>independence (chisq)
+|  nothing on the right    |   test mean (t)   |   test proportion (z) <br>goodness of fit (chisq) |
+|  numeric on right | difference of means (t, two sample) <br>paired difference (t)<br>linear regression | logistic regression<br> |
+| categorical on right | difference of means (t, grouped) <br>one-way ANOVA (F) | difference of proportions (z)<br>difference of proportions(grouped)<br>independence (chisq) |
 
 ## ANOVA example
 This is the most complicated display, of course, but gives you the basic idea:

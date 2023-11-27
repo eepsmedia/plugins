@@ -114,6 +114,23 @@ connect = {
 
     },
 
+    rerandomizeSource : async function(iDatasetName) {
+        const theMessage = {
+            "action": "update",
+            "resource": `dataContext[${iDatasetName}]`,
+            "values": {
+                "rerandomize": true
+            }
+        }
+
+        try {
+            const result = await codapInterface.sendRequest(theMessage);
+        } catch (msg) {
+            alert(`problem rerandomizing dataset: ${iDatasetName} : ${msg}`);
+        }
+    },
+
+
     showLogisticGraph : async function(iFormula) {
         const graphObject = {
             type : "graph",
@@ -146,6 +163,7 @@ connect = {
         const result =  codapInterface.sendRequest(theMessage);
 
     },
+
 
     updateDatasetForLogisticGroups: async function (iValue, iAxis) {
 
@@ -225,7 +243,7 @@ connect = {
                     console.log(`problem creating dataset`);
                 }
             } catch (msg) {
-                alert(`problem creating dataset: ${testimate.constants.datasetName}`);
+                alert(`problem creating dataset: ${testimate.constants.emittedDatasetName}`);
             }
         }
 
@@ -253,7 +271,7 @@ connect = {
 
         const itemMessage = {
             action: 'create',
-            resource: `dataContext[${testimate.constants.datasetName}].item`,
+            resource: `dataContext[${testimate.constants.emittedDatasetName}].item`,
             values: theItemValues,       //      sending ONE item
         }
         const result = await codapInterface.sendRequest(itemMessage);
@@ -265,6 +283,7 @@ connect = {
         this.makeTableAppear();
     },
 
+
     constructEmitDatasetObject: function () {
         let out = {};
 
@@ -274,37 +293,37 @@ connect = {
 
             //  first construct the "attrs" array
             let theAttrs = [
-                {name: "outcome", type: "categorical", description: testimate.strings.attributeDescriptions.outcome},
+                {name: "outcome", type: "categorical", description: localize.getString("attributeDescriptions.outcome")},
                 {
                     name: "predictor",
                     type: "categorical",
-                    description: testimate.strings.attributeDescriptions.predictor
+                    description: localize.getString("attributeDescriptions.predictor")
                 },
                 {
                     name: "procedure",
                     type: "categorical",
-                    description: testimate.strings.attributeDescriptions.procedure
+                    description: localize.getString("attributeDescriptions.procedure")
                 },
-                {name: "sign", type: "categorical", description: testimate.strings.attributeDescriptions.sign},
+                {name: "sign", type: "categorical", description: localize.getString("attributeDescriptions.sign")},
                 {
                     name: "value",
                     type: "numeric",
                     precision: 3,
-                    description: testimate.strings.attributeDescriptions.value
+                    description: localize.getString("attributeDescriptions.value")
                 },
             ];
 
             theConfig.emitted.split(",").forEach(att => {
-                const theTip = testimate.strings.attributeDescriptions[att];
+                const theTip = localize.getString(`attributeDescriptions.${att}`);
                 theAttrs.push({name: att, type: 'numeric', description: theTip, precision: 4});
             });
 
             //  this will become the "values" item in the call
             out = {
-                name: testimate.constants.datasetName,
-                title: testimate.constants.datasetName,
+                name: testimate.constants.emittedDatasetName,
+                title: testimate.constants.emittedDatasetName,
                 collections: [{
-                    name: testimate.constants.datasetName,
+                    name: testimate.constants.emittedDatasetName,
                     attrs: theAttrs
                 }]
             };
@@ -312,23 +331,24 @@ connect = {
         return out;
     },
 
+
     deleteOutputDataset: async function () {
         const theMessage = {
             action: "delete",
-            resource: `dataContext[${testimate.constants.datasetName}]`,
+            resource: `dataContext[${testimate.constants.emittedDatasetName}]`,
         };
 
         try {
             const result = await codapInterface.sendRequest(theMessage);
         } catch (msg) {
-            alert(`problem deleting dataset: ${testimate.constants.datasetName}`);
+            alert(`problem deleting dataset: ${testimate.constants.emittedDatasetName} : ${msg}`);
         }
     },
 
     makeTableAppear: function () {
         const caseTableObject = {
             type: `caseTable`,
-            dataContext: testimate.constants.datasetName,
+            dataContext: testimate.constants.emittedDatasetName,
         };
 
         const message = {

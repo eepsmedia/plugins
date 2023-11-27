@@ -17,7 +17,9 @@ const testimate = {
             Object.assign(this.state, this.constants.defaultState);     //  test
         }
 
-        this.strings = strings;      //      todo: fix this, make it robust
+        //  this.strings = strings;      //      todo: fix this, make it robust
+
+        await localize.initialize('en');
 
         ui.initialize();
         ui.redraw();
@@ -119,10 +121,10 @@ const testimate = {
 
     constants: {
         pluginName: `testimate`,
-        version: `2023h`,
+        version: `2023i`,
         dimensions: {height: 555, width: 444},
 
-        datasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
+        emittedDatasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
         logisticGroupAttributeName : `_logisticGroup`,  //  to add to the original dataset
         logisticGraphName : "logistic graph",
 
@@ -132,6 +134,7 @@ const testimate = {
             dataTypes: {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
             x: null,           //      attribute info, complete
             y: null,
+            rrEmitNumber : 10,      //  number of times you re-randomize by default
             testID: null,
             testParams: {},
             mostRecentEmittedTest : null,
