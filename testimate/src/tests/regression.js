@@ -94,17 +94,22 @@ class Regression extends Test {
         const DSdetails = document.getElementById("DSdetails");
         const DSopen = DSdetails && DSdetails.hasAttribute("open");
 
+        const testingSlopePhrase = localize.getString("tests.regression.testingSlope");
+        const slopeWord = localize.getString("slope");
+        const interceptWord = localize.getString("intercept");
+
         let out = "<pre>";
 
-        out += `How does (${X}) depend on (${Y})?`
+        //  out += `How does (${X}) depend on (${Y})?`
+        out += localize.getString("tests.regression.testQuestion", X, Y);
         out += `<br>    LSRL: ${X} = ${slope} ${Y} ${theSign} ${Math.abs(intercept)} `;  //  note reversal!
         out += `<br>    N = ${N}, r = ${r}, r^2 = ${rsq}<br>`;
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
-        out += `<summary>Regression details</summary>`;
-        out += `slope:      ${conf}% CI = [${CISmin}, ${CISmax}]<br>`;
-        out += `intercept:  ${conf}% CI = [${CIImin}, ${CIImax}]<br>`;
+        out += localize.getString("tests.regression.detailsSummary", X, Y);
+        out += `<table><tr><td>${slopeWord}</td><td>${conf}% CI = [${CISmin}, ${CISmax}]</td></tr>`;
+        out += `<tr><td>${interceptWord}</td><td>${conf}% CI = [${CIImin}, ${CIImax}]</td></tr></table>`;
         out += `<br> `;
-        out += `testing slope ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value} `
+        out += `${testingSlopePhrase} ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value} `
         out += `<br>    t = ${t}, ${P}`;
         out += `<br>    df = ${df},  &alpha; = ${alpha}, t* = ${tCrit}, `
         out += `</details>`;
@@ -114,23 +119,22 @@ class Regression extends Test {
         return out;
     }
 
-    makeTestDescription() {
-        return `linear regression of (${testimate.state.x.name}) as a function of (${testimate.state.y.name})`;
-    }
-
     /**
      * NB: This is a _static_ method, so you can't use `this`!
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `linear regression of (${testimate.state.x.name}) as a function of (${testimate.state.y.name})`;
+        return localize.getString("tests.regression.menuString",testimate.state.x.name, testimate.state.y.name);
+        //  return `linear regression of (${testimate.state.x.name}) as a function of (${testimate.state.y.name})`;
     }
 
     makeConfigureGuts() {
+        const testingSlopePhrase = localize.getString("tests.regression.testingSlope");
+
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `Testing slope ${sides} ${value} ${conf}`;
+        let theHTML = `${testingSlopePhrase} ${sides} ${value} ${conf}`;
 
         return theHTML;
     }

@@ -61,10 +61,11 @@ class Goodness extends Test {
         const GFopen = GFdetails && GFdetails.hasAttribute("open");
 
         let out = "<pre>";
-        out += `Are the proportions of ${data.xAttData.name} as hypothesized?`;
+        out += localize.getString("tests.goodness.testQuestion", data.xAttData.name);
+        //  out += `Are the proportions of ${data.xAttData.name} as hypothesized?`;
         out += `<br>    N = ${N}, ${this.results.groupNames.length} groups, &chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="GFdetails" ${GFopen ? "open" : ""}>`;
-        out += `<summary>Testing goodness of fit. &chi;<sup>2</sup> procedure</summary>`
+        out += localize.getString("tests.goodness.detailsSummary1");
         out += this.makeGoodnessTable();
         out += `    df = ${df}, &alpha; = ${alpha}, critical &chi;<sup>2</sup> = ${chisqCrit} <br>`;
         out += `</details>`;
@@ -145,13 +146,14 @@ class Goodness extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `goodness of fit for ${testimate.state.x.name}`;
+        return localize.getString("tests.goodness.menuString",testimate.state.x.name);
+        //  return `goodness of fit for ${testimate.state.x.name}`;
     }
 
     makeConfigureGuts() {
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
 
-        let theHTML = "Configure goodness-of-fit test &emsp;";
+        let theHTML = `${localize.getString("tests.goodness.configurationStart")} &emsp;`;
         theHTML += conf;
 
         let nameRow =   `<tr><th>${testimate.state.x.name} &rarr; </th>`;
@@ -165,7 +167,7 @@ class Goodness extends Test {
         //  start the GF details element
 
         theHTML += `<details id="GFConfigDetails" ${GFConfigOpen ? "open" : ""}>`;
-        theHTML += `<summary>Set hypothesized proportions</summary>`
+        theHTML += localize.getString("tests.goodness.detailsSummary2");
 
         //  start the table of values. These are not results per se, but we class the table that way.
 
@@ -191,9 +193,11 @@ class Goodness extends Test {
     }
 
     equalExpectationsButton( ) {
-        const theLabel = `equalize` + "&nbsp;&rarr;";
-        return `<input id="equalExpectationsButton" type="button" onclick="Goodness.equalizeExpectations()" 
-                value=${theLabel} title="make all expected values equal">`
+        const theTip = localize.getString("tips.equalize");
+        const theLabel = localize.getString("equalize") + "&nbsp;&rarr;";
+        return `<input id="equalExpectationsButton" type="button" 
+                onclick="Goodness.equalizeExpectations()" 
+                value=${theLabel} title="${theTip}">`
     }
 
     static equalizeExpectations() {

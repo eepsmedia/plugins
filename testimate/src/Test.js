@@ -329,7 +329,7 @@ class Test {
             yType: 'categorical',
             paired: true,
             groupAxis : "",
-            emitted: `N,P,SSR,dfTreatment,SSE,dfError,SST`,
+            emitted: `N,P,F,FCrit,SSR,SSE,SST,dfTreatment,dfError`,
             makeMenuString: ( ) => {return ANOVA.makeMenuString(`NC01`);},
             fresh: (ix) => { return new ANOVA(ix)  },
         },

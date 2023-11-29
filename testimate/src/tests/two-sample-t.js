@@ -79,7 +79,6 @@ class TwoSampleT extends Test {
     }
 
     makeResultsString() {
-        //  const testDesc = `mean of ${testimate.state.x.name}`;
 
         const N = this.results.N;
         const diff = ui.numberToString(this.results.diff, 3);
@@ -99,23 +98,23 @@ class TwoSampleT extends Test {
         const conf = ui.numberToString(testimate.state.testParams.conf);
         const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
-        let out = "<pre>";
-
         const DSdetails = document.getElementById("DSdetails");
         const DSopen = DSdetails && DSdetails.hasAttribute("open");
 
         const comparison = `${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}`;
 
         const resultHed = (this.grouping) ?
-            `Is the difference of means of (${testimate.state.x.name}): group ${this.results.groups[0]} - group ${this.results.groups[1]} ${comparison}?` :
-            `Is the difference mean(${testimate.state.x.name}) - mean(${testimate.state.y.name}) ${comparison}?`;
+            localize.getString("tests.twoSampleT.testQuestion1", testimate.state.x.name,this.results.groups[0],this.results.groups[1],comparison) :
+            localize.getString("tests.twoSampleT.testQuestion2", testimate.state.x.name,testimate.state.y.name,comparison) ;
+
+        let out = "<pre>";
 
         out += `${resultHed} <br>`;
         out += `<br>    N = ${N}, t = ${t}, ${P}`;
         out += `<br>    diff = ${diff},  ${conf}% CI = [${CImin}, ${CImax}] `;
 
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
-        out += `<summary>Difference of means, <i>t</i> procedure</summary>`;
+        out += localize.getString("tests.twoSampleT.detailsSummary");      //   `<summary>Difference of means, <i>t</i> procedure</summary>`;
         out += this.makeTwoSampleTable();
         out += `<br>    df = ${df}, &alpha; = ${alpha},  t* = ${tCrit}`
         out += `</details>`;
@@ -140,8 +139,11 @@ class TwoSampleT extends Test {
         const s = ui.numberToString(this.results.s);
         const SE = ui.numberToString(this.results.SE);
 
-        const groupColHed = this.grouping ? `${testimate.state.y.name}` : "group";
-        const meanColHead = this.grouping ? `mean(${testimate.state.x.name})` : `mean`;
+        const mean = localize.getString("mean");
+        const group = localize.getString("group");
+
+        const groupColHed = this.grouping ? `${testimate.state.y.name}` : group;
+        const meanColHead = this.grouping ? `${mean}(${testimate.state.x.name})` : mean;
 
         let out = "";
         out += `<table class="test-results"><tr class="headerRow"><th>${groupColHed}</th><th>N</th><th>${meanColHead}</th><th>s</th><th>SE</th></tr>`;
@@ -152,11 +154,13 @@ class TwoSampleT extends Test {
         return out;
     }
 
+/*
     makeTestDescription() {
         return (this.grouping) ?
             `two-sample t difference of means of (${testimate.state.x.name}): ${this.results.groups[0]} - ${this.results.groups[1]}` :
             `two-sample t difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;
     }
+*/
 
     /**
      * NB: This is a _static_ method, so you can't use `this`!
@@ -164,9 +168,9 @@ class TwoSampleT extends Test {
      */
     static makeMenuString(iID) {
         if (iID === `NN02`) {
-            return `two sample t difference of means: ${testimate.state.x.name} vs ${testimate.state.y.name} `;
+            return localize.getString("tests.twoSampleT.menuString1", testimate.state.x.name, testimate.state.y.name);
         } else {
-            return `two-sample t difference of means: ${testimate.state.x.name} grouped by ${testimate.state.y.name}`;
+            return localize.getString("tests.twoSampleT.menuString2", testimate.state.x.name, testimate.state.y.name);
         }
     }
 
@@ -177,12 +181,13 @@ class TwoSampleT extends Test {
             this.results.groups[0];
 
         const intro = (this.grouping) ?
-            `difference of means of ${testimate.state.x.name}: ${group0rep} - ${this.results.groups[1]}` :
-            `difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;
+            localize.getString("tests.twoSampleT.configStart1", testimate.state.x.name, group0rep, this.results.groups[1]) :
+            localize.getString("tests.twoSampleT.configStart2", testimate.state.x.name, testimate.state.y.name) ;
+
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `Testing ${intro} ${sides} ${value} ${conf}`;
+        let theHTML = `${intro} ${sides} ${value} <br>&emsp;${conf}`;
 
         return theHTML;
     }

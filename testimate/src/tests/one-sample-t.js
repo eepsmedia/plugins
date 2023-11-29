@@ -22,6 +22,7 @@ class OneSampleT extends Test {
     }
 
     makeResultsString() {
+
         const testDesc = `mean of ${testimate.state.x.name}`;
 
         const N = this.results.N;
@@ -38,12 +39,17 @@ class OneSampleT extends Test {
         const t = ui.numberToString(this.results.t, 3);
         const conf = ui.numberToString(testimate.state.testParams.conf);
         const alpha = ui.numberToString(testimate.state.testParams.alpha);
+        const value = ui.numberToString(testimate.state.testParams.value);
+
+        const testQuestion = localize.getString("tests.oneSampleT.testQuestion",
+            data.xAttData.name, testimate.state.testParams.theSidesOp, value);
+        const r2 = localize.getString("tests.oneSampleT.resultsLine2", mean, conf, CImin, CImax);
+
         let out = "<pre>";
 
-
-        out += `Is the ${testDesc} ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}?`;
+        out += testQuestion;
         out += `<br><br>    N = ${N}, t = ${t},  ${P}`;
-        out += `<br>    sample mean = ${mean},  ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `<br>    ${r2}`;
         out += `<br>    s = ${s}, SE = ${SE}, df = ${df}, &alpha; = ${alpha}, t* = ${tCrit}`;
         out += `<br> `;
 
@@ -60,14 +66,18 @@ class OneSampleT extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `one-sample t mean of ${testimate.state.x.name}`;
+        return localize.getString("tests.oneSampleT.menuString", testimate.state.x.name);
+
+        //  return `one-sample t mean of ${testimate.state.x.name}`;
     }
 
     makeConfigureGuts() {
+        const configStart = localize.getString("tests.oneSampleT.configurationStart");
+
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `Testing mean(${data.xAttData.name}) ${sides} ${value} ${conf}`;
+        let theHTML = `${configStart}(${data.xAttData.name}) ${sides} ${value} ${conf}`;
 
         return theHTML;
     }

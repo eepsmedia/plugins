@@ -114,7 +114,7 @@ connect = {
 
     },
 
-    rerandomizeSource : async function(iDatasetName) {
+    rerandomizeSource: async function (iDatasetName) {
         const theMessage = {
             "action": "update",
             "resource": `dataContext[${iDatasetName}]`,
@@ -131,19 +131,19 @@ connect = {
     },
 
 
-    showLogisticGraph : async function(iFormula) {
+    showLogisticGraph: async function (iFormula) {
         const graphObject = {
-            type : "graph",
-            name : testimate.constants.logisticGraphName,
+            type: "graph",
+            name: testimate.constants.logisticGraphName,
             dataContext: testimate.state.dataset.name,
-            xAttributeName : data.yAttData.name,
-            yAttributeName : testimate.constants.logisticGroupAttributeName,
+            xAttributeName: data.yAttData.name,
+            yAttributeName: testimate.constants.logisticGroupAttributeName,
         }
 
         const theMessage = {
-            action : "create",
-            resource : "component",
-            values : graphObject,
+            action: "create",
+            resource: "component",
+            values: graphObject,
         }
 
         try {
@@ -154,13 +154,13 @@ connect = {
         }
     },
 
-    hideLogisticGraph : function() {
+    hideLogisticGraph: function () {
         const theMessage = {
-            action : "delete",
-            resource : `component[${testimate.constants.logisticGraphName}]`
+            action: "delete",
+            resource: `component[${testimate.constants.logisticGraphName}]`
         }
 
-        const result =  codapInterface.sendRequest(theMessage);
+        const result = codapInterface.sendRequest(theMessage);
 
     },
 
@@ -205,7 +205,6 @@ connect = {
         } catch (msg) {
             alert(`could not get dataset info for [${testimate.state.dataset.name}] in connect.js...${msg}`)
         }
-
 
 
         const newAttMessage = {
@@ -254,7 +253,7 @@ connect = {
 
         let theItemValues = {
             outcome: testimate.state.x.name,
-            predictor: (testimate.state.y && testimate.state.y.name) ? testimate.state.y.name : "",
+            predictor: (testimate.predictorExists()) ? testimate.state.y.name : "",
             procedure: theConfig.name,
             sign: testimate.state.testParams.theSidesOp,
             value: testimate.state.testParams.value,
@@ -292,30 +291,51 @@ connect = {
             const theConfig = Test.configs[testimate.state.testID];
 
             //  first construct the "attrs" array
-            let theAttrs = [
-                {name: "outcome", type: "categorical", description: localize.getString("attributeDescriptions.outcome")},
-                {
+            let theAttrs = [];
+            theAttrs.push({
+                name: "outcome",
+                title: localize.getString("attributeNames.outcome"),
+                type: "categorical",
+                description: localize.getString("attributeDescriptions.outcome")
+            });
+            if (testimate.predictorExists()) {
+                theAttrs.push({
                     name: "predictor",
+                    title: localize.getString("attributeNames.predictor"),
                     type: "categorical",
                     description: localize.getString("attributeDescriptions.predictor")
-                },
-                {
-                    name: "procedure",
+                });
+            }
+            theAttrs.push({
+                name: "procedure",
+                title: localize.getString("attributeNames.procedure"),
+                type: "categorical",
+                description: localize.getString("attributeDescriptions.procedure")
+            });
+            if (testimate.state.testParams.theSidesOp) {
+                theAttrs.push({
+                    name: "sign",
+                    title: localize.getString("attributeNames.sign"),
                     type: "categorical",
-                    description: localize.getString("attributeDescriptions.procedure")
-                },
-                {name: "sign", type: "categorical", description: localize.getString("attributeDescriptions.sign")},
-                {
-                    name: "value",
-                    type: "numeric",
-                    precision: 3,
-                    description: localize.getString("attributeDescriptions.value")
-                },
-            ];
+                    description: localize.getString("attributeDescriptions.sign")
+                });
+            }
+            theAttrs.push({
+                name: "value",
+                title: localize.getString("attributeNames.value"),
+                type: "numeric",
+                precision: 3,
+                description: localize.getString("attributeDescriptions.value")
+            });
 
             theConfig.emitted.split(",").forEach(att => {
+                const theName = att;
+                const theTitle = localize.getString(`attributeNames.${att}`);
                 const theTip = localize.getString(`attributeDescriptions.${att}`);
-                theAttrs.push({name: att, type: 'numeric', description: theTip, precision: 4});
+                theAttrs.push({
+                    name: theName, title: theTitle, type: 'numeric',
+                    description: theTip, precision: 4
+                });
             });
 
             //  this will become the "values" item in the call

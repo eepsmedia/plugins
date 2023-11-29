@@ -33,7 +33,7 @@ ui = {
      */
     redraw: async function () {
         //  check if the state variable has this member, fix if it doesn't.
-        if (!testimate.state.rrEmitNumber) {
+        if (!testimate.state.rrEmitNumber) {    //  number of iterations if we re-randomize automatically
             testimate.state.rrEmitNumber = testimate.constants.defaultState.rrEmitNumber;
         }
 
@@ -54,7 +54,7 @@ ui = {
 
             data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
             await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
-            this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice
+            this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice menu
             this.resultsDIV.innerHTML = this.theTest.makeResultsString();
             this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
             this.datasetDIV.innerHTML = this.makeDatasetGuts();
@@ -115,28 +115,30 @@ ui = {
         let suffix = "";
         let exponential = false;
 
-        if (Math.abs(iValue) > 1.0e15) {
-            exponential = true;
-        } else if (Math.abs(iValue) < 1.0e-4) {
-            exponential = true;
-        } else if (Math.abs(iValue) > 1.0e10) {
-            multiplier = 1.0e9;
-            iValue /= multiplier;
-            suffix = " B";
-        } else if (Math.abs(iValue) > 1.0e7) {
-            multiplier = 1.0e6;
-            iValue /= multiplier;
-            suffix = " M";
-        }
+        if (iValue === 0) {
+            out = "0";
+        } else {
+            if (Math.abs(iValue) > 1.0e15) {
+                exponential = true;
+            } else if (Math.abs(iValue) < 1.0e-4) {
+                exponential = true;
+            } else if (Math.abs(iValue) > 1.0e10) {
+                multiplier = 1.0e9;
+                iValue /= multiplier;
+                suffix = " B";
+            } else if (Math.abs(iValue) > 1.0e7) {
+                multiplier = 1.0e6;
+                iValue /= multiplier;
+                suffix = " M";
+            }
+            out = new Intl.NumberFormat(
+                testimate.constants.lang,
+                {maximumSignificantDigits: iFigs, useGrouping: false}
+            ).format(iValue);
 
-
-        out = new Intl.NumberFormat(
-            testimate.constants.lang,
-            {maximumSignificantDigits: iFigs, useGrouping: false}
-        ).format(iValue);
-
-        if (exponential) {
-            out = Number.parseFloat(iValue).toExponential(iFigs);
+            if (exponential) {
+                out = Number.parseFloat(iValue).toExponential(iFigs);
+            }
         }
 
         return `${out}${suffix}`;
@@ -236,6 +238,7 @@ ui = {
                type="number" value="${iConf}" step="1" min="0" max="100">%`;
     },
 
+/*
     updateConfig: function () {
         const theConfig = Test.configs[testimate.theTest.testID];
         const theParams = testimate.state.testParams;
@@ -244,13 +247,14 @@ ui = {
         document.getElementById(`valueBox`).value = theParams.value;
         document.getElementById(`sidesButton`).value = theParams.theSidesOp;
     },
+*/
 
     makeTestHeaderGuts: function (iPossibleIDs) {
         let out = `<div class = "hBox">`;
 
         if (this.theTest) {
             const theTestConfig = Test.configs[testimate.theTest.testID];
-            let thePhrase = this.theTest.makeTestDescription( );
+            let thePhrase = theTestConfig.makeMenuString( );
 
             if (iPossibleIDs.length === 1) {
                 out += thePhrase;
@@ -279,6 +283,6 @@ ui = {
     },
 
     makeDatasetGuts : function() {
-        return `Dataset: <strong>${testimate.state.dataset.name}</strong>, ${data.dataset.length} cases`;
+        return localize.getString("datasetDIV", testimate.state.dataset.title, data.dataset.length);
     },
 }

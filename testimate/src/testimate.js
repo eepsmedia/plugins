@@ -12,14 +12,11 @@ const testimate = {
         this.state = await codapInterface.getInteractiveState();    //  get stored state of any
         if (this.state.dataset) {
             await this.restoreState();
-            // await this.setDataset(this.state.dataset);  //  register for case changes
         } else {
             Object.assign(this.state, this.constants.defaultState);     //  test
         }
 
-        //  this.strings = strings;      //      todo: fix this, make it robust
-
-        await localize.initialize('en');
+        await localize.initialize(localize.figureOutLanguage('en'));
 
         ui.initialize();
         ui.redraw();
@@ -33,9 +30,6 @@ const testimate = {
             this.makeFreshTest(testimate.state.testID);
         }
         this.dirtyData = true;
-        // if (this.state.x) {
-        //     this.setX(this.state.x);
-        // }
 
     },
 
@@ -111,6 +105,10 @@ const testimate = {
         } else {
             this.setX(iAtt);   //  always fill x first.
         }
+    },
+
+    predictorExists : function() {
+        return (testimate.state.y && testimate.state.y.name);
     },
 
     emptyAttribute: {

@@ -142,15 +142,15 @@ class TwoSampleP extends Test {
 
         const comparison = `${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}`;
         const resultHed = (this.grouping) ?
-            `Is the difference of proportions of ${groupingPhrase} ${comparison}?` :
-            `Is the difference of proportions of ${nonGroupingPhrase} ${comparison}?`;
+            `${localize.getString("tests.twoSampleP.testQuestionHead")} ${groupingPhrase} ${comparison}?` :
+            `${localize.getString("tests.twoSampleP.testQuestionHead")} ${nonGroupingPhrase} ${comparison}?`;
 
         out += `${resultHed} <br>`;
         out += `<br>    N = ${N}, SE = ${SE}, z = ${z}, ${P}`;
         out += `<br>    diff = ${pDiff},  ${conf}% CI = [${CImin}, ${CImax}] `;
 
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
-        out += `<summary>Difference of proportions, <i>z</i> procedure</summary>`;
+        out += localize.getString("tests.twoSampleP.detailsSummary");
         out += this.makeTwoSampleTable();
         out += `<br>     &alpha; = ${alpha}, z* = ${zCrit}</p>`
         out += `</details>`;
@@ -171,29 +171,27 @@ class TwoSampleP extends Test {
         const p2 = ui.numberToString(this.results.prop2);
         const prop = ui.numberToString(this.results.prop);
 
-        const groupColHead = this.grouping ?  `${data.yAttData.name}` : 'groups';
+        const groupColHead = this.grouping ?  `${data.yAttData.name}` : localize.getString("group");
         const ungroupedPropString = this.results.successValueA === this.results.successValueB ?
-            `value = ${this.results.successValueA}` : `values = ${this.results.successValueA}, ${this.results.successValueB}`;
+            `${localize.getString("value")} = ${this.results.successValueA}` :
+            `${localize.getString("values")} = ${this.results.successValueA}, ${this.results.successValueB}`;
         const propColHead = this.grouping ?
-            `proportion<br>${data.xAttData.name} = ${this.results.successValueA}` :
-            `proportion<br>${ungroupedPropString}`;
+            `${localize.getString("proportion")}<br>${data.xAttData.name} = ${this.results.successValueA}` :
+            `${localize.getString("proportion")}<br>${ungroupedPropString}`;
+        const pooled = localize.getString("pooled");
+
         let out = "";
 
         out += `<table class="test-results">`;
         out += `<tr class="headerRow"><th>${groupColHead}</th><th>N</th><th>${propColHead}</th><th>SE</th></tr>`;
         out += `<tr><td>${this.results.labelA}</td><td>${N1}</td><td>${p1}</td><td>${SE1}</td></tr>`;
         out += `<tr><td>${this.results.labelB}</td><td>${N2}</td><td>${p2}</td><td>${SE2}</td></tr>`;
-        out += `<tr><td>pooled</td><td>${N}</td><td>${p}</td><td></td></tr>`;
+        out += `<tr><td>${pooled}</td><td>${N}</td><td>${prop}</td><td></td></tr>`;
         out += `</table>`;
 
         return out
     }
 
-    makeTestDescription() {
-        return (this.grouping) ?
-            `two-sample t difference of props of (${testimate.state.x.name} = ${this.successValueButtonA()}): ${this.results.labelA} - ${this.results.labelB}` :
-            `two-sample t difference of props: (${testimate.state.x.name} = ${this.results.successValueA}) - (${testimate.state.y.name} = ${this.successValueButtonB()})`;
-    }
 
     /**
      * NB: This is a _static_ method, so you can't use `this`!
@@ -201,17 +199,18 @@ class TwoSampleP extends Test {
      */
     static makeMenuString(iID) {
         if (iID === `BB02`) {
-            return `difference of proportions: ${testimate.state.x.name} vs ${testimate.state.y.name} `;
+            return localize.getString("tests.twoSampleP.menuString1", testimate.state.x.name, testimate.state.y.name);
         } else {
-            return `difference of proportions: ${testimate.state.x.name} grouped by ${testimate.state.y.name}`;
+            return localize.getString("tests.twoSampleP.menuString2", testimate.state.x.name, testimate.state.y.name);
         }
     }
 
     makeConfigureGuts() {
+        const configStart = localize.getString("tests.twoSampleP.configStart");
 
         const intro = (this.grouping) ?
-            `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) : ${this.results.labelA} - ${this.results.labelB}` :
-            `Testing difference of proportions: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) - (${testimate.state.y.name} = ${this.successValueButtonB()}) `;
+            `${configStart}: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) : ${this.results.labelA} - ${this.results.labelB}` :
+            `${configStart}: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) - (${testimate.state.y.name} = ${this.successValueButtonB()}) `;
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value, 0.0, 1.0, .05);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);

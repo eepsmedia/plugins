@@ -74,13 +74,14 @@ class Independence extends Test {
         const TIopen = TIdetails && TIdetails.hasAttribute("open");
 
         let out = "<pre>";
-        out += `Are ${data.yAttData.name} and ${data.xAttData.name} independent?`;
+        out += localize.getString("tests.independence.testQuestion",
+            testimate.state.y.name, testimate.state.x.name);
         out += `<br>    N = ${N}, ${this.results.columnLabels.length} columns by ${this.results.rowLabels.length} rows, `
         out += `&chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="TIdetails" ${TIopen ? "open" : ""}>`;
-        out += `<summary>Testing independence. &chi;<sup>2</sup> procedure</summary>`;
+        out += localize.getString("tests.independence.detailsSummary");
         out += this.makeIndependenceTable();
-        out += `<br>    df = ${df}, &alpha; = ${alpha}, critical &chi;<sup>2</sup> = ${chisqCrit} <br>`;
+        out += `<br>    df = ${df}, &alpha; = ${alpha}, &chi;<sup>2</sup>* = ${chisqCrit} <br>`;
         out += `</details>`;
 
         out += `</pre>`;
@@ -89,10 +90,12 @@ class Independence extends Test {
 
     makeIndependenceTable() {
 
-        let headerRow = `<tr><td>observed<br>expected</td><th>${data.yAttData.name} = </th>`;
+        let headerRow = `<tr><td>${localize.getString("observed")}<br>${localize.getString("expected")}</td><th>${data.yAttData.name} = </th>`;
         let tableRows = "";
-        let observedRow = `<tr><td>observed</td>`;
-        let expectedRow = `<tr><td>expected</td>`;
+/*
+        let observedRow = `<tr><td>${localize.getString("observed")}</td>`;
+        let expectedRow = `<tr><td>${localize.getString("expected")}</td>`;
+*/
 
         //  construct a header
 
@@ -120,21 +123,20 @@ class Independence extends Test {
         return `<table class="test-results">${headerRow}${tableRows}</table>`;
     }
 
-    makeTestDescription() {
-        return `Test independence of ${data.yAttData.name} from ${data.xAttData.name}`;
-    }
-
     /**
      * NB: This is a _static_ method, so you can't use `this`!
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `Test independence of ${data.yAttData.name} from ${data.xAttData.name}`;
+        return localize.getString("tests.independence.menuString",
+            testimate.state.y.name,testimate.state.x.name);
     }
 
     makeConfigureGuts() {
+        const start = localize.getString("tests.independence.configurationStart",
+            testimate.state.y.name, testimate.state.x.name);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `Test for independence of ${data.yAttData.name} from ${data.xAttData.name}: ${conf}`;
+        let theHTML = `${start}:<br>&emsp;${conf}`;
 
         return theHTML;
     }

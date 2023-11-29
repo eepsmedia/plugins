@@ -34,8 +34,6 @@ class Paired extends Test {
     }
 
     makeResultsString() {
-        const testDesc = `${testimate.state.x.name} - ${testimate.state.y.name} `;
-
         const N = this.results.N;
         const mean = ui.numberToString(this.results.mean, 3);
         const s = ui.numberToString(this.results.s);
@@ -50,11 +48,17 @@ class Paired extends Test {
         const t = ui.numberToString(this.results.t, 3);
         const conf = ui.numberToString(testimate.state.testParams.conf);
         const alpha = ui.numberToString(testimate.state.testParams.alpha);
+        const value = ui.numberToString(testimate.state.testParams.value);
+
+        const testQuestion = localize.getString("tests.paired.testQuestion",
+            testimate.state.x.name, testimate.state.y.name, testimate.state.testParams.theSidesOp, value);
+        const r2 = localize.getString( "tests.paired.resultsLine2", mean, conf, CImin, CImax);
+
         let out = "<pre>";
 
-        out += `Is the (paired) mean difference of each (${testDesc}) ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}?`;
+        out += testQuestion;
         out += `<br><br>    N = ${N}, t = ${t},  ${P}`;
-        out += `<br>    paired mean difference = ${mean}, ${conf}% CI = [${CImin}, ${CImax}]`;
+        out += `<br>    ${r2}`;
         out += `<br>    s = ${s}, SE = ${SE}, df = ${df}, &alpha; = ${alpha}, t* = ${tCrit} `;
         out += `<br> `;
 
@@ -71,14 +75,18 @@ class Paired extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `paired test of ${data.xAttData.name} - ${data.yAttData.name}`;
+        //  return `paired test of ${data.xAttData.name} - ${data.yAttData.name}`;
+        return localize.getString("tests.paired.menuString", testimate.state.x.name, testimate.state.y.name);
     }
 
     makeConfigureGuts() {
+        const configStart = localize.getString("tests.paired.configurationStart",
+            testimate.state.x.name,testimate.state.y.name);
+
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `Paired test of (${data.xAttData.name} - ${data.yAttData.name}) ${sides} ${value} ${conf}`;
+        let theHTML = `${configStart} ${sides} ${value} ${conf}`;
 
         return theHTML;
     }

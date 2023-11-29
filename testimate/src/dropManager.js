@@ -50,7 +50,7 @@ testimate.dropManager = {
 
     handleDrag : function(iWhere) {
         const currentElement = document.elementFromPoint(iWhere.x, iWhere.y);
-        console.log(`   drag over element [${currentElement.id}]`);
+        // console.log(`   drag over element [${currentElement.id}]`);
         const theElement = currentElement.closest('#xDIV, #yDIV');
         if (theElement) {
             if (theElement === ui.xDIV || theElement === ui.yDIV) {
