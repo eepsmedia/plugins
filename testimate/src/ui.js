@@ -177,8 +177,8 @@ ui = {
                 value="${iGroup}">`
     },
 
-    showLogisticGraphButtonHTML : function(iGroup) {
-        const theLabel = "show graph";
+    makeLogisticGraphButtonHTML : function(iGroup) {
+        const theLabel = localize.getString("showGraph");
         return `<input id="logisticGraphButton" type="button" 
                 onclick="handlers.showLogisticGraph()" 
                 value="${theLabel}">`
@@ -269,10 +269,11 @@ ui = {
                 out += theMenu;
             }
 
-            const emitButtonTitle = `RR emit ${testimate.state.rrEmitNumber}x`;
+            const emitButtonTitle = localize.getString("emit");
+            const emitRRButtonTitle = localize.getString("emitRR", testimate.state.rrEmitNumber);
 
-            out += `<div id="emitButton" class="testimateButton" onclick="handlers.emit()">emit</div>`;
-            out += `<div id="rrEmitButton" class="testimateButton" onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})">${emitButtonTitle}</div>`;
+            out += `<div id="emitButton" class="testimateButton" onclick="handlers.emit()">${emitButtonTitle}</div>`;
+            out += `<div id="rrEmitButton" class="testimateButton" onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})">${emitRRButtonTitle}</div>`;
 
         } else {
             out = "no tests available with these settings!";

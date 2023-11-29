@@ -125,24 +125,28 @@ class Logistic extends Test {
         const slope = ui.numberToString(this.results.slope, 4);
         const pos = ui.numberToString(this.results.pos, 4);
         const LRPbox = ui.logisticRegressionProbeBoxHTML(testimate.state.testParams.probe);
-        const graphButton = ui.showLogisticGraphButtonHTML();
+        const graphButton = ui.makeLogisticGraphButtonHTML();
         const theFormula = this.makeFormulaString().shortFormula;
-        const more10button = `<input type = "button" value = "10 more" onclick = "handlers.doMoreIterations(10)"`;
+        const more10button = `<input type = "button" 
+            value = "${localize.getString("nMore",10)}" 
+            onclick = "handlers.doMoreIterations(10)"`;
+        const copyFormulaWords = localize.getString("copyFormula")
 
         let out = "<pre>";
 
-        out += `This plugin does simple logistic regression.`;
-        out += `<br>       N = ${N}, ${this.results.iterations} iterations, cost = ${cost} ${more10button}<br>`;
-        out += `<br>Model: Probability = 1/2 at ${data.yAttData.name} = ${pos}. `
-        out += `<br>       There, slope = ${slope}<br>`;
-        out += `<br>    so the probability function is`
+        out += localize.getString("tests.logistic.intro");
+        out += `<br>       N = ${N}, ${this.results.iterations} ${localize.getString("iterations")}, ${localize.getString("cost")} = ${cost} ${more10button}<br>`;
+        out += `<br>${localize.getString("tests.logistic.model1", testimate.state.y.name, pos)}.`
+        out += `<br>       ${localize.getString("tests.logistic.model2", slope)}<br>`;
+        out += `<br>    ${localize.getString("tests.logistic.probFunctionHead")}`
         out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.group}) = ${theFormula}`;
 
         out += `<br><br>${graphButton}&emsp;`;
-        out += `<input type='button' value="copy formula" onclick="navigator.clipboard.writeText(testimate.theTest.makeFormulaString().longFormula)">`;
+        out += `<input type='button' value="${copyFormulaWords}" onclick="navigator.clipboard.writeText(testimate.theTest.makeFormulaString().longFormula)">`;
 
-        out += `<br><br>Find the probability P(${data.xAttData.name} = ${testimate.state.testParams.group}) <br>    at ${data.yAttData.name} = ${LRPbox}`;
-
+        out += `<br><br>`;
+        out += localize.getString("tests.logistic.probQuery1", testimate.state.x.name, testimate.state.testParams.group);
+        out += `<br>    ${localize.getString("tests.logistic.probQuery2", testimate.state.y.name)} = ${LRPbox}`;
 
         if (testimate.state.testParams.probe) {
             const z = 4 * slope * (testimate.state.testParams.probe - pos);
@@ -167,17 +171,24 @@ class Logistic extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `logistic regression: ${data.xAttData.name} as a function of ${data.yAttData.name}`;
+        return localize.getString("tests.logistic.menuString",
+            testimate.state.x.name, testimate.state.y.name);
+        //  return `logistic regression: ${data.xAttData.name} as a function of ${data.yAttData.name}`;
     }
 
     makeConfigureGuts() {
         const rate = ui.rateBoxHTML(testimate.state.testParams.rate, 1.0, 0.01);
         const iter = ui.iterBoxHTML(testimate.state.testParams.iter);
         const group = ui.group0ButtonHTML(testimate.state.testParams.group);
-        const showGraph = ui.showLogisticGraphButtonHTML();
+        const showGraph = ui.makeLogisticGraphButtonHTML();
 
-        let theHTML = `Logistic regression predicting prob(${data.xAttData.name} = ${group}) from ${data.yAttData.name}<br>rate = ${rate} iter = ${iter}`;
+        const rateWord = localize.getString("rate");
+        const iterationsWord = localize.getString("iterations");
 
+        let theHTML = localize.getString("tests.logistic.configStart",
+            testimate.state.x.name, group, testimate.state.y.name);
+
+        theHTML += `<br>&emsp;${rateWord} = ${rate} ${iterationsWord} = ${iter}`;
         return theHTML;
     }
 

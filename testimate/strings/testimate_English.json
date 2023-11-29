@@ -19,6 +19,19 @@
     "equalize": "equalize",
     "observed": "observed",
     "expected": "expected",
+    "count": "count",
+    "error": "error",
+    "total": "total",
+    "iterations": "iterations",
+    "showGraph": "show graph",
+    "copyFormula": "copy formula",
+    "emit": "emit",
+    "emitRR": "RR emit •1•x",
+    "at" : "at",
+    "rate" : "rate",
+    "iterations" : "iterations",
+    "cost": "cost",
+    "nMore" : "•1• more",
 
     "attributeNames": {
       "N": "N",
@@ -136,6 +149,24 @@
         "testQuestion": "Are (•1•) and (•2•) independent?",
         "detailsSummary": "<summary>Testing independence, &chi;<sup>2</sup> procedure</summary>",
         "configurationStart": "configure test for independence of (•1•) from (•2•)"
+      },
+      "anova" : {
+        "menuString": "ANOVA: •1• by •2•",
+        "testQuestion": "Is the mean of (•1•) the same across (•2•) ?",
+        "detailsSummary1": "<summary>Descriptive statistics</summary>",
+        "detailsSummary2": "<summary>One-way ANOVA, F procedure</summary>",
+        "configStart": "ANOVA on (•1•) across (•2•)",
+        "meanOfX": "mean(•1•)"
+      },
+      "logistic": {
+        "menuString": "logistic regression: •1• as a function of •2•",
+        "intro": "This plugin does simple logistic regression",
+        "model1": "Model: Probability = 1/2 at •1• = •2•",
+        "model2": "There, slope = •1•",
+        "probFunctionHead": "so the probability function is",
+        "probQuery1": "Find the probability P(•1• = •2•)",
+        "probQuery2": "at (•1•)",
+        "configStart": "Logistic regression predicting prob(•1• = •2•) from •3•"
       }
     }
   }

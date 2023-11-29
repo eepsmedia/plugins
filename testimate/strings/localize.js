@@ -54,7 +54,7 @@ const localize = {
                 out = replaceSubstrings(theDefaultString, ...theArgs);
             }
         }
-        return `°${out}°`;
+        return `${out}`;    //  add gunk to this statement to check if we're localizing correctly!
         // return out;
     },
 

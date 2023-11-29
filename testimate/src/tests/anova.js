@@ -98,14 +98,15 @@ class ANOVA extends Test {
         const Fopen = Fdetails && Fdetails.hasAttribute("open");
 
         let out = "<pre>";
-        out += `Is the mean of ${data.xAttData.name} the same across ${data.yAttData.name}?`
+        out += localize.getString("tests.anova.testQuestion",
+            testimate.state.x.name, testimate.state.y.name);
         out += `<br>    N = ${N}, F = ${F}, ${P}<br>`;
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
-        out += `<summary>Descriptive statistics</summary>`;
+        out += localize.getString("tests.anova.detailsSummary1");
         out += this.makeDescriptiveTable();
         out += `</details>`;
         out += `<details id="Fdetails" ${Fopen ? "open" : ""}>`;
-        out += `<summary>One-way ANOVA, F procedure</summary>`;
+        out += localize.getString("tests.anova.detailsSummary2");
         out += this.makeANOVATable();
         out += `<br>    &alpha; = ${alpha}, F* = ${FCrit}`;
         out += `</details>`;
@@ -129,21 +130,25 @@ class ANOVA extends Test {
 
         //  const treatmentString = `Treatment<br>(i.e., ${data.yAttData.name})`;
         const treatmentString = `${data.yAttData.name}`;
+        const errorString = localize.getString("error");
+        const totalString = localize.getString("total");
 
         let theHTML = "<table class = 'test-results'>";
         theHTML += "<tr><th>Source</th><th>(SS)</th><th>df</th><th>(MS)</th><th>F</th><th>P</th></tr>";
         theHTML += `<tr><th>${treatmentString}</th><td>${SSR}</td><td>${dfT}</td><td>${MST}</td><td>${F}</td><td>${P}</td></tr>`
-        theHTML += `<tr><th>Error</th><td>${SSE}</td><td>${dfE}</td><td>${MSE}</td><td></td></tr>`
-        theHTML += `<tr><th>Total</th><td>${SST}</td><td>${dfTotal}</td><td></td><td></td></tr>`
+        theHTML += `<tr><th>${errorString}</th><td>${SSE}</td><td>${dfE}</td><td>${MSE}</td><td></td></tr>`
+        theHTML += `<tr><th>${totalString}</th><td>${SST}</td><td>${dfTotal}</td><td></td><td></td></tr>`
         theHTML += `</table>`
 
         return theHTML;
     }
 
     makeDescriptiveTable() {
+        const meanOfX = localize.getString("tests.anova.meanOfX",testimate.state.x.name)
+
         let nameRow = `<tr><th>${data.yAttData.name} &rarr;</th>`;
-        let countRow = `<tr><td>count</td>`;
-        let meanRow = `<tr><td>mean(${data.xAttData.name})</td>`;
+        let countRow = `<tr><td>${localize.getString("count")}</td>`;
+        let meanRow = `<tr><td>${meanOfX}</td>`;
 
         for (let ix = 0; ix < this.results.groupNames.length; ix++) {
             nameRow += `<th>${this.results.groupNames[ix]}</th>`;
@@ -168,14 +173,16 @@ class ANOVA extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        return `ANOVA: ${testimate.state.x.name} by ${testimate.state.y.name}`;
+        return localize.getString("tests.anova.menuString",
+            testimate.state.x.name, testimate.state.y.name)
+        //  return `ANOVA: ${testimate.state.x.name} by ${testimate.state.y.name}`;
     }
 
     makeConfigureGuts() {
-        const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
-        const value = ui.valueBoxHTML(testimate.state.testParams.value);
+        const configStart = localize.getString("tests.anova.configStart",
+            testimate.state.x.name, testimate.state.y.name)
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `ANOVA on ${data.xAttData.name}: ${conf}`;
+        let theHTML = `${configStart}:<br>&emsp;${conf}`;
 
         return theHTML;
     }
