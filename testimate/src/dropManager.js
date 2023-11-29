@@ -51,18 +51,20 @@ testimate.dropManager = {
     handleDrag : function(iWhere) {
         const currentElement = document.elementFromPoint(iWhere.x, iWhere.y);
         // console.log(`   drag over element [${currentElement.id}]`);
-        const theElement = currentElement.closest('#xDIV, #yDIV');
-        if (theElement) {
-            if (theElement === ui.xDIV || theElement === ui.yDIV) {
-                if (this.currentlyOverDIV && (theElement != this.currentlyOverDIV)) {
-                    this.currentlyOverDIV.classList.replace(`drag-over`, `drag-near`);
-                    console.log(`    change drop zone to ${theElement.id}`);
-                }
-                this.currentlyOverDIV = theElement;
-                this.currentlyOverDIV.className = `drag-over`;
+        if (currentElement) {
+            const theElement = currentElement.closest('#xDIV, #yDIV');
+            if (theElement) {
+                if (theElement === ui.xDIV || theElement === ui.yDIV) {
+                    if (this.currentlyOverDIV && (theElement != this.currentlyOverDIV)) {
+                        this.currentlyOverDIV.classList.replace(`drag-over`, `drag-near`);
+                        console.log(`    change drop zone to ${theElement.id}`);
+                    }
+                    this.currentlyOverDIV = theElement;
+                    this.currentlyOverDIV.className = `drag-over`;
 
-            } else {
-                this.highlightNear();
+                } else {
+                    this.highlightNear();
+                }
             }
         }
     },

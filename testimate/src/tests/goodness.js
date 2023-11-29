@@ -63,7 +63,7 @@ class Goodness extends Test {
         let out = "<pre>";
         out += localize.getString("tests.goodness.testQuestion", data.xAttData.name);
         //  out += `Are the proportions of ${data.xAttData.name} as hypothesized?`;
-        out += `<br>    N = ${N}, ${this.results.groupNames.length} groups, &chi;<sup>2</sup> = ${chisq}, ${P}`;
+        out += `<br>    N = ${N}, ${this.results.groupNames.length} ${localize.getString("groups")}, &chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="GFdetails" ${GFopen ? "open" : ""}>`;
         out += localize.getString("tests.goodness.detailsSummary1");
         out += this.makeGoodnessTable();
@@ -77,8 +77,8 @@ class Goodness extends Test {
     makeGoodnessTable() {
 
         let nameRow = `<tr><th>${data.xAttData.name} =</th>`;
-        let observedRow = `<tr><td>observed</td>`;
-        let expectedRow = `<tr><td>expected</td>`;
+        let observedRow = `<tr><td>${localize.getString("observed")}</td>`;
+        let expectedRow = `<tr><td>${localize.getString("expected")}</td>`;
 
         this.results.groupNames.forEach( v => {
             nameRow += `<th>${v}</th>`;

@@ -11,6 +11,7 @@
     "mean": "mean",
     "proportion": "proportion",
     "group": "group",
+    "groups": "groups",
     "slope": "slope",
     "intercept": "intercept",
     "value": "value",
@@ -29,7 +30,6 @@
     "emitRR": "RR emit •1•x",
     "at" : "at",
     "rate" : "rate",
-    "iterations" : "iterations",
     "cost": "cost",
     "nMore" : "•1• more",
 
