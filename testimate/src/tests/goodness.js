@@ -67,7 +67,7 @@ class Goodness extends Test {
         out += `<details id="GFdetails" ${GFopen ? "open" : ""}>`;
         out += localize.getString("tests.goodness.detailsSummary1");
         out += this.makeGoodnessTable();
-        out += `    df = ${df}, &alpha; = ${alpha}, critical &chi;<sup>2</sup> = ${chisqCrit} <br>`;
+        out += `    df = ${df}, &alpha; = ${alpha}, &chi;<sup>2</sup>* = ${chisqCrit} <br>`;
         out += `</details>`;
 
         out += `</pre>`;
