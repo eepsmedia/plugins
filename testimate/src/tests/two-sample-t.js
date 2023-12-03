@@ -154,14 +154,6 @@ class TwoSampleT extends Test {
         return out;
     }
 
-/*
-    makeTestDescription() {
-        return (this.grouping) ?
-            `two-sample t difference of means of (${testimate.state.x.name}): ${this.results.groups[0]} - ${this.results.groups[1]}` :
-            `two-sample t difference of means: ${testimate.state.x.name} - ${testimate.state.y.name}`;
-    }
-*/
-
     /**
      * NB: This is a _static_ method, so you can't use `this`!
      * @returns {string}    what shows up in a menu.
