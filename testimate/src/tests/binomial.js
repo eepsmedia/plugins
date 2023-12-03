@@ -18,7 +18,12 @@ const binomial =
                 lower = jStat.beta.inv(lowerP, k, n - k + 1);
             }
 
+<<<<<<< HEAD
             return [lower, upper];
+=======
+            return [lower, upper]; // If no exact match is found within the precision limit
+
+>>>>>>> origin/master
         },
 
 
