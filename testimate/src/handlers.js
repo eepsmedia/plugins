@@ -40,9 +40,14 @@ const handlers = {
         ui.redraw();
     },
 
-    changeRREmit: function () {
-        const v = document.getElementById(`rrEmitBox`);
-        testimate.state.rrEmitNumber = v.value;
+    changeEmitMode: function() {
+        ui.emitMode = document.querySelector("input[name='emitMode']:checked").value;
+        ui.redraw();
+    },
+
+    changeRandomEmitNumber: function () {
+        const v = document.getElementById(`randomEmitNumberBox`);
+        testimate.state.randomEmitNumber = v.value;
         ui.redraw();
     },
 
@@ -142,7 +147,7 @@ const handlers = {
     /**
      * emit test results to CODAP
      */
-    emit: async function () {
+    emitSingle: async function () {
         const theTest = testimate.theTest;
         console.log(`N = ${theTest.results.N}, P = ${theTest.results.P}`);
         await connect.emitTestData();
@@ -151,18 +156,19 @@ const handlers = {
     /**
      * re-randomize and then emit results to CODAP.
      */
-    rrEmit: async function(iTimes) {
-        for (let i = 0; i < iTimes; i++) {
+    emitRandom: async function() {
+
+        for (let i = 0; i < testimate.state.randomEmitNumber; i++) {
             await connect.rerandomizeSource(testimate.state.dataset.name);
-            await this.emit();
+            await this.emitSingle();
         }
     },
 
-    hierarchyEmit: async function() {
+    emitHierarchy: async function() {
         //  todo: write this method!
-        for (let i = 0; i < iTimes; i++) {
+        for (let i = 0; i < testimate.state.randomEmitNumber; i++) {
             await connect.rerandomizeSource(testimate.state.dataset.name);
-            await this.emit();
+            await this.emitSingle();
         }
     },
 }

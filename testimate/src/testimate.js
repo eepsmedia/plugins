@@ -132,7 +132,7 @@ const testimate = {
             dataTypes: {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
             x: null,           //      attribute info, complete
             y: null,
-            rrEmitNumber : 10,      //  number of times you re-randomize by default
+            randomEmitNumber : 10,      //  number of times you re-randomize by default
             testID: null,
             testParams: {},
             mostRecentEmittedTest : null,

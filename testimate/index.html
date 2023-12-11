@@ -106,25 +106,51 @@
                type="number" value="95" step="1" min="0" max="100">%
     </div>
 
+    <!--
+    Control how the plugin emits test results to CODAP.
+    3 modes: single | random | hierarchy
+    Different sections are made visible depending on the radio-button settings.
+    -->
+
     <div id="emitDIV">
         <details id="emitDetails" open>
             <summary id="emitDetailsSummary">Emit data into CODAP</summary>
             <div class="hBox">
                 <div class="vBox">
                     <div class="hBox">
-                        <input type="radio" id="chooseEmitSingle" name="emitStyle">
+                        <input type="radio" id="chooseEmitSingle" name="emitMode"
+                               value="single" onclick="handlers.changeEmitMode()">
                         <span id="chooseEmitSingleLabel" for="chooseEmitSingle"></span>
                     </div>
                     <div class="hBox">
-                        <input type="radio" id="chooseEmitRandom" name="emitStyle">
+                        <input type="radio" id="chooseEmitRandom" name="emitMode"
+                               value="random" onclick="handlers.changeEmitMode()">
                         <span id="chooseEmitRandomLabel" for="chooseEmitRandom"></span>
                     </div>
                     <div class="hBox">
-                        <input type="radio" id="chooseEmitHierarchy" name="emitStyle">
+                        <input type="radio" id="chooseEmitHierarchy" name="emitMode"
+                               value="hierarchy" onclick="handlers.changeEmitMode()">
                         <span id="chooseEmitHierarchyLabel" for="chooseEmitHierarchy"></span>
                     </div>
                 </div>
-                <div  id="emitControls">
+                <div id="emitSingleControls">
+                    <input type="button" id="emitSingleButton" onclick="handlers.emitSingle()"></input>
+                    <!--
+                                               value="${emitButtonTitle}"
+                    -->
+                </div>
+                <div id="emitRandomControls">
+                    <input type="button"  id="emitRandomButton"
+                           onclick="handlers.emitRandom()"></input>
+                    <input type="number" id="randomEmitNumberBox"
+                           onclick="handlers.changeRandomEmitNumber()" min="0" max = "100" step="1"
+                           class="short_number_field">
+                    <label for="randomEmitNumberBox" id="randomEmitNumberBoxLabel">times</label>
+                </div>
+                <div id="emitHierarchyControls">
+                    <input type="button"  id="emitHierarchyButton"
+                           value="${emitRRButtonTitle}"
+                           onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})"></input>
                 </div>
             </div>
         </details>

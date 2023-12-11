@@ -8,7 +8,8 @@
       "emitDetailsSummary" : "emit test results into CODAP",
       "chooseEmitSingleLabel" : "current test",
       "chooseEmitRandomLabel" : "rerandomizing",
-      "chooseEmitHierarchyLabel" : "each subgroup"
+      "chooseEmitHierarchyLabel" : "each subgroup",
+      "randomEmitNumberBoxLabel" : "times"
     },
     "datasetDIV": "Dataset: <strong>•1•</strong>, •2• cases (•3•)",
     "dropAttributeHere": "drop attribute here",

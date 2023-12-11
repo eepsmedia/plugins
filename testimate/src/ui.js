@@ -10,6 +10,7 @@ ui = {
     yType: null,
     resultsDIV: null,      //  results DIV
 
+    emitMode : "single",
     hasRandom: false,
     hierarchyInfo : false,
 
@@ -44,8 +45,8 @@ ui = {
             this.hierarchyInfo = connect.getSourceHierarchyInfo();
 
             //  check if the state variable has this member, fix if it doesn't.
-            if (!testimate.state.rrEmitNumber) {    //  number of iterations if we re-randomize automatically
-                testimate.state.rrEmitNumber = testimate.constants.defaultState.rrEmitNumber;
+            if (!testimate.state.randomEmitNumber) {    //  number of iterations if we re-randomize automatically
+                testimate.state.randomEmitNumber = testimate.constants.defaultState.randomEmitNumber;
             }
 
             await data.updateData();        //  make sure we have the current data
@@ -68,9 +69,9 @@ ui = {
                 this.datasetDIV.innerHTML = await this.makeDatasetGuts();
                 this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice menu
                 this.resultsDIV.innerHTML = this.theTest.makeResultsString();
-                this.emitControls.innerHTML = this.makeEmitGuts();
                 this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
-                //  this.updateConfig();    //  reset the appearance of the configuration DIV
+                document.getElementById("randomEmitNumberBox").value = testimate.state.randomEmitNumber;
+                this.adjustEmitGuts();
             }
         }
 
@@ -88,6 +89,31 @@ ui = {
         document.getElementById('resultsDIV').style.display = (testimate.state.x) ? 'block' : 'none';
         document.getElementById('configureDIV').style.display = (testimate.state.x) ? 'block' : 'none';
 
+        //  emit mode visibility
+
+        switch (this.emitMode) {
+            case "single":
+                document.getElementById('emitSingleControls').style.display = 'block';
+                document.getElementById('chooseEmitSingle').checked = true;
+                document.getElementById('emitRandomControls').style.display = 'none';
+                document.getElementById('emitHierarchyControls').style.display = 'none';
+                break;
+            case "random":
+                document.getElementById('chooseEmitRandom').checked = true;
+                document.getElementById('emitSingleControls').style.display = 'none';
+                document.getElementById('emitRandomControls').style.display = 'block';
+                document.getElementById('emitHierarchyControls').style.display = 'none';
+                break;
+            case "hierarchy":
+                document.getElementById('chooseEmitHierarchy').checked = true;
+                document.getElementById('emitSingleControls').style.display = 'none';
+                document.getElementById('emitRandomControls').style.display = 'none';
+                document.getElementById('emitHierarchyControls').style.display = 'block';
+                break;
+            default:
+                alert(`unexpected emit mode: [${this.emitMode}]`);
+                break;
+        }
     },
 
     updateAttributeBlocks: function () {
@@ -305,12 +331,17 @@ ui = {
         return localize.getString("datasetDIV", testimate.state.dataset.title, data.dataset.length, randomPhrase);
     },
 
-    makeEmitGuts: function () {
+    adjustEmitGuts: function () {
         const summaryClause = `<summary>${localize.getString("tests.emitSummary")}</summary>`
-        const emitButtonTitle = localize.getString("emit");
-        const emitRRButtonTitle = localize.getString("emitRR", testimate.state.rrEmitNumber);
+        const singleEmitButtonTitle = localize.getString("emit");
+        const randomEmitButtonTitle = localize.getString("emitRR", testimate.state.randomEmitNumber);
+        const hierarchyEmitButtonTitle = localize.getString("emitHierarchy", testimate.state.randomEmitNumber);
 
-        const emitClause = `<input type="button" id="emitButton" 
+        document.getElementById("emitSingleButton").value = singleEmitButtonTitle;
+        document.getElementById("emitRandomButton").value = randomEmitButtonTitle;
+        document.getElementById("emitHierarchyButton").value = hierarchyEmitButtonTitle;
+
+/*        const emitClause = `<input type="button" id="emitButton"
             value="${emitButtonTitle}" 
             onclick="handlers.emit()"></input>
 `;
@@ -337,13 +368,7 @@ ui = {
                     onclick="handlers.hierarchyEmit()">
                 </input>`;
             hierarchicalClause = emitHierarchyButton;
-        }
-        out = `
-    ${emitClause}<br>
-    ${randomClause}<br>
-    ${hierarchicalClause}
-`
-        return out;
+        }*/
     },
 
 
