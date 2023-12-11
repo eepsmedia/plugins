@@ -36,6 +36,7 @@ details {
 summary {
     font-weight: bold;
     padding-bottom: 0.5em;
+    cursor : pointer;
 }
 
 #titleDIV {
@@ -94,7 +95,7 @@ summary {
     padding: 0.5em;
 }
 
-#testHeaderDIV {
+#testHeaderDIV, #configureDIV  {
     width: 100%;
     display : block;
     background-color: lightblue;
@@ -105,7 +106,7 @@ summary {
 
 }
 
-#resultsDIV {
+#resultsDIV, #emitDIV {
     width: 100%;
     display : block;
     background-color: lightgray;
@@ -113,14 +114,6 @@ summary {
     padding: 0.5em;
     font-size: 12px;
     line-height: 1.2em;
-}
-
-#configureDIV {
-    width: 100%;
-    display : block;
-    background-color: lightblue;
-    color: black;
-    padding: 0.5em;
 }
 
 

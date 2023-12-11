@@ -40,6 +40,12 @@ const handlers = {
         ui.redraw();
     },
 
+    changeRREmit: function () {
+        const v = document.getElementById(`rrEmitBox`);
+        testimate.state.rrEmitNumber = v.value;
+        ui.redraw();
+    },
+
     changeLogisticRegressionProbe: function () {
         const LRP = document.getElementById(`logisticRegressionProbeBox`);
         testimate.state.testParams.probe = LRP.value; //  need for state and restore
@@ -136,10 +142,10 @@ const handlers = {
     /**
      * emit test results to CODAP
      */
-    emit: function () {
+    emit: async function () {
         const theTest = testimate.theTest;
         console.log(`N = ${theTest.results.N}, P = ${theTest.results.P}`);
-        connect.emitTestData();
+        await connect.emitTestData();
     },
 
     /**
@@ -148,7 +154,15 @@ const handlers = {
     rrEmit: async function(iTimes) {
         for (let i = 0; i < iTimes; i++) {
             await connect.rerandomizeSource(testimate.state.dataset.name);
-            this.emit();
+            await this.emit();
+        }
+    },
+
+    hierarchyEmit: async function() {
+        //  todo: write this method!
+        for (let i = 0; i < iTimes; i++) {
+            await connect.rerandomizeSource(testimate.state.dataset.name);
+            await this.emit();
         }
     },
 }

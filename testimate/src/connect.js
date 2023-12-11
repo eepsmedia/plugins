@@ -11,7 +11,7 @@ connect = {
     attributeChangeSubscriberIndex: null,
     attributeDragDropSubscriberIndex: null,
     mostRecentEmittedTest: null,
-    datasetInfo: null,      //  don't need it!
+    sourceDatasetInfo: null,
 
     initialize: async function () {
 
@@ -44,6 +44,32 @@ connect = {
         return out;
     },
 
+    /**
+     * Use the API to retrieve the dataset (data context) info for the named dataset
+     *
+     * @param iName
+     */
+    getSourceDatasetInfo : async function (iName) {
+        this.sourceDatasetInfo = null;
+
+        const tMessage = {
+            action : "get",
+            resource : `dataContext[${iName}]`
+        }
+        let result;
+
+        try {
+            result = await codapInterface.sendRequest(tMessage);
+            if (result.success) {
+                this.sourceDatasetInfo = result.values;
+                console.log(`    *   got dataset info`);
+            } else {
+                console.log(`Failure getting source dataset info`);
+            }
+        } catch (msg) {
+            console.log(`Trouble getting soujrce dataset info: ${msg}`);
+        }
+    },
 
     /**
      * Constant descriptor for the iFrame.
@@ -217,7 +243,7 @@ connect = {
             const newAttResult = await codapInterface.sendRequest(newAttMessage);
 
         } catch (msg) {
-            alert(`could not make new 0/1 attribute`);
+            alert(`connect.js updateDatasetForLogisticGroups: could not make new 0/1 attribute`);
         }
         return theFormula;      //      for diagnostics
     },
@@ -397,6 +423,39 @@ connect = {
 
         codapInterface.sendRequest(tMutabilityMessage);
     },
+
+    sourceDSHasRandomness : function() {
+        let out = false;
+
+        if (this.sourceDatasetInfo) {
+            this.sourceDatasetInfo.collections.forEach(c => {
+                c.attrs.forEach(a => {
+                    const f = a.formula;
+                    if (f && f.indexOf("random") > -1) {
+                        out = true;
+                    }
+                })
+            })
+        }
+
+        return out;
+    },
+
+    sourceDSisHierarchical: function() {
+        if (this.sourceDatasetInfo) {
+            return (this.sourceDatasetInfo.collections.length > 1);
+        }
+        return null;
+    },
+
+    getSourceHierarchyInfo : function() {
+        return {
+            nCollections : this.sourceDatasetInfo.collections.length,
+            topLevelCases : [
+                "a","b",
+            ]
+        }
+    }
 
 
 }

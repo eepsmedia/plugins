@@ -127,7 +127,7 @@ class Test {
     }
 
     makeConfigureGuts() {
-        return `no configuration for logistic regression yet`;
+        return `configuration: this string should never appear!`;
     }
 
     /**
@@ -151,6 +151,7 @@ class Test {
         }
         return [A, B];
     }
+
 
     /**
      * configurations for all possible tests

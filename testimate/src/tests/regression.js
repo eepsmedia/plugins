@@ -106,8 +106,8 @@ class Regression extends Test {
         out += `<br>    N = ${N}, r = ${r}, r<sup>2</sup> = ${rsq}<br>`;
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
         out += localize.getString("tests.regression.detailsSummary", X, Y);
-        out += `<table><tr><td>${slopeWord}</td><td>${slope}</td><td>${conf}% CI = [${CISmin}, ${CISmax}]</td></tr>`;
-        out += `<tr><td>${interceptWord}</td><td>${intercept}</td><td>${conf}% CI = [${CIImin}, ${CIImax}]</td></tr></table>`;
+        out += `<table><tr><td>${slopeWord}</td><td>${slope}</td><td>${conf}% ${localize.getString("CI")} = [${CISmin}, ${CISmax}]</td></tr>`;
+        out += `<tr><td>${interceptWord}</td><td>${intercept}</td><td>${conf}% ${localize.getString("CI")} = [${CIImin}, ${CIImax}]</td></tr></table>`;
         out += `<br> `;
         out += `${testingSlopePhrase} ${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value} `
         out += `<br>    t = ${t}, ${P}`;

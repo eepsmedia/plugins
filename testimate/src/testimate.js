@@ -88,7 +88,7 @@ const testimate = {
     setNewGroupingValue: async function(iValue) {
         let f = "no formula needed";
         const theConfig = Test.configs[testimate.state.testID];
-        const theAxis = theConfig.groupAxis;
+        const theAxis = theConfig.groupAxis;    //  only exists for logistic regression
         if (theAxis) {
             f = await connect.updateDatasetForLogisticGroups(iValue, theAxis);
         }

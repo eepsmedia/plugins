@@ -3,12 +3,15 @@ let ui;
 ui = {
 
     xDIV: null,
-    xNameDIV : null,
+    xNameDIV: null,
     yDIV: null,
     yNameDIV: null,
     xType: null,
     yType: null,
     resultsDIV: null,      //  results DIV
+
+    hasRandom: false,
+    hierarchyInfo : false,
 
     theTest: null,
 
@@ -24,6 +27,7 @@ ui = {
         this.testHeaderDIV = document.getElementById(`testHeaderDIV`);
         this.resultsDIV = document.getElementById(`resultsDIV`);
         this.configDIV = document.getElementById(`configureDIV`);
+        this.emitControls = document.getElementById(`emitControls`);
     },
 
     /**
@@ -32,33 +36,42 @@ ui = {
      * @returns {Promise<void>}
      */
     redraw: async function () {
-        //  check if the state variable has this member, fix if it doesn't.
-        if (!testimate.state.rrEmitNumber) {    //  number of iterations if we re-randomize automatically
-            testimate.state.rrEmitNumber = testimate.constants.defaultState.rrEmitNumber;
-        }
 
-        await data.updateData();        //  make sure we have the current data
-        this.updateAttributeBlocks();
+        if (testimate.state.dataset) {
+            //  does the dataset have any random functions?
+            await connect.getSourceDatasetInfo(testimate.state.dataset.name);
+            this.hasRandom = connect.sourceDSHasRandomness();
+            this.hierarchyInfo = connect.getSourceHierarchyInfo();
 
-        //  update the tests as necessary
-        const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
-        this.theTest = testimate.theTest;
-        const theParams = testimate.state.testParams;
-
-        if (this.theTest && this.theTest.testID) {
-            //  set the sides op universally
-            theParams.theSidesOp = "≠";
-            if (theParams.sides === 1) {
-                theParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
+            //  check if the state variable has this member, fix if it doesn't.
+            if (!testimate.state.rrEmitNumber) {    //  number of iterations if we re-randomize automatically
+                testimate.state.rrEmitNumber = testimate.constants.defaultState.rrEmitNumber;
             }
 
-            data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
-            await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
-            this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice menu
-            this.resultsDIV.innerHTML = this.theTest.makeResultsString();
-            this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
-            this.datasetDIV.innerHTML = this.makeDatasetGuts();
-            //  this.updateConfig();    //  reset the appearance of the configuration DIV
+            await data.updateData();        //  make sure we have the current data
+            this.updateAttributeBlocks();
+
+            //  update the tests as necessary
+            const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
+            this.theTest = testimate.theTest;
+            const theParams = testimate.state.testParams;
+
+            if (this.theTest && this.theTest.testID) {
+                //  set the sides op universally
+                theParams.theSidesOp = "≠";
+                if (theParams.sides === 1) {
+                    theParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
+                }
+
+                data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
+                await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
+                this.datasetDIV.innerHTML = await this.makeDatasetGuts();
+                this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice menu
+                this.resultsDIV.innerHTML = this.theTest.makeResultsString();
+                this.emitControls.innerHTML = this.makeEmitGuts();
+                this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
+                //  this.updateConfig();    //  reset the appearance of the configuration DIV
+            }
         }
 
         this.setVisibility();
@@ -69,8 +82,9 @@ ui = {
         //  many things are invisible if there is no x-variable, therefore no test
 
         document.getElementById('Ybackdrop').style.display = (testimate.state.x) ? 'inline' : 'none';
-       // document.getElementById('xCNbutton').style.display = (testimate.state.x) ? 'inline' : 'none';
+        // document.getElementById('xCNbutton').style.display = (testimate.state.x) ? 'inline' : 'none';
         document.getElementById('testHeaderDIV').style.display = (testimate.state.x) ? 'block' : 'none';
+        document.getElementById('emitDIV').style.display = (testimate.state.x) ? 'block' : 'none';
         document.getElementById('resultsDIV').style.display = (testimate.state.x) ? 'block' : 'none';
         document.getElementById('configureDIV').style.display = (testimate.state.x) ? 'block' : 'none';
 
@@ -84,7 +98,7 @@ ui = {
 
         if (testimate.state.x && testimate.state.x.name) {
             this.xNameDIV.textContent = testimate.state.x.name;
-            xType.value = testimate.state.dataTypes[testimate.state.x.name] == 'numeric' ? '123' : 'abc';
+            xType.value = testimate.state.dataTypes[testimate.state.x.name] === 'numeric' ? '123' : 'abc';
             xTrash.style.display = "inline";
             xType.style.display = "inline";
             this.xDIV.className = "drag-none";
@@ -96,12 +110,12 @@ ui = {
         }
         if (testimate.state.y && testimate.state.y.name) {
             this.yNameDIV.textContent = testimate.state.y.name;
-            yType.value = testimate.state.dataTypes[testimate.state.y.name] == 'numeric' ? '123' : 'abc';
+            yType.value = testimate.state.dataTypes[testimate.state.y.name] === 'numeric' ? '123' : 'abc';
             yTrash.style.display = "inline";
             yType.style.display = "inline";
             this.yDIV.className = "drag-none";
         } else {
-            this.yNameDIV.textContent =  localize.getString("dropAttributeHere");
+            this.yNameDIV.textContent = localize.getString("dropAttributeHere");
             yTrash.style.display = "none";
             yType.style.display = "none";
             this.yDIV.className = "drag-empty";
@@ -115,7 +129,9 @@ ui = {
         let suffix = "";
         let exponential = false;
 
-        if (iValue === 0) {
+        if (iValue === "" || iValue === null || typeof iValue === "undefined") {
+            out = "";
+        } else if (iValue === 0) {
             out = "0";
         } else {
             if (Math.abs(iValue) > 1.0e15) {
@@ -140,8 +156,7 @@ ui = {
                 out = Number.parseFloat(iValue).toExponential(iFigs);
             }
         }
-
-        return `${out}${suffix}`;
+        return `${out}${suffix}`;       //  empty if null or empty
     },
 
     /**
@@ -172,12 +187,19 @@ ui = {
      * @returns {`<input id="group0Button" type="button" onclick="handlers.changeGroup0()"
                 value="${string}">`}
      */
-    group0ButtonHTML : function(iGroup) {
+    group0ButtonHTML: function (iGroup) {
         return `<input id="group0Button" type="button" onclick="handlers.changeGroup0()" 
                 value="${iGroup}">`
     },
 
-    makeLogisticGraphButtonHTML : function(iGroup) {
+    getGroup0Name : function() {
+        if (!testimate.state.testParams.group) {
+            handlers.changeGroup0();
+        }
+        return testimate.state.testParams.group;
+    },
+
+    makeLogisticGraphButtonHTML: function (iGroup) {
         const theLabel = localize.getString("showGraph");
         return `<input id="logisticGraphButton" type="button" 
                 onclick="handlers.showLogisticGraph()" 
@@ -194,7 +216,7 @@ ui = {
      * @returns {`<input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"
                ${string|string} ${string|string} type="number" value="${string}">`}
      */
-    valueBoxHTML : function(iVal, iMin, iMax, iStep) {
+    valueBoxHTML: function (iVal, iMin, iMax, iStep) {
         const minPhrase = iMin ? `min="${iMin}"` : "";
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
@@ -202,21 +224,21 @@ ui = {
                ${minPhrase} ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
     },
 
-    iterBoxHTML : function(iVal, iMax, iStep) {
+    iterBoxHTML: function (iVal, iMax, iStep) {
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
         return `<input id="iterBox" class="short_number_field" onchange="handlers.changeIterations()"
                ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
     },
 
-    rateBoxHTML : function(iVal, iMax, iStep) {
+    rateBoxHTML: function (iVal, iMax, iStep) {
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
         return `<input id="rateBox" class="short_number_field" onchange="handlers.changeRate()"
                ${maxPhrase} ${stepPhrase} type="number" value="${iVal}">`;
     },
 
-    logisticRegressionProbeBoxHTML : function(iVal, iMax, iStep) {
+    logisticRegressionProbeBoxHTML: function (iVal, iMax, iStep) {
         const maxPhrase = iMax ? `max="${iMax}"` : "";
         const stepPhrase = iStep ? `step="${iStep}"` : "";
         return `<input id="logisticRegressionProbeBox" class="short_number_field" onchange="handlers.changeLogisticRegressionProbe()"
@@ -232,29 +254,29 @@ ui = {
         <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
                type="number" value="${string}" step="1" min="0" max="100">%`}
      */
-    confBoxHTML : function(iConf) {
+    confBoxHTML: function (iConf) {
         return `<label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
         <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
                type="number" value="${iConf}" step="1" min="0" max="100">%`;
     },
 
-/*
-    updateConfig: function () {
-        const theConfig = Test.configs[testimate.theTest.testID];
-        const theParams = testimate.state.testParams;
+    /*
+        updateConfig: function () {
+            const theConfig = Test.configs[testimate.theTest.testID];
+            const theParams = testimate.state.testParams;
 
-        document.getElementById(`configStart`).textContent = `${testimate.theTest.makeTestDescription(this.theTestID, false)} `;
-        document.getElementById(`valueBox`).value = theParams.value;
-        document.getElementById(`sidesButton`).value = theParams.theSidesOp;
-    },
-*/
+            document.getElementById(`configStart`).textContent = `${testimate.theTest.makeTestDescription(this.theTestID, false)} `;
+            document.getElementById(`valueBox`).value = theParams.value;
+            document.getElementById(`sidesButton`).value = theParams.theSidesOp;
+        },
+    */
 
     makeTestHeaderGuts: function (iPossibleIDs) {
         let out = `<div class = "hBox">`;
 
         if (this.theTest) {
             const theTestConfig = Test.configs[testimate.theTest.testID];
-            let thePhrase = theTestConfig.makeMenuString( );
+            let thePhrase = theTestConfig.makeMenuString();
 
             if (iPossibleIDs.length === 1) {
                 out += thePhrase;
@@ -269,12 +291,6 @@ ui = {
                 out += theMenu;
             }
 
-            const emitButtonTitle = localize.getString("emit");
-            const emitRRButtonTitle = localize.getString("emitRR", testimate.state.rrEmitNumber);
-
-            out += `<div id="emitButton" class="testimateButton" onclick="handlers.emit()">${emitButtonTitle}</div>`;
-            out += `<div id="rrEmitButton" class="testimateButton" onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})">${emitRRButtonTitle}</div>`;
-
         } else {
             out = "no tests available with these settings!";
         }
@@ -283,7 +299,52 @@ ui = {
         return out;
     },
 
-    makeDatasetGuts : function() {
-        return localize.getString("datasetDIV", testimate.state.dataset.title, data.dataset.length);
+    makeDatasetGuts: async function () {
+        const randomPhrase = ui.hasRandom ? localize.getString('hasRandom') : localize.getString('noRandom');
+
+        return localize.getString("datasetDIV", testimate.state.dataset.title, data.dataset.length, randomPhrase);
     },
+
+    makeEmitGuts: function () {
+        const summaryClause = `<summary>${localize.getString("tests.emitSummary")}</summary>`
+        const emitButtonTitle = localize.getString("emit");
+        const emitRRButtonTitle = localize.getString("emitRR", testimate.state.rrEmitNumber);
+
+        const emitClause = `<input type="button" id="emitButton" 
+            value="${emitButtonTitle}" 
+            onclick="handlers.emit()"></input>
+`;
+        const emitRRButton = `<input type="button"  id="rrEmitButton" 
+            value="${emitRRButtonTitle}" 
+            onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})"></input>`;
+        const emitRRBox =  `<input type="number" id="rrEmitBox" value="${testimate.state.rrEmitNumber}"
+               onclick="handlers.changeRREmit()" min="0" max = "100" step="1"
+               class="short_number_field">
+               <label for="rrEmitBox">times</label> 
+            `;
+
+        let randomClause = "";
+        if (ui.hasRandom) {
+            randomClause = `${emitRRButton} &emsp; ${emitRRBox}`;
+        }
+
+        let hierarchicalClause = "";
+        if (this.hierarchyInfo && this.hierarchyInfo.nCollections > 1) {
+            const emitHierarchyButtonTitle = localize.getString("emitHierarchy", this.hierarchyInfo.topLevelCases.length);
+            const emitHierarchyButton =
+                `<input type="button"  id="hierarchyEmitButton" 
+                    value="${emitHierarchyButtonTitle}" 
+                    onclick="handlers.hierarchyEmit()">
+                </input>`;
+            hierarchicalClause = emitHierarchyButton;
+        }
+        out = `
+    ${emitClause}<br>
+    ${randomClause}<br>
+    ${hierarchicalClause}
+`
+        return out;
+    },
+
+
 }

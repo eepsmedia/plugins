@@ -111,7 +111,7 @@ class TwoSampleT extends Test {
 
         out += `${resultHed} <br>`;
         out += `<br>    N = ${N}, t = ${t}, ${P}`;
-        out += `<br>    diff = ${diff},  ${conf}% CI = [${CImin}, ${CImax}] `;
+        out += `<br>    diff = ${diff},  ${conf}% ${localize.getString("CI")} = [${CImin}, ${CImax}] `;
 
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
         out += localize.getString("tests.twoSampleT.detailsSummary");      //   `<summary>Difference of means, <i>t</i> procedure</summary>`;

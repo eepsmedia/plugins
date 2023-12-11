@@ -4,9 +4,13 @@
     "language": "English",
     "staticStrings": {
       "outcomePrimaryHint": "outcome/primary attribute",
-      "predictorSecondaryHint": "predictor/secondary attribute"
+      "predictorSecondaryHint": "predictor/secondary attribute",
+      "emitDetailsSummary" : "emit test results into CODAP",
+      "chooseEmitSingleLabel" : "current test",
+      "chooseEmitRandomLabel" : "rerandomizing",
+      "chooseEmitHierarchyLabel" : "each subgroup"
     },
-    "datasetDIV": "Dataset: <strong>•1•</strong>, •2• cases",
+    "datasetDIV": "Dataset: <strong>•1•</strong>, •2• cases (•3•)",
     "dropAttributeHere": "drop attribute here",
     "mean": "mean",
     "proportion": "proportion",
@@ -26,12 +30,17 @@
     "iterations": "iterations",
     "showGraph": "show graph",
     "copyFormula": "copy formula",
-    "emit": "emit",
-    "emitRR": "RR emit •1•x",
+    "emit": "emit these results",
+    "emitRR": "re-randomize and emit •1•x",
+    "emitHierarchy": "emit results from •1• subgroups",
     "at" : "at",
     "rate" : "rate",
     "cost": "cost",
     "nMore" : "•1• more",
+    "hasRandom" : "has randomness",
+    "noRandom" : "no randomness",
+    "CI" : "CI",
+    "conf" : "conf",
 
     "attributeNames": {
       "N": "N",
@@ -97,6 +106,8 @@
       "equalize": "make all proportions equal"
     },
     "tests": {
+
+      "emitSummary" : "Emit data into CODAP",
       "oneSampleT": {
         "menuString": "mean of •1•",
         "testQuestion": "Is the mean of •1• •2• •3• ?",
@@ -128,7 +139,9 @@
         "menuString": "one-sample proportion of •1• = •2•",
         "testQuestion": "Is the proportion of (•1• = •2•) •3• •4• ?",
         "resultsLine1": "sample proportion = •1•, (•2• out of N = •3•)",
-        "configurationStart": "testing prop"
+        "configurationStart": "testing prop",
+        "usingZProc" : "using the z procedure",
+        "usingBinomialProc" : "using the exact binomial procedure"
       },
       "twoSampleP": {
         "menuString1": "difference of proportions: •1• vs •2•",

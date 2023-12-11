@@ -25,6 +25,7 @@ const localize = {
     fileNameMap : {
         en : "strings/testimate_English.json",
         es : "strings/testimate_Spanish.json",
+        de : "strings/testimate_German.json",
     },
 
     initialize : async function(iLang) {
