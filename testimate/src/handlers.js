@@ -42,6 +42,17 @@ const handlers = {
 
     changeEmitMode: function() {
         ui.emitMode = document.querySelector("input[name='emitMode']:checked").value;
+
+        //  set emitMode to single if you're trying something impossible
+        if (this.emitMode === 'random' && !data.hasRandom) {
+            this.emitMode = 'single';
+            alert("Can't emit using rerandomizing if there are no random attributes");  //  todo: localize
+        }
+        if (this.emitMode === 'hierarchical' && !data.isGrouped) {
+            this.emitMode = 'single';
+            alert("Can't emit for each subgroups if there are no subgroups");  //  todo: localize
+        }
+
         ui.redraw();
     },
 
@@ -165,10 +176,17 @@ const handlers = {
     },
 
     emitHierarchy: async function() {
-        //  todo: write this method!
-        for (let i = 0; i < testimate.state.randomEmitNumber; i++) {
-            await connect.rerandomizeSource(testimate.state.dataset.name);
-            await this.emitSingle();
-        }
+
+        data.topCases.forEach( tc => {
+            const theValues = tc.values;    //  must match all of these
+            const oneGroupDataset = data.filterGroupCases(theValues);
+            if (oneGroupDataset) {
+                this.xAttData = new AttData(testimate.state.x, oneGroupDataset);
+                this.yAttData = new AttData(testimate.state.y, oneGroupDataset);
+            }
+
+            console.log(`match values using ${JSON.stringify(theValues)}`);
+
+        })
     },
 }

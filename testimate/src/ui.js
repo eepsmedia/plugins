@@ -11,8 +11,6 @@ ui = {
     resultsDIV: null,      //  results DIV
 
     emitMode : "single",
-    hasRandom: false,
-    hierarchyInfo : false,
 
     theTest: null,
 
@@ -39,33 +37,31 @@ ui = {
     redraw: async function () {
 
         if (testimate.state.dataset) {
-            //  does the dataset have any random functions?
-            await connect.getSourceDatasetInfo(testimate.state.dataset.name);
-            this.hasRandom = connect.sourceDSHasRandomness();
-            this.hierarchyInfo = connect.getSourceHierarchyInfo();
-
-            //  check if the state variable has this member, fix if it doesn't.
-            if (!testimate.state.randomEmitNumber) {    //  number of iterations if we re-randomize automatically
-                testimate.state.randomEmitNumber = testimate.constants.defaultState.randomEmitNumber;
-            }
-
+            /**
+             * This makes sure data is current, and also creates the `data.xAttData` and `data.yAttData` arrays,
+             * and evaluates the values to tell whether the attributes are numeric or categorical.
+             * We need this in order to figure out which tests are appropriate,
+             * and (importantly) to set a test if it has not yet been set.
+             */
             await data.updateData();        //  make sure we have the current data
-            this.updateAttributeBlocks();
+
 
             //  update the tests as necessary
             const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
             this.theTest = testimate.theTest;
-            const theParams = testimate.state.testParams;
 
             if (this.theTest && this.theTest.testID) {
                 //  set the sides op universally
-                theParams.theSidesOp = "≠";
-                if (theParams.sides === 1) {
-                    theParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
+                testimate.state.testParams.theSidesOp = "≠";
+                if (testimate.state.testParams.sides === 1) {
+                    testimate.state.testParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
                 }
 
                 data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
                 await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
+
+                //      create the text and other display information for the results
+
                 this.datasetDIV.innerHTML = await this.makeDatasetGuts();
                 this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice menu
                 this.resultsDIV.innerHTML = this.theTest.makeResultsString();
@@ -75,6 +71,7 @@ ui = {
             }
         }
 
+        this.updateAttributeBlocks();
         this.setVisibility();
     },
 

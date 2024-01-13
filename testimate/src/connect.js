@@ -11,7 +11,6 @@ connect = {
     attributeChangeSubscriberIndex: null,
     attributeDragDropSubscriberIndex: null,
     mostRecentEmittedTest: null,
-    sourceDatasetInfo: null,
 
     initialize: async function () {
 
@@ -21,7 +20,7 @@ connect = {
     },
 
     /**
-     * called from data.retrieveDataFromCODAP
+     * called from data.retrieveAllItemsFromCODAP
      *
      * @returns {Promise<boolean>}
      */
@@ -46,11 +45,11 @@ connect = {
 
     /**
      * Use the API to retrieve the dataset (data context) info for the named dataset
-     *
+     *  Called by `data.` every time.
      * @param iName
      */
     getSourceDatasetInfo : async function (iName) {
-        this.sourceDatasetInfo = null;
+        let out = null;
 
         const tMessage = {
             action : "get",
@@ -61,14 +60,16 @@ connect = {
         try {
             result = await codapInterface.sendRequest(tMessage);
             if (result.success) {
-                this.sourceDatasetInfo = result.values;
+                out = result.values; //  includes attributes but no cases
                 console.log(`    *   got dataset info`);
             } else {
                 console.log(`Failure getting source dataset info`);
             }
         } catch (msg) {
-            console.log(`Trouble getting soujrce dataset info: ${msg}`);
+            console.log(`Trouble getting source dataset info: ${msg}`);
         }
+
+        return out;
     },
 
     /**
@@ -424,28 +425,27 @@ connect = {
         codapInterface.sendRequest(tMutabilityMessage);
     },
 
-    sourceDSHasRandomness : function() {
-        let out = false;
+    retrieveTopLevelCases : async function() {
+        let out = {};
 
-        if (this.sourceDatasetInfo) {
-            this.sourceDatasetInfo.collections.forEach(c => {
-                c.attrs.forEach(a => {
-                    const f = a.formula;
-                    if (f && f.indexOf("random") > -1) {
-                        out = true;
-                    }
-                })
-            })
+        const topCollection = data.sourceDatasetInfo.collections[0];
+
+        const getTopCasesMessage = {
+            "action" : "get",
+            resource : `dataContext[${data.sourceDatasetInfo.name}].collection[${topCollection.name}].caseFormulaSearch[true]`
+        }
+        try {
+            const result = await codapInterface.sendRequest(getTopCasesMessage);
+            if (result.success) {
+                out = result.values;
+            } else {
+                console.log(`get top collection cases worked, but failed!`);
+            }
+        } catch(msg) {
+            console.log(`trouble getting top collection cases: ${msg}`);
         }
 
         return out;
-    },
-
-    sourceDSisHierarchical: function() {
-        if (this.sourceDatasetInfo) {
-            return (this.sourceDatasetInfo.collections.length > 1);
-        }
-        return null;
     },
 
     getSourceHierarchyInfo : function() {

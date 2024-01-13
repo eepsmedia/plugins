@@ -23,6 +23,11 @@ const testimate = {
     },
 
     restoreState: async function () {
+        //  check if the state variable has this member, fix if it doesn't.
+        if (!testimate.state.randomEmitNumber) {    //  number of iterations if we re-randomize automatically
+            testimate.state.randomEmitNumber = testimate.constants.defaultState.randomEmitNumber;
+        }
+
         await connect.registerForCaseChanges(this.state.dataset.name);
         if (testimate.state.testID) {
             this.restoringFromSave = true;
@@ -119,7 +124,7 @@ const testimate = {
 
     constants: {
         pluginName: `testimate`,
-        version: `2023i`,
+        version: `2023j`,
         dimensions: {height: 555, width: 444},
 
         emittedDatasetName: `tests and estimates`,     //      for receiving emitted test and estimate results

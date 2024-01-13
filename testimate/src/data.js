@@ -1,12 +1,18 @@
-
 const data = {
 
     dirtyData: true,
-    secondaryCleanupNeeded : false,
+    secondaryCleanupNeeded: false,
 
     dataset: [],        //  array retrieved from CODAP
+    topCases: [],
     xAttData: null,
     yAttData: null,
+
+    hasRandom: false,
+    isGrouped: false,
+    sourceDatasetInfo: {},
+
+
 
     /**
      * called from ui.redraw().
@@ -17,8 +23,17 @@ const data = {
      * @returns {Promise<void>}
      */
     updateData: async function () {
-        if (data.dirtyData) {
-            await this.retrieveDataFromCODAP();
+        if (testimate.state.dataset) {
+
+            if (this.dirtyData) {
+                this.sourceDatasetInfo = await connect.getSourceDatasetInfo(testimate.state.dataset.name);
+                this.hasRandom = this.sourceDSHasRandomness();
+                this.isGrouped = this.sourceDSisHierarchical();
+
+                this.topCases = (this.isGrouped) ? await connect.retrieveTopLevelCases() : [];
+
+                await this.retrieveAllItemsFromCODAP();
+            }
         }
     },
 
@@ -28,27 +43,24 @@ const data = {
      * called from this.updateData()
      * Construct xAttData and yAttData, the INTERNAL Arrays of the data in each attribute.
      *
+     * We KNOW the dataset exists and the data are dirty,
+     *
      * @returns {Promise<void>}
      */
-    retrieveDataFromCODAP: async function () {
-        if (testimate.state.dataset) {
-
-            if (testimate.state.x) {
-                if (this.dirtyData) {
-                    this.dataset = await connect.getAllItems();      //  this.dataset is now set
-                    if (this.dataset) {
-                        this.xAttData =  new AttData(testimate.state.x, this.dataset);
-                        this.yAttData =  new AttData(testimate.state.y, this.dataset);
-                    }
-                }
-            } else {
-                console.log(`no x variable`);
+    retrieveAllItemsFromCODAP: async function () {
+        if (testimate.state.x) {
+            this.dataset = await connect.getAllItems();      //  this.dataset is now set as array of objects (result.values)
+            if (this.dataset) {
+                this.xAttData = new AttData(testimate.state.x, this.dataset);
+                this.yAttData = new AttData(testimate.state.y, this.dataset);
             }
+        } else {
+            console.log(`no x variable`);
         }
     },
 
 
-    removeInappropriateCases: function ( ) {
+    removeInappropriateCases: function () {
 
         if (!testimate.theTest) return;
 
@@ -91,7 +103,7 @@ const data = {
         const yLim = yIntermediate.length;
         let i = 0;
 
-        while ( i < xLim || i < yLim) {
+        while (i < xLim || i < yLim) {
             const X = i < xLim ? xIntermediate[i] : null;
             const Y = i < yLim ? yIntermediate[i] : null;
 
@@ -141,7 +153,7 @@ const data = {
             case `updateAttributes`:
                 //      includes attribute name change!
                 const theUpdatedAtts = iMessage.values.result.attrs;    //  array of objects, form {name : newName...}
-                theUpdatedAtts.forEach( att => {
+                theUpdatedAtts.forEach(att => {
                     if (testimate.state.x && att.id === testimate.state.x.id) {    //  saved id of x-attribute
                         const oldName = testimate.state.x.name;
                         console.log(`att X changing from ${oldName} to ${att.title}`);
@@ -167,8 +179,50 @@ const data = {
 
     },
 
-    handleAttributeChangeNotice : async function(iMessage) {
+    handleAttributeChangeNotice: async function (iMessage) {
         console.log(`attribute change!`);
+    },
+
+    sourceDSHasRandomness: function () {
+        let out = false;
+
+        if (this.sourceDatasetInfo) {
+            this.sourceDatasetInfo.collections.forEach(c => {
+                c.attrs.forEach(a => {
+                    const f = a.formula;
+                    if (f && f.indexOf("random") > -1) {
+                        out = true;
+                    }
+                })
+            })
+        }
+
+        return out;
+    },
+
+    sourceDSisHierarchical: function () {
+        if (this.sourceDatasetInfo) {
+            return (this.sourceDatasetInfo.collections.length > 1);
+        }
+        return null;
+    },
+
+    filterGroupCases: function(theFilterValues) {
+        out = [];
+        this.dataset.forEach( d => {
+            const theItem = d.values;
+            let matches = true;
+            Object.keys(theFilterValues).forEach(k=>{
+                if (theItem[k] !== theFilterValues[k]) {
+                    matches = false;
+                }
+            })
+            if (matches) {
+                out.push(theItem);
+            }
+        })
+
+        return out;
     },
 
     /**
@@ -217,6 +271,8 @@ class AttData {
             }
         });
 
+        //  set the type of this attribute (numeric or categorical)
+
         let defType = null;
         if (this.numericCount > this.nonNumericCount) defType = 'numeric';
         else if (this.valueSet.size > 0) defType = 'categorical';
@@ -225,14 +281,19 @@ class AttData {
         if (!testimate.state.dataTypes[this.name]) testimate.state.dataTypes[this.name] = this.defaultType;
     }
 
+
     isNumeric() {
         return testimate.state.dataTypes[this.name] === 'numeric';
     }
+
     isCategorical() {
         return testimate.state.dataTypes[this.name] === 'categorical';
     }
+
     isBinary() {
         return this.valueSet.size === 2;
     }
+
+
 }
 

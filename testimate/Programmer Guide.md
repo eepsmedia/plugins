@@ -135,4 +135,23 @@ CODAP file.
 * In the case of multiple, repeated sampling and testing,
 this requires interacting with `rerandomize`. 
 
+## Emitting data into CODAP
+
+The user can emit test results into CODAP.
+This creates a new dataset with attributes that contain 
+test or estimate results such as `P` or `CIMax`. 
+The user chooses an `emitMode` (a member of `ui`, i.e., it's `ui.emitMode` in `ui.js`)
+with one of three values: `single`, `random`, or `hierarchy`.
+
+`single` is self-explanatory: you get one case.
+
+With `random`, you choose a number of iterations.
+The plugin re-randomizes the source collection that many times, 
+performing the tests and emitting the results.
+
+With `hierarchy`, the plugin performs the test once 
+for every case in the top level of the hierarchy. 
+This option does not appear if the dataset is flat or of there is only one case at the top.
+
+
 
