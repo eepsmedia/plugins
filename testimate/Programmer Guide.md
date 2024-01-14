@@ -153,5 +153,139 @@ With `hierarchy`, the plugin performs the test once
 for every case in the top level of the hierarchy. 
 This option does not appear if the dataset is flat or of there is only one case at the top.
 
+## Getting and using CODAP data
 
+CODAP data is case-based. 
+If you get a set of CODAP *items*, they come as an array of objects,
+where each object has a `values` member, an `Object` of key-value pairs 
+that correspond to an attribute name and its value.
+
+But to use the stat library we use for computation, we need an attribute-based
+data structure, that is, for each attribute we're using, an array 
+that contains the values. 
+Of course, if we're using two attributes, the cases are connected by having
+the indices correspond;
+that is, the two arrays have to stay in order.
+
+So here is the process, most of which is the responsibility of the `data` singleton,
+located in `src/data.js`.
+
+### Get data from CODAP
+
+We get the whole source dataset at once in the form of items. 
+This get triggered in `ui.redraw()`:
+
+```javascript
+await data.updateData();        //  make sure we have the current data
+```
+That method, `data.updateData()`, contains these lines:
+
+```javascript
+this.sourceDatasetInfo = await connect.getSourceDatasetInfo(testimate.state.dataset.name);
+this.hasRandom = this.sourceDSHasRandomness();
+this.isGrouped = this.sourceDSisHierarchical();
+
+this.topCases = (this.isGrouped) ? await connect.retrieveTopLevelCases() : [];
+
+await this.retrieveAllItemsFromCODAP();
+```
+`this.sourceDatasetInfo` comes from a get-dataContext call, and contains information
+on the structure of the dataset, that is, collections and attributes---but no data.
+We use that to find whether the dataset is hierarchical,
+and (three lines later) to get the top-level cases.
+
+`this.hasRandom` is `true` if any of the attributes has a formula with `"random"` in it.
+
+`this.isGrouped` is true if there is more than one collection.
+
+`this.topCases` is a case-based array of objects containing attributes and values 
+of the top-level collection (empty if `isGrouped` is false).
+
+Then, finally, we retrieve all the items, the actual data.
+Here is the method, which is full of important side effects:
+
+```javascript
+    retrieveAllItemsFromCODAP: async function () {
+        if (testimate.state.x) {
+            this.dataset = await connect.getAllItems();      //  this.dataset is now set as array of objects (result.values)
+            if (this.dataset) {
+                this.xAttData = new AttData(testimate.state.x, this.dataset);
+                this.yAttData = new AttData(testimate.state.y, this.dataset);
+            }
+        } else {
+            console.log(`no x variable`);
+        }
+    },
+```
+
+If an `x` variable has been specified, we set `this.dataset` to that case-based array of items.
+Each item has a `values` member, which is the key-value object with the data.
+This has *all* of the attributes.
+
+Then we create these two new objects, `this.xAttData` and `this.yAttData`,
+which are attribute-based arrays extracted from `data.dataset`. 
+
+**Key takeaway**: 
+The method `data.retrieveAllItemsFromCODAP()` is a model for how to convert
+an array of case-based objects into the attribute-based arrays
+that you need to perform tests.
+
+### Aside: the AttData class
+
+The class `AttData` is defined in `data.js`, down at the bottom.
+Its members are declared in the constructor like this:
+
+```javascript
+this.name = iAtt ? iAtt.name : null;
+this.theRawArray = [];
+this.theArray = [];     //  stays empty in constructor
+this.valueSet = new Set();
+this.missingCount = 0;
+this.numericCount = 0;
+this.nonNumericCount = 0;
+this.defaultType = "";
+```
+
+You can see that an `AttData` has a bunch of useful stuff in it. 
+The constructor goes on to process the information from `data.dataset`,
+cleaning things up and making numbers out of numeric strings.
+At the same time, it creates a `valueSet` that lets us see
+the set of values, important for a categorical attribute
+that we might use for grouping.
+The constructor also counts up missing and numeric values,
+and stuffs the clean values into `this.rawArray`. 
+
+Later, we process `this.rawArray` into `this.theArray`, which is what gets used 
+when calculating test results. 
+
+### Making AttData.theArray
+
+After some processing used to figure out what test we're doing, 
+`ui.redraw()` calls `data.removeInappropriateCases()`.
+This method populates the `.theArray` members of the x and y `AttData`s.
+
+This involves several nitty-gritty steps such as, 
+if the test requires numeric attributes (e.g., difference of means),
+it replaces any non-numeric values with `null`.
+
+### Performing the tests
+
+Every test has an `updateTestResults()` method (also called by `ui.redraw()`).
+Those methods use the `theArray` members to get the data. 
+
+Here is a snippet from `regression.js`:
+
+```javascript
+for (let i = 0; i < N; i++) {
+    //  Note how these definitions are REVERSED.
+    //  we want to look at the var in the first position (xAttData) as the dependent variable (Y)
+    const X = data.yAttData.theArray[i];
+    const Y = data.xAttData.theArray[i];
+```
+
+Notice how we use the same indices to enforce the underlying case identities.
+
+(Also, because this is linear regression, the attribute on the LEFT, 
+which we call `xAttData`, 
+is teh one to be predicted, that is, `Y` in the regression.)
 

@@ -48,12 +48,12 @@ connect = {
      *  Called by `data.` every time.
      * @param iName
      */
-    getSourceDatasetInfo : async function (iName) {
+    getSourceDatasetInfo: async function (iName) {
         let out = null;
 
         const tMessage = {
-            action : "get",
-            resource : `dataContext[${iName}]`
+            action: "get",
+            resource: `dataContext[${iName}]`
         }
         let result;
 
@@ -249,7 +249,7 @@ connect = {
         return theFormula;      //      for diagnostics
     },
 
-    emitTestData: async function () {
+    emitTestData: async function (iExtras = {}) {
 
         //  make a new output dataset if necessary
         //  todo: test for dataset existence (user may have deleted it)
@@ -273,18 +273,28 @@ connect = {
             }
         }
 
+        //  add any "extra" attributes
+
+        await this.addExtraAttributesToEmittedDataset(iExtras);
+
         //  now emit one item...
 
+        let theItemValues = Object.assign({}, iExtras);
         const theTest = testimate.theTest;
         const theConfig = theTest.theConfig;
 
-        let theItemValues = {
-            outcome: testimate.state.x.name,
-            predictor: (testimate.predictorExists()) ? testimate.state.y.name : "",
-            procedure: theConfig.name,
-            sign: testimate.state.testParams.theSidesOp,
-            value: testimate.state.testParams.value,
-        };
+        console.log(`   emitting a case with N = ${theTest.results.N}`);
+
+        Object.assign(
+            theItemValues,
+            {
+                outcome: testimate.state.x.name,
+                predictor: (testimate.predictorExists()) ? testimate.state.y.name : "",
+                procedure: theConfig.name,
+                sign: testimate.state.testParams.theSidesOp,
+                value: testimate.state.testParams.value,
+            }
+        );
 
         theConfig.emitted.split(",").forEach(att => {
             if (theTest.results.hasOwnProperty(att)) {
@@ -378,6 +388,34 @@ connect = {
         return out;
     },
 
+    addExtraAttributesToEmittedDataset : async function(iExtras) {
+        let theAtts = [];
+        let attList = [];
+
+        Object.keys(iExtras).forEach( k => {
+            const thisAtt = {
+                name : k
+            }
+            theAtts.push(thisAtt);
+            attList.push(k);
+        })
+
+        const theMessage = {
+            action : "create",
+            resource : `dataContext[${testimate.constants.emittedDatasetName}].collection[${testimate.constants.emittedDatasetName}].attribute`,
+            values : theAtts
+        }
+
+        try {
+            const result = await codapInterface.sendRequest(theMessage);
+            if (result.success) {
+                console.log(`added ${attList.join(', ')} to emit dataset`);
+            }
+        } catch (msg) {
+            console.log(`trouble adding extra attributes to emitted dataset: ${msg}`);
+        }
+
+    },
 
     deleteOutputDataset: async function () {
         const theMessage = {
@@ -425,14 +463,14 @@ connect = {
         codapInterface.sendRequest(tMutabilityMessage);
     },
 
-    retrieveTopLevelCases : async function() {
+    retrieveTopLevelCases: async function () {
         let out = {};
 
         const topCollection = data.sourceDatasetInfo.collections[0];
 
         const getTopCasesMessage = {
-            "action" : "get",
-            resource : `dataContext[${data.sourceDatasetInfo.name}].collection[${topCollection.name}].caseFormulaSearch[true]`
+            "action": "get",
+            resource: `dataContext[${data.sourceDatasetInfo.name}].collection[${topCollection.name}].caseFormulaSearch[true]`
         }
         try {
             const result = await codapInterface.sendRequest(getTopCasesMessage);
@@ -441,18 +479,18 @@ connect = {
             } else {
                 console.log(`get top collection cases worked, but failed!`);
             }
-        } catch(msg) {
+        } catch (msg) {
             console.log(`trouble getting top collection cases: ${msg}`);
         }
 
         return out;
     },
 
-    getSourceHierarchyInfo : function() {
+    getSourceHierarchyInfo: function () {
         return {
-            nCollections : this.sourceDatasetInfo.collections.length,
-            topLevelCases : [
-                "a","b",
+            nCollections: this.sourceDatasetInfo.collections.length,
+            topLevelCases: [
+                "a", "b",
             ]
         }
     }

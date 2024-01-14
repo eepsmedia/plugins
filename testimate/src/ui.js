@@ -44,7 +44,7 @@ ui = {
              * and (importantly) to set a test if it has not yet been set.
              */
             await data.updateData();        //  make sure we have the current data
-
+            await data.makeXandYArrays(testimate.state.x.name, testimate.state.y.name, data.dataset);
 
             //  update the tests as necessary
             const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
@@ -332,7 +332,7 @@ ui = {
         const summaryClause = `<summary>${localize.getString("tests.emitSummary")}</summary>`
         const singleEmitButtonTitle = localize.getString("emit");
         const randomEmitButtonTitle = localize.getString("emitRR", testimate.state.randomEmitNumber);
-        const hierarchyEmitButtonTitle = localize.getString("emitHierarchy", testimate.state.randomEmitNumber);
+        const hierarchyEmitButtonTitle = localize.getString("emitHierarchy", data.topCases.length);
 
         document.getElementById("emitSingleButton").value = singleEmitButtonTitle;
         document.getElementById("emitRandomButton").value = randomEmitButtonTitle;

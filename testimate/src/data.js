@@ -51,14 +51,16 @@ const data = {
         if (testimate.state.x) {
             this.dataset = await connect.getAllItems();      //  this.dataset is now set as array of objects (result.values)
             if (this.dataset) {
-                this.xAttData = new AttData(testimate.state.x, this.dataset);
-                this.yAttData = new AttData(testimate.state.y, this.dataset);
             }
         } else {
             console.log(`no x variable`);
         }
     },
 
+    makeXandYArrays : async function(xName, yName, data) {
+        this.xAttData = new AttData(xName, data);
+        this.yAttData = new AttData(yName, data);
+    },
 
     removeInappropriateCases: function () {
 
@@ -207,9 +209,9 @@ const data = {
         return null;
     },
 
-    filterGroupCases: function(theFilterValues) {
+    filterGroupCases: function(theWholeDataset, theFilterValues) {
         out = [];
-        this.dataset.forEach( d => {
+        theWholeDataset.forEach( d => {
             const theItem = d.values;
             let matches = true;
             Object.keys(theFilterValues).forEach(k=>{
@@ -218,7 +220,7 @@ const data = {
                 }
             })
             if (matches) {
-                out.push(theItem);
+                out.push({values: theItem});
             }
         })
 
@@ -239,8 +241,8 @@ const data = {
 }
 
 class AttData {
-    constructor(iAtt, iData) {
-        this.name = iAtt ? iAtt.name : null;
+    constructor(iAttName, iData) {
+        this.name = iAttName ? iAttName : null;
         this.theRawArray = [];
         this.theArray = [];     //  stays empty in constructor
         this.valueSet = new Set();

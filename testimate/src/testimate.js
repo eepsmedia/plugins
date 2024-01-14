@@ -11,6 +11,9 @@ const testimate = {
         await connect.initialize(this.iFrameDescription, null);
         this.state = await codapInterface.getInteractiveState();    //  get stored state of any
         if (this.state.dataset) {
+            data.dirtyData = true;
+            await data.updateData();
+            await data.makeXandYArrays(testimate.state.x.name, testimate.state.y.name, data.dataset);
             await this.restoreState();
         } else {
             Object.assign(this.state, this.constants.defaultState);     //  test

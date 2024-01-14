@@ -159,9 +159,10 @@ const handlers = {
      * emit test results to CODAP
      */
     emitSingle: async function () {
+
         const theTest = testimate.theTest;
         console.log(`N = ${theTest.results.N}, P = ${theTest.results.P}`);
-        await connect.emitTestData();
+        await connect.emitTestData({});
     },
 
     /**
@@ -173,20 +174,34 @@ const handlers = {
             await connect.rerandomizeSource(testimate.state.dataset.name);
             await this.emitSingle();
         }
+
+        ui.redraw();
     },
 
     emitHierarchy: async function() {
 
-        data.topCases.forEach( tc => {
-            const theValues = tc.values;    //  must match all of these
-            const oneGroupDataset = data.filterGroupCases(theValues);
+        await data.updateData();        //  make sure we have the current data
+
+        data.topCases.forEach( result = async tc => {
+            const theTopValues = tc.values;    //  must match all of these
+            console.log(`match values using ${JSON.stringify(theTopValues)}`);
+
+            const oneGroupDataset = data.filterGroupCases(data.dataset, theTopValues);
             if (oneGroupDataset) {
-                this.xAttData = new AttData(testimate.state.x, oneGroupDataset);
-                this.yAttData = new AttData(testimate.state.y, oneGroupDataset);
+                //  console.log(`Filtered: ${JSON.stringify(oneGroupDataset)}`)
+                data.xAttData = new AttData(testimate.state.x, oneGroupDataset);
+                data.yAttData = new AttData(testimate.state.y, oneGroupDataset);
+
+                data.removeInappropriateCases();
+                testimate.theTest.updateTestResults();  //  now we've done the test on this subset
+                await connect.emitTestData(theTopValues);
             }
-
-            console.log(`match values using ${JSON.stringify(theValues)}`);
-
         })
+
+        ui.redraw();
     },
+
+    refreshDataAndTestResults : async function() {
+
+    }
 }
