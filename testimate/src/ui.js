@@ -8,11 +8,14 @@ ui = {
     yNameDIV: null,
     xType: null,
     yType: null,
+
+    datasetDIV : null,
+    testHeaderDIV : null,
     resultsDIV: null,      //  results DIV
+    configDIV : null,
+    emitControls : null,
 
     emitMode : "single",
-
-    theTest: null,
 
     initialize: function () {
         this.xDIV = document.getElementById(`xDIV`);
@@ -22,11 +25,14 @@ ui = {
 
         this.xNameDIV = document.getElementById(`xAttributeName`);
         this.yNameDIV = document.getElementById(`yAttributeName`);
+
         this.datasetDIV = document.getElementById(`datasetDIV`);
         this.testHeaderDIV = document.getElementById(`testHeaderDIV`);
         this.resultsDIV = document.getElementById(`resultsDIV`);
         this.configDIV = document.getElementById(`configureDIV`);
+
         this.emitControls = document.getElementById(`emitControls`);
+        this.emitMode = "single";
     },
 
     /**
@@ -37,35 +43,14 @@ ui = {
     redraw: async function () {
 
         if (testimate.state.dataset) {
-            /**
-             * This makes sure data is current, and also creates the `data.xAttData` and `data.yAttData` arrays,
-             * and evaluates the values to tell whether the attributes are numeric or categorical.
-             * We need this in order to figure out which tests are appropriate,
-             * and (importantly) to set a test if it has not yet been set.
-             */
-            await data.updateData();        //  make sure we have the current data
-            await data.makeXandYArrays(testimate.state.x.name, testimate.state.y.name, data.dataset);
 
-            //  update the tests as necessary
-            const possibleTestIDs = Test.checkTestConfiguration(); //  we now have a testimate.Test and test ID
-            this.theTest = testimate.theTest;
-
-            if (this.theTest && this.theTest.testID) {
-                //  set the sides op universally
-                testimate.state.testParams.theSidesOp = "≠";
-                if (testimate.state.testParams.sides === 1) {
-                    testimate.state.testParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
-                }
-
-                data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
-                await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
+            if (testimate.theTest && testimate.theTest.testID) {
 
                 //      create the text and other display information for the results
-
                 this.datasetDIV.innerHTML = await this.makeDatasetGuts();
-                this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts(possibleTestIDs);   //  includes the choice menu
-                this.resultsDIV.innerHTML = this.theTest.makeResultsString();
-                this.configDIV.innerHTML = this.theTest.makeConfigureGuts();
+                this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts();   //  includes making the choice menu
+                this.resultsDIV.innerHTML = testimate.theTest.makeResultsString();
+                this.configDIV.innerHTML = testimate.theTest.makeConfigureGuts();
                 document.getElementById("randomEmitNumberBox").value = testimate.state.randomEmitNumber;
                 this.adjustEmitGuts();
             }
@@ -194,7 +179,7 @@ ui = {
         const theParams = testimate.state.testParams;
         theParams.theSidesOp = "≠";
         if (iSides === 1) {
-            const testStat = this.theTest.results[this.theTest.theConfig.testing];  //  testing what? mean? xbar? diff? slope?
+            const testStat = testimate.theTest.results[testimate.theTest.theConfig.testing];  //  testing what? mean? xbar? diff? slope?
             theParams.theSidesOp = (testStat > theParams.value ? ">" : "<");
         }
 
@@ -204,22 +189,22 @@ ui = {
 
     /**
      * Button that changes which group is compared to everybody else
-     * (we will call this group "group0"
+     * (we will call this group the "focusGroup"
      * (when a categorical app needs to be made binary)
      * @param iGroup
-     * @returns {`<input id="group0Button" type="button" onclick="handlers.changeGroup0()"
+     * @returns {`<input id="focusGroupButton" type="button" onclick="handlers.changeFocusGroup()"
                 value="${string}">`}
      */
-    group0ButtonHTML: function (iGroup) {
-        return `<input id="group0Button" type="button" onclick="handlers.changeGroup0()" 
+    focusGroupButtonHTML: function (iGroup) {
+        return `<input id="focusGroupButton" type="button" onclick="handlers.changeFocusGroup()" 
                 value="${iGroup}">`
     },
 
-    getGroup0Name : function() {
-        if (!testimate.state.testParams.group) {
-            handlers.changeGroup0();
+    getFocusGroupName : function() {
+        if (!testimate.state.testParams.focusGroup) {
+            testimate.setFocusGroup(data.xAttData, null);
         }
-        return testimate.state.testParams.group;
+        return testimate.state.focusGroupDictionary[data.xAttData.name];
     },
 
     makeLogisticGraphButtonHTML: function (iGroup) {
@@ -294,18 +279,18 @@ ui = {
         },
     */
 
-    makeTestHeaderGuts: function (iPossibleIDs) {
+    makeTestHeaderGuts: function ( ) {
         let out = `<div class = "hBox">`;
 
-        if (this.theTest) {
+        if (testimate.theTest) {
             const theTestConfig = Test.configs[testimate.theTest.testID];
             let thePhrase = theTestConfig.makeMenuString();
 
-            if (iPossibleIDs.length === 1) {
+            if (testimate.compatibleTestIDs.length === 1) {
                 out += thePhrase;
-            } else if (iPossibleIDs.length > 1) {
+            } else if (testimate.compatibleTestIDs.length > 1) {
                 let theMenu = `<select id='testMenu' onchange='handlers.changeTest()'>`;
-                iPossibleIDs.forEach(theID => {
+                testimate.compatibleTestIDs.forEach(theID => {
                     let chosen = testimate.theTest.testID === theID ? "selected" : "";
                     const menuString = Test.configs[theID].makeMenuString();
                     theMenu += `<option value='${theID}' ${chosen}> ${menuString} </option>`;
@@ -325,7 +310,7 @@ ui = {
     makeDatasetGuts: async function () {
         const randomPhrase = ui.hasRandom ? localize.getString('hasRandom') : localize.getString('noRandom');
 
-        return localize.getString("datasetDIV", testimate.state.dataset.title, data.dataset.length, randomPhrase);
+        return localize.getString("datasetDIV", testimate.state.dataset.title, data.allCODAPitems.length, randomPhrase);
     },
 
     adjustEmitGuts: function () {

@@ -1,17 +1,29 @@
+/**
+ * Implements two forms of a two-sample t test.
+ * 
+ * **Two separate attributes**: We compare the mean value in "X" to the mean value in "Y."
+ * This is perfect if you have weights of cats in one column and dogs in another, 
+ * *and they are not paired*. (There could be different numbers of animals...)
+ * 
+ * **Y is a grouping attribute**: We split the values of "X" according to values in "Y."
+ * Use this if you have weights of all animals in the "X" column and the values `cat` or `dog`
+ * in "Y". (i.e., tidy)
+ * 
+ * The member `this.grouping` tells which kind of test it is.
+ */
 class TwoSampleT extends Test {
 
     constructor(iID, iGrouping) {
         super(iID);
-        this.grouping = iGrouping;
-        this.results.groups = [];       //  names of the two groups to be displayed (depends on grouping)
+        this.grouping = iGrouping;      //  is a grouping value in "Y"?
+        this.results.groupNames = [];       //  names of the two groups to be displayed (depends on grouping)
         if (this.grouping) {
             const theValues = [...data.yAttData.valueSet];  //  possible values for groups
             if (!testimate.restoringFromSave) {
-                testimate.setNewGroupingValue(theValues[0]);
-                //  testimate.state.testParams.group = theValues[0];   //  the first, by default
+                testimate.setFocusGroup(data.yAttData, null);
             }
         } else {
-            testimate.state.testParams.group = null;
+            testimate.state.testParams.focusGroup = null;
         }
     }
 
@@ -20,16 +32,16 @@ class TwoSampleT extends Test {
         const theCIparam = 1 - testimate.state.testParams.alpha / 2;
         let A = data.xAttData.theArray;
         let B = data.yAttData.theArray;
-        this.results.groups[0] = data.xAttData.name;
-        this.results.groups[1] = data.yAttData.name;
+        this.results.group1Name = data.xAttData.name;
+        this.results.group2Name = data.yAttData.name;
 
         if (this.grouping) {
-            [A, B] = Test.splitByGroup(A, B, testimate.state.testParams.group);
+            [A, B] = Test.splitByGroup(A, B, testimate.state.testParams.focusGroup);
             console.log(`A = ${A}, B = ${B}`);
-            this.results.groups[0] = testimate.state.testParams.group;     //  the name of a value in the second att
-            this.results.groups[1] = data.yAttData.isBinary() ?
-                handlers.nextValueInList([...data.yAttData.valueSet], testimate.state.testParams.group) :  //  the OTHER value
-                `not ${testimate.state.testParams.group}`          //   or a more general label, NOT "a"
+            this.results.group1Name = testimate.state.testParams.focusGroup;     //  the name of a value in the second att
+            this.results.group2Name = data.yAttData.isBinary() ?
+                handlers.nextValueInList([...data.yAttData.valueSet], testimate.state.testParams.focusGroup) :  //  the OTHER value
+                `not ${testimate.state.testParams.focusGroup}`          //   or a more general label, NOT "a"
         }
 
         const j0 = jStat(A);
@@ -104,7 +116,7 @@ class TwoSampleT extends Test {
         const comparison = `${testimate.state.testParams.theSidesOp} ${testimate.state.testParams.value}`;
 
         const resultHed = (this.grouping) ?
-            localize.getString("tests.twoSampleT.testQuestion1", testimate.state.x.name,this.results.groups[0],this.results.groups[1],comparison) :
+            localize.getString("tests.twoSampleT.testQuestion1", testimate.state.x.name,this.results.group1Name,this.results.group2Name,comparison) :
             localize.getString("tests.twoSampleT.testQuestion2", testimate.state.x.name,testimate.state.y.name,comparison) ;
 
         let out = "<pre>";
@@ -147,8 +159,8 @@ class TwoSampleT extends Test {
 
         let out = "";
         out += `<table class="test-results"><tr class="headerRow"><th>${groupColHed}</th><th>N</th><th>${meanColHead}</th><th>s</th><th>SE</th></tr>`;
-        out += `<tr><td>${this.results.groups[0]}</td><td>${N1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
-        out += `<tr><td>${this.results.groups[1]}</td><td>${N2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
+        out += `<tr><td>${this.results.group1Name}</td><td>${N1}</td><td>${mean1}</td><td>${s1}</td><td>${SE1}</td></tr>`;
+        out += `<tr><td>${this.results.group2Name}</td><td>${N2}</td><td>${mean2}</td><td>${s2}</td><td>${SE2}</td></tr>`;
         out += `<tr><td>pooled</td><td>${N}</td><td>diff = <br>${diff}</td><td>${s}</td><td>${SE}</td></tr>`;
         out += `</table>`;
         return out;
@@ -168,12 +180,12 @@ class TwoSampleT extends Test {
 
     makeConfigureGuts() {
 //  todo: make it so the groups[0] value (the label) can be changed with a button.
-        const group0rep = (this.grouping) ?
-            this.results.groups[0] :
-            this.results.groups[0];
+        const focusGrouprep = (this.grouping) ?
+            this.results.group1Name :
+            this.results.group1Name;
 
         const intro = (this.grouping) ?
-            localize.getString("tests.twoSampleT.configStart1", testimate.state.x.name, group0rep, this.results.groups[1]) :
+            localize.getString("tests.twoSampleT.configStart1", testimate.state.x.name, focusGrouprep, this.results.group2Name) :
             localize.getString("tests.twoSampleT.configStart2", testimate.state.x.name, testimate.state.y.name) ;
 
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);

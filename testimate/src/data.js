@@ -3,7 +3,7 @@ const data = {
     dirtyData: true,
     secondaryCleanupNeeded: false,
 
-    dataset: [],        //  array retrieved from CODAP
+    allCODAPitems: [],        //  array retrieved from CODAP
     topCases: [],
     xAttData: null,
     yAttData: null,
@@ -41,7 +41,6 @@ const data = {
 
     /**
      * called from this.updateData()
-     * Construct xAttData and yAttData, the INTERNAL Arrays of the data in each attribute.
      *
      * We KNOW the dataset exists and the data are dirty,
      *
@@ -49,20 +48,35 @@ const data = {
      */
     retrieveAllItemsFromCODAP: async function () {
         if (testimate.state.x) {
-            this.dataset = await connect.getAllItems();      //  this.dataset is now set as array of objects (result.values)
-            if (this.dataset) {
+            this.allCODAPitems = await connect.getAllItems();      //  this.dataset is now set as array of objects (result.values)
+            if (this.allCODAPitems) {
             }
         } else {
             console.log(`no x variable`);
         }
     },
 
-    makeXandYArrays : async function(xName, yName, data) {
-        this.xAttData = new AttData(xName, data);
-        this.yAttData = new AttData(yName, data);
+    /**
+     * Construct xAttData and yAttData, the INTERNAL Arrays of the data in each attribute.
+     * @param xName
+     * @param yName
+     * @param data
+     * @returns {Promise<void>}
+     */
+    makeXandYArrays : async function(data) {
+        if (testimate.state.x) {
+            this.xAttData = new AttData(testimate.state.x.name, data);
+            if (!testimate.state.focusGroupDictionary[this.xAttData.name]) {
+                testimate.setFocusGroup(this.xAttData, null);
+            }
+        }
+        if (testimate.state.y) {
+            this.yAttData = new AttData(testimate.state.y.name, data);
+        }
+        if (this,this.xAttData)  console.log(`    made xAttData (${this.xAttData.theRawArray.length})`);
     },
 
-    removeInappropriateCases: function () {
+    removeInappropriateCases: async function () {
 
         if (!testimate.theTest) return;
 
@@ -123,7 +137,9 @@ const data = {
         }
 
         this.xAttData.theArray = newXArray;
-        this.yAttData.theArray = newYArray;
+        if (testimate.state.y) this.yAttData.theArray = newYArray;
+
+        console.log(`    cleaned xAttData (${this.xAttData.theArray.length})`);
 
         if (this.xAttData.theArray.length < 20)
             console.log(`cleaned x = ${JSON.stringify(this.xAttData.theArray)} \ncleaned y = ${JSON.stringify(this.yAttData.theArray)}`)
@@ -149,7 +165,7 @@ const data = {
 
                 tMess += " *";
                 data.dirtyData = true;      //  "this" is the notification, not "data"
-                await ui.redraw();
+                await testimate.refreshDataAndTestResults();
                 break;
 
             case `updateAttributes`:
@@ -172,7 +188,7 @@ const data = {
                     }
                 })
                 data.dirtyData = true;
-                ui.redraw();
+                await testimate.refreshDataAndTestResults();
                 break;
             default:
                 break;

@@ -7,17 +7,16 @@ class OneSampleP extends Test {
         super(iID);
 
         //  get a default "group" -- the value we count as "success" for proportions
-        const theValues = [...data.xAttData.valueSet];
-        if (!testimate.restoringFromSave) {
-            testimate.setNewGroupingValue(theValues[0]);
+        if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroup) {
             testimate.state.testParams.value = 0.5;
+            testimate.state.testParams.focusGroup = testimate.state.focusGroupDictionary[data.xAttData.name];
         }
     }
 
-    updateTestResults() {
+    async updateTestResults() {
         //  todo: use exact binomial for small N, prop near 0 or 1
         const A = data.xAttData.theArray;
-        const G = testimate.state.testParams.group;
+        const G = testimate.state.testParams.focusGroup;
 
         let N = 0;
         this.results.successes = 0;
@@ -32,8 +31,9 @@ class OneSampleP extends Test {
             this.results.N = N;
             this.results.prop = this.results.successes / N;
 
-            if (N < 30) {
-                this.usingBinomial = true;
+            this.usingBinomial = (N < 30);
+
+            if (this.usingBinomial) {
 
                 const binomialResult = binomial.CIbeta(N, this.results.successes, testimate.state.testParams.alpha);
                 this.results.CImin = binomialResult[0];
@@ -47,8 +47,7 @@ class OneSampleP extends Test {
                 this.results.z = "";
                 this.results.zCrit = "";
 
-            } else {
-                this.usingBinomial = false;
+            } else {        //  not using binomial
 
                 this.results.SE = Math.sqrt((this.results.prop) * (1 - this.results.prop) / this.results.N);
                 this.results.z = (this.results.prop - testimate.state.testParams.value) / this.results.SE;
@@ -81,7 +80,7 @@ class OneSampleP extends Test {
 
         let out = "<pre>";
         const testQuestion = localize.getString("tests.oneSampleP.testQuestion",
-            data.xAttData.name, testimate.state.testParams.group, sidesOp, value);
+            data.xAttData.name, testimate.state.testParams.focusGroup, sidesOp, value);
         const r1 = localize.getString( "tests.oneSampleP.resultsLine1", prop, successes, N);
 
         out += testQuestion;
@@ -102,8 +101,6 @@ class OneSampleP extends Test {
             out += `<br>        (${localize.getString("tests.oneSampleP.usingZProc")})`;
         }
 
-
-
         out += `</pre>`;
         return out;
     }
@@ -118,9 +115,13 @@ class OneSampleP extends Test {
      * @returns {string}    what shows up in a menu.
      */
     static makeMenuString() {
-        const valueSet = data.xAttData.valueSet;
-        const theValues = [...valueSet];
-        return localize.getString("tests.oneSampleP.menuString", testimate.state.x.name, testimate.state.testParams.group);
+        if(!testimate.state.focusGroupDictionary[data.xAttData.name]) {
+            testimate.setFocusGroup(data.xAttData, null);
+        }
+        const rememberedGroup = testimate.state.focusGroupDictionary[data.xAttData.name];
+
+        return localize.getString("tests.oneSampleP.menuString",
+            testimate.state.x.name, rememberedGroup);
     }
 
     makeConfigureGuts() {
@@ -129,7 +130,7 @@ class OneSampleP extends Test {
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value, 0.0, 1.0, 0.05);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        const group = ui.group0ButtonHTML(ui.getGroup0Name());
+        const group = ui.focusGroupButtonHTML(ui.getFocusGroupName());
         let theHTML = `${configStart}(${data.xAttData.name} = ${group}) ${sides} ${value} ${conf}`;
 
         return theHTML;

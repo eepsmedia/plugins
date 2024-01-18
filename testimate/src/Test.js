@@ -18,7 +18,7 @@ class Test {
                 sides: 2,
                 theSidesOp: "≠",   //  the sign
                 conf: 95,    //  confidence level 1 - alpha
-                group: null,
+                focusGroup: null,
             }
         }
     }
@@ -45,25 +45,13 @@ class Test {
         return `this is a default description for a test (${iTestID})`;
     }
 
-    static checkTestConfiguration() {
-        const possibleTestIDs = this.filterTestConfigurations();
-
-        if (testimate.theTest) {
-            if (!possibleTestIDs.includes(testimate.state.testID)) {
-                testimate.makeFreshTest(possibleTestIDs[0])
-            }
-        } else if (possibleTestIDs.length) {
-            testimate.makeFreshTest(possibleTestIDs[0])
-        }
-        return (possibleTestIDs);   //  to ui to make a menu if necessary
-    }
 
     /**
-     * Find the possible tests for the current configuration of attributes (numeric, binary, categorical...)
-     *
+     *   Compute array of compatible test IDs given `data.xAttData` and `data.yAttData`. (e.g., NN01...).
+     *   This depends only on their existence and variable type (numeric or categorical)
      * @returns {[]}    Array of test configuration IDs
      */
-    static filterTestConfigurations() {
+    static findCompatibleTestConfigurations() {
 
         const X = data.xAttData;
         let out = [];
@@ -88,6 +76,8 @@ class Test {
 
                 if (theConfig.paired && !pairable) match = false;
 
+                if (theConfig.yType && !Y) match = false;   //  the config demands a y-type, but there is no Y.
+
                 if (theConfig.xType === 'binary' && !X.isBinary()) match = false;
                 if (Y && theConfig.yType === 'binary' && !Y.isBinary()) match = false;
                 if (theConfig.xType === 'numeric' && !X.isNumeric()) match = false;
@@ -100,7 +90,7 @@ class Test {
                 }
             }
         }
-        console.log(`    ... passed ${out.join(", ")}`);
+        console.log(`    ... compatible tests: ${out.join(", ")}`);
         return out;
     };
 
@@ -227,9 +217,9 @@ class Test {
             xType: 'binary',
             yType: null,
             paired: false,
-            groupAxis : "X",
+            groupAxis : "",
             emitted: `N,prop,P,SE,z,conf,CImin,CImax`,
-            testing : 'p',
+            testing : 'prop',
             makeMenuString: () => {return OneSampleP.makeMenuString();},
             fresh: (ix ) => {return new OneSampleP(ix)},
         },

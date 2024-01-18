@@ -199,9 +199,9 @@ connect = {
 
         const newAttributeInfo = {
             name: testimate.constants.logisticGroupAttributeName,
-            title: `${data.xAttData.name} = ${testimate.state.testParams.group}`,
+            title: `${data.xAttData.name} = ${testimate.state.testParams.focusGroup}`,
             type: "numeric",
-            description: `equal to 1 if ${data.xAttData.name} = ${testimate.state.testParams.group}, zero otherwise`,
+            description: `equal to 1 if ${data.xAttData.name} = ${testimate.state.testParams.focusGroup}, zero otherwise`,
             editable: false,
             formula: theFormula,
             hidden: true

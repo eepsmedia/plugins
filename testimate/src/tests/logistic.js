@@ -30,7 +30,7 @@ class Logistic extends Test {
         testimate.state.testParams.rate = 0.1;
         testimate.state.testParams.iter = 100;
         testimate.state.testParams.probe = null;        //  what value of the predictor do we want to find a probability for?
-        testimate.state.testParams.group = null;        //  what value gets cast as "1"? The rest are "0"
+        testimate.state.testParams.focusGroup = null;        //  what value gets cast as "1"? The rest are "0"
 
         //}
 
@@ -50,13 +50,12 @@ class Logistic extends Test {
         }
 
         //  this will also make the extra column of coded data values if it did not exist before
-        if (!testimate.state.testParams.group) {
-            const theValues = [...data.xAttData.valueSet];
-            await testimate.setNewGroupingValue(theValues[0]);      //  the first, by default
+        if (!testimate.state.testParams.focusGroup) {
+            await testimate.setLogisticFocusGroup(data.xAttData, null);      //  the first, by default
         }
 
         const X = X0.map(x => {
-            return (x === testimate.state.testParams.group) ? 1 : 0;
+            return (x === testimate.state.testParams.focusGroup) ? 1 : 0;
         })
 
         let iterations = testimate.state.testParams.iter;
@@ -139,13 +138,13 @@ class Logistic extends Test {
         out += `<br>${localize.getString("tests.logistic.model1", testimate.state.y.name, pos)}.`
         out += `<br>       ${localize.getString("tests.logistic.model2", slope)}<br>`;
         out += `<br>    ${localize.getString("tests.logistic.probFunctionHead")}`
-        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.group}) = ${theFormula}`;
+        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.focusGroup}) = ${theFormula}`;
 
         out += `<br><br>${graphButton}&emsp;`;
         out += `<input type='button' value="${copyFormulaWords}" onclick="navigator.clipboard.writeText(testimate.theTest.makeFormulaString().longFormula)">`;
 
         out += `<br><br>`;
-        out += localize.getString("tests.logistic.probQuery1", testimate.state.x.name, testimate.state.testParams.group);
+        out += localize.getString("tests.logistic.probQuery1", testimate.state.x.name, testimate.state.testParams.focusGroup);
         out += `<br>    ${localize.getString("tests.logistic.probQuery2", testimate.state.y.name)} = ${LRPbox}`;
 
         if (testimate.state.testParams.probe) {
@@ -156,7 +155,7 @@ class Logistic extends Test {
                 probString = ui.numberToString(probNumber, 3);
             }
 
-            out += ` P(${testimate.state.testParams.group}) = ${probString}`;
+            out += ` P(${testimate.state.testParams.focusGroup}) = ${probString}`;
         }
         out += `</pre>`;
         return out;
@@ -179,7 +178,7 @@ class Logistic extends Test {
     makeConfigureGuts() {
         const rate = ui.rateBoxHTML(testimate.state.testParams.rate, 1.0, 0.01);
         const iter = ui.iterBoxHTML(testimate.state.testParams.iter);
-        const group = ui.group0ButtonHTML(testimate.state.testParams.group);
+        const group = ui.focusGroupButtonHTML(ui.getFocusGroupName());
         const showGraph = ui.makeLogisticGraphButtonHTML();
 
         const rateWord = localize.getString("rate");

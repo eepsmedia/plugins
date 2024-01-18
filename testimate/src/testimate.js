@@ -1,44 +1,101 @@
 const testimate = {
 
     state: {},
-    restoringFromSave : false,
-
-    theTest: null,
+    restoringFromSave: false,
+    dirtyData: true,
+    theTest: null,          //  the actual test instance, for example, a OneSampleP.
+    compatibleTestIDs : [],
+    refreshCount : 0,
 
     initialize: async function () {
         console.log(`initializing...`);
 
         await connect.initialize(this.iFrameDescription, null);
+        await localize.initialize(localize.figureOutLanguage('en'));
+        ui.initialize();
+
         this.state = await codapInterface.getInteractiveState();    //  get stored state of any
+        this.state = {...this.constants.defaultState, ...this.state};   //  have all fields in default!
+
         if (this.state.dataset) {
             data.dirtyData = true;
-            await data.updateData();
-            await data.makeXandYArrays(testimate.state.x.name, testimate.state.y.name, data.dataset);
+            //  await data.updateData();
+            //  await data.makeXandYArrays(testimate.state.x.name, testimate.state.y.name, data.allCODAPitems);
             await this.restoreState();
-        } else {
-            Object.assign(this.state, this.constants.defaultState);     //  test
         }
 
-        await localize.initialize(localize.figureOutLanguage('en'));
-
-        ui.initialize();
         ui.redraw();
     },
 
-    restoreState: async function () {
-        //  check if the state variable has this member, fix if it doesn't.
-        if (!testimate.state.randomEmitNumber) {    //  number of iterations if we re-randomize automatically
-            testimate.state.randomEmitNumber = testimate.constants.defaultState.randomEmitNumber;
+    /**
+     * This makes sure data is current, and also creates the `data.xAttData` and `data.yAttData` arrays,
+     * and evaluates the values to tell whether the attributes are numeric or categorical.
+     * We need this in order to figure out which tests are appropriate,
+     * and (importantly) to set a test if it has not yet been set.
+     */
+    refreshDataAndTestResults: async function () {
+        this.refreshCount++;
+        console.log(`refresh data: ${this.refreshCount}`);
+        if (this.state.dataset) {
+            await data.updateData();
+            await data.makeXandYArrays(data.allCODAPitems);
+            this.dirtyData = false;     //  todo: do we need this any more?
+
+            this.checkTestConfiguration();      //  ensure that this.theTest holds a suitable "Test"
+
+            if (this.theTest && this.theTest.testID) {
+                this.adjustTestSides();     //  todo: figure out if this is correct; shouldn't we compute the value before we do this?
+
+                data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
+                await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
+            } else {
+                console.log(`Unexpected: refreshing data and we don't have a test.`)
+            }
+
+        } else {
+            console.log(`trying to refresh data but there is no dataset`)
         }
+        ui.redraw();
+    },
+
+    /**
+     * Something wrong here; check ui.sidesBoxHTML to see where this is apparently computed??   //      todo: attend to sides, >, <, etc!
+     */
+    adjustTestSides : function() {
+        this.state.testParams.theSidesOp = "≠";
+        if (this.state.testParams.sides === 1) {
+            this.state.testParams.theSidesOp = (this.theTest.results[this.theTest.theConfig.testing] > testimate.state.testParams.value ? ">" : "<");
+        }
+    },
+
+    checkTestConfiguration: function () {
+        this.compatibleTestIDs = Test.findCompatibleTestConfigurations();
+
+        if (this.theTest) {
+            if (!this.compatibleTestIDs.includes(this.state.testID)) {
+                //  if the current test is incompatible with the current data,
+                //  pick the first compatible one
+                this.makeFreshTest(this.compatibleTestIDs[0])
+            }
+        } else if (this.compatibleTestIDs.length) {
+            //  it should ALWAYS be possible to find a possible test.
+            //  set theTest to the first one in the list
+            this.makeFreshTest(this.compatibleTestIDs[0])
+        } else {
+            alert(`somehow, we see no possible test IDs.`);
+        }
+    },
+
+    restoreState: async function () {
 
         await connect.registerForCaseChanges(this.state.dataset.name);
         if (testimate.state.testID) {
             this.restoringFromSave = true;
-            await data.updateData();
-            this.makeFreshTest(testimate.state.testID);
+            await this.refreshDataAndTestResults();
+            //  await data.updateData();
+            //  this.makeFreshTest(testimate.state.testID);
         }
         this.dirtyData = true;
-
     },
 
     makeFreshTest: function (iID) {
@@ -48,6 +105,7 @@ const testimate = {
         this.restoringFromSave = false;
     },
 
+    //  todo: move to handlers
     copeWithAttributeDrop: async function (iDataset, iAttribute, iWhere) {
         //  const titleElement = document.getElementById(`titleDIV`);
         const initialElement = document.elementFromPoint(iWhere.x, iWhere.y);
@@ -71,7 +129,7 @@ const testimate = {
 
         data.dirtyData = true;
 
-        ui.redraw();
+        await testimate.refreshDataAndTestResults();
     },
 
     setDataset: async function (iDataset) {
@@ -88,34 +146,58 @@ const testimate = {
 
     setX: async function (iAtt) {
         data.dirtyData = true;
-        this.state.x = iAtt;
-        //  this.state.testID = null;
+        this.state.x = iAtt;        //  the whole attribute structure, with .name and .title
         console.log(`set X to ${iAtt.name}`);
-    },
-
-    setNewGroupingValue: async function(iValue) {
-        let f = "no formula needed";
-        const theConfig = Test.configs[testimate.state.testID];
-        const theAxis = theConfig.groupAxis;    //  only exists for logistic regression
-        if (theAxis) {
-            f = await connect.updateDatasetForLogisticGroups(iValue, theAxis);
-        }
-        testimate.state.testParams.group = iValue;
-        console.log(`changing grouping: new formula : [${f}]`);
     },
 
     setY: async function (iAtt) {
         data.dirtyData = true;
         if (this.state.x) {
             this.state.y = iAtt;
-            //  this.state.testID = null;
             console.log(`set Y to ${iAtt.name}`);
         } else {
             this.setX(iAtt);   //  always fill x first.
         }
     },
 
-    predictorExists : function() {
+
+    /**
+     * Set the value of the "focusGroup" in the test parameters.
+     * Also, remember it for later.
+     *
+     * @param iAttData       the attribute data we're looking at
+     * @param iValue         proposed value
+     *  @returns {Promise<void>}
+     */
+    setFocusGroup:  function (iAttData, iValue) {
+        const theValues = [...iAttData.valueSet];  //  possible values for groups
+
+        let theValue = iValue;
+        if (!theValues.includes(iValue)) {
+            theValue = theValues[0];
+        }
+
+        testimate.state.testParams.focusGroup = theValue;
+        this.state.focusGroupDictionary[iAttData.name] = theValue;
+
+        return theValue;
+    },
+
+    setLogisticFocusGroup: async function(iAttData, iValue) {
+
+        const theValue = this.setFocusGroup(iAttData, iValue);
+
+        //  if this is logistic regression
+        const theConfig = Test.configs[testimate.state.testID];
+        const theAxis = theConfig.groupAxis;    //  only exists for logistic regression
+        if (theAxis) {
+            const f = await connect.updateDatasetForLogisticGroups(theValue, theAxis);
+            console.log(`changing logistic grouping: new formula : [${f}]`);
+        }
+        //  done with special logistic treatment
+    },
+
+    predictorExists: function () {
         return (testimate.state.y && testimate.state.y.name);
     },
 
@@ -131,8 +213,8 @@ const testimate = {
         dimensions: {height: 555, width: 444},
 
         emittedDatasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
-        logisticGroupAttributeName : `_logisticGroup`,  //  to add to the original dataset
-        logisticGraphName : "logistic graph",
+        logisticGroupAttributeName: `_logisticGroup`,  //  to add to the original dataset
+        logisticGraphName: "logistic graph",
 
         defaultState: {
             lang: `en`,
@@ -140,10 +222,11 @@ const testimate = {
             dataTypes: {},     //      {'gender' : 'categorical', 'height' : 'numeric', ...}
             x: null,           //      attribute info, complete
             y: null,
-            randomEmitNumber : 10,      //  number of times you re-randomize by default
+            randomEmitNumber: 10,      //  number of times you re-randomize by default
             testID: null,
             testParams: {},
-            mostRecentEmittedTest : null,
+            mostRecentEmittedTest: null,
+            focusGroupDictionary : {},
         }
     }
 }

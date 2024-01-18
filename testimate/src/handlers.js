@@ -5,39 +5,39 @@ const handlers = {
     changeTestSides: function () {
         const iSign = document.getElementById(`sidesButton`).value;    // 1 or 2
         testimate.state.testParams.sides = (iSign === `≠`) ? 1 : 2;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeConf: function () {
         const a = document.getElementById(`confBox`);
         testimate.state.testParams.conf = a.value;
         testimate.state.testParams.alpha = 1 - testimate.state.testParams.conf / 100;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeAlpha: function () {
         const a = document.getElementById(`alphaBox`);
         testimate.state.testParams.alpha = a.value;
         testimate.state.testParams.conf = 100 * (1 - testimate.state.testParams.alpha);
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeValue: function () {
         const v = document.getElementById(`valueBox`);
         testimate.state.testParams.value = v.value;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeIterations: function () {
         const v = document.getElementById(`iterBox`);
         testimate.state.testParams.iter = v.value;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeRate: function () {
         const v = document.getElementById(`rateBox`);
         testimate.state.testParams.rate = v.value;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeEmitMode: function() {
@@ -53,34 +53,47 @@ const handlers = {
             alert("Can't emit for each subgroups if there are no subgroups");  //  todo: localize
         }
 
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeRandomEmitNumber: function () {
         const v = document.getElementById(`randomEmitNumberBox`);
         testimate.state.randomEmitNumber = v.value;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeLogisticRegressionProbe: function () {
         const LRP = document.getElementById(`logisticRegressionProbeBox`);
         testimate.state.testParams.probe = LRP.value; //  need for state and restore
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     changeTest: function () {
         const T = document.getElementById(`testMenu`);
-        testimate.makeFreshTest(T.value); //  need for state and restore
-        ui.redraw();
+        testimate.makeFreshTest(T.value); //  the testID, need for state and restore
+        testimate.refreshDataAndTestResults();
+        //  ui.redraw();
     },
 
-    changeGroup0: function () {
-        const initialGroup = testimate.state.testParams.group;
+    changeFocusGroup: function () {
+        const initialGroup = testimate.state.testParams.focusGroup;
         const valueSet = [...data.xAttData.valueSet];
         const nextValue = this.nextValueInList(valueSet, initialGroup);
-        testimate.setNewGroupingValue(nextValue);
-        ui.redraw();
+        testimate.setFocusGroup(data.xAttData, nextValue);
+        testimate.refreshDataAndTestResults();
     },
+
+    /**
+     * Change the TYPE (categorical or numeric = CN) of the attribute
+     * @param iXY
+     */
+    changeCN: function (iXY) {
+        const aName = (iXY === 'x') ? testimate.state.x.name : testimate.state.y.name;
+        const newType = (testimate.state.dataTypes[aName] === 'numeric' ? 'categorical' : 'numeric');
+        testimate.state.dataTypes[aName] = newType;
+        testimate.refreshDataAndTestResults();
+    },
+
 
     changeGoodnessProp: function(iLast) {
         console.log(`changing goodness prop for ${iLast}`);
@@ -106,7 +119,7 @@ const handlers = {
             }
             testimate.state.testParams.groupProportions[g] = (theBoxValue);
         })
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     /**
@@ -116,12 +129,24 @@ const handlers = {
     doMoreIterations : function(iHowMany) {
         testimate.theTest.moreIterations = iHowMany;
         testimate.theTest.newRegression = false;        //      we will add on
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     showLogisticGraph: function() {
         const formulas = testimate.theTest.makeFormulaString();
         connect.showLogisticGraph(formulas.longFormula);
+    },
+
+
+    getNextGroupValue: function(initialValue) {
+        const valueSet = [...data.xAttData.valueSet];
+
+        if (initialValue) {
+            const nextValue = this.nextValueInList(valueSet, initialValue);
+            return nextValue ? nextValue : null;
+        } else {
+            return valueSet[0];
+        }
     },
 
     nextValueInList: function (iList, iValue) {
@@ -130,16 +155,6 @@ const handlers = {
         return iList[iNext];
     },
 
-    /**
-     * Change the TYPE (categorical or numeric = CN) of the attribute
-     * @param iXY
-     */
-    changeCN: function (iXY) {
-        const aName = (iXY === 'x') ? testimate.state.x.name : testimate.state.y.name;
-        const newType = (testimate.state.dataTypes[aName] === 'numeric' ? 'categorical' : 'numeric');
-        testimate.state.dataTypes[aName] = newType;
-        ui.redraw();
-    },
 
     /**
      * remove the attribute indicated
@@ -152,7 +167,7 @@ const handlers = {
         data.xAttData = null;
         data.yAttData = null;
         data.dirtyData = true;
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     /**
@@ -175,33 +190,30 @@ const handlers = {
             await this.emitSingle();
         }
 
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     },
 
     emitHierarchy: async function() {
 
-        await data.updateData();        //  make sure we have the current data
+        for (let i = 0; i < data.topCases.length; i++ ) {
+            const tc = data.topCases[i];
 
-        data.topCases.forEach( result = async tc => {
             const theTopValues = tc.values;    //  must match all of these
-            console.log(`match values using ${JSON.stringify(theTopValues)}`);
+            console.log(`top case ${i}: match values using ${JSON.stringify(theTopValues)}`);
 
-            const oneGroupDataset = data.filterGroupCases(data.dataset, theTopValues);
+            const oneGroupDataset = data.filterGroupCases(data.allCODAPitems, theTopValues);
             if (oneGroupDataset) {
                 //  console.log(`Filtered: ${JSON.stringify(oneGroupDataset)}`)
-                data.xAttData = new AttData(testimate.state.x, oneGroupDataset);
-                data.yAttData = new AttData(testimate.state.y, oneGroupDataset);
+                await data.makeXandYArrays(oneGroupDataset);
 
-                data.removeInappropriateCases();
-                testimate.theTest.updateTestResults();  //  now we've done the test on this subset
+                await data.removeInappropriateCases();
+                await testimate.theTest.updateTestResults();  //  now we've done the test on this subset
                 await connect.emitTestData(theTopValues);
+                console.log(`top case ${i}: done emitting ${JSON.stringify(theTopValues)}`);
             }
-        })
+        }
 
-        ui.redraw();
+        await testimate.refreshDataAndTestResults();
     },
 
-    refreshDataAndTestResults : async function() {
-
-    }
 }
