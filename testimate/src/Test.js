@@ -9,6 +9,8 @@ class Test {
     theConfig = null;
 
     constructor(iID) {
+        testimate.OKtoRespondToCaseChanges = true;
+
         this.testID = iID;      //  do we need this or is it in testimate.state?
         this.theConfig = Test.configs[iID];
         if (!testimate.restoringFromSave) {
@@ -18,7 +20,8 @@ class Test {
                 sides: 2,
                 theSidesOp: "≠",   //  the sign
                 conf: 95,    //  confidence level 1 - alpha
-                focusGroup: null,
+                focusGroupX: null,
+                focusGroupY: null,
             }
         }
     }
@@ -142,6 +145,14 @@ class Test {
         return [A, B];
     }
 
+    static getComplementaryValue(iAttData, iValue) {
+
+        const out = iAttData.isBinary() ?
+            handlers.nextValueInList([...iAttData.valueSet], iValue) :      //  the OTHER value, e.g., "Female"
+            `${localize.getString('notP', iValue)}`;       //  e.g., "not Male"
+
+        return out;
+    }
 
     /**
      * configurations for all possible tests

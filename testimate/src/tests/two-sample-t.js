@@ -18,13 +18,18 @@ class TwoSampleT extends Test {
         this.grouping = iGrouping;      //  is a grouping value in "Y"?
         this.results.groupNames = [];       //  names of the two groups to be displayed (depends on grouping)
         if (this.grouping) {
-            const theValues = [...data.yAttData.valueSet];  //  possible values for groups
-            if (!testimate.restoringFromSave) {
-                testimate.setFocusGroup(data.yAttData, null);
+            if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroupY) {
+                testimate.state.testParams.focusGroupY = testimate.state.focusGroupDictionary[data.yAttData.name];
             }
+
         } else {
-            testimate.state.testParams.focusGroup = null;
+            testimate.state.testParams.focusGroupY = null;
         }
+        testimate.state.testParams.value
+            = testimate.state.valueDictionary[this.testID]
+            ? testimate.state.valueDictionary[this.testID] : 0;
+
+        testimate.state.testParams.reversed = false;
     }
 
     updateTestResults() {
@@ -36,12 +41,12 @@ class TwoSampleT extends Test {
         this.results.group2Name = data.yAttData.name;
 
         if (this.grouping) {
-            [A, B] = Test.splitByGroup(A, B, testimate.state.testParams.focusGroup);
+            [A, B] = Test.splitByGroup(A, B, testimate.state.testParams.focusGroupY);
             console.log(`A = ${A}, B = ${B}`);
-            this.results.group1Name = testimate.state.testParams.focusGroup;     //  the name of a value in the second att
+            this.results.group1Name = testimate.state.testParams.focusGroupY;     //  the name of a value in the second att
             this.results.group2Name = data.yAttData.isBinary() ?
-                handlers.nextValueInList([...data.yAttData.valueSet], testimate.state.testParams.focusGroup) :  //  the OTHER value
-                `not ${testimate.state.testParams.focusGroup}`          //   or a more general label, NOT "a"
+                handlers.nextValueInList([...data.yAttData.valueSet], testimate.state.testParams.focusGroupY) :  //  the OTHER value
+                `not ${testimate.state.testParams.focusGroupY}`          //   or a more general label, NOT "a"
         }
 
         const j0 = jStat(A);
@@ -70,7 +75,8 @@ class TwoSampleT extends Test {
             (this.results.N1 + this.results.N2 - 2);
         this.results.s = Math.sqrt(sArg);       //  pooled SD
         this.results.SE = this.results.s * Math.sqrt((1 / this.results.N1) + (1 / this.results.N2));
-        this.results.diff = this.results.mean1 - this.results.mean2;
+        this.results.diff = testimate.state.testParams.reversed ?
+            this.results.mean2 - this.results.mean1 : this.results.mean1 - this.results.mean2;
         this.results.t = (this.results.diff - testimate.state.testParams.value) / this.results.SE;
 
         const var1oN = j0.variance(true) / this.results.N1;
@@ -117,7 +123,9 @@ class TwoSampleT extends Test {
 
         const resultHed = (this.grouping) ?
             localize.getString("tests.twoSampleT.testQuestion1", testimate.state.x.name,this.results.group1Name,this.results.group2Name,comparison) :
-            localize.getString("tests.twoSampleT.testQuestion2", testimate.state.x.name,testimate.state.y.name,comparison) ;
+            testimate.state.testParams.reversed ?
+                localize.getString("tests.twoSampleT.testQuestion2", testimate.state.y.name,testimate.state.x.name,comparison) :
+                localize.getString("tests.twoSampleT.testQuestion2", testimate.state.x.name,testimate.state.y.name,comparison) ;
 
         let out = "<pre>";
 
@@ -179,19 +187,28 @@ class TwoSampleT extends Test {
     }
 
     makeConfigureGuts() {
-//  todo: make it so the groups[0] value (the label) can be changed with a button.
-        const focusGrouprep = (this.grouping) ?
-            this.results.group1Name :
-            this.results.group1Name;
 
-        const intro = (this.grouping) ?
-            localize.getString("tests.twoSampleT.configStart1", testimate.state.x.name, focusGrouprep, this.results.group2Name) :
-            localize.getString("tests.twoSampleT.configStart2", testimate.state.x.name, testimate.state.y.name) ;
+        const yComplement = Test.getComplementaryValue(data.yAttData, testimate.state.testParams.focusGroupY);
+        const configStart = (this.grouping) ?
+            localize.getString("tests.twoSampleT.configStartPaired", testimate.state.x.name) :
+            localize.getString("tests.twoSampleT.configStartUnpaired");
+
+        const chicletGuts = (testimate.state.testParams.reversed) ?
+            `mean(${testimate.state.y.name}) – mean(${testimate.state.x.name})` :
+            `mean(${testimate.state.x.name}) – mean(${testimate.state.y.name})` ;
+
+        const chiclet = ui.chicletButtonHTML(chicletGuts);
+
+        const configContinues = (this.grouping) ?
+            `[${ui.focusGroupButtonYHTML(testimate.state.testParams.focusGroupY)}]–[${yComplement}]` :
+            chiclet ;
+
 
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `${intro} ${sides} ${value} <br>&emsp;${conf}`;
+
+        let theHTML = `${configStart}:<br>&emsp;${configContinues} ${sides} ${value} <br>&emsp;${conf}`;
 
         return theHTML;
     }

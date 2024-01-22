@@ -14,9 +14,15 @@ connect = {
 
     initialize: async function () {
 
-        await codapInterface.init(this.iFrameDescriptor, null);
+        //  note: these subscriptions must happen BEFORE `.init` so that the `.on` there does not
+        //  override our handlers.
+        codapInterface.on('update', 'interactiveState', "", handlers.restorePluginFromStore);
+        codapInterface.on('get', 'interactiveState', "", handlers.getPluginState);
+
+        await codapInterface.init(this.iFrameDescriptor, handlers.restorePluginFromStore);
         await this.registerForDragDropEvents();
         await this.allowReorg();
+
     },
 
     /**
@@ -162,6 +168,7 @@ connect = {
         const graphObject = {
             type: "graph",
             name: testimate.constants.logisticGraphName,
+            title: `P(${data.xAttData.name} = ${testimate.state.testParams.focusGroupX})`,
             dataContext: testimate.state.dataset.name,
             xAttributeName: data.yAttData.name,
             yAttributeName: testimate.constants.logisticGroupAttributeName,

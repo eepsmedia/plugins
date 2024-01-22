@@ -6,6 +6,7 @@ const testimate = {
     theTest: null,          //  the actual test instance, for example, a OneSampleP.
     compatibleTestIDs : [],
     refreshCount : 0,
+    OKtoRespondToCaseChanges : true,
 
     initialize: async function () {
         console.log(`initializing...`);
@@ -14,13 +15,13 @@ const testimate = {
         await localize.initialize(localize.figureOutLanguage('en'));
         ui.initialize();
 
-        this.state = await codapInterface.getInteractiveState();    //  get stored state of any
+        // this.state = codapInterface.getInteractiveState();    //  get stored state if any
         this.state = {...this.constants.defaultState, ...this.state};   //  have all fields in default!
+        //  codapInterface.updateInteractiveState(this.state);    //
+
 
         if (this.state.dataset) {
             data.dirtyData = true;
-            //  await data.updateData();
-            //  await data.makeXandYArrays(testimate.state.x.name, testimate.state.y.name, data.allCODAPitems);
             await this.restoreState();
         }
 
@@ -28,10 +29,7 @@ const testimate = {
     },
 
     /**
-     * This makes sure data is current, and also creates the `data.xAttData` and `data.yAttData` arrays,
-     * and evaluates the values to tell whether the attributes are numeric or categorical.
-     * We need this in order to figure out which tests are appropriate,
-     * and (importantly) to set a test if it has not yet been set.
+     * This makes sure data is current
      */
     refreshDataAndTestResults: async function () {
         this.refreshCount++;
@@ -55,6 +53,8 @@ const testimate = {
         } else {
             console.log(`trying to refresh data but there is no dataset`)
         }
+
+        //  codapInterface.updateInteractiveState(this.state);
         ui.redraw();
     },
 
@@ -92,10 +92,7 @@ const testimate = {
         if (testimate.state.testID) {
             this.restoringFromSave = true;
             await this.refreshDataAndTestResults();
-            //  await data.updateData();
-            //  this.makeFreshTest(testimate.state.testID);
         }
-        this.dirtyData = true;
     },
 
     makeFreshTest: function (iID) {
@@ -170,15 +167,15 @@ const testimate = {
      *  @returns {Promise<void>}
      */
     setFocusGroup:  function (iAttData, iValue) {
+        const theName = iAttData.name;
         const theValues = [...iAttData.valueSet];  //  possible values for groups
+        const defaultValue = this.state.focusGroupDictionary[theName] ?
+            this.state.focusGroupDictionary[theName] :
+            theValues[0];
 
-        let theValue = iValue;
-        if (!theValues.includes(iValue)) {
-            theValue = theValues[0];
-        }
+        const theValue = theValues.includes(iValue) ? iValue : defaultValue;
 
-        testimate.state.testParams.focusGroup = theValue;
-        this.state.focusGroupDictionary[iAttData.name] = theValue;
+        this.state.focusGroupDictionary[theName] = theValue;
 
         return theValue;
     },
@@ -195,6 +192,8 @@ const testimate = {
             console.log(`changing logistic grouping: new formula : [${f}]`);
         }
         //  done with special logistic treatment
+        return theValue;
+
     },
 
     predictorExists: function () {
@@ -209,7 +208,7 @@ const testimate = {
 
     constants: {
         pluginName: `testimate`,
-        version: `2023j`,
+        version: `2024b`,
         dimensions: {height: 555, width: 444},
 
         emittedDatasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
@@ -227,6 +226,7 @@ const testimate = {
             testParams: {},
             mostRecentEmittedTest: null,
             focusGroupDictionary : {},
+            valueDictionary : {},
         }
     }
 }

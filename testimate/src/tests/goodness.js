@@ -209,7 +209,7 @@ class Goodness extends Test {
                 theProportions[group] = theEqualShare;
             }
         }
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     }
 
 

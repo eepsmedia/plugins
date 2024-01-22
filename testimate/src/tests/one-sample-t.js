@@ -2,6 +2,11 @@ class OneSampleT extends Test {
 
     constructor(iID) {
         super(iID);
+
+        testimate.state.testParams.value
+            = testimate.state.valueDictionary[this.testID]
+            ? testimate.state.valueDictionary[this.testID] : 0;
+
     }
 
     updateTestResults() {

@@ -7,16 +7,19 @@ class OneSampleP extends Test {
         super(iID);
 
         //  get a default "group" -- the value we count as "success" for proportions
-        if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroup) {
-            testimate.state.testParams.value = 0.5;
-            testimate.state.testParams.focusGroup = testimate.state.focusGroupDictionary[data.xAttData.name];
+        if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroupX) {
+            testimate.state.testParams.focusGroupX = testimate.state.focusGroupDictionary[data.xAttData.name];
         }
+
+        testimate.state.testParams.value
+            = testimate.state.valueDictionary[this.testID]
+            ? testimate.state.valueDictionary[this.testID] : 0.5;
     }
 
     async updateTestResults() {
         //  todo: use exact binomial for small N, prop near 0 or 1
         const A = data.xAttData.theArray;
-        const G = testimate.state.testParams.focusGroup;
+        const G = testimate.state.testParams.focusGroupX;
 
         let N = 0;
         this.results.successes = 0;
@@ -80,7 +83,7 @@ class OneSampleP extends Test {
 
         let out = "<pre>";
         const testQuestion = localize.getString("tests.oneSampleP.testQuestion",
-            data.xAttData.name, testimate.state.testParams.focusGroup, sidesOp, value);
+            data.xAttData.name, testimate.state.testParams.focusGroupX, sidesOp, value);
         const r1 = localize.getString( "tests.oneSampleP.resultsLine1", prop, successes, N);
 
         out += testQuestion;
@@ -130,7 +133,7 @@ class OneSampleP extends Test {
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value, 0.0, 1.0, 0.05);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        const group = ui.focusGroupButtonHTML(ui.getFocusGroupName());
+        const group = ui.focusGroupButtonXHTML(testimate.state.testParams.focusGroupX);
         let theHTML = `${configStart}(${data.xAttData.name} = ${group}) ${sides} ${value} ${conf}`;
 
         return theHTML;

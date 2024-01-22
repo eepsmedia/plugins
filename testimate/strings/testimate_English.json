@@ -37,6 +37,7 @@
     "at" : "at",
     "rate" : "rate",
     "cost": "cost",
+    "notP" : "not •1•",
     "nMore" : "•1• more",
     "hasRandom" : "has randomness",
     "noRandom" : "no randomness",
@@ -118,8 +119,8 @@
       "paired": {
         "menuString": "paired test of (•1• – •2•)",
         "testQuestion": "Is the (paired) mean difference of each (•1• – •2•) •3• •4• ?",
-        "resultsLine2": "paired mean difference = •1•, •2•% CI = [•3•, •4•]",
-        "configurationStart": "paired test of (•1• – •2•)"
+        "resultsLine2": "mean paired difference = •1•, •2•% CI = [•3•, •4•]",
+        "configurationStart": "paired test: mean of"
       },
       "twoSampleT": {
         "menuString1": "difference of means: •1• vs •2•",
@@ -127,8 +128,9 @@
         "testQuestion1": "Is the difference mean(•1•) : group •2• – group •3• •4• ?",
         "testQuestion2": "Is the difference mean(•1•) – mean(•2•) •3• ?",
         "detailsSummary": "<summary>Difference of means, two-sample <i>t</i> procedure</summary>",
-        "configStart1": "testing mean(•1•) : group •2• – group •3•",
-        "configStart2": "testing mean(•1•) – mean(•2•)"
+        "configStartPaired" : "testing mean(•1•)",
+        "configStart1": "group •1• – group •2•",
+        "configStartUnpaired": "unpaired test"
       },
       "regression": {
         "menuString": "linear regression of (•1•) as a function of (•2•)",

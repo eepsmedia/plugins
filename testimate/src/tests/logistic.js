@@ -30,16 +30,24 @@ class Logistic extends Test {
         testimate.state.testParams.rate = 0.1;
         testimate.state.testParams.iter = 100;
         testimate.state.testParams.probe = null;        //  what value of the predictor do we want to find a probability for?
-        testimate.state.testParams.focusGroup = null;        //  what value gets cast as "1"? The rest are "0"
+        testimate.state.testParams.focusGroupX = null;        //  what value gets cast as "1"? The rest are "0"
 
         //}
 
         this.graphShowing = false;
         this.newRegression = true;      //  would be false if we were addiing on additional iterations
         this.moreIterations = 0;        //  and that's how many!
+
+        if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroupX) {
+            testimate.state.testParams.focusGroupX = testimate.state.focusGroupDictionary[data.xAttData.name];
+        }
+
+
     }
 
-    async updateTestResults( ) {
+    async updateTestResults() {
+        testimate.OKtoRespondToCaseChanges = false;
+
         const X0 = data.xAttData.theArray;
         const Y = data.yAttData.theArray;
         const N = X0.length;
@@ -50,12 +58,10 @@ class Logistic extends Test {
         }
 
         //  this will also make the extra column of coded data values if it did not exist before
-        if (!testimate.state.testParams.focusGroup) {
-            await testimate.setLogisticFocusGroup(data.xAttData, null);      //  the first, by default
-        }
+        await testimate.setLogisticFocusGroup(data.xAttData, testimate.state.testParams.focusGroupX);      //  the first, by default
 
         const X = X0.map(x => {
-            return (x === testimate.state.testParams.focusGroup) ? 1 : 0;
+            return (x === testimate.state.testParams.focusGroupX) ? 1 : 0;
         })
 
         let iterations = testimate.state.testParams.iter;
@@ -100,8 +106,10 @@ class Logistic extends Test {
 
         this.results.iterations += Number(iterations);
         this.results.slope = theResult.currentSlope;
-        this.results.pos =  theResult.currentPos;
+        this.results.pos = theResult.currentPos;
         this.results.cost = theResult.currentCost;
+
+        testimate.OKtoRespondToCaseChanges = true;
     }
 
     makeFormulaString() {
@@ -127,7 +135,7 @@ class Logistic extends Test {
         const graphButton = ui.makeLogisticGraphButtonHTML();
         const theFormula = this.makeFormulaString().shortFormula;
         const more10button = `<input type = "button" 
-            value = "${localize.getString("nMore",10)}" 
+            value = "${localize.getString("nMore", 10)}" 
             onclick = "handlers.doMoreIterations(10)"`;
         const copyFormulaWords = localize.getString("copyFormula")
 
@@ -138,13 +146,13 @@ class Logistic extends Test {
         out += `<br>${localize.getString("tests.logistic.model1", testimate.state.y.name, pos)}.`
         out += `<br>       ${localize.getString("tests.logistic.model2", slope)}<br>`;
         out += `<br>    ${localize.getString("tests.logistic.probFunctionHead")}`
-        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.focusGroup}) = ${theFormula}`;
+        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.focusGroupX}) = ${theFormula}`;
 
         out += `<br><br>${graphButton}&emsp;`;
         out += `<input type='button' value="${copyFormulaWords}" onclick="navigator.clipboard.writeText(testimate.theTest.makeFormulaString().longFormula)">`;
 
         out += `<br><br>`;
-        out += localize.getString("tests.logistic.probQuery1", testimate.state.x.name, testimate.state.testParams.focusGroup);
+        out += localize.getString("tests.logistic.probQuery1", testimate.state.x.name, testimate.state.testParams.focusGroupX);
         out += `<br>    ${localize.getString("tests.logistic.probQuery2", testimate.state.y.name)} = ${LRPbox}`;
 
         if (testimate.state.testParams.probe) {
@@ -155,7 +163,7 @@ class Logistic extends Test {
                 probString = ui.numberToString(probNumber, 3);
             }
 
-            out += ` P(${testimate.state.testParams.focusGroup}) = ${probString}`;
+            out += ` P(${testimate.state.testParams.focusGroupX}) = ${probString}`;
         }
         out += `</pre>`;
         return out;
@@ -178,7 +186,7 @@ class Logistic extends Test {
     makeConfigureGuts() {
         const rate = ui.rateBoxHTML(testimate.state.testParams.rate, 1.0, 0.01);
         const iter = ui.iterBoxHTML(testimate.state.testParams.iter);
-        const group = ui.focusGroupButtonHTML(ui.getFocusGroupName());
+        const group = ui.focusGroupButtonXHTML(testimate.state.testParams.focusGroupX);
         const showGraph = ui.makeLogisticGraphButtonHTML();
 
         const rateWord = localize.getString("rate");
@@ -290,64 +298,64 @@ class Logistic extends Test {
         return {currentSlope, currentPos, currentCost};
     }
 
-/*
-    GPT_LogisticRegression(x, y, alpha, iterations) {
-        // Initialize weights and bias
-        let w = 0;
-        let b = 10;
-        let slope = w / 4;
-        let pos = -b / w;
-        let record = "";
+    /*
+        GPT_LogisticRegression(x, y, alpha, iterations) {
+            // Initialize weights and bias
+            let w = 0;
+            let b = 10;
+            let slope = w / 4;
+            let pos = -b / w;
+            let record = "";
 
-        // Number of samples
-        const N = x.length;
+            // Number of samples
+            const N = x.length;
 
-        record += "iter, m, p, costper, hs, hp";
+            record += "iter, m, p, costper, hs, hp";
 
-        for (let iter = 1; iter < iterations; iter++) {
-            let cost = 0;
-            let dw = 0;
-            let db = 0;
+            for (let iter = 1; iter < iterations; iter++) {
+                let cost = 0;
+                let dw = 0;
+                let db = 0;
 
-            for (let i = 0; i < N; i++) {
-                const xi = x[i];
-                const yi = y[i];
+                for (let i = 0; i < N; i++) {
+                    const xi = x[i];
+                    const yi = y[i];
 
-                // Compute prediction using the sigmoid function
-                const z = w * xi + b;
-                const prediction = this.sigmoid(z);
+                    // Compute prediction using the sigmoid function
+                    const z = w * xi + b;
+                    const prediction = this.sigmoid(z);
 
-                // Compute cost. It's the log of the absolute distance of the point from the model
-                //  note that yi is either zero or one, so only one term survives.
-                //
-                cost -= yi * Math.log(prediction) + (1 - yi) * Math.log(1 - prediction);
+                    // Compute cost. It's the log of the absolute distance of the point from the model
+                    //  note that yi is either zero or one, so only one term survives.
+                    //
+                    cost -= yi * Math.log(prediction) + (1 - yi) * Math.log(1 - prediction);
 
-                // Compute gradients
-                const gradient = prediction - yi;
-                dw += xi * gradient;
-                db += gradient;
+                    // Compute gradients
+                    const gradient = prediction - yi;
+                    dw += xi * gradient;
+                    db += gradient;
+                }
+
+                // Update weights and bias
+                slope = w / 4;
+                pos = -b / w;
+
+
+                if (iter % 100 === 0) {
+                    record += `\n${iter},${slope},${pos},${cost / N}`;
+                }
+                // Print the cost for every 1000 iterations
+                /!*
+                            if (iter % 1000 === 0) {
+                                console.log(`Iteration ${iter}: Cost = ${cost / N}`);
+                            }
+                *!/
             }
 
-            // Update weights and bias
-            slope = w / 4;
-            pos = -b / w;
+            console.log('\n' + record);
 
-
-            if (iter % 100 === 0) {
-                record += `\n${iter},${slope},${pos},${cost / N}`;
-            }
-            // Print the cost for every 1000 iterations
-            /!*
-                        if (iter % 1000 === 0) {
-                            console.log(`Iteration ${iter}: Cost = ${cost / N}`);
-                        }
-            *!/
+            return {w, b};
         }
-
-        console.log('\n' + record);
-
-        return {w, b};
-    }
-*/
+    */
 
 }

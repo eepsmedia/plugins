@@ -1,7 +1,9 @@
 class Paired extends Test {
 
+
     constructor(iID) {
         super(iID);
+        testimate.state.testParams.reversed = false;
     }
 
     updateTestResults() {
@@ -14,7 +16,7 @@ class Paired extends Test {
         let Z = [];
 
         for (let i = 0; i < N; i++) {
-            Z[i] = X[i] - Y[i];
+            Z[i] = testimate.state.testParams.reversed ? Y[i] - X[i] : X[i] - Y[i];
         }
 
         const jX = jStat(Z);      //  jStat version of difference array
@@ -50,8 +52,11 @@ class Paired extends Test {
         const alpha = ui.numberToString(testimate.state.testParams.alpha);
         const value = ui.numberToString(testimate.state.testParams.value);
 
-        const testQuestion = localize.getString("tests.paired.testQuestion",
-            testimate.state.x.name, testimate.state.y.name, testimate.state.testParams.theSidesOp, value);
+        const testQuestion = testimate.state.testParams.reversed ?
+            localize.getString("tests.paired.testQuestion",
+                testimate.state.y.name, testimate.state.x.name, testimate.state.testParams.theSidesOp, value) :
+            localize.getString("tests.paired.testQuestion",
+                testimate.state.x.name, testimate.state.y.name, testimate.state.testParams.theSidesOp, value) ;
         const r2 = localize.getString( "tests.paired.resultsLine2", mean, conf, CImin, CImax);
 
         let out = "<pre>";
@@ -76,17 +81,25 @@ class Paired extends Test {
      */
     static makeMenuString() {
         //  return `paired test of ${data.xAttData.name} - ${data.yAttData.name}`;
-        return localize.getString("tests.paired.menuString", testimate.state.x.name, testimate.state.y.name);
+        if (testimate.state.testParams.reversed) {
+            return localize.getString("tests.paired.menuString", testimate.state.y.name, testimate.state.x.name);
+        } else {
+            return localize.getString("tests.paired.menuString", testimate.state.x.name, testimate.state.y.name);
+        }
     }
 
     makeConfigureGuts() {
-        const configStart = localize.getString("tests.paired.configurationStart",
-            testimate.state.x.name,testimate.state.y.name);
+        const configStart = localize.getString("tests.paired.configurationStart");
 
+        const chicletGuts = (testimate.state.testParams.reversed) ?
+            `${testimate.state.y.name} – ${testimate.state.x.name}` :
+            `${testimate.state.x.name} – ${testimate.state.y.name}` ;
+
+        const chiclet = ui.chicletButtonHTML(chicletGuts);
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `${configStart} ${sides} ${value} ${conf}`;
+        let theHTML = `${configStart}<br>&emsp;${chiclet} ${sides} ${value}<br>&emsp;</br>${conf}`;
 
         return theHTML;
     }

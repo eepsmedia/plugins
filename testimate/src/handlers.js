@@ -1,4 +1,20 @@
 const handlers = {
+
+    getPluginState : function() {
+        return {
+            success: true,
+            values: {
+                store: testimate.state,
+            }
+        };
+    },
+
+    restorePluginFromStore: function(iStorage) {
+        if (iStorage) {
+            testimate.state = iStorage.store;
+        }
+    },
+
     /**
      * User has clicked a button that changes whether a test is one- or two-sided
      */
@@ -25,6 +41,7 @@ const handlers = {
     changeValue: function () {
         const v = document.getElementById(`valueBox`);
         testimate.state.testParams.value = v.value;
+        testimate.state.valueDictionary[testimate.theTest.testID] = testimate.state.testParams.value;
         testimate.refreshDataAndTestResults();
     },
 
@@ -75,11 +92,24 @@ const handlers = {
         //  ui.redraw();
     },
 
-    changeFocusGroup: function () {
-        const initialGroup = testimate.state.testParams.focusGroup;
+    changeFocusGroupX: function () {
+        const initialGroup = testimate.state.testParams.focusGroupX;
         const valueSet = [...data.xAttData.valueSet];
         const nextValue = this.nextValueInList(valueSet, initialGroup);
-        testimate.setFocusGroup(data.xAttData, nextValue);
+        testimate.state.testParams.focusGroupX = testimate.setFocusGroup(data.xAttData, nextValue);
+        testimate.refreshDataAndTestResults();
+    },
+
+    changeFocusGroupY: function () {
+        const initialGroup = testimate.state.testParams.focusGroupY;
+        const valueSet = [...data.yAttData.valueSet];
+        const nextValue = this.nextValueInList(valueSet, initialGroup);
+        testimate.state.testParams.focusGroupY = testimate.setFocusGroup(data.yAttData, nextValue);
+        testimate.refreshDataAndTestResults();
+    },
+
+    reverseTestSubtraction : function() {
+        testimate.state.testParams.reversed = !testimate.state.testParams.reversed;
         testimate.refreshDataAndTestResults();
     },
 

@@ -9,13 +9,13 @@ ui = {
     xType: null,
     yType: null,
 
-    datasetDIV : null,
-    testHeaderDIV : null,
+    datasetDIV: null,
+    testHeaderDIV: null,
     resultsDIV: null,      //  results DIV
-    configDIV : null,
-    emitControls : null,
+    configDIV: null,
+    emitControls: null,
 
-    emitMode : "single",
+    emitMode: "single",
 
     initialize: function () {
         this.xDIV = document.getElementById(`xDIV`);
@@ -71,31 +71,46 @@ ui = {
         document.getElementById('resultsDIV').style.display = (testimate.state.x) ? 'block' : 'none';
         document.getElementById('configureDIV').style.display = (testimate.state.x) ? 'block' : 'none';
 
+        document.getElementById('emitSingleGroup').style.display = "block";     //  always show single
+        document.getElementById('emitRandomGroup').style.display = (data.hasRandom) ? "block" : "none";
+        document.getElementById('emitHierarchicalGroup').style.display = (data.isGrouped) ? "block" : "none";
+
         //  emit mode visibility
 
         switch (this.emitMode) {
             case "single":
-                document.getElementById('emitSingleControls').style.display = 'block';
+                document.getElementById('emitSingleButton').style.display = 'inline';
                 document.getElementById('chooseEmitSingle').checked = true;
-                document.getElementById('emitRandomControls').style.display = 'none';
-                document.getElementById('emitHierarchyControls').style.display = 'none';
+                document.getElementById('emitRandomButton').style.display = 'none';
+                //  document.getElementById('chooseEmitRandomLabel').style.display = 'inline';
+                document.getElementById('randomEmitNumberBox').style.display = 'none';
+                document.getElementById('randomEmitNumberBoxLabel').style.display = 'none';
+                document.getElementById('emitHierarchyButton').style.display = 'none';
                 break;
             case "random":
                 document.getElementById('chooseEmitRandom').checked = true;
-                document.getElementById('emitSingleControls').style.display = 'none';
-                document.getElementById('emitRandomControls').style.display = 'block';
-                document.getElementById('emitHierarchyControls').style.display = 'none';
+                document.getElementById('emitSingleButton').style.display = 'none';
+                document.getElementById('emitRandomButton').style.display = 'inline';
+                document.getElementById('chooseEmitRandomLabel').style.display = 'inline';
+                document.getElementById('randomEmitNumberBox').style.display = 'inline';
+                document.getElementById('randomEmitNumberBoxLabel').style.display = 'inline';
+                document.getElementById('emitHierarchyButton').style.display = 'none';
                 break;
             case "hierarchy":
                 document.getElementById('chooseEmitHierarchy').checked = true;
-                document.getElementById('emitSingleControls').style.display = 'none';
-                document.getElementById('emitRandomControls').style.display = 'none';
-                document.getElementById('emitHierarchyControls').style.display = 'block';
+                document.getElementById('emitSingleButton').style.display = 'none';
+                document.getElementById('emitRandomButton').style.display = 'none';
+                //  document.getElementById('chooseEmitRandomLabel').style.display = 'inline';
+                document.getElementById('randomEmitNumberBox').style.display = 'none';
+                document.getElementById('randomEmitNumberBoxLabel').style.display = 'none';
+                document.getElementById('emitHierarchyButton').style.display = 'inline';
                 break;
             default:
                 alert(`unexpected emit mode: [${this.emitMode}]`);
                 break;
         }
+
+
     },
 
     updateAttributeBlocks: function () {
@@ -183,7 +198,7 @@ ui = {
             theParams.theSidesOp = (testStat > theParams.value ? ">" : "<");
         }
 
-        return `<input id="sidesButton" type="button" onclick="handlers.changeTestSides()" 
+        return `<input id="sidesButton" type="button" class="chiclet" onclick="handlers.changeTestSides()" 
                 value="${theParams.theSidesOp}">`
     },
 
@@ -193,14 +208,24 @@ ui = {
      * (when a categorical app needs to be made binary)
      * @param iGroup
      * @returns {`<input id="focusGroupButton" type="button" onclick="handlers.changeFocusGroup()"
-                value="${string}">`}
+     value="${string}">`}
      */
-    focusGroupButtonHTML: function (iGroup) {
-        return `<input id="focusGroupButton" type="button" onclick="handlers.changeFocusGroup()" 
+    focusGroupButtonXHTML: function (iGroup) {
+        return `<input id="focusGroupButtonX" class="chiclet" type="button" onclick="handlers.changeFocusGroupX()" 
                 value="${iGroup}">`
     },
 
-    getFocusGroupName : function() {
+    focusGroupButtonYHTML: function (iGroup) {
+        return `<input id="focusGroupButtonY" class="chiclet" type="button" onclick="handlers.changeFocusGroupY()" 
+                value="${iGroup}">`
+    },
+
+    chicletButtonHTML : function(iGuts) {
+        return `<input id="chicletButton" class="chiclet" type="button" onclick="handlers.reverseTestSubtraction()" 
+                value="${iGuts}">`
+    },
+
+    getFocusGroupName: function () {
         if (!testimate.state.testParams.focusGroup) {
             testimate.setFocusGroup(data.xAttData, null);
         }
@@ -222,7 +247,7 @@ ui = {
      * @param iMax
      * @param iStep
      * @returns {`<input id="valueBox" class="short_number_field" onchange="handlers.changeValue()"
-               ${string|string} ${string|string} type="number" value="${string}">`}
+     ${string|string} ${string|string} type="number" value="${string}">`}
      */
     valueBoxHTML: function (iVal, iMin, iMax, iStep) {
         const minPhrase = iMin ? `min="${iMin}"` : "";
@@ -259,8 +284,8 @@ ui = {
      *
      * @param iConf
      * @returns {`<label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
-        <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
-               type="number" value="${string}" step="1" min="0" max="100">%`}
+     <input id="confBox" class="short_number_field" onchange="handlers.changeConf()"
+     type="number" value="${string}" step="1" min="0" max="100">%`}
      */
     confBoxHTML: function (iConf) {
         return `<label for="confBox" id="conf_label">conf&nbsp;=&nbsp;</label>
@@ -279,7 +304,7 @@ ui = {
         },
     */
 
-    makeTestHeaderGuts: function ( ) {
+    makeTestHeaderGuts: function () {
         let out = `<div class = "hBox">`;
 
         if (testimate.theTest) {
@@ -323,34 +348,34 @@ ui = {
         document.getElementById("emitRandomButton").value = randomEmitButtonTitle;
         document.getElementById("emitHierarchyButton").value = hierarchyEmitButtonTitle;
 
-/*        const emitClause = `<input type="button" id="emitButton"
-            value="${emitButtonTitle}" 
-            onclick="handlers.emit()"></input>
-`;
-        const emitRRButton = `<input type="button"  id="rrEmitButton" 
-            value="${emitRRButtonTitle}" 
-            onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})"></input>`;
-        const emitRRBox =  `<input type="number" id="rrEmitBox" value="${testimate.state.rrEmitNumber}"
-               onclick="handlers.changeRREmit()" min="0" max = "100" step="1"
-               class="short_number_field">
-               <label for="rrEmitBox">times</label> 
-            `;
+        /*        const emitClause = `<input type="button" id="emitButton"
+                    value="${emitButtonTitle}"
+                    onclick="handlers.emit()"></input>
+        `;
+                const emitRRButton = `<input type="button"  id="rrEmitButton"
+                    value="${emitRRButtonTitle}"
+                    onclick="handlers.rrEmit(${testimate.state.rrEmitNumber})"></input>`;
+                const emitRRBox =  `<input type="number" id="rrEmitBox" value="${testimate.state.rrEmitNumber}"
+                       onclick="handlers.changeRREmit()" min="0" max = "100" step="1"
+                       class="short_number_field">
+                       <label for="rrEmitBox">times</label>
+                    `;
 
-        let randomClause = "";
-        if (ui.hasRandom) {
-            randomClause = `${emitRRButton} &emsp; ${emitRRBox}`;
-        }
+                let randomClause = "";
+                if (ui.hasRandom) {
+                    randomClause = `${emitRRButton} &emsp; ${emitRRBox}`;
+                }
 
-        let hierarchicalClause = "";
-        if (this.hierarchyInfo && this.hierarchyInfo.nCollections > 1) {
-            const emitHierarchyButtonTitle = localize.getString("emitHierarchy", this.hierarchyInfo.topLevelCases.length);
-            const emitHierarchyButton =
-                `<input type="button"  id="hierarchyEmitButton" 
-                    value="${emitHierarchyButtonTitle}" 
-                    onclick="handlers.hierarchyEmit()">
-                </input>`;
-            hierarchicalClause = emitHierarchyButton;
-        }*/
+                let hierarchicalClause = "";
+                if (this.hierarchyInfo && this.hierarchyInfo.nCollections > 1) {
+                    const emitHierarchyButtonTitle = localize.getString("emitHierarchy", this.hierarchyInfo.topLevelCases.length);
+                    const emitHierarchyButton =
+                        `<input type="button"  id="hierarchyEmitButton"
+                            value="${emitHierarchyButtonTitle}"
+                            onclick="handlers.hierarchyEmit()">
+                        </input>`;
+                    hierarchicalClause = emitHierarchyButton;
+                }*/
     },
 
 

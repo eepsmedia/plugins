@@ -15,10 +15,9 @@ const data = {
 
 
     /**
-     * called from ui.redraw().
+     * called from testimate.refreshDataAndTestResults().
      *
-     * Before we write anything on the screen, we verify that the data we have is current.
-     * This includes finding the results of the current test.
+     * Before we write anything on the screen, we ensure that the data we have is current.
      *
      * @returns {Promise<void>}
      */
@@ -58,6 +57,11 @@ const data = {
 
     /**
      * Construct xAttData and yAttData, the INTERNAL Arrays of the data in each attribute.
+     *
+     * Those constructors evaluate the values to tell whether the attributes are numeric or categorical.
+     * We need this in order to figure out which tests are appropriate,
+     * and (importantly) to set a test if it has not yet been set.
+     *
      * @param xName
      * @param yName
      * @param data
@@ -67,13 +71,14 @@ const data = {
         if (testimate.state.x) {
             this.xAttData = new AttData(testimate.state.x.name, data);
             if (!testimate.state.focusGroupDictionary[this.xAttData.name]) {
-                testimate.setFocusGroup(this.xAttData, null);
+                testimate.state.testParams.focusGroupX = testimate.setFocusGroup(this.xAttData, null);
             }
         }
         if (testimate.state.y) {
             this.yAttData = new AttData(testimate.state.y.name, data);
+            testimate.state.testParams.focusGroupY = testimate.setFocusGroup(this.yAttData, null);
         }
-        if (this,this.xAttData)  console.log(`    made xAttData (${this.xAttData.theRawArray.length})`);
+        if (this.xAttData)  console.log(`    made xAttData (${this.xAttData.theRawArray.length})`);
     },
 
     removeInappropriateCases: async function () {
@@ -165,7 +170,7 @@ const data = {
 
                 tMess += " *";
                 data.dirtyData = true;      //  "this" is the notification, not "data"
-                await testimate.refreshDataAndTestResults();
+                if (testimate.OKtoRespondToCaseChanges) await testimate.refreshDataAndTestResults();
                 break;
 
             case `updateAttributes`:
@@ -188,8 +193,15 @@ const data = {
                     }
                 })
                 data.dirtyData = true;
-                await testimate.refreshDataAndTestResults();
+                if (testimate.OKtoRespondToCaseChanges) await testimate.refreshDataAndTestResults();
                 break;
+
+            case `deleteAttributes`:
+            case `createAttributes`:
+                data.dirtyData = true;
+                if (testimate.OKtoRespondToCaseChanges) await testimate.refreshDataAndTestResults();
+                break;
+
             default:
                 break;
         }

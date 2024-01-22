@@ -6,8 +6,16 @@ class TwoSampleP extends Test {
         this.results.successValueA = null;      //  label for principal value for group A
         this.results.successValueB = null;      //  label for principal value for B
 
-    }
+        //  get a default "group" -- the value we count as "success" for proportions
+        if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroupX) {
+            testimate.state.testParams.focusGroupX = testimate.state.focusGroupDictionary[data.xAttData.name];
+            testimate.state.testParams.focusGroupY = testimate.state.focusGroupDictionary[data.yAttData.name];
+        }
+        testimate.state.testParams.value
+            = testimate.state.valueDictionary[this.testID]
+            ? testimate.state.valueDictionary[this.testID] : 0;
 
+    }/*
     static rotateSuccessValueA() {
         const initialValue = testimate.theTest.results.successValueA;
         const valueSet = [...data.xAttData.valueSet];
@@ -16,14 +24,17 @@ class TwoSampleP extends Test {
         if (testimate.theTest.grouping) {
             testimate.theTest.results.successValueB = testimate.theTest.results.successValueA;
         }
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     }
     static rotateSuccessValueB() {
         const initialValue = testimate.theTest.results.successValueB;
         const valueSet = [...data.yAttData.valueSet];
         testimate.theTest.results.successValueB = handlers.nextValueInList(valueSet, initialValue);
-        ui.redraw();
+        testimate.refreshDataAndTestResults();
     }
+*/
+
+
 
     updateTestResults() {
         const theCIparam = 1 - testimate.state.testParams.alpha / 2;
@@ -35,15 +46,12 @@ class TwoSampleP extends Test {
             //  A (X) holds the data and values
             //  B (Y) holds the group membership.
 
-            const theGroups = [...data.yAttData.valueSet];
-            this.results.labelA = theGroups[0];
-            this.results.labelB = data.xAttData.isBinary() ?
-                handlers.nextValueInList(theGroups, this.results.labelA) :  //  the OTHER value
-                `not ${this.results.labelA}`
+            this.results.labelA = testimate.state.testParams.focusGroupY;       //      theGroups[0];
+            this.results.labelB = Test.getComplementaryValue( data.yAttData, this.results.labelA);
 
-            const theValues = [...data.xAttData.valueSet];
-            this.results.successValueA = this.results.successValueA || theValues[0];   //  the default principal group = the first, by default
-            this.results.successValueB = this.results.successValueB || theValues[0];   // must be the same as for A if we're grouped
+            this.results.successValueA = testimate.state.testParams.focusGroupX;
+                //  this.results.successValueA || theValues[0];   //  the default principal group = the first, by default
+            this.results.successValueB = testimate.state.testParams.focusGroupX;   // must be the same as for A if we're grouped
 
             [A, B] = Test.splitByGroup(A, B, this.results.labelA);
 
@@ -51,8 +59,8 @@ class TwoSampleP extends Test {
             this.results.labelA = data.xAttData.name;
             this.results.labelB = data.yAttData.name;
 
-            const theAValues = [...data.xAttData.valueSet];
-            this.results.successValueA = this.results.successValueA || theAValues[0];   //  the default principal group = the first, by default
+            //  const theAValues = [...data.xAttData.valueSet];
+            this.results.successValueA = testimate.state.testParams.focusGroupX;        //      this.results.successValueA || theAValues[0];   //  the default principal group = the first, by default
             const theBValues = [...data.yAttData.valueSet];
             if (theBValues.includes(this.results.successValueA)) {
                 //  we don't do the "or" here so that if the value exists in A,
@@ -60,31 +68,31 @@ class TwoSampleP extends Test {
                 //  There is a chance this is not what the user wants.
                 this.results.successValueB = this.results.successValueA;
             } else {
-                this.results.successValueB =  this.results.successValueB || theBValues[0];
+                this.results.successValueB =  testimate.state.testParams.focusGroupY;
             }
         }
 
         //  count cases and successes in "A"
         this.results.N1 = 0;
-        let successesA = 0;
+        this.results.successesA = 0;
         A.forEach( a => {
             this.results.N1++;
-            if (a === this.results.successValueA) successesA++
+            if (a === this.results.successValueA) this.results.successesA++
         })
 
         //  count cases and successes in "B"
         this.results.N2 = 0;
-        let successesB = 0;
+        this.results.successesB = 0;
         B.forEach( b => {
             this.results.N2++;
-            if (b === this.results.successValueB) successesB++
+            if (b === this.results.successValueB) this.results.successesB++
         })
 
         this.results.N = this.results.N1 + this.results.N2;
         if (this.results.N1 > 0 && this.results.N2 > 0) {
-            this.results.prop = (successesA + successesB) / this.results.N;
-            this.results.prop1 = successesA /this.results.N1;
-            this.results.prop2 = successesB /this.results.N2;
+            this.results.prop = (this.results.successesA + this.results.successesB) / this.results.N;
+            this.results.prop1 = this.results.successesA / this.results.N1;
+            this.results.prop2 = this.results.successesB / this.results.N2;
             this.results.SE1 = Math.sqrt(this.results.prop1 * (1 - this.results.prop1) / this.results.N1);
             this.results.SE2 = Math.sqrt(this.results.prop2 * (1 - this.results.prop2) / this.results.N2);
 
@@ -167,26 +175,28 @@ class TwoSampleP extends Test {
         const N2 = this.results.N2;
         const N1 = this.results.N1;
         const N = this.results.N;
+        const succA = this.results.successesA;
+        const succB = this.results.successesB;
         const p1 = ui.numberToString(this.results.prop1);
         const p2 = ui.numberToString(this.results.prop2);
         const prop = ui.numberToString(this.results.prop);
 
         const groupColHead = this.grouping ?  `${data.yAttData.name}` : localize.getString("group");
-        const ungroupedPropString = this.results.successValueA === this.results.successValueB ?
-            `${localize.getString("value")} = ${this.results.successValueA}` :
-            `${localize.getString("values")} = ${this.results.successValueA}, ${this.results.successValueB}`;
         const propColHead = this.grouping ?
             `${localize.getString("proportion")}<br>${data.xAttData.name} = ${this.results.successValueA}` :
-            `${localize.getString("proportion")}<br>${ungroupedPropString}`;
+            `${localize.getString("proportion")}`;
         const pooled = localize.getString("pooled");
 
         let out = "";
 
+        const groupRowLabelA = this.grouping ? this.results.labelA : `${this.results.labelA} = ${this.results.successValueA}`;
+        const groupRowLabelB = this.grouping ? this.results.labelB : `${this.results.labelB} = ${this.results.successValueB}`;
+
         out += `<table class="test-results">`;
         out += `<tr class="headerRow"><th>${groupColHead}</th><th>N</th><th>${propColHead}</th><th>SE</th></tr>`;
-        out += `<tr><td>${this.results.labelA}</td><td>${N1}</td><td>${p1}</td><td>${SE1}</td></tr>`;
-        out += `<tr><td>${this.results.labelB}</td><td>${N2}</td><td>${p2}</td><td>${SE2}</td></tr>`;
-        out += `<tr><td>${pooled}</td><td>${N}</td><td>${prop}</td><td></td></tr>`;
+        out += `<tr><td>${groupRowLabelA}</td><td>${succA} / ${N1}</td><td>${p1}</td><td>${SE1}</td></tr>`;
+        out += `<tr><td>${groupRowLabelB}</td><td>${succB} / ${N2}</td><td>${p2}</td><td>${SE2}</td></tr>`;
+        out += `<tr><td>${pooled}</td><td>${succA + succB} / ${N}</td><td>${prop}</td><td></td></tr>`;
         out += `</table>`;
 
         return out
@@ -209,8 +219,8 @@ class TwoSampleP extends Test {
         const configStart = localize.getString("tests.twoSampleP.configStart");
 
         const intro = (this.grouping) ?
-            `${configStart}: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) : ${this.results.labelA} - ${this.results.labelB}` :
-            `${configStart}: <br>&emsp;(${testimate.state.x.name} = ${this.successValueButtonA()}) - (${testimate.state.y.name} = ${this.successValueButtonB()}) `;
+            `${configStart}: <br>&emsp;(${testimate.state.x.name} = ${ui.focusGroupButtonXHTML(testimate.state.testParams.focusGroupX)} ) : ${ui.focusGroupButtonYHTML(testimate.state.testParams.focusGroupY)} - ${this.results.labelB}` :
+            `${configStart}: <br>&emsp;(${testimate.state.x.name} = ${ui.focusGroupButtonXHTML(testimate.state.testParams.focusGroupX)}) - (${testimate.state.y.name} = ${ui.focusGroupButtonYHTML(testimate.state.testParams.focusGroupY)}) `;
         const sides = ui.sidesBoxHTML(testimate.state.testParams.sides);
         const value = ui.valueBoxHTML(testimate.state.testParams.value, 0.0, 1.0, .05);
         const conf = ui.confBoxHTML(testimate.state.testParams.conf);
@@ -219,6 +229,7 @@ class TwoSampleP extends Test {
         return theHTML;
     }
 
+/*
     successValueButtonA( ) {
         return `<input id="successButtonA" type="button" onclick="TwoSampleP.rotateSuccessValueA()" 
                 value="${this.results.successValueA}">`
@@ -228,5 +239,6 @@ class TwoSampleP extends Test {
         return `<input id="successButtonB" type="button" onclick="TwoSampleP.rotateSuccessValueB()" 
                 value="${this.results.successValueB}">`
     }
+*/
 
 }
