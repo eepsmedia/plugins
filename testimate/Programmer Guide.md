@@ -7,7 +7,8 @@ The idea is that if there's only one attribute, it's `x`.
 The second attribute is `y`.
 
 If there are two attributes, `x` is the outcome and `y` is the predictor.
-This is wrong, traditionally, but it's (probably) too late to change!
+This is wrong, traditionally, but it's (probably) too late to change! 
+For some tests, such as a two-sample *t*, both are equivalent.
 
 `testimate` evaluates the variables to see what kind they are.
 It judges them to be _numeric_, _categorical_, or _binary_,
@@ -16,7 +17,7 @@ that is categorical with only two categories.
 Once the two variables are established, 
 `testimate` presents the user with all the tests appropriate to that set of variables.
 These appear in a menu.
-The moment menu item is changed, `testimate` recalculates everything and displays the results
+The moment that menu item is changed, `testimate` recalculates everything and displays the results
 of that test and/or estimate. 
 
 The user can press buttons to "emit" data into CODAP. 
@@ -24,7 +25,77 @@ These are test parameters and results, and go into a separate collection.
 If the test has been changed, the dataset is constructed anew.
 (If it were not, the attributes would not be the same.)
 
-### Test configurations
+## The update loop
+We want to show the user a valid test and its results whenever any attribute has been dropped
+into a slot in the plugin.
+This happens not just on the drop of an attribute,
+but whenever anything happens that could conceivably affect those results;
+that way the display is always current.
+So if the user changes the test, we update.
+If the user changes the alpha level, we update.
+If a case value changes, we update.
+
+These actions result in calls to various handlers, 
+most of which are in `handlers.js`.
+The handlers call "update central" in the form of
+`testimate.refreshDataAndTestResults()`.
+
+An example is the handler that gets called when a user picks a new test from the menu:
+
+```javascript
+    changeTest: function () {
+        const T = document.getElementById(`testMenu`);
+        testimate.makeFreshTest(T.value); //  the testID, need for state and restore
+        testimate.refreshDataAndTestResults();
+    }
+```
+
+Other handlers include notification handlers (like for case or attribute changes in CODAP)
+that are more elaborate and may reside in `connect.js` or `data.js`
+depending on whether I've gotten around to refactoring...
+
+### testimate.refreshDataAndTestResults()
+
+Here is that method, with various console.logs removed:
+
+```
+    refreshDataAndTestResults: async function () {
+        if (this.state.dataset) {
+            await data.updateData();
+            await data.makeXandYArrays(data.allCODAPitems);
+            this.dirtyData = false;     //  todo: do we need this any more?
+
+            this.checkTestConfiguration();      //  ensure that this.theTest holds a suitable "Test"
+
+            if (this.theTest && this.theTest.testID) {
+                this.adjustTestSides();     //  todo: figure out if this is correct; shouldn't we compute the value before we do this?
+                data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
+                await this.theTest.updateTestResults();      //  with the right data and the test, we can calculate these results.
+            } 
+        }         
+        ui.redraw();
+    },
+```
+
+This method is responsible for getting everything ready for display,
+and then calling `ui.redraw()`, which makes the display happen.
+
+* `data.updateData()` gets the data from CODAP as an array of items, `data.allCODAPitems`.
+* `data.makeXandYArrays()` processes those case-based objects into [one or] two Arrays, 
+containing the values for the [one or] two attributes. These are of class `AttData`,
+and hold additional information, such as whether the attribute is numeric or categorical.
+* `this.checkTestConfiguration()` creates a list of all compatible tests;
+if the current test is not on the list, it picks a new one and 
+stores it in `testimate.theTest`.
+* `this.adjustTestSides()` may be gone soon, but it takes care of the one- or two-sided nature of the test.
+*  `data.removeInappropriateCases()` adjusts the x and y arrays depending on the test.
+For example, in a regression, it ensures that each pair of values are both numeric.
+The result is cleaned arrays suitable for the stats package we use for calculation.
+* `this.theTest.updateTestResults()` actually performs the calculations,
+storing results in an object `theTest.results`.
+
+
+## Tests
 
 Each test (and its associated estimate, if any) is represented 
 by a class that inherits from `Test`. 
@@ -46,7 +117,7 @@ which is an object whose keys are...well, here's one:
         },
 ```
 
-The key, `NN02`, means that x and y are `N`umeric and that this is the second (of four)
+The `id`, `NN02`, means that x and y are `N`umeric and that this is the second (of four)
 tests that you can do if both your attributes are numeric. 
 This particular one is an un-paired, two-sample _t_ procedure, 
 testing or estimating the difference of means between two attributes. 
@@ -73,7 +144,7 @@ All tests, like `TwoSampleT`, have `makeMenuString`.
 Besides `makeMenuString()`, they have several methods in common as well, for example:
 
 #### updateTestResults()
-does the actual calculation. 
+...does the actual calculation. 
 It adds to an object called `results` that belongs to the instance of the test.
 An example for two-sample _t_ is the calculation of standard error. 
 Its line is
@@ -88,7 +159,7 @@ which is, of course,different from the corresponding line in the `OneSampleT` cl
     this.results.SE = this.results.s / Math.sqrt(this.results.N);
 ```
 #### makeResultsString()
-creates a string (HTML) that gets put into the DOM so the user can see it.
+...creates a string (HTML) that gets put into the DOM so the user can see it.
 It basically takes elements of `this.results` (such as `this.results.SE`)
 and inserts them into a big string (called `out`) that the method constructs and returns.
 
@@ -111,7 +182,7 @@ part that outputs the confidence interval:
 ```
 
 #### makeConfigureGuts()
-makes the HTM that fills the "configuration" stripe taht appears below the results. 
+...makes the HTML that fills the "configuration" stripe taht appears below the results. 
 There, the user specifies important _parameters_ for the test
 such as 
 
@@ -260,8 +331,10 @@ when calculating test results.
 
 ### Making AttData.theArray
 
-After some processing used to figure out what test we're doing, 
-`ui.redraw()` calls `data.removeInappropriateCases()`.
+In the "update" method, `testimate.refreshDataAndTestResults()`,
+we call `data.makeXandYArrays(data.allCODAPitems)`.
+This is where `data.XattDataX` and `data.YattData` get created.
+After some additional, processingwe call `data.removeInappropriateCases()`.
 This method populates the `.theArray` members of the x and y `AttData`s.
 
 This involves several nitty-gritty steps such as, 
@@ -270,7 +343,7 @@ it replaces any non-numeric values with `null`.
 
 ### Performing the tests
 
-Every test has an `updateTestResults()` method (also called by `ui.redraw()`).
+Every test has an `updateTestResults()` method (also called by `testimate.refreshDataAndTestResults()`).
 Those methods use the `theArray` members to get the data. 
 
 Here is a snippet from `regression.js`:
@@ -287,5 +360,7 @@ Notice how we use the same indices to enforce the underlying case identities.
 
 (Also, because this is linear regression, the attribute on the LEFT, 
 which we call `xAttData`, 
-is teh one to be predicted, that is, `Y` in the regression.)
+is the one to be predicted, that is, `Y` in the regression.)
 
+## Localization
+We use `POEditor` to help with localization. 

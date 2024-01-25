@@ -8,6 +8,8 @@ class Goodness extends Test {
         if (!testimate.restoringFromSave) {
             testimate.state.testParams.groupProportions = {};
         }
+
+        testimate.state.testParams.sides = 1;
     }
 
     updateTestResults() {
@@ -39,7 +41,7 @@ class Goodness extends Test {
             this.results.chisq += cellValue;
         })
 
-        const theCIparam = 1 - testimate.state.testParams.alpha / 2;   //  the large number
+        const theCIparam = 1 - testimate.state.testParams.alpha / testimate.state.testParams.sides;   //  the large number
         this.results.df = this.results.groupNames.length - 1;
         this.results.chisqCrit = jStat.chisquare.inv(theCIparam, this.results.df);    //
         this.results.P = 1 - jStat.chisquare.cdf(this.results.chisq, this.results.df);
@@ -65,7 +67,7 @@ class Goodness extends Test {
         //  out += `Are the proportions of ${data.xAttData.name} as hypothesized?`;
         out += `<br>    N = ${N}, ${this.results.groupNames.length} ${localize.getString("groups")}, &chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="GFdetails" ${GFopen ? "open" : ""}>`;
-        out += localize.getString("tests.goodness.detailsSummary1");
+        out += localize.getString("tests.goodness.detailsSummary1", testimate.state.testParams.sides);
         out += this.makeGoodnessTable();
         out += `    df = ${df}, &alpha; = ${alpha}, &chi;<sup>2</sup>* = ${chisqCrit} <br>`;
         out += `</details>`;
@@ -151,7 +153,7 @@ class Goodness extends Test {
     }
 
     makeConfigureGuts() {
-        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
+        const conf = ui.alphaBoxHTML(testimate.state.testParams.alpha);
 
         let theHTML = `${localize.getString("tests.goodness.configurationStart")} &emsp;`;
         theHTML += conf;

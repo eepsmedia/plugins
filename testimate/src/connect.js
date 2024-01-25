@@ -289,6 +289,7 @@ connect = {
         let theItemValues = Object.assign({}, iExtras);
         const theTest = testimate.theTest;
         const theConfig = theTest.theConfig;
+        const emittedAttributeNames = theConfig.emitted.split(",");
 
         console.log(`   emitting a case with N = ${theTest.results.N}`);
 
@@ -303,7 +304,7 @@ connect = {
             }
         );
 
-        theConfig.emitted.split(",").forEach(att => {
+        emittedAttributeNames.forEach(att => {
             if (theTest.results.hasOwnProperty(att)) {
                 theItemValues[att] = theTest.results[att]
             } else {    //  not a result? Maybe it's a parameter!!

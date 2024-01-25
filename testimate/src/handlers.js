@@ -89,7 +89,6 @@ const handlers = {
         const T = document.getElementById(`testMenu`);
         testimate.makeFreshTest(T.value); //  the testID, need for state and restore
         testimate.refreshDataAndTestResults();
-        //  ui.redraw();
     },
 
     changeFocusGroupX: function () {

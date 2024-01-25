@@ -6,6 +6,9 @@ class Independence extends Test {
         this.results.columnLabels = [];
         this.results.observed = null;
         this.results.expected = null;
+
+        testimate.state.testParams.sides = 1;
+
     }
 
     updateTestResults() {
@@ -53,7 +56,7 @@ class Independence extends Test {
         }
 
 
-        const theCIparam = 1 - testimate.state.testParams.alpha / 2;   //  the large number
+        const theCIparam = 1 - testimate.state.testParams.alpha / testimate.state.testParams.sides;     //  2;   //  the large number
         this.results.df = (this.results.rowLabels.length - 1) * (this.results.columnLabels.length - 1);
         this.results.chisqCrit = jStat.chisquare.inv(theCIparam, this.results.df);    //
         this.results.P = 1 - jStat.chisquare.cdf(this.results.chisq, this.results.df);
@@ -67,7 +70,7 @@ class Independence extends Test {
             `P < 0.0001` :
             `P = ${ui.numberToString(this.results.P)}`;
         const df = ui.numberToString(this.results.df, 3);
-        const conf = ui.numberToString(testimate.state.testParams.conf);
+        //  const conf = ui.numberToString(testimate.state.testParams.conf);
         const alpha = ui.numberToString(testimate.state.testParams.alpha);
 
         const TIdetails = document.getElementById("TIdetails");
@@ -79,7 +82,7 @@ class Independence extends Test {
         out += `<br>    N = ${N}, ${this.results.columnLabels.length} columns by ${this.results.rowLabels.length} rows, `
         out += `&chi;<sup>2</sup> = ${chisq}, ${P}`;
         out += `<details id="TIdetails" ${TIopen ? "open" : ""}>`;
-        out += localize.getString("tests.independence.detailsSummary");
+        out += localize.getString("tests.independence.detailsSummary", testimate.state.testParams.sides);
         out += this.makeIndependenceTable();
         out += `<br>    df = ${df}, &alpha; = ${alpha}, &chi;<sup>2</sup>* = ${chisqCrit} <br>`;
         out += `</details>`;
@@ -135,8 +138,9 @@ class Independence extends Test {
     makeConfigureGuts() {
         const start = localize.getString("tests.independence.configurationStart",
             testimate.state.y.name, testimate.state.x.name);
-        const conf = ui.confBoxHTML(testimate.state.testParams.conf);
-        let theHTML = `${start}:<br>&emsp;${conf}`;
+        //  const conf = ui.confBoxHTML(testimate.state.testParams.conf);
+        const alpha = ui.alphaBoxHTML(testimate.state.testParams.alpha);
+        let theHTML = `${start}:<br>&emsp;${alpha}`;
 
         return theHTML;
     }

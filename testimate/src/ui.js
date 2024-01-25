@@ -293,6 +293,12 @@ ui = {
                type="number" value="${iConf}" step="1" min="0" max="100">%`;
     },
 
+    alphaBoxHTML: function (iConf) {
+        return `<label for="alphaBox" id="alpha_label">&alpha;&nbsp;=&nbsp;</label>
+        <input id="alphaBox" class="short_number_field" onchange="handlers.changeAlpha()"
+               type="number" value="${iConf}" step=".005" min="0" max="1">`;
+    },
+
     /*
         updateConfig: function () {
             const theConfig = Test.configs[testimate.theTest.testID];

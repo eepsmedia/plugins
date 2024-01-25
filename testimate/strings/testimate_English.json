@@ -43,6 +43,7 @@
     "noRandom" : "no randomness",
     "CI" : "CI",
     "conf" : "conf",
+    "Nsided" : "•1•-sided",
 
     "attributeNames": {
       "N": "N",
@@ -156,14 +157,14 @@
       "goodness": {
         "menuString": "goodness of fit for •1•",
         "testQuestion": "Are the proportions of (•1•) as hypothesized?",
-        "detailsSummary1": "<summary>Testing goodness of fit, &chi;<sup>2</sup> procedure</summary>",
+        "detailsSummary1": "<summary>Testing goodness of fit, •1•-sided &chi;<sup>2</sup> procedure</summary>",
         "detailsSummary2": "<summary>set hypothesized proportions</summary>",
         "configurationStart": "configure goodness-of-fit test"
       },
       "independence": {
         "menuString": "test independence of •1• from •2•",
         "testQuestion": "Are (•1•) and (•2•) independent?",
-        "detailsSummary": "<summary>Testing independence, &chi;<sup>2</sup> procedure</summary>",
+        "detailsSummary": "<summary>Testing independence, •1•-sided &chi;<sup>2</sup> procedure</summary>",
         "configurationStart": "configure test for independence of (•1•) from (•2•)"
       },
       "anova" : {
