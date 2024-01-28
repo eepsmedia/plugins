@@ -117,7 +117,7 @@ lotti.connect = {
         version: lotti.constants.version,
         name: 'lotti',
         title: 'temp title',
-        dimensions: {width: 316, height: 355},
+        dimensions: {width: 316, height: 388},
         preventDataContextReorg: false
     },
 

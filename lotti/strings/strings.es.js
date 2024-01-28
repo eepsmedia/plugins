@@ -27,7 +27,7 @@ lottiStringSources.es = {
             "allowance_AB": {
                 "label": "paga AB",
                 "dsTitle": "datos sobre la paga",
-                "dsDescription": "un registro de lo sucedido en el juego\n\n\n \n",
+                "dsDescription": "un registro de lo sucedido en el juego",
                 "collTitle": "resultados",
                 "resultUnitSingular": "€",
                 "resultUnitPlural": "€",

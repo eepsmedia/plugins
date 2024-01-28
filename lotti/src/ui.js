@@ -173,7 +173,7 @@ const ui = {
 
     toggleOptions: function () {
         const runIcon = "🏃🏽‍♀️‍";
-        const gearIcon = "⚙️";
+        const gearIcon = "⚙️";  //  "⚙️"
         this.showingOptions = !this.showingOptions;
 
         if (this.showingOptions) {
