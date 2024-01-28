@@ -43,7 +43,7 @@ The handlers call "update central" in the form of
 An example is the handler that gets called when a user picks a new test from the menu:
 
 ```javascript
-    changeTest: function () {
+    changeTest: function() {
         const T = document.getElementById(`testMenu`);
         testimate.makeFreshTest(T.value); //  the testID, need for state and restore
         testimate.refreshDataAndTestResults();
@@ -188,12 +188,96 @@ such as
 
 * the value you are testing against 
 * whether you are doing a one-or two-sided procedure
-* the confidence level you want for th eestimate
+* the confidence level you want for the estimate
 
 These are stored not in `results` but in the global `state` variable,
 such as `testimate.state.testParams.conf`, which is the confidence level.
 
+### Test parameters
 
+When you perform a test, you do so using a number of parameters such as
+the alpha level and whether it is 1- or 2-sided.
+These parameters vary from test to test.
+They are used extensively in each test's `updatetestResults()` method.
+
+The current parameters are an object stored in a `state` field,
+that is, `testimate.state.testParams`. 
+Users change test parameters using the "configuration" section
+of the display, created using the `makeConfigureGuts()` 
+method for each type of test.
+
+> Note: do not confuse this user-facing "configuration" with the _test_ configuration,
+> often `theConfig`, which specifies things about the _type_ of
+> test, such as whether its variables must be numeric or categorical.
+> Those "configs" live in the important and extensive
+> static object, `Test.configs`.
+
+The tricky bit is that we want `testimate` to remember the parameters
+for each type of test, so that if the user changes from (say)
+a one-sample *p* test to a test for independence,
+and then switches back, the parameters are restored. 
+
+This is accomplished using another `state` field,
+`testimate.state.testParamDictionary`, which is keyed by the 
+`testID`, that is, the four-character label such as `C_01`.
+Each value in that dictionary is the entire `testParam` object,
+kind of like this:
+
+```javascript
+testParamDictionary : {
+    BB01 : {
+        alpha : 0.05
+        conf : 95
+        focusGroupX : "sick"
+        focusGroupY : "treatment"
+        reversed : false
+        sides : 2
+        value : 0
+    }
+}
+```
+
+Note that this dictionary, keyed by test type, 
+is different from (and independent of) the "focus group" dictionaries, which
+are keyed by attribute name. 
+
+Tests are created anew frequently, and when they are, a new set of `testParams`
+gets created as well. 
+The dance between saved values and defaults for a new test takes
+place in the (parent class) `Test` constructor, like this:
+
+```javascript
+if (testimate.state.testParamDictionary[iID]) {
+    testimate.state.testParams = testimate.state.testParamDictionary[iID];
+} else {
+    testimate.state.testParams = {...Test.defaultTestParams, ...this.theConfig.paramExceptions};
+}
+```
+There are not many `paramExceptions`;  each type of test has a set, mostly empty. 
+However, as an example, the one-sample _p_ test has a default `value` of 0.5,
+while all other tests use 0 as a default.
+
+When the user uses a control to change a parameter, that happens in 
+a handler (in `handlers.js`). 
+For example, changing `value` looks like this:
+
+```javascript
+changeValue: function() {
+    const v = document.getElementById(`valueBox`);
+    testimate.state.testParams.value = v.value;
+    testimate.refreshDataAndTestResults();
+}
+```
+Then the handler calls `refreshDataAndTestResults()`, where, if 
+we find that there IS a working test, we save the current `testParams`
+in the dictionary:
+
+```javascript
+    if (this.theTest && this.theTest.testID) {
+        //  remember the test parameters for this type of test
+        testimate.state.testParamDictionary[testimate.theTest.testID] = testimate.state.testParams;
+... etc ...
+```
 
 
 ## Communicating with CODAP

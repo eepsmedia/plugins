@@ -225,6 +225,12 @@ ui = {
                 value="${iGuts}">`
     },
 
+    sides12ButtonHTML : function(iSides) {
+        const buttonTitle = localize.getString("Nsided", iSides);
+        return `<input id="sides12Button" class="chiclet" type="button" onclick="handlers.changeSides12()" 
+                value="${buttonTitle}">`
+    },
+
     getFocusGroupName: function () {
         if (!testimate.state.testParams.focusGroup) {
             testimate.setFocusGroup(data.xAttData, null);

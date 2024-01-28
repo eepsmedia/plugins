@@ -17,10 +17,17 @@ const handlers = {
 
     /**
      * User has clicked a button that changes whether a test is one- or two-sided
+     * todo: remove this in favor of changeSides12?
      */
     changeTestSides: function () {
         const iSign = document.getElementById(`sidesButton`).value;    // 1 or 2
         testimate.state.testParams.sides = (iSign === `≠`) ? 1 : 2;
+        testimate.refreshDataAndTestResults();
+    },
+
+    changeSides12 : function() {
+        const newSides = testimate.state.testParams.sides === 1 ? 2 : 1;
+        testimate.state.testParams.sides = newSides;
         testimate.refreshDataAndTestResults();
     },
 
@@ -41,7 +48,6 @@ const handlers = {
     changeValue: function () {
         const v = document.getElementById(`valueBox`);
         testimate.state.testParams.value = v.value;
-        testimate.state.valueDictionary[testimate.theTest.testID] = testimate.state.testParams.value;
         testimate.refreshDataAndTestResults();
     },
 

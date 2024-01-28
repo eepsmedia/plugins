@@ -256,6 +256,12 @@ connect = {
         return theFormula;      //      for diagnostics
     },
 
+    /**
+     *
+     * @param iExtras   Extra attributes to be emitted, with values. These are typically the
+     *      high-level attribtes when emitting hierarchically.
+     * @returns {Promise<void>}
+     */
     emitTestData: async function (iExtras = {}) {
 
         //  make a new output dataset if necessary
@@ -293,16 +299,18 @@ connect = {
 
         console.log(`   emitting a case with N = ${theTest.results.N}`);
 
+        //  first list the standard attributes (parameters, mostly)
+
         Object.assign(
             theItemValues,
             {
                 outcome: testimate.state.x.name,
                 predictor: (testimate.predictorExists()) ? testimate.state.y.name : "",
                 procedure: theConfig.name,
-                sign: testimate.state.testParams.theSidesOp,
-                value: testimate.state.testParams.value,
             }
         );
+
+        //  then add "results" values
 
         emittedAttributeNames.forEach(att => {
             if (theTest.results.hasOwnProperty(att)) {
@@ -357,6 +365,7 @@ connect = {
                 type: "categorical",
                 description: localize.getString("attributeDescriptions.procedure")
             });
+/*
             if (testimate.state.testParams.theSidesOp) {
                 theAttrs.push({
                     name: "sign",
@@ -372,6 +381,7 @@ connect = {
                 precision: 3,
                 description: localize.getString("attributeDescriptions.value")
             });
+*/
 
             theConfig.emitted.split(",").forEach(att => {
                 const theName = att;

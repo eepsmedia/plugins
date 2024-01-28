@@ -9,7 +9,7 @@ class Goodness extends Test {
             testimate.state.testParams.groupProportions = {};
         }
 
-        testimate.state.testParams.sides = 1;
+        //  testimate.state.testParams.sides = 1;
     }
 
     updateTestResults() {
@@ -153,10 +153,12 @@ class Goodness extends Test {
     }
 
     makeConfigureGuts() {
-        const conf = ui.alphaBoxHTML(testimate.state.testParams.alpha);
+        const sides12Button = ui.sides12ButtonHTML(testimate.state.testParams.sides);
+        const alpha = ui.alphaBoxHTML(testimate.state.testParams.alpha);
 
-        let theHTML = `${localize.getString("tests.goodness.configurationStart")} &emsp;`;
-        theHTML += conf;
+        let theHTML = `${localize.getString("tests.goodness.configurationStart")}`;
+        theHTML += `<br>&emsp;${alpha}&emsp;${sides12Button}`;
+
 
         let nameRow =   `<tr><th>${testimate.state.x.name} &rarr; </th>`;
         let valueRow =   `<tr><th>${this.equalExpectationsButton()}</th>`;

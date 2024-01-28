@@ -32,6 +32,7 @@ const testimate = {
      * This makes sure data is current
      */
     refreshDataAndTestResults: async function () {
+
         this.refreshCount++;
         console.log(`refresh data: ${this.refreshCount}`);
         if (this.state.dataset) {
@@ -42,6 +43,8 @@ const testimate = {
             this.checkTestConfiguration();      //  ensure that this.theTest holds a suitable "Test"
 
             if (this.theTest && this.theTest.testID) {
+                //  remember the test parameters for this type of test
+                testimate.state.testParamDictionary[testimate.theTest.testID] = testimate.state.testParams;
                 this.adjustTestSides();     //  todo: figure out if this is correct; shouldn't we compute the value before we do this?
 
                 data.removeInappropriateCases();    //  depends on the test's parameters being known (paired, numeric, etc)
@@ -77,6 +80,10 @@ const testimate = {
                 //  pick the first compatible one
                 this.makeFreshTest(this.compatibleTestIDs[0])
             }
+        } else if (this.compatibleTestIDs.includes(this.state.testID)) {
+            //  there is no current theTest (e.g., we're restoring from save)
+            //  but there is a suitable testID (from the saved state)
+            this.makeFreshTest(this.state.testID);
         } else if (this.compatibleTestIDs.length) {
             //  it should ALWAYS be possible to find a possible test.
             //  set theTest to the first one in the list
@@ -208,7 +215,7 @@ const testimate = {
 
     constants: {
         pluginName: `testimate`,
-        version: `2024c`,
+        version: `2024d`,
         dimensions: {height: 555, width: 444},
 
         emittedDatasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
@@ -226,7 +233,7 @@ const testimate = {
             testParams: {},
             mostRecentEmittedTest: null,
             focusGroupDictionary : {},
-            valueDictionary : {},
+            testParamDictionary : {},
         }
     }
 }

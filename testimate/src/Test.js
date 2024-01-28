@@ -13,17 +13,28 @@ class Test {
 
         this.testID = iID;      //  do we need this or is it in testimate.state?
         this.theConfig = Test.configs[iID];
-        if (!testimate.restoringFromSave) {
-            testimate.state.testParams = {
-                alpha: 0.05,
-                value: 0.0,    //  to be tested against
-                sides: 2,
-                theSidesOp: "≠",   //  the sign
-                conf: 95,    //  confidence level 1 - alpha
-                focusGroupX: null,
-                focusGroupY: null,
-            }
+
+        if (testimate.state.testParamDictionary[iID]) {
+            testimate.state.testParams = testimate.state.testParamDictionary[iID];
+        } else {
+            testimate.state.testParams = {...Test.defaultTestParams, ...this.theConfig.paramExceptions};
         }
+    /*      Hoping that we don't need this, return from save will work correctly using the dictionary
+            if (!testimate.restoringFromSave) {
+                testimate.state.testParams = Test.defaultTestParams;
+            }
+*/
+    }
+
+    static defaultTestParams = {
+        alpha: 0.05,
+        value: 0.0,    //  to be tested against
+        sides: 2,
+        theSidesOp: "≠",   //  the sign  todo: eliminate this in favor of using .sides.
+        conf: 95,    //  confidence level 1 - alpha
+        reversed : false,
+        focusGroupX: null,
+        focusGroupY: null,
     }
 
     updateTestResults() {
@@ -166,8 +177,9 @@ class Test {
             yType: null,
             paired: false,
             groupAxis : "",
-            emitted: `N,mean,df,SE,t,P,conf,CImin,CImax`,
+            emitted: `N,mean,sign,value,P,CImin,CImax,df,SE,t,conf`,
             testing: `mean`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return OneSampleT.makeMenuString(`N_01`);},
             fresh: (ix) => {
                 return new OneSampleT(ix)
@@ -181,8 +193,9 @@ class Test {
             yType: 'numeric',
             paired: true,
             groupAxis : "",
-            emitted: `N,mean,df,SE,t,P,conf,CImin,CImax`,
+            emitted: `N,mean,sign,value,df,SE,t,P,conf,CImin,CImax`,
             testing: `mean`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return Paired.makeMenuString(`NN01`);},
             fresh: (ix) => { return new Paired(ix)  },
         },
@@ -193,8 +206,9 @@ class Test {
             yType: 'numeric',
             paired: false,
             groupAxis : "",
-            emitted: `N,P,mean1,mean2,diff,t,conf,CImin,CImax`,
+            emitted: `N,P,mean1,mean2,sign,value,diff,t,conf,CImin,CImax`,
             testing: `diff`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return TwoSampleT.makeMenuString(`NN02`);},
             fresh: (ix) => { return new TwoSampleT(ix, false)  },
         },
@@ -205,7 +219,8 @@ class Test {
             yType: 'numeric',
             paired: true,
             groupAxis : "",
-            emitted: `N,P,slope,intercept,r,rsq,t,slopeCImin,slopeCImax`,
+            emitted: `N,P,slope,intercept,r,rsq,t,sign,value,slopeCImin,slopeCImax`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return Regression.makeMenuString(`NN03`);},
             fresh: (ix) => { return new Regression(ix)  },
             testing: `slope`,
@@ -217,8 +232,9 @@ class Test {
             yType: 'binary',
             paired: true,
             groupAxis : "",
-            emitted: `N,P,mean1,mean2,diff,t,conf,CImin,CImax`,
+            emitted: `N,P,mean1,mean2,diff,t,conf,sign,value,CImin,CImax`,
             testing : 'diff',
+            paramExceptions: {},
             makeMenuString: ( ) => {return TwoSampleT.makeMenuString(`NB01`);},
             fresh: (ix) => { return new TwoSampleT(ix, true)  },
         },
@@ -229,8 +245,9 @@ class Test {
             yType: null,
             paired: false,
             groupAxis : "",
-            emitted: `N,prop,P,SE,z,conf,CImin,CImax`,
+            emitted: `N,prop,sign,value,P,SE,z,conf,CImin,CImax`,
             testing : 'prop',
+            paramExceptions: { value : 0.5},
             makeMenuString: () => {return OneSampleP.makeMenuString();},
             fresh: (ix ) => {return new OneSampleP(ix)},
         },
@@ -241,7 +258,8 @@ class Test {
             yType: `binary`,
             paired: true,
             groupAxis : "",
-            emitted: `N,P,N1,N2,prop1,prop2,z,conf,CImin,CImax`,
+            emitted: `N,P,N1,N2,prop1,prop2,sign,value,z,conf,CImin,CImax`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return TwoSampleP.makeMenuString(`BB01`);},
             fresh: (ix) => { return new TwoSampleP(ix, true)  },
         },
@@ -252,7 +270,8 @@ class Test {
             yType: `binary`,
             paired: false,
             groupAxis : "",
-            emitted: `N,P,N1,N2,prop1,prop2,z,conf,CImin,CImax`,
+            emitted: `N,P,N1,N2,prop1,prop2,sign,value,z,conf,CImin,CImax`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return TwoSampleP.makeMenuString(`BB02`);},
             fresh: (ix) => { return new TwoSampleP(ix, false)  },
         },
@@ -265,7 +284,8 @@ class Test {
             paired: false,
              groupAxis : "",
            emitted: `N,P,chisq,df,chisqCrit,alpha`,
-            makeMenuString: ( ) => {return Goodness.makeMenuString(`B_02`);},
+                    paramExceptions: {},
+    makeMenuString: ( ) => {return Goodness.makeMenuString(`B_02`);},
             fresh: (ix) => { return new Goodness(ix)  },
         },
 */
@@ -276,7 +296,8 @@ class Test {
             yType: null,
             paired: false,
             groupAxis : "",
-            emitted: `N,P,chisq,df,chisqCrit,alpha`,
+            emitted: `N,P,chisq,sides,df,chisqCrit,alpha`,
+            paramExceptions: { sides : 1 , groupProportions : {} },
             makeMenuString: ( ) => {return Goodness.makeMenuString(`C_01`);},
             fresh: (ix) => { return new Goodness(ix)  },
         },
@@ -287,7 +308,8 @@ class Test {
             yType: `categorical`,
             paired: true,
             groupAxis : "",
-            emitted: `N,P,chisq,df,chisqCrit,alpha`,
+            emitted: `N,P,chisq,sides,df,chisqCrit,alpha`,
+            paramExceptions: { sides : 1 },
             makeMenuString: ( ) => {return Independence.makeMenuString(`CC01`);},
             fresh: (ix) => { return new Independence(ix)  },
         },
@@ -299,6 +321,7 @@ class Test {
             paired: true,
             groupAxis : "",
             emitted: `N,P`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return Test.makeMenuString(`CB01`);},
             fresh: (ix) => { return new Test(ix)  },
         },
@@ -310,7 +333,8 @@ class Test {
             paired: true,
              groupAxis : "",
            emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`BC01`);},
+             paramExceptions: {},
+           makeMenuString: ( ) => {return Test.makeMenuString(`BC01`);},
             fresh: (ix) => { return new Test(ix)  },
         },
         BB03: {
@@ -321,7 +345,8 @@ class Test {
             paired: true,
                groupAxis : "",
          emitted: `N,P`,
-            makeMenuString: ( ) => {return Test.makeMenuString(`BB03`);},
+             paramExceptions: {},
+           makeMenuString: ( ) => {return Test.makeMenuString(`BB03`);},
             fresh: (ix) => { return new Test(ix)  },
         },*/
         NC01: {
@@ -332,6 +357,7 @@ class Test {
             paired: true,
             groupAxis : "",
             emitted: `N,P,F,FCrit,SSR,SSE,SST,dfTreatment,dfError`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return ANOVA.makeMenuString(`NC01`);},
             fresh: (ix) => { return new ANOVA(ix)  },
         },
@@ -343,6 +369,7 @@ class Test {
             paired: true,
             groupAxis : "X",
             emitted: `N,iterations,slope,pos,cost,rate`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return Logistic.makeMenuString(`BN01`);},
             fresh:  (ix) => { return new Logistic(ix)  },
         },
@@ -354,6 +381,7 @@ class Test {
             paired: true,
             groupAxis : "X",
             emitted: `N,iterations,slope,pos,cost,rate`,
+            paramExceptions: {},
             makeMenuString: ( ) => {return Logistic.makeMenuString(`CN01`);},
             fresh:  (ix) => { return new Logistic(ix)  },
         },

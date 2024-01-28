@@ -9,11 +9,13 @@ class OneSampleP extends Test {
         //  get a default "group" -- the value we count as "success" for proportions
         if (!testimate.restoringFromSave || !testimate.state.testParams.focusGroupX) {
             testimate.state.testParams.focusGroupX = testimate.state.focusGroupDictionary[data.xAttData.name];
+            /*
+                  testimate.state.testParams.value
+                      = testimate.state.valueDictionary[this.testID]
+                      ? testimate.state.valueDictionary[this.testID] : 0.5;
+          */
         }
 
-        testimate.state.testParams.value
-            = testimate.state.valueDictionary[this.testID]
-            ? testimate.state.valueDictionary[this.testID] : 0.5;
     }
 
     async updateTestResults() {
@@ -53,14 +55,18 @@ class OneSampleP extends Test {
             } else {        //  not using binomial
 
                 this.results.SE = Math.sqrt((this.results.prop) * (1 - this.results.prop) / this.results.N);
-                this.results.z = (this.results.prop - testimate.state.testParams.value) / this.results.SE;
+                const SE0 = Math.sqrt((testimate.state.testParams.value) * (1 - testimate.state.testParams.value) / this.results.N);
+
+                //  Note: test uses the SE of the null hypothesis (value); CI uses the SE of the sample.
+                this.results.z = (this.results.prop - testimate.state.testParams.value) / SE0;  //  this.results.SE;
 
                 this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
                 const zAbs = Math.abs(this.results.z);
                 this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
                 if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
-                this.results.CImax = this.results.prop + this.results.zCrit * this.results.SE;
+                //  Note: CI uses the SE of the sample (this.results.SE)
+                this.results.CImax = this.results.prop + this.results.zCrit *  this.results.SE;
                 this.results.CImin = this.results.prop - this.results.zCrit * this.results.SE;
             }
         }

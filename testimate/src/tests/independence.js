@@ -7,8 +7,7 @@ class Independence extends Test {
         this.results.observed = null;
         this.results.expected = null;
 
-        testimate.state.testParams.sides = 1;
-
+        //  testimate.state.testParams.sides = 1;
     }
 
     updateTestResults() {
@@ -136,11 +135,13 @@ class Independence extends Test {
     }
 
     makeConfigureGuts() {
+        const sides12Button = ui.sides12ButtonHTML(testimate.state.testParams.sides);
+
         const start = localize.getString("tests.independence.configurationStart",
             testimate.state.y.name, testimate.state.x.name);
         //  const conf = ui.confBoxHTML(testimate.state.testParams.conf);
         const alpha = ui.alphaBoxHTML(testimate.state.testParams.alpha);
-        let theHTML = `${start}:<br>&emsp;${alpha}`;
+        let theHTML = `${start}:<br>&emsp;${alpha}&emsp;${sides12Button}`;
 
         return theHTML;
     }
