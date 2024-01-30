@@ -2,6 +2,30 @@ const handlers = {
 
     currentlyDraggingCODAPAttribute : false,
 
+    getPluginState : function() {
+        return {
+            success: true,
+            values: {
+                store: templ8.state,
+            }
+        };
+    },
+
+    restorePluginFromStore: function(iStorage) {
+        if (iStorage) {
+            templ8.state = iStorage.store;
+        }
+    },
+
+    //  control handlers
+
+    pressCountButton : function() {
+        templ8.state.buttonCount++;
+        templ8.cycle();
+    },
+
+    //  drag and drop, subscribed to events
+
     handleDragDrop : async function(iMessage) {
 
         switch(iMessage.values.operation) {

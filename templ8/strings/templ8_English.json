@@ -1,0 +1,10 @@
+{
+  "templ8": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "counterButtonLabel" : "click to count"
+    }
+
+  }
+}

@@ -23,11 +23,11 @@ const localize = {
     languages : [],
 
     fileNameMap : {
-        en : "strings/testimate_English.json",
-        es : "strings/testimate_Spanish.json",
-        de : "strings/testimate_German.json",
-        fr : "strings/testimate_French.json",
-        it : "strings/testimate_Italian.json",
+        en : "strings/templ8_English.json",
+        es : "strings/templ8_Spanish.json",
+        de : "strings/templ8_German.json",
+        fr : "strings/templ8_French.json",
+        it : "strings/templ8_Italian.json",
     },
 
     initialize : async function(iLang) {
@@ -47,12 +47,12 @@ const localize = {
     },
 
     getString : function(iID, ...theArgs) {
-        const theRawString = eval(`DG.plugins.testimate.${iID}`);
+        const theRawString = eval(`DG.plugins.templ8.${iID}`);
         let out = "";
         if (theRawString) {
             out = replaceSubstrings(theRawString, ...theArgs);
         } else {
-            const theDefaultString = eval(`this.defaultStrings.testimate.${iID}`);
+            const theDefaultString = eval(`this.defaultStrings.templ8.${iID}`);
             if (theDefaultString) {
                 out = replaceSubstrings(theDefaultString, ...theArgs);
             }
@@ -63,7 +63,7 @@ const localize = {
     setStaticStrings: async function () {
 
         //  substitute all the static strings in the UI (by `id`)
-        const theStaticStrings = DG.plugins.testimate.staticStrings;
+        const theStaticStrings = DG.plugins.templ8.staticStrings;
         for (const theID in theStaticStrings) {
             if (theStaticStrings.hasOwnProperty(theID)) {
                 const theValue = this.getString(`staticStrings.${theID}`); // theStaticStrings[theID];

@@ -5,20 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8f6aa61c-59ba-47c1-9392-7a61e9a9fe1e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/css/templ8.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/connect.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/handlers.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/templ8.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../arbor/src/strings/strings.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/strings/strings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../arbor/src/views/NodeZoneView.js" beforeDir="false" afterPath="$PROJECT_DIR$/../arbor/src/views/NodeZoneView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/connect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/data.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/strings/localize.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/strings/templ8_English.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/handlers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templ8.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/templ8.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../testimate/src/testimate.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/testimate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testimate/strings/localize.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/strings/localize.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +34,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 5
+}]]></component>
   <component name="ProjectId" id="2UJOwsH6H7Bk1qThFz4IEhpQjzR" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -50,11 +50,13 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "true",
     "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -67,6 +69,7 @@
       <option name="presentableId" value="Default" />
       <updated>1692654459079</updated>
       <workItem from="1692654462717" duration="3167000" />
+      <workItem from="1706526280514" duration="2567000" />
     </task>
     <servers />
   </component>

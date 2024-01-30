@@ -9,8 +9,12 @@ const connect = {
     attributeDragDropSubscriberIndex : null,
 
     initialize : async function() {
+        //  note: these subscriptions must happen BEFORE `.init` so that the `.on` there does not
+        //  override our handlers.
+        codapInterface.on('update', 'interactiveState', "", handlers.restorePluginFromStore);
+        codapInterface.on('get', 'interactiveState', "", handlers.getPluginState);
 
-        await codapInterface.init(this.iFrameDescriptor, null);
+        await codapInterface.init(this.iFrameDescriptor, handlers.restorePluginFromStore);
         await this.registerForDragDropEvents();     //  if you're acce[ting drops!
         await this.allowReorg();
 

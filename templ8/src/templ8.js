@@ -7,21 +7,17 @@ templ8 = {
 
     initialize : async function() {
         console.log(`initializing templ8`);
-
+        await localize.initialize(localize.figureOutLanguage('en'));
         await connect.initialize( );        //  initialize the connection with CODAP
 
-        this.state = await codapInterface.getInteractiveState();    //  get stored state
-        if (this.state.version) {       //  it's an actual saved state
-            await this.restoreState();
-        } else {
-            Object.assign(this.state, this.constants.defaultState);
-        }
-
-        //  this.strings = strings;      //      todo: fix this, make it robust
-
         ui.initialize();
-        ui.redraw();
+        this.state = {...this.constants.defaultState, ...this.state};   //  have all fields in default!
+        this.cycle();
+    },
 
+
+    cycle : function() {
+        ui.redraw();
     },
 
     restoreState : function() {
@@ -38,6 +34,7 @@ templ8 = {
         dimensions: {height: 333, width: 222},
 
         defaultState: {
+            buttonCount : 0,
             lang: `en`,
             datasetName : null,     //  the name of the dataset we're working with
         }
