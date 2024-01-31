@@ -1,4 +1,4 @@
-sillo = {
+syllo = {
 
     username: null,
     playing: false,
@@ -11,7 +11,7 @@ sillo = {
     },
 
     initialize: async function () {
-        console.log(`initializing sillo`);
+        console.log(`initializing syllo`);
         await localize.initialize(localize.figureOutLanguage('en'));
         await connect.initialize();        //  initialize the connection with CODAP
 
@@ -99,7 +99,7 @@ sillo = {
     },
 
     constants: {
-        pluginName: `sillo`,
+        pluginName: `syllo`,
         version: `2024a`,
         dimensions: {height: 366, width: 444},
 

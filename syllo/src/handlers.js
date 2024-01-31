@@ -6,42 +6,42 @@ const handlers = {
         return {
             success: true,
             values: {
-                store: sillo.state,
+                store: syllo.state,
             }
         };
     },
 
     restorePluginFromStore: function (iStorage) {
         if (iStorage) {
-            sillo.state = iStorage.store;
+            syllo.state = iStorage.store;
         }
     },
 
     //  control handlers
 
     changeUserName: function () {
-        sillo.username = document.getElementById("userNameBox").value;
-        sillo.newGame();
+        syllo.username = document.getElementById("userNameBox").value;
+        syllo.newGame();
     },
 
     userDone : function() {
-        sillo.username = null;
-        sillo.cycle();
+        syllo.username = null;
+        syllo.cycle();
     },
 
     prove: function (iChoice) {
-        sillo.choice(iChoice);
+        syllo.choice(iChoice);
     },
 
     pressCountButton: function () {
-        sillo.state.buttonCount++;
-        sillo.cycle();
+        syllo.state.buttonCount++;
+        syllo.cycle();
     },
 
 
     showObverse: function (theButton, iWhich) {
-        //  sillo.state.turned.push(iWhich);
-        const card = sillo.cards[iWhich];
+        //  syllo.state.turned.push(iWhich);
+        const card = syllo.cards[iWhich];
         const newValue = card.obverse;
         theButton.value = newValue;
         theButton.classList.replace('reverse', 'obverse');
@@ -49,9 +49,9 @@ const handlers = {
     },
 
     showReverse: function (theButton, iWhich) {
-        sillo.state.turned.push(iWhich);
+        syllo.state.turned.push(iWhich);
         console.log(`pressed ${iWhich} `);
-        const card = sillo.cards[iWhich];
+        const card = syllo.cards[iWhich];
 
         const newValue = card.reverse;
         theButton.value = newValue;
@@ -60,11 +60,11 @@ const handlers = {
     },
 
     changeRuleTrue: function (theButton) {
-        sillo.state.ruleTrue = theButton.value;
+        syllo.state.ruleTrue = theButton.value;
     },
 
     changeGameMode: function (theButton) {
-        sillo.state.gameMode = theButton.value;
+        syllo.state.gameMode = theButton.value;
     },
 
     //  drag and drop, subscribed to events
@@ -85,7 +85,7 @@ const handlers = {
                 handlers.handleDrag(iMessage.values.position);
                 break;
             case   `drop`:
-                sillo.copeWithAttributeDrop(
+                syllo.copeWithAttributeDrop(
                     iMessage.values.context,
                     iMessage.values.collection,
                     iMessage.values.attribute,

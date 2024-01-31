@@ -15,20 +15,20 @@ const ui = {
 
     redraw: function () {
 
-        const button = ` button count ${sillo.state.buttonCount}`;
-        const datasetInfo = sillo.state.datasetName ? `dataset: ${sillo.state.datasetName}` : `no dataset`;
+        const button = ` button count ${syllo.state.buttonCount}`;
+        const datasetInfo = syllo.state.datasetName ? `dataset: ${syllo.state.datasetName}` : `no dataset`;
 
-        this.statusDIV.innerHTML = sillo.username ? sillo.eval : localize.getString("pleaseEnterName");
-        this.storyDIV.innerHTML = `${sillo.state.scenario.story}`;
+        this.statusDIV.innerHTML = syllo.username ? syllo.eval : localize.getString("pleaseEnterName");
+        this.storyDIV.innerHTML = `${syllo.state.scenario.story}`;
         this.cardsDIV.innerHTML = this.makeCardsHTML();
-        this.greetingDIV.innerHTML = localize.getString('greeting', sillo.username);
+        this.greetingDIV.innerHTML = localize.getString('greeting', syllo.username);
 
         this.setVisibility();
     },
 
 
     setVisibility : function() {
-        if (sillo.username) {
+        if (syllo.username) {
             this.needsUserDIV.style.display = 'none';
             this.hasUserDIV.style.display = 'block';
             this.storyDIV.style.display = 'block';
@@ -52,7 +52,7 @@ const ui = {
         for (let i = 0; i < theKeys.length; i++) {
             const tWhich = theKeys[i];
 
-            const card = sillo.cards[tWhich];
+            const card = syllo.cards[tWhich];
             const mousedown = `onmousedown = "handlers.showReverse(this, '${tWhich}')"`;
             const mouseup = `onmouseup = "handlers.showObverse(this, '${tWhich}')"`;
             const mouseout = `onmouseout = "handlers.showObverse(this, '${tWhich}')"`;

@@ -55,13 +55,13 @@ const connect = {
 
     /**
      * Constant descriptor for the iFrame.
-     * Find and edit the values in `sillo.constants`
+     * Find and edit the values in `syllo.constants`
      */
     iFrameDescriptor: {
-        name: sillo.constants.pluginName,
-        title: sillo.constants.pluginName,
-        version: sillo.constants.version,
-        dimensions: sillo.constants.dimensions,      //      dimensions,
+        name: syllo.constants.pluginName,
+        title: syllo.constants.pluginName,
+        version: syllo.constants.version,
+        dimensions: syllo.constants.dimensions,      //      dimensions,
     },
 
 }
