@@ -22,11 +22,11 @@ const localize = {
     languages: [],
 
     fileNameMap: {
-        en: "strings/wason_English.json",
-        es: "strings/wason_Spanish.json",
-        de: "strings/wason_German.json",
-        fr: "strings/wason_French.json",
-        it: "strings/wason_Italian.json",
+        en: "strings/sillo_English.json",
+        es: "strings/sillo_Spanish.json",
+        de: "strings/sillo_German.json",
+        fr: "strings/sillo_French.json",
+        it: "strings/sillo_Italian.json",
     },
 
     initialize: async function (iLang) {
@@ -46,13 +46,13 @@ const localize = {
     },
 
     getString: function (iID, ...theArgs) {
-        const stringLoc = `DG.plugins.wason.${iID}`;
+        const stringLoc = `DG.plugins.sillo.${iID}`;
         const theRawString = eval(stringLoc);
         let out = "";
         if (theRawString) {
             out = replaceSubstrings(theRawString, ...theArgs);
         } else {
-            const theDefaultString = eval(`this.defaultStrings.wason.${iID}`);
+            const theDefaultString = eval(`this.defaultStrings.sillo.${iID}`);
             if (theDefaultString) {
                 out = replaceSubstrings(theDefaultString, ...theArgs);
             }
@@ -63,7 +63,7 @@ const localize = {
     setStaticStrings: async function () {
 
         //  substitute all the static strings in the UI (by `id`)
-        const theStaticStrings = DG.plugins.wason.staticStrings;
+        const theStaticStrings = DG.plugins.sillo.staticStrings;
         for (const theID in theStaticStrings) {
             if (theStaticStrings.hasOwnProperty(theID)) {
                 const theValue = this.getString(`staticStrings.${theID}`); // theStaticStrings[theID];

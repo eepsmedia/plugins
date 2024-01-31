@@ -1,4 +1,4 @@
-wason = {
+sillo = {
 
     username: null,
     playing: false,
@@ -11,7 +11,7 @@ wason = {
     },
 
     initialize: async function () {
-        console.log(`initializing wason`);
+        console.log(`initializing sillo`);
         await localize.initialize(localize.figureOutLanguage('en'));
         await connect.initialize();        //  initialize the connection with CODAP
 
@@ -99,7 +99,7 @@ wason = {
     },
 
     constants: {
-        pluginName: `wason`,
+        pluginName: `sillo`,
         version: `2024a`,
         dimensions: {height: 366, width: 444},
 

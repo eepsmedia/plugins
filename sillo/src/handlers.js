@@ -6,42 +6,42 @@ const handlers = {
         return {
             success: true,
             values: {
-                store: wason.state,
+                store: sillo.state,
             }
         };
     },
 
     restorePluginFromStore: function (iStorage) {
         if (iStorage) {
-            wason.state = iStorage.store;
+            sillo.state = iStorage.store;
         }
     },
 
     //  control handlers
 
     changeUserName: function () {
-        wason.username = document.getElementById("userNameBox").value;
-        wason.newGame();
+        sillo.username = document.getElementById("userNameBox").value;
+        sillo.newGame();
     },
 
     userDone : function() {
-        wason.username = null;
-        wason.cycle();
+        sillo.username = null;
+        sillo.cycle();
     },
 
     prove: function (iChoice) {
-        wason.choice(iChoice);
+        sillo.choice(iChoice);
     },
 
     pressCountButton: function () {
-        wason.state.buttonCount++;
-        wason.cycle();
+        sillo.state.buttonCount++;
+        sillo.cycle();
     },
 
 
     showObverse: function (theButton, iWhich) {
-        //  wason.state.turned.push(iWhich);
-        const card = wason.cards[iWhich];
+        //  sillo.state.turned.push(iWhich);
+        const card = sillo.cards[iWhich];
         const newValue = card.obverse;
         theButton.value = newValue;
         theButton.classList.replace('reverse', 'obverse');
@@ -49,9 +49,9 @@ const handlers = {
     },
 
     showReverse: function (theButton, iWhich) {
-        wason.state.turned.push(iWhich);
+        sillo.state.turned.push(iWhich);
         console.log(`pressed ${iWhich} `);
-        const card = wason.cards[iWhich];
+        const card = sillo.cards[iWhich];
 
         const newValue = card.reverse;
         theButton.value = newValue;
@@ -60,11 +60,11 @@ const handlers = {
     },
 
     changeRuleTrue: function (theButton) {
-        wason.state.ruleTrue = theButton.value;
+        sillo.state.ruleTrue = theButton.value;
     },
 
     changeGameMode: function (theButton) {
-        wason.state.gameMode = theButton.value;
+        sillo.state.gameMode = theButton.value;
     },
 
     //  drag and drop, subscribed to events
@@ -85,7 +85,7 @@ const handlers = {
                 handlers.handleDrag(iMessage.values.position);
                 break;
             case   `drop`:
-                wason.copeWithAttributeDrop(
+                sillo.copeWithAttributeDrop(
                     iMessage.values.context,
                     iMessage.values.collection,
                     iMessage.values.attribute,

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 
 <!--
-local just this: http://localhost/~tim/plugins/wason/
+local just this: http://localhost/~tim/plugins/sillo/
 local in local codap :
-http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/wason
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/sillo
 
 -->
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>wason</title>
+    <title>sillo</title>
 
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
 
-    <link rel='stylesheet' type='text/css' href='css/wason.css'/>
+    <link rel='stylesheet' type='text/css' href='css/sillo.css'/>
 
-    <script src="src/wason.js"></script>
+    <script src="src/sillo.js"></script>
     <script src="src/ui.js"></script>
     <script src="src/connect.js"></script>
     <script src="src/handlers.js"></script>
@@ -36,7 +36,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <body>
 
 <!--
-<h2>Wason task</h2>
+<h2>sillo task</h2>
 <input type="button" id="counterButton" value="click to count" onclick="handlers.pressCountButton()">
 <label for="counterButton" id="counterButtonLabel"></label>
 -->
@@ -60,7 +60,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <div id="decision">
     <input type="button" id="proveRightButton" onclick="handlers.prove('right')">
     <input type="button" id="proveWrongButton" onclick="handlers.prove('wrong')">
-    <input type="button" id="newGameButton" onclick="wason.newGame()">
+    <input type="button" id="newGameButton" onclick="sillo.newGame()">
 </div>
 
 <div id="status"></div>
@@ -95,7 +95,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
 <script>
     window.onload = function () {
-        wason.initialize();
+        sillo.initialize();
     }
 </script>
 

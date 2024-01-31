@@ -55,13 +55,13 @@ const connect = {
 
     /**
      * Constant descriptor for the iFrame.
-     * Find and edit the values in `wason.constants`
+     * Find and edit the values in `sillo.constants`
      */
     iFrameDescriptor: {
-        name: wason.constants.pluginName,
-        title: wason.constants.pluginName,
-        version: wason.constants.version,
-        dimensions: wason.constants.dimensions,      //      dimensions,
+        name: sillo.constants.pluginName,
+        title: sillo.constants.pluginName,
+        version: sillo.constants.version,
+        dimensions: sillo.constants.dimensions,      //      dimensions,
     },
 
 }
