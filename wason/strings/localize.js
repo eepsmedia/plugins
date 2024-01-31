@@ -1,6 +1,5 @@
-
 let DG = {
-    plugins : null,
+    plugins: null,
 };
 
 function replaceSubstrings(originalString, ...substitutions) {
@@ -19,18 +18,18 @@ function replaceSubstrings(originalString, ...substitutions) {
 
 const localize = {
 
-    defaultStrings : {},
-    languages : [],
+    defaultStrings: {},
+    languages: [],
 
-    fileNameMap : {
-        en : "strings/wason_English.json",
-        es : "strings/wason_Spanish.json",
-        de : "strings/wason_German.json",
-        fr : "strings/wason_French.json",
-        it : "strings/wason_Italian.json",
+    fileNameMap: {
+        en: "strings/wason_English.json",
+        es: "strings/wason_Spanish.json",
+        de: "strings/wason_German.json",
+        fr: "strings/wason_French.json",
+        it: "strings/wason_Italian.json",
     },
 
-    initialize : async function(iLang) {
+    initialize: async function (iLang) {
         DG.plugins = await this.loadLanguage(iLang);
         this.defaultStrings = await this.loadLanguage('en');    //  defaults to English; may not be necessary
 
@@ -39,14 +38,14 @@ const localize = {
 
     },
 
-    loadLanguage : async function(iLang) {
+    loadLanguage: async function (iLang) {
         let theFileName = this.fileNameMap[iLang];
         const response = await fetch(theFileName);
         const theText = await response.text();
         return JSON.parse(theText)
     },
 
-    getString : function(iID, ...theArgs) {
+    getString: function (iID, ...theArgs) {
         const stringLoc = `DG.plugins.wason.${iID}`;
         const theRawString = eval(stringLoc);
         let out = "";
@@ -95,7 +94,7 @@ const localize = {
      * @param iSupportedLanguages an array of two-letter codes for the languages the plugin supports
      * @returns {*}     resulting two-letter code
      */
-    figureOutLanguage:  function (iDefaultLanguage) {
+    figureOutLanguage: function (iDefaultLanguage) {
 
         this.languages = Object.keys(this.fileNameMap);
         let lOut = iDefaultLanguage;
@@ -132,7 +131,7 @@ const localize = {
      * Finds the two-letter code in a `lang` URL parameter if it exists. Returns `null` if none.
      * @returns {null}
      */
-    getLangFromURL : function() {
+    getLangFromURL: function () {
         const params = new URLSearchParams(document.location.search.substring(1));
         const langParam = params.get("lang");
 

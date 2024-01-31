@@ -2,33 +2,37 @@
   "wason": {
     "flags": "🇬🇧,🇺🇸",
     "language": "English",
-    "staticStrings": {
-      "counterButtonLabel" : "click to count",
-      "ruleAlwaysTrueButtonLabel" : "is true",
-      "ruleSometimesTrueButtonLabel" : "might be true",
-      "modeChallengeButtonLabel" : "challenge",
-      "modeSandboxButtonLabel" : "sandbox",
-      "proveRightButton" : "I know the rule is right",
-      "proveWrongButton" : "I know the rule is wrong",
-      "newGameButton" : "new game"
-    },
+    "greeting" : "Hello, •1•",
+    "pleaseEnterName" : "Please enter your name and press Start",
 
-    "eval" : {
-      "choseRight" : "You decided that the rule was correct.",
-      "choseWrong" : "You decided that the rule was not correct.",
-      "instructions" : "Click on cards to see their backs — but click as few as you can to be sure that the rule is correct. Then click the button to check your work.",
-      "choseP" : "<br>&emsp;You chose •1•, which is correct!",
-      "noChoseP" : "<br>&emsp;You did not choose •1•, but you should have.",
-      "choseNotQ" : "<br>&emsp;You chose •1•, which is correct (and subtle!)",
-      "noChoseNotQ" : "<br>&emsp;You did not choose •1•, but you should have. Think carefully about why.",
-      "choseQ" : "<br>&emsp;You chose •1•, which is not correct. You do not need to know that.",
-      "choseNotP" : "<br>&emsp;You chose •1•, which is not correct. You do not need to know that."
+    "staticStrings": {
+      "counterButtonLabel": "click to count",
+      "ruleAlwaysTrueButtonLabel": "is true",
+      "ruleSometimesTrueButtonLabel": "might be true",
+      "modeChallengeButtonLabel": "challenge",
+      "modeSandboxButtonLabel": "sandbox",
+      "proveRightButton": "I know the rule is right",
+      "proveWrongButton": "I know the rule is wrong",
+      "newGameButton": "new game",
+      "userNameBoxLabel": "username: ",
+      "userDoneButton" : "I'm done!",
+      "startButton" : "Start!"
     },
-    "scenarios" : {
-      "vowels" : {
-        "story" : "The rule is : if a card has a vowel on it, the back will have an odd number."
+    "eval": {
+      "choseRight": "You decided that the rule was correct.",
+      "choseWrong": "You decided that the rule was not correct.",
+      "instructions": "Click on cards to see their backs — but click as few as you can to be sure that the rule is correct. Then click the button to check your work.",
+      "choseP": "<br>&emsp;You chose •1•, which is correct!",
+      "noChoseP": "<br>&emsp;You did not choose •1•, but you should have.",
+      "choseNotQ": "<br>&emsp;You chose •1•, which is correct (and subtle!)",
+      "noChoseNotQ": "<br>&emsp;You did not choose •1•, but you should have. Think carefully about why.",
+      "choseQ": "<br>&emsp;You chose •1•, which is not correct. You do not need to know that.",
+      "choseNotP": "<br>&emsp;You chose •1•, which is not correct. You do not need to know that."
+    },
+    "scenarios": {
+      "vowels": {
+        "story": "The rule is : if a card has a vowel on it, the back will have an odd number."
       }
     }
-
   }
 }

@@ -1,37 +1,39 @@
 body {
-    color : #333;
-    font-family: "Sirin Stencil",sans-serif;
+    color: #333;
+    font-family: "Sirin Stencil", sans-serif;
     font-size: small;
-    min-height: 100vh;      /* make <body> fill the plugin */
+    min-height: 100vh; /* make <body> fill the plugin */
 
     background-color: antiquewhite;
 }
 
 .configBox {
-    display : inline;
+    display: inline;
 }
+
 .card {
-    width : 88px;
-    height : 144px;
+    width: 88px;
+    height: 144px;
     margin: 8px;
     font-size: 72px;
     border-radius: 8px;
 
-    cursor : pointer;
+    cursor: pointer;
 }
 
 .obverse {
     background-color: bisque;
-    color : #333;
+    color: #333;
 }
 
 .obverse {
-     background-color: burlywood;
-     color : #fff;
- }
+    background-color: burlywood;
+    color: #fff;
+}
+
 /*		BOX CLASSES		*/
 
-.hBox	{
+.hBox {
     display: flex;
     flex-direction: row;
     /*display:	-webkit-box;
@@ -42,7 +44,7 @@ body {
     box-orient:	horizontal;*/
 }
 
-.vBox	{
+.vBox {
     display: flex;
     flex-direction: column;
     /*

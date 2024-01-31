@@ -1,6 +1,7 @@
 wason = {
 
-    playing : false,
+    username: null,
+    playing: false,
     state: {},
     cards: {
         P: {obverse: null, reverse: null},
@@ -19,7 +20,7 @@ wason = {
         this.newGame();
     },
 
-    newGame : function() {
+    newGame: function () {
         this.eval = localize.getString("eval.instructions");
         this.setScenario("vowels");
         this.playing = true;
@@ -109,7 +110,7 @@ wason = {
             datasetName: null,     //  the name of the dataset we're working with
             ruleTrue: true,
             gameMode: "sandbox",
-            turned : [],            //  array of turns
+            turned: [],            //  array of turns
         }
     }
 

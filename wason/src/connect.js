@@ -1,4 +1,3 @@
-
 /**
  *  Singleton that communicates with CODAP
  */
@@ -6,9 +5,9 @@
 
 const connect = {
 
-    attributeDragDropSubscriberIndex : null,
+    attributeDragDropSubscriberIndex: null,
 
-    initialize : async function() {
+    initialize: async function () {
         //  note: these subscriptions must happen BEFORE `.init` so that the `.on` there does not
         //  override our handlers.
         codapInterface.on('update', 'interactiveState', "", handlers.restorePluginFromStore);

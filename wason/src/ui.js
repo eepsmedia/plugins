@@ -1,27 +1,54 @@
-
 const ui = {
 
-    statusDIV : null,
+    statusDIV: null,
 
-    initialize : function () {
+    initialize: function () {
         this.statusDIV = document.getElementById('status');
         this.storyDIV = document.getElementById('story');
         this.cardsDIV = document.getElementById('cards');
+        this.decisionDIV = document.getElementById('decision');
+        this.needsUserDIV = document.getElementById(`needsUserName`);
+        this.hasUserDIV = document.getElementById(`hasUserName`);
+        this.greetingDIV = document.getElementById(`greeting`);
+        this.configDIV = document.getElementById(`config`);
     },
 
-    redraw : function() {
+    redraw: function () {
 
         const button = ` button count ${wason.state.buttonCount}`;
         const datasetInfo = wason.state.datasetName ? `dataset: ${wason.state.datasetName}` : `no dataset`;
 
-        this.statusDIV.innerHTML = wason.eval;
+        this.statusDIV.innerHTML = wason.username ? wason.eval : localize.getString("pleaseEnterName");
         this.storyDIV.innerHTML = `${wason.state.scenario.story}`;
         this.cardsDIV.innerHTML = this.makeCardsHTML();
+        this.greetingDIV.innerHTML = localize.getString('greeting', wason.username);
+
+        this.setVisibility();
     },
 
-    makeCardsHTML : function() {
+
+    setVisibility : function() {
+        if (wason.username) {
+            this.needsUserDIV.style.display = 'none';
+            this.hasUserDIV.style.display = 'block';
+            this.storyDIV.style.display = 'block';
+            this.cardsDIV.style.display = 'block';
+            this.decisionDIV.style.display = 'block';
+            this.configDIV.style.display = 'block';
+        } else {
+            this.needsUserDIV.style.display = 'block';
+            this.hasUserDIV.style.display = 'none';
+            this.storyDIV.style.display = 'none';
+            this.cardsDIV.style.display = 'none';
+            this.decisionDIV.style.display = 'none';
+            this.configDIV.style.display = 'none';
+        }
+    },
+
+
+    makeCardsHTML: function () {
         let out = "";
-        const theKeys = scramble(["P","notP","Q","notQ"]);
+        const theKeys = scramble(["P", "notP", "Q", "notQ"]);
         for (let i = 0; i < theKeys.length; i++) {
             const tWhich = theKeys[i];
 
@@ -38,7 +65,7 @@ const ui = {
     },
 }
 
-scramble = function(iArray) {
+scramble = function (iArray) {
     let N = iArray.length;
 
     for (let i = 0; i < N; i++) {

@@ -1,8 +1,8 @@
 const handlers = {
 
-    currentlyDraggingCODAPAttribute : false,
+    currentlyDraggingCODAPAttribute: false,
 
-    getPluginState : function() {
+    getPluginState: function () {
         return {
             success: true,
             values: {
@@ -11,7 +11,7 @@ const handlers = {
         };
     },
 
-    restorePluginFromStore: function(iStorage) {
+    restorePluginFromStore: function (iStorage) {
         if (iStorage) {
             wason.state = iStorage.store;
         }
@@ -19,17 +19,27 @@ const handlers = {
 
     //  control handlers
 
-    prove : function(iChoice) {
+    changeUserName: function () {
+        wason.username = document.getElementById("userNameBox").value;
+        wason.newGame();
+    },
+
+    userDone : function() {
+        wason.username = null;
+        wason.cycle();
+    },
+
+    prove: function (iChoice) {
         wason.choice(iChoice);
     },
 
-    pressCountButton : function() {
+    pressCountButton: function () {
         wason.state.buttonCount++;
         wason.cycle();
     },
 
 
-    showObverse : function(theButton, iWhich)  {
+    showObverse: function (theButton, iWhich) {
         //  wason.state.turned.push(iWhich);
         const card = wason.cards[iWhich];
         const newValue = card.obverse;
@@ -38,7 +48,7 @@ const handlers = {
         console.log(`button for ${iWhich} now ${theButton.classList.toString()}`)
     },
 
-    showReverse : function(theButton, iWhich)  {
+    showReverse: function (theButton, iWhich) {
         wason.state.turned.push(iWhich);
         console.log(`pressed ${iWhich} `);
         const card = wason.cards[iWhich];
@@ -49,19 +59,19 @@ const handlers = {
         console.log(`button for ${iWhich} now ${theButton.classList.toString()}`)
     },
 
-    changeRuleTrue : function(theButton) {
+    changeRuleTrue: function (theButton) {
         wason.state.ruleTrue = theButton.value;
     },
 
-    changeGameMode : function(theButton) {
+    changeGameMode: function (theButton) {
         wason.state.gameMode = theButton.value;
     },
 
     //  drag and drop, subscribed to events
 
-    handleDragDrop : async function(iMessage) {
+    handleDragDrop: async function (iMessage) {
 
-        switch(iMessage.values.operation) {
+        switch (iMessage.values.operation) {
             case   `dragstart`:
                 this.currentlyDraggingCODAPAttribute = true;
                 console.log(`    drag start`);
@@ -94,13 +104,13 @@ const handlers = {
         }
     },
 
-    handleDrag : function(iPosition) {
+    handleDrag: function (iPosition) {
 
     },
-    highlightNone : function() {
+    highlightNone: function () {
 
     },
-    highlightNear : function() {
+    highlightNear: function () {
 
     },
 

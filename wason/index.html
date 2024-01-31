@@ -41,6 +41,18 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <label for="counterButton" id="counterButtonLabel"></label>
 -->
 
+<div id="header">
+    <div id="needsUserName">
+        <label for="userNameBox" id="userNameBoxLabel">user</label>
+        <input type="text" id="userNameBox">
+        <input type="button" id="startButton" onclick="handlers.changeUserName()">
+    </div>
+    <div id="hasUserName">
+        <span id="greeting"></span>
+        <input type="button" id="userDoneButton" onclick="handlers.userDone()">
+    </div>
+</div>
+
 <div id="story"></div>
 
 <div id="cards"></div>
@@ -57,7 +69,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     <details>
         <summary>Configure the game</summary>
         <div class="hBox">
-            <div id="ruleTruthConfig" >
+            <div id="ruleTruthConfig">
                 <input type="radio" name="ruleTrueGroup" value=true
                        onchange="handlers.changeRuleTrue(this)" id="ruleAlwaysTrueButton" checked>
                 <label for="ruleAlwaysTrueButton" id="ruleAlwaysTrueButtonLabel">always true</label><br>
@@ -65,7 +77,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
                        onchange="handlers.changeRuleTrue(this)" id="ruleSometimesTrueButton">
                 <label for="ruleSometimesTrueButton" id="ruleSometimesTrueButtonLabel">sometimes true</label>
             </div>
-            <div id="gameModeConfig" >
+            <div id="gameModeConfig">
                 <input type="radio" name="gameModeGroup" value="sandbox"
                        onchange="handlers.changeGameMode(this)" id="modeSandboxButton" checked>
                 <label for="modeSandboxButton" id="modeSandboxButtonLabel">sandbox</label><br>
@@ -77,7 +89,6 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
         </div>
     </details>
 </div>
-
 
 
 </body>
