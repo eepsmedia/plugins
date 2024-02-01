@@ -32,7 +32,7 @@ limitations under the License.
  */
 const fireConnect = {
 
-    fish: null,     //  the global fish parent object
+    forestry: null,     //  the global fish parent object
 
     db: null,
     gamesCR: null,     //  collection reference for all games
@@ -46,11 +46,11 @@ const fireConnect = {
     unsubscribeFromPlayers: null,
     unsubscribeFromTurns : null,
 
-    initialize: async function (iFish) {
-        this.fish = iFish;
+    initialize: async function (iForestry) {
+        this.forestry = iForestry;
         console.log('initializing fireConnect');
         try {
-            firebase.initializeApp(fish.constants.kFirebaseConfiguration);
+            firebase.initializeApp(forester.constants.kFirebaseConfiguration);
             //  firebase.analytics();
             this.db = firebase.firestore();
             this.gamesCR = this.db.collection("games");     //  games collection reference
@@ -61,7 +61,7 @@ const fireConnect = {
 
 
     /**
-     * Called from fish.userActions.clickJoinButton()
+     * Called from forester.userActions.clickJoinButton()
      * Validates the game code; if valid, join the game. If not, return null.
      * We do not write anything to the DB at his point;
      * we wait for a valid playerName before making the doc in the players subcollection.
@@ -99,7 +99,7 @@ const fireConnect = {
     },
 
     /**
-     * Called from fish.userActions.pressNameButton()
+     * Called from forester.userActions.pressNameButton()
      * Checks if the name already exists in the players subcollection. If so, return the player data.
      * If not, enter the player data (with playerName as the key) as a new document in players.
      *
@@ -135,7 +135,7 @@ const fireConnect = {
                     tTurns.push(tSnap.data());
                 })
                 console.log(`    ¬¬¬ Turn listener reported ${tTurns.length} turn(s)`);
-                this.fish.updateTurns(tTurns);
+                this.forester.updateTurns(tTurns);
             });
 
         //  set up handler for a change in Game (we call updateGame())
@@ -143,7 +143,7 @@ const fireConnect = {
             .onSnapshot((iDocSnap) => {
                 const theGame = iDocSnap.data();
                 console.log(`    ¬¬¬ Game listener got ${theGame.gameCode} turn ${theGame.year}`);
-                this.fish.updateGame(theGame);
+                this.forester.updateGame(theGame);
             });
 
 
@@ -160,7 +160,7 @@ const fireConnect = {
                     tPlayers.push(pSnap.data())     //  don't need await??
                 });
                 console.log(`    ¬¬¬ Player listener reported ${tPlayers.length} player(s)`);
-                this.fish.updatePlayers(tPlayers);
+                this.forester.updatePlayers(tPlayers);
             });
     },
 
@@ -171,7 +171,7 @@ const fireConnect = {
             const myData = mySnap.data();
             return myData;
         } catch(msg) {
-            console.log(`Problem getting data for ${fish.state.playerName}: ${msg}`);
+            console.log(`Problem getting data for ${forester.state.playerName}: ${msg}`);
         }
         return null;
     },
@@ -201,7 +201,7 @@ const fireConnect = {
         const thisGame = thisGameSnap.data();
 
         theTurns.forEach( t => {
-            t["result"] = thisGame.fishStars;
+            t["result"] = thisGame.forestryStars;
             t["level"] = thisGame.configuration;
         })
 
@@ -220,7 +220,7 @@ const fireConnect = {
 
     /**
      * Updates the player in Firebase (often to show that we're really playing)
-     * called from fishUserAction.catchFish()
+     * called from fishUserAction.cutTrees()
      * @param theData
      * @returns {Promise<void>}
      */

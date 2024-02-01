@@ -41,7 +41,7 @@ aranyani.constants = {
 
     //  player states
     kSellingString: "selling",
-    kFishingString: "fishing",
+    kWoodCuttingString: "cutting wood",
     kBetweenString: "between games",
 
     //  game states
@@ -62,7 +62,7 @@ aranyani.constants = {
  *
  * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
  */
-aranyani.fishGameParameters = {
+aranyani.forestryGameParameters = {
 
     albacore: {
         starter: true,

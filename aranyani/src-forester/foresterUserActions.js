@@ -29,13 +29,13 @@ limitations under the License.
 /**
  * Methods that respond directly to user actions.
  *
- * @type {{pressNameButton: fish.userActions.pressNameButton, clickJoinButton: fish.userActions.clickJoinButton, startNewGame: (function(): Promise<any>), joinGame: fish.userActions.joinGame, catchFish: fish.userActions.catchFish, chairEndsTurn: fish.userActions.chairEndsTurn, foo: fish.userActions.foo}}
+ * @type {{pressNameButton: forester.userActions.pressNameButton, clickJoinButton: forester.userActions.clickJoinButton, startNewGame: (function(): Promise<any>), joinGame: forester.userActions.joinGame, cutTrees: forester.userActions.cutTrees, chairEndsTurn: forester.userActions.chairEndsTurn, foo: forester.userActions.foo}}
  */
-fish.userActions = {
+forester.userActions = {
 
     /**
      * User clicked to button to join a game.
-     * Proposed username is in fish.state.playerName.
+     * Proposed username is in forester.state.playerName.
      *
      * @returns {Promise<void>}
      */
@@ -46,23 +46,23 @@ fish.userActions = {
 
         const gameData = await fireConnect.tryGameCode(theCode);  //  null if not exist
         if (gameData) {
-            fish.state.gameCode = theCode;
+            forester.state.gameCode = theCode;
 
-            fish.state.gameTurn = gameData.year;
-            fish.state.gameState = gameData.gameState;
-            fish.gameParameters = gameData;
-            fish.state.playerName = "";
+            forester.state.gameTurn = gameData.year;
+            forester.state.gameState = gameData.gameState;
+            forester.gameParameters = gameData;
+            forester.state.playerName = "";
 
             const tJoinNotice = `You joined game ${theCode}`;
-            fish.setNotice(tJoinNotice);
-            await fish.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
+            forester.setNotice(tJoinNotice);
+            await forester.CODAPConnector.deleteAllTurnRecords();       //  clean for the new game.
         } else {
-            fish.state.gameCode = null;
+            forester.state.gameCode = null;
             codeTextField.value = "";
-            fish.setNotice(`<b>${theCode}</b> doesn't exist.`);
+            forester.setNotice(`<b>${theCode}</b> doesn't exist.`);
             alert(`game ${theCode} doesn't exist.`);
         }
-        fish.ui.update();
+        forester.ui.update();
 
     },
 
@@ -76,29 +76,29 @@ fish.userActions = {
         const theName = nameTextField.value;        //  the player's proposed name
         const newPlayerData = {
             playerName : theName,
-            gameCode : fish.state.gameCode,
-            balance : fish.gameParameters.openingBalance,
-            playerState : fish.constants.kFishingString,
+            gameCode : forester.state.gameCode,
+            balance : forester.gameParameters.openingBalance,
+            playerState : forester.constants.kWoodCuttingString,
         };
-        const   playerData = await fireConnect.tryPlayerName(fish.state.gameCode, newPlayerData);
+        const   playerData = await fireConnect.tryPlayerName(forester.state.gameCode, newPlayerData);
 
         if (playerData) {
-            fish.state.playerState = playerData.playerState;
-            fish.state.playerName = playerData.playerName;
-            fish.state.balance = playerData.balance;
-            fish.CODAPConnector.getAndEmitMyFishRecords(fish.state.playerName, fish.state.gameCode);
-            fish.CODAPConnector.makeCaseTableAppear();
+            forester.state.playerState = playerData.playerState;
+            forester.state.playerName = playerData.playerName;
+            forester.state.balance = playerData.balance;
+            forester.CODAPConnector.getAndEmitMyForestryRecords(forester.state.playerName, forester.state.gameCode);
+            forester.CODAPConnector.makeCaseTableAppear();
 
 
         } else {
-            fish.state.playerName = null;
-            fish.state.balance = 0;
-            fish.state.playerState = null;
+            forester.state.playerName = null;
+            forester.state.balance = 0;
+            forester.state.playerState = null;
             nameTextField.value = "";
             alert("You need to choose a different name");
         }
 
-        fish.ui.update();
+        forester.ui.update();
     },
 
     /**
@@ -111,36 +111,36 @@ fish.userActions = {
      *
      * @returns {Promise<void>}
      */
-    catchFish: async function () {
+    cutTrees: async function () {
 
-        const fishWantedBox = document.getElementById("howManyFish");
-        let tFishWanted = Number(fishWantedBox.value);
+        const treesWantedBox = document.getElementById("howManyTrees");
+        let tTreesWanted = Number(treesWantedBox.value);
 
-        if (tFishWanted > fish.gameParameters.boatCapacity) {
-            alert(`Your boat will only carry ${fish.gameParameters.boatCapacity}. `);
-            fishWantedBox.value = fish.gameParameters.boatCapacity;
+        if (tTreesWanted > forester.gameParameters.boatCapacity) {
+            alert(`Your boat will only carry ${forester.gameParameters.boatCapacity}. `);
+            treesWantedBox.value = forester.gameParameters.boatCapacity;
             return;
         }
 
-        if (tFishWanted < 0) {
+        if (tTreesWanted < 0) {
             alert("You can't catch negative fish! ");
-            fishWantedBox.value = 0;
+            treesWantedBox.value = 0;
             return;
         }
 
-        if (fish.readyToCatch()) {      //  check to see if it's OK to catch fish
-            fish.state.playerState = fish.constants.kSellingString;     //  set the player state to selling
+        if (forester.readyToCatch()) {      //  check to see if it's OK to catch fish
+            forester.state.playerState = forester.constants.kSellingString;     //  set the player state to selling
 
-            const tCatchModelResult =  fish.catchFish(tFishWanted);
-            fish.state.currentTurnResult = tCatchModelResult;
+            const tCatchModelResult =  forester.cutTrees(tTreesWanted);
+            forester.state.currentTurnResult = tCatchModelResult;
 
             console.log("    fish ... " + tCatchModelResult.caught + " in " + tCatchModelResult.year
-                + " (" + fish.state.playerState + ")" );
+                + " (" + forester.state.playerState + ")" );
 
-            //  todo: don't call this here, but rather in the notification handler when we get the turn back from the DB. (fish.updateTurns)
+            //  todo: don't call this here, but rather in the notification handler when we get the turn back from the DB. (forester.updateTurns)
             //  the problem is that we get the CODAP caseIDs here  from the CODAP call, and we need them for the update.
 
-            const theNewTurn = await (fish.CODAPConnector.addSingleFishItemInCODAP(tCatchModelResult));  //  record in the CODAP table, partial record :)
+            const theNewTurn = await (forester.CODAPConnector.addSingleTreesItemInCODAP(tCatchModelResult));  //  record in the CODAP table, partial record :)
             //  theNewTurn now has caseIDs, year, balance before, player name, game code
 
             let thePromises = [];
@@ -150,26 +150,26 @@ fish.userActions = {
 
             //  update the player in the database  todo: get rid of dependency on player database every turn
 
-            const playerDataForDB = {playerState : fish.state.playerState, playing : true};
+            const playerDataForDB = {playerState : forester.state.playerState, playing : true};
             thePromises.push(fireConnect.updatePlayerDocument(playerDataForDB));
 
             await Promise.all(thePromises);
 
-            // fish.state.currentTurnResult = tCatchModelResult;
+            // forester.state.currentTurnResult = tCatchModelResult;
 
         } else {
-            fish.debugThing.innerHTML = 'Gotta wait for everybody else!';
+            forester.debugThing.innerHTML = 'Gotta wait for everybody else!';
         }
 
-        // fish.ui.update();
+        // forester.ui.update();
     },
 
     changeAutomation : async function() {
-        fish.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
-        if (fish.state.autoCatch) {
-            await this.catchFish();
+        forester.state.autoCatch = document.getElementById("automateCatchCheckbox").checked;
+        if (forester.state.autoCatch) {
+            await this.cutTrees();
         } else {
-            fish.ui.update();   //  if we go to no auto, refresh so we can see the Catch Fish button
+            forester.ui.update();   //  if we go to no auto, refresh so we can see the Catch Trees button
         }
     },
 

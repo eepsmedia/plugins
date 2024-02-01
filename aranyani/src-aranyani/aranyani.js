@@ -118,7 +118,7 @@ const aranyani =  {
             this.state.autoSell &&
             this.model.thePlayers.length > 0 &&
             this.playing()) {
-            await this.sellFish();
+            await this.sellWood();
             console.log(" *** auto sold *** now it's " + this.model.theGame.year);
         }
 
@@ -158,14 +158,14 @@ const aranyani =  {
             ;
     },
 
-    async sellFish() {
-        const theSellButton = await document.getElementById("sellFishButton");
+    async sellWood() {
+        const theSellButton = await document.getElementById("sellWoodButton");
         if (theSellButton) {
             theSellButton.style.visibility = "hidden";
         }
         console.log("Selling fish!");
-        await this.model.sellFish();
-        console.log("Fish sold!");
+        await this.model.sellWood();
+        console.log("Trees sold!");
         //  ui.update();    //  make the sales button appear again if we're manual
         // update may not be necessary as we will update when the listener fires.
     },
@@ -177,7 +177,7 @@ const aranyani =  {
         const currentSituation = aranyani.model.getCurrentSituation();
 
         if (newCheckedState && currentSituation.OK && currentSituation.autoOK) {
-            aranyani.model.sellFish();
+            aranyani.model.sellWood();
         }
     },
 

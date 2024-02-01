@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @type {{albacore: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, bonito: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, calculatePrice: (function(*): number)}, cod: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}, halibut: {starter: boolean, openingPopulation: number, carryingCapacity: number, winningPopulation: number, losingPopulation: number, openingBalance: number, openingTurn: number, endingYear: number, defaultPrice: number, overhead: number, visibleProbability: number, birthProbability: number, catchProbability: number, binomialProbabilityModel: boolean, boatCapacity: number, priceMax: number, salesMax: number, calculatePrice: (function(*): number)}}}
  */
-fish.fishLevels = {
+forester.forestryLevels = {
 
     trout: {
         starter: true,
@@ -98,7 +98,7 @@ fish.fishLevels = {
         binomialProbabilityModel: true,
         boatCapacity: 120,
 
-        calculatePrice : function(n) { return fish.game.defaultPrice; }
+        calculatePrice : function(n) { return forester.game.defaultPrice; }
     },
 
     cod: {
@@ -123,7 +123,7 @@ fish.fishLevels = {
         salesMax : 200,
 
         calculatePrice : function(n) {
-            let tPrice = fish.game.priceMax * ( 1 - n / fish.game.salesMax);
+            let tPrice = forester.game.priceMax * ( 1 - n / forester.game.salesMax);
             if (tPrice < 0) tPrice = 0;
             return tPrice;
         }
@@ -151,7 +151,7 @@ fish.fishLevels = {
         salesMax : 200,
 
         calculatePrice : function(n) {
-            let tPrice = fish.game.priceMax * ( 1 - n / fish.game.salesMax);
+            let tPrice = forester.game.priceMax * ( 1 - n / forester.game.salesMax);
             if (tPrice < 0) tPrice = 0;
             return tPrice;
         }

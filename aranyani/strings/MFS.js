@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-strings in aranyani (MFS = aranyani-Fish-Strings)
+strings in aranyani (MFS = aranyani-Forestry-Strings)
 
 Author:   Tim Erickson
 
@@ -148,7 +148,7 @@ const MFS = {
     howManyPlayersString: function () {
         let out = "";
 
-        let tN = fish.players.length;
+        let tN = forester.players.length;
         switch (tN) {
             case 0:
                 out += DG.plugins.aranyani.firstPlayer;
@@ -171,14 +171,14 @@ const MFS = {
      * text telling who we're waiting for.
      */
     makeWaitingText: function () {
-        const playerReport = fish.otherPlayersInfo();
+        const playerReport = forester.otherPlayersInfo();
         if (playerReport.allPlayers.length <= 0) {
             return DG.plugins.aranyani.noPlayersYet;
         }
         let out = "";
 
         let waitingFor = playerReport.missing;
-        const yourIndex = waitingFor.indexOf(fish.state.playerName);
+        const yourIndex = waitingFor.indexOf(forester.state.playerName);
         if (yourIndex > -1) {
             waitingFor.splice(yourIndex, 1);        //  remove the element there
         }
@@ -191,12 +191,12 @@ const MFS = {
             } else {
                 out += ".";
             }
-            out += ` ${DG.plugins.aranyani.catchFishCommand}`;
+            out += ` ${DG.plugins.aranyani.cutTreesCommand}`;
 
         } else {
             switch (waitingFor.length) {
                 case 0:
-                    out += DG.plugins.aranyani.everyoneHasFished;
+                    out += DG.plugins.aranyani.everyoneHasCutWood;
                     break;
                 case 1:
                     out += `${DG.plugins.aranyani.waitingFor} ${waitingFor[0]}.`;
@@ -212,15 +212,15 @@ const MFS = {
         return out;
     },
 
-    fishAtMarketText: function () {
-        const number = fish.state.currentTurnResult ? fish.state.currentTurnResult.caught : "";
-        if (!fish.state.playerName) {
+    treesAtMarketText: function () {
+        const number = forester.state.currentTurnResult ? forester.state.currentTurnResult.caught : "";
+        if (!forester.state.playerName) {
             return DG.plugins.aranyani.waitingForYouToLogIn;
         } else {
             if (number) {
-                return tr(DG.plugins.aranyani.waitForFishSale, number);
+                return tr(DG.plugins.aranyani.waitForTreeSale, number);
             } else {
-                return DG.plugins.aranyani.noFishWaitForTurnEnd;
+                return DG.plugins.aranyani.noForestryWaitForTurnEnd;
             }
         }
     },
@@ -237,7 +237,7 @@ const MFS = {
 
     makeCurrentTurnReport: function (iTurnResult) {
 
-        let out = tr(DG.plugins.aranyani.seenFishReport, iTurnResult.visible);
+        let out = tr(DG.plugins.aranyani.seenForestryReport, iTurnResult.visible);
 
         if (iTurnResult.want === iTurnResult.caught) {
             out += tr(DG.plugins.aranyani.caughtAllReport, iTurnResult.caught);
@@ -249,7 +249,7 @@ const MFS = {
     },
 
     constructGameEndMessage: function () {
-        const theGame = fish.gameFromDB;
+        const theGame = forester.gameFromDB;
         let out = "";
 
         if (theGame) {
@@ -264,27 +264,27 @@ const MFS = {
                 tMessageParts.push(tMess);
             }
 
-            switch (theGame.fishStars) {
+            switch (theGame.treeStars) {
                 case 5:
-                    tMessageParts.push(DG.plugins.aranyani.end.fiveFishResult);
+                    tMessageParts.push(DG.plugins.aranyani.end.fiveTreesResult);
                     break;
                 case 4:
-                    tMessageParts.push(DG.plugins.aranyani.end.fourFishResult);
+                    tMessageParts.push(DG.plugins.aranyani.end.fourTreesResult);
                     break;
                 case 3:
-                    tMessageParts.push(DG.plugins.aranyani.end.threeFishResult);
+                    tMessageParts.push(DG.plugins.aranyani.end.threeTreesResult);
                     break;
                 case 2:
-                    tMessageParts.push(DG.plugins.aranyani.end.twoFishResult);
+                    tMessageParts.push(DG.plugins.aranyani.end.twoTreesResult);
                     break;
                 case 1:
-                    tMessageParts.push(DG.plugins.aranyani.end.oneFishResult);
+                    tMessageParts.push(DG.plugins.aranyani.end.oneTreesResult);
                     break;
                 case 0:
                     if (theGame.brokePlayers.length > 0) {
-                        tMessageParts.push(tr(DG.plugins.aranyani.end.bankruptFishResult, theGame.brokePlayers));
+                        tMessageParts.push(tr(DG.plugins.aranyani.end.bankruptForestryResult, theGame.brokePlayers));
                     } else {
-                        tMessageParts.push(DG.plugins.aranyani.end.zeroFishResult);
+                        tMessageParts.push(DG.plugins.aranyani.end.zeroTreesResult);
                     }
                     break;
                 default:

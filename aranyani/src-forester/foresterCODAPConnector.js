@@ -28,7 +28,7 @@ limitations under the License.
 
 /* global codapInterface, pluginHelper, DG */
 
-fish.CODAPConnector = {
+forester.CODAPConnector = {
 
     /**
      * Set up the connection to CODAP
@@ -50,15 +50,15 @@ fish.CODAPConnector = {
 
         await Promise.all([
             pluginHelper.initDataSet(this.getHistoricalDataSetupObject()),
-            pluginHelper.initDataSet(this.getFishDataSetupObject()),
+            pluginHelper.initDataSet(this.getForestryDataSetupObject()),
             codapInterface.sendRequest(tMutabilityMessage),
-            MFS.setFrameTitle(DG.plugins.aranyani.fishFrameTitle),
+            MFS.setFrameTitle(DG.plugins.aranyani.forestryFrameTitle),
         ]);
 
         //  restore the state if possible
-        fish.state = codapInterface.getInteractiveState();
-        if (jQuery.isEmptyObject(fish.state)) {
-            codapInterface.updateInteractiveState(fish.freshState);
+        forester.state = codapInterface.getInteractiveState();
+        if (jQuery.isEmptyObject(forester.state)) {
+            codapInterface.updateInteractiveState(forester.freshState);
             console.log("fish: getting a fresh state");
         }
     },
@@ -92,7 +92,7 @@ fish.CODAPConnector = {
      * @param iGameCode     string  the game code
      * @returns {Promise<void>}
      */
-    getAndEmitMyFishRecords : async function(iPlayerName, iGameCode) {
+    getAndEmitMyForestryRecords : async function(iPlayerName, iGameCode) {
 
         const allTurns = await fireConnect.getAllTurnsFromGame(iGameCode);
         let myTurns = [];
@@ -108,7 +108,7 @@ fish.CODAPConnector = {
         console.log(`found ${myTurns.length} old record(s) for ${iPlayerName} in game ${iGameCode}`);
 
         await this.deleteAllTurnRecords();
-        const theResult = await pluginHelper.createItems(myTurns, fish.constants.kFishDataSetName);
+        const theResult = await pluginHelper.createItems(myTurns, forester.constants.kForestryDataSetName);
         //  this.makeCaseTableAppear();
     },
 
@@ -120,7 +120,7 @@ fish.CODAPConnector = {
      * @param eTurn     the catch-fish model result in English
      * @returns {Promise<{year: number, seen: *, want: *, caught: (*|number), before: (number|*), expenses: number, player: (null|*), game: (*|null)}>}
      */
-    addSingleFishItemInCODAP: async function (eTurn) {
+    addSingleForestryItemInCODAP: async function (eTurn) {
 
         let aTurn = {};
         //      todo: make this into a function in MFS
@@ -130,16 +130,16 @@ fish.CODAPConnector = {
         aTurn[DG.plugins.aranyani.attributeNames.seen] = eTurn.seen;
         aTurn[DG.plugins.aranyani.attributeNames.want] = eTurn.want;
         aTurn[DG.plugins.aranyani.attributeNames.caught] = eTurn.caught;
-        aTurn[DG.plugins.aranyani.attributeNames.before] = fish.state.balance;
+        aTurn[DG.plugins.aranyani.attributeNames.before] = forester.state.balance;
         aTurn[DG.plugins.aranyani.attributeNames.expenses] = eTurn.expenses;
         aTurn[DG.plugins.aranyani.attributeNames.player] = eTurn.player;
-        aTurn[DG.plugins.aranyani.attributeNames.game] = fish.state.gameCode;
+        aTurn[DG.plugins.aranyani.attributeNames.game] = forester.state.gameCode;
 
-        //  const localizedTurn = fish.localize.localizeValuesObject(aTurn);
+        //  const localizedTurn = forester.localize.localizeValuesObject(aTurn);
 
-        console.log(`    fish ... addSingleFishItemInCODAP for ${eTurn.year} caught ${eTurn.caught}`);
+        console.log(`    fish ... addSingleForestryItemInCODAP for ${eTurn.year} caught ${eTurn.caught}`);
 
-        const theResult = await pluginHelper.createItems(aTurn, fish.constants.kFishDataSetName);
+        const theResult = await pluginHelper.createItems(aTurn, forester.constants.kForestryDataSetName);
         if (theResult.success) {
             eTurn.caseID = theResult.caseIDs[0];
             eTurn.itemID = theResult.itemIDs[0];
@@ -156,7 +156,7 @@ fish.CODAPConnector = {
     },
 
     /**
-     * Called from fish.fishUpdate() when we have a new turn
+     * Called from forester.fishUpdate() when we have a new turn
      *
      * The database has recorded the price for fish (etc) based on everyone's catch.
      * So here, we can fill in what we did not know at the time of fishing: unitPrice, income, and our "after" balance.
@@ -164,7 +164,7 @@ fish.CODAPConnector = {
      * @param eTurn     the data from db to be updated, in ENGLISH
      * @returns {Promise<void>}
      */
-    updateFishItemInCODAP: async function (eTurn) {
+    updateForestryItemInCODAP: async function (eTurn) {
         try {
             let tValues = {};
 
@@ -173,11 +173,11 @@ fish.CODAPConnector = {
             tValues[DG.plugins.aranyani.attributeNames.unitPrice] = eTurn.unitPrice;
             tValues[DG.plugins.aranyani.attributeNames.income] = eTurn.income;
             tValues[DG.plugins.aranyani.attributeNames.after] = eTurn.after;
-            console.log(`    ... updateFishItemInCODAP() ${eTurn.year}, after = ${eTurn.after}`);
+            console.log(`    ... updateForestryItemInCODAP() ${eTurn.year}, after = ${eTurn.after}`);
 
             //  use the item id of the relevant case:
 
-            let tResource = "dataContext[" + fish.constants.kFishDataSetName + "].itemByID[" + eTurn.itemID + "]";
+            let tResource = "dataContext[" + forester.constants.kForestryDataSetName + "].itemByID[" + eTurn.itemID + "]";
             let tMessage = {action: "update", resource: tResource};
             tMessage.values = tValues;
             const tUpdateResult = await codapInterface.sendRequest(tMessage);
@@ -195,18 +195,18 @@ fish.CODAPConnector = {
 
             return eTurn;       //      resolve to the most recent turn.
         } catch (msg) {
-            console.log("    error in updateFishItemInCODAP(): " + msg);
+            console.log("    error in updateForestryItemInCODAP(): " + msg);
         }
     },
 
-    createFishItems: async function (iValues) {
+    createForestryItems: async function (iValues) {
 
         iValues = pluginHelper.arrayify(iValues);
-        console.log("Fish ... createFishItems with " + iValues.length + " case(s)");
+        console.log("Forestry ... createForestryItems with " + iValues.length + " case(s)");
 
         try {
-            const res = await pluginHelper.createItems(iValues, fish.constants.kFishDataSetName);
-            console.log("Resolving createFishItems() with " + JSON.stringify(res));
+            const res = await pluginHelper.createItems(iValues, forester.constants.kForestryDataSetName);
+            console.log("Resolving createForestryItems() with " + JSON.stringify(res));
             return res;
         } catch (msg) {
             console.log("Problem creating items using iValues = " + JSON.stringify(iValues) + "\n" + msg);
@@ -214,18 +214,18 @@ fish.CODAPConnector = {
 
     },
 
-    createHistoricalFishItems: function (iValues) {
+    createHistoricalForestryItems: function (iValues) {
         iValues = pluginHelper.arrayify(iValues);
 
-        console.log("Fish ... createHistoricalFishItems with " + iValues.length + " case(s)");
-        pluginHelper.createItems(iValues, fish.constants.kHistoricalDataSetName)
+        console.log("Forestry ... createHistoricalForestryItems with " + iValues.length + " case(s)");
+        pluginHelper.createItems(iValues, forester.constants.kHistoricalDataSetName)
             .catch(() => console.log("Problem creating items using iValues = " + JSON.stringify(iValues)));
     },
 
     deleteAllHistoricalRecords: function () {
         return new Promise((resolve, reject) => {
             let tCallback = null;
-            let tResource = "dataContext[" + fish.constants.kHistoricalDataSetName + "].allCases";
+            let tResource = "dataContext[" + forester.constants.kHistoricalDataSetName + "].allCases";
             let tMessage = {"action": "delete", "resource": tResource};
             codapInterface.sendRequest(tMessage, tCallback)
                 .then((res) => resolve(res))
@@ -237,7 +237,7 @@ fish.CODAPConnector = {
     },
 
     deleteAllTurnRecords: async function () {
-        const tResource = "dataContext[" + fish.constants.kFishDataSetName + "].allCases";
+        const tResource = "dataContext[" + forester.constants.kForestryDataSetName + "].allCases";
 
         try {
             let res = await codapInterface.sendRequest({action: "delete", resource: tResource}, null);
@@ -253,8 +253,8 @@ fish.CODAPConnector = {
             resource: "component",
             values: {
                 type: 'caseTable',
-                dataContext: fish.constants.kFishDataSetName,
-                name: DG.plugins.aranyani.fishDataSetTitle,        //  why is this title and not name? Bug?
+                dataContext: forester.constants.kForestryDataSetName,
+                name: DG.plugins.aranyani.forestryDataSetTitle,        //  why is this title and not name? Bug?
                 cannotClose: true
             }
         };
@@ -268,8 +268,8 @@ fish.CODAPConnector = {
             resource: "component",
             values: {
                 type: 'caseTable',
-                dataContext: fish.constants.kHistoricalDataSetName,
-                name: DG.plugins.aranyani.fishHistoricalDataSetTitle,
+                dataContext: forestry.constants.kHistoricalDataSetName,
+                name: DG.plugins.aranyani.forestryHistoricalDataSetTitle,
                 cannotClose: true
             }
         };
@@ -277,7 +277,7 @@ fish.CODAPConnector = {
     },
 
     iFrameDescriptor: {
-        version: fish.constants.version,
+        version: forester.constants.version,
         name: 'fish',
         title: 'fishTitle',
         dimensions: {width: 388, height: 354},
@@ -285,16 +285,16 @@ fish.CODAPConnector = {
     },
 
     historicalDataContextSetupStrings: {},
-    fishDataContextSetupStrings: {},
+    forestryDataContextSetupStrings: {},
 
-    getFishDataSetupObject: function () {
+    getForestryDataSetupObject: function () {
         return {
-            name: fish.constants.kFishDataSetName,
-            title: DG.plugins.aranyani.fishDataSetTitle,
+            name: forester.constants.kForestryDataSetName,
+            title: DG.plugins.aranyani.forestryDataSetTitle,
             description: 'fishing data',
             collections: [
                 {
-                    name: fish.constants.kFishCollectionName,
+                    name: forester.constants.kForestryCollectionName,
                     labels: {
                         singleCase: "year",
                         pluralCase: "years",
@@ -356,12 +356,12 @@ fish.CODAPConnector = {
 
     getHistoricalDataSetupObject: function () {
         return {
-            name: fish.constants.kHistoricalDataSetName,
-            title: DG.plugins.aranyani.fishHistoricalDataSetTitle,
-            description: DG.plugins.aranyani.fishHistoricalDataSetDescription,
+            name: forester.constants.kHistoricalDataSetName,
+            title: DG.plugins.aranyani.forestryHistoricalDataSetTitle,
+            description: DG.plugins.aranyani.forestryHistoricalDataSetDescription,
             collections: [
                 {
-                    name: fish.constants.kHistoricalCollectionName,
+                    name: forester.constants.kHistoricalCollectionName,
                     labels: {
                         singleCase: "year",
                         pluralCase: "years",

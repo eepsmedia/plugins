@@ -49,7 +49,7 @@ const connect = {
         let localTurns = [];
 
         eValues.forEach((e) => {
-            //  v.pop = iGame.truePopulation;       //  inserted in model.sellFish()
+            //  v.pop = iGame.truePopulation;       //  inserted in model.sellWood()
             e.game = iGame.gameCode;
             e.level = iGame.configuration;
             const tLocalTurn = MFS.translateTurnToLocalLanguage(e);

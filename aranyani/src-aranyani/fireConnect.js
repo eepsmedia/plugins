@@ -78,7 +78,7 @@ const fireConnect = {
      * @returns {Promise<void>} an object with useful stuff
      */
     makeNewGame: async function (iGameType) {
-        const params = aranyani.fishGameParameters[iGameType];
+        const params = aranyani.forestryGameParameters[iGameType];
 
         params['startingYear'] = new Date().getFullYear();
         params['endingYear'] = params.startingYear + params.duration;
@@ -130,7 +130,7 @@ const fireConnect = {
             overhead : params.overhead,
             visibleProbability : params.visibleProbability,
 
-            fishStars : -1,
+            forestryStars : -1,
             brokePlayers : "",
             outOfTime : false,
 

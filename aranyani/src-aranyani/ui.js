@@ -34,7 +34,7 @@ const ui = {
         aranyaniNewGame.style.display = (!playing && aranyaniStart.newGame && aranyani.loginName.length) ? "flex" : "none";
 
         if (playing) {
-            aranyaniMarketDiv.innerHTML = await this.fishMarket();
+            aranyaniMarketDiv.innerHTML = await this.woodMarket();
             aranyaniPlayerListDiv.innerHTML = await this.playerList();
         } else {
             aranyaniStart.update();
@@ -93,7 +93,7 @@ const ui = {
                 tBalance = myTurn.before;
             } else {        //  from previous year
                 tWanted = "--";
-                tPlayerState = aranyani.constants.kFishingString;   //  haven't told us how many yet
+                tPlayerState = aranyani.constants.kWoodCuttingString;   //  haven't told us how many yet
                 tBalance = myTurn.after;
             }
 
@@ -163,15 +163,15 @@ const ui = {
         return `<div>${wholeThing}</div>`;
     },
 
-    fishMarket: async function () {
+    woodMarket: async function () {
 
         const tAutoSellBox = this.autoSellBox();
-        let guts = `<h3 class="ui-stripe-element">${DG.plugins.aranyani.admin.fishMarket}</h3>`
+        let guts = `<h3 class="ui-stripe-element">${DG.plugins.aranyani.admin.woodMarket}</h3>`
 
         if (aranyani.model.theSituation.OK) {
             guts += `
-                    <button id="sellFishButton"  class="ui-stripe-element"
-                    onClick="aranyani.model.sellFish()">${DG.plugins.aranyani.buttons.sellFishButton}</button>
+                    <button id="sellWoodButton"  class="ui-stripe-element"
+                    onClick="aranyani.model.sellWood()">${DG.plugins.aranyani.buttons.sellWoodButton}</button>
                     ${tAutoSellBox}
                 `;
         } else {
@@ -219,7 +219,7 @@ const ui = {
         const theGame = aranyani.model.theGame;
 
         return `
-        Game over! Players got ${theGame.fishStars}/5 fish!
+        Game over! Players got ${theGame.forestryStars}/5 fish!
         `
     },
 }

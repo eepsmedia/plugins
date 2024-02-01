@@ -37,7 +37,7 @@ class Model extends Object {
             gameCode: "",
             gameType: aranyani.constants.kInitialGameTypeName,
             gameState: aranyani.constants.kWaitingString,
-            fishStars : -1,
+            forestryStars : -1,
             brokePlayers : "",
             outOfTime : false,
             reason: "",
@@ -48,7 +48,7 @@ class Model extends Object {
         this.thePlayers = [];
         this.allTurns = [];
         //       this.theTurns = [];
-        //  this.gameParameters = aranyani.fishGameParameters[this.theGame.gameType];
+        //  this.gameParameters = aranyani.forestryGameParameters[this.theGame.gameType];
         this.aranyani = iaranyani;
         this.calculatePrice = null;   //      (function)
         // fireConnect.initialize(this);
@@ -83,7 +83,7 @@ class Model extends Object {
             aranyani.state.autoSell &&
             this.thePlayers.length > 0 &&
             this.theGame.gameState === aranyani.constants.kInProgressString) {
-            await this.sellFish();
+            await this.sellWood();
             console.log(`*** auto sold *** now it's ${this.theGame.year}`);
         }
 
@@ -113,7 +113,7 @@ class Model extends Object {
 
         //  now, because the `calculatePrice()` function is not stored on the DB...
         if (this.theGame) {
-            this.gameParameters = aranyani.fishGameParameters[this.theGame.configuration];
+            this.gameParameters = aranyani.forestryGameParameters[this.theGame.configuration];
         }
 
         this.gotNewData('theGame');
@@ -125,7 +125,7 @@ class Model extends Object {
      *
      * @returns {Promise<void>}
      */
-    async sellFish() {
+    async sellWood() {
         console.log(`${this.theGame.year}: Selling fish`);
 
         const tN0 = Number(this.theGame['population']);
@@ -134,7 +134,7 @@ class Model extends Object {
         const playingPlayers = this.playingPlayers();
         const nPlayers = playingPlayers.length;         //  was this.thePlayers.length
 
-        let tTotalCaughtFish = thisYearsTurns.reduce(function (a, v) {
+        let tTotalFelledTrees = thisYearsTurns.reduce(function (a, v) {
             return {caught: a.caught + Number(v.caught)}
         }, {caught: 0});     //  count up how many fish got caught...
 
@@ -145,14 +145,14 @@ class Model extends Object {
         const tBirths = this.births();
         let newPopulation = Math.round(tN0 +
             tBirths -
-            (nPlayers > 0 ? (tTotalCaughtFish.caught / nPlayers) : 0));
+            (nPlayers > 0 ? (tTotalCaughtforester.caught / nPlayers) : 0));
         if (newPopulation < this.theGame.losingPopulation) {
             newPopulation = 0;
         }
         this.theGame["population"] = newPopulation;
 
-        const tUnitPrice = nPlayers ? this.gameParameters.calculatePrice(tTotalCaughtFish.caught / nPlayers) : 0;
-        console.log(`${this.theGame["year"]}: pop: ${tN0} to ${newPopulation} caught: ${tTotalCaughtFish.caught} Unit price: ${tUnitPrice}`);
+        const tUnitPrice = nPlayers ? this.gameParameters.calculatePrice(tTotalCaughtforester.caught / nPlayers) : 0;
+        console.log(`${this.theGame["year"]}: pop: ${tN0} to ${newPopulation} caught: ${tTotalCaughtforester.caught} Unit price: ${tUnitPrice}`);
 
         //  update the local copy of the turns
         //  adding unitPrice, income, and after fields
@@ -181,7 +181,7 @@ class Model extends Object {
                 //  note: the PLAYER has ".balance" rather then .before or .after.
                 const playerStuff = {
                     balance: t.after,
-                    playerState: aranyani.constants.kFishingString,
+                    playerState: aranyani.constants.kWoodCuttingString,
                 };
                 thePromises.push(fireConnect.updatePlayerToDB(t.playerName, playerStuff));
             }
@@ -194,7 +194,7 @@ class Model extends Object {
         const endCheck = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
         if (endCheck.end) {
             this.theGame.outOfTime = endCheck.time;
-            this.theGame.fishStars = endCheck.fishStars;
+            this.theGame.forestryStars = endCheck.forestryStars;
             this.theGame.brokePlayers = endCheck.broke.join(", ");
             this.theGame.gameState = aranyani.constants.kEndedString;
 
@@ -273,7 +273,7 @@ class Model extends Object {
             broke: [],      //  who went broke?
             time: false,   //  set true if time is up
             params: this.gameParameters,
-            fishStars : -1,  //  if ending, 0 to 5, how good was your game?
+            forestryStars : -1,  //  if ending, 0 to 5, how good was your game?
             text : "",
         };
 
@@ -281,28 +281,28 @@ class Model extends Object {
             tReasonObject.end = true;
             tReasonObject.time = true;
             if (this.theGame.population > this.theGame.winningPopulation) {
-                tReasonObject.fishStars = 5;
+                tReasonObject.forestryStars = 5;
             } else if (this.theGame.population >
                 this.theGame.openingPopulation + (this.theGame.winningPopulation - this.theGame.openingPopulation) / 2){
-                tReasonObject.fishStars = 4
+                tReasonObject.forestryStars = 4
             } else if (this.theGame.population >
                 this.theGame.openingPopulation){
-                tReasonObject.fishStars = 3
+                tReasonObject.forestryStars = 3
             } else if (this.theGame.population >
                 this.theGame.openingPopulation - (this.theGame.openingPopulation - this.theGame.losingPopulation) / 2){
-                tReasonObject.fishStars = 2
+                tReasonObject.forestryStars = 2
             } else if (this.theGame.population >
                 this.theGame.losingPopulation){
-                tReasonObject.fishStars = 1
+                tReasonObject.forestryStars = 1
             } else {
-                tReasonObject.fishStars = 0
+                tReasonObject.forestryStars = 0
             }
         }
 
         //  check all turns to see if anyone went negative
         theTurns.forEach((aTurn) => {
             if (aTurn.after < 0) {
-                tReasonObject.fishStars = 0;
+                tReasonObject.forestryStars = 0;
                 tReasonObject.end = true;
                 tReasonObject.broke.push(aTurn.playerName);
             }
@@ -310,11 +310,11 @@ class Model extends Object {
 
         if (this.theGame.population < this.theGame.losingPopulation) {
             tReasonObject.end = true;
-            tReasonObject.fishStars = 0;
+            tReasonObject.forestryStars = 0;
         }
 
         if (this.theGame.population >= this.theGame.winningPopulation) {
-            tReasonObject.fishStars = 5;
+            tReasonObject.forestryStars = 5;
             tReasonObject.end = true;
         }
 

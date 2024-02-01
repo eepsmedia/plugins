@@ -37,7 +37,7 @@ const aranyaniStart = {
     initialize: async function () {
         this.newGame = false;
 
-        const typesMenuGuts = Object.keys(aranyani.fishGameParameters).map(
+        const typesMenuGuts = Object.keys(aranyani.forestyGameParameters).map(
             (key) =>
                 `<option key=${key} value=${key}>${key}</option>`
         );

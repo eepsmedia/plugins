@@ -5,7 +5,7 @@
  
  
  ==========================================================================
-fish in fish
+forester in forester
 
 Author:   Tim Erickson
 
@@ -39,7 +39,7 @@ body {
     /* max-width: 400px; */
 }
 
-.fish-ui-stripe {
+.forester-ui-stripe {
     padding-left: 1em;
     padding-right: 1em;
     padding-top : 6px;
@@ -50,13 +50,13 @@ body {
     flex-direction: row;
 }
 
-.fish-stripe-element {
+.forester-stripe-element {
     margin-right: 1em;
     font-size: 14px;
     display : block;
 }
 
-#fish {
+#forester {
     padding : 0;
     margin : 0;
 }
@@ -69,7 +69,7 @@ body {
     font-family: 'Rokkitt',sans-serif; font-size: 14px;
 }
 
-#howManyFish {
+#howManyTrees {
     width: 4em;
 }
 
@@ -104,7 +104,7 @@ div#statusText{
     top: 50%; transform: translate(0, -50%); /* center vert, do nothing horiz */
 }
 
-div#fishingDIV {
+div#forestryDIV {
     background-color: #cde;
 }
 
@@ -113,7 +113,7 @@ div#showSeaDIV {
     position : relative;
 }
 
-div#catchFishDIV {
+div#cutTreesDIV {
     display: flex;
     background-color: #cde;
 }

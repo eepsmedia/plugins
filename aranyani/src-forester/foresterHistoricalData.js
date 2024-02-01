@@ -27,7 +27,7 @@ limitations under the License.
 */
 
 
-fish.historicalData = {
+forester.historicalData = {
 
     getHistoricalData: async function () {
 
@@ -36,8 +36,8 @@ fish.historicalData = {
         let turns = [];     //  we will collect all turns....
         let promises = [];
 
-        await fish.CODAPConnector.deleteAllHistoricalRecords();
-        fish.state.gameCodeList.forEach((gc) => {
+        await forester.CODAPConnector.deleteAllHistoricalRecords();
+        forester.state.gameCodeList.forEach((gc) => {
             console.log("getHistoricalData for " + gc);
             promises.push(fireConnect.getHistoricalRecord(gc));  //  make one promise for each game we've been in
         });
@@ -49,7 +49,7 @@ fish.historicalData = {
                 (gameR) => {            //  but each game is an array of turns
                     gameR.forEach(
                         (turnR) => {
-                            turnR.result = this.makeResultFromFishStars(turnR.result);  //  convert number to fish
+                            turnR.result = this.makeResultFromTreeStars(turnR.result);  //  convert number to fish
                             const tLocalTurn = MFS.translateTurnToLocalLanguage(turnR);
                             turns.push(tLocalTurn);
                         }
@@ -61,13 +61,13 @@ fish.historicalData = {
             console.warn("No turn records to add to historical records!");
             throw("No turn records to add to historical records!");
         }
-        await fish.CODAPConnector.createHistoricalFishItems(turns);
-        fish.CODAPConnector.makeHistoricalTableAppear();
+        await forester.CODAPConnector.createHistoricalForestryItems(turns);
+        forester.CODAPConnector.makeHistoricalTableAppear();
 
         console.log("getHistoricalData() -- Historical fish items created.");
     },
 
-    makeResultFromFishStars(iStars) {
+    makeResultFromTreeStars(iStars) {
         let theText = "???";
         switch (iStars) {
             case 5:

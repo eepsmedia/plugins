@@ -29,10 +29,10 @@ limitations under the License.
 
 const firebaseConfig = {
     apiKey: "AIzaSyAMkheBMSdVmMyUi76UGyeMX3pJpBGS0Hw",
-    authDomain: "eeps-fish-commons.firebaseapp.com",
-    databaseURL: "https://eeps-fish-commons.firebaseio.com",
-    projectId: "eeps-fish-commons",
-    storageBucket: "eeps-fish-commons.appspot.com",
+    authDomain: "eeps-forestry-commons.firebaseapp.com",
+    databaseURL: "https://eeps-forestry-commons.firebaseio.com",
+    projectId: "eeps-forestry-commons",
+    storageBucket: "eeps-forestry-commons.appspot.com",
     messagingSenderId: "945924475632",
     appId: "1:945924475632:web:8a0f6f26d292f317511035",
     measurementId: "G-36DF6XG8Q7"

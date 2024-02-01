@@ -18,15 +18,15 @@ Enter that code, press **Join**, then enter your name in the box that follows.
 For now, it's essential that no one else uses the same name in that particular game...so be sure that's organized in your game or class!
 
 ### Regular game play
-Then you'll see a display that tells you the year (such as 2022, in a yellow box) and asks how many fish you want to catch.
+Then you'll see a display that tells you the year (such as 2022, in a yellow box) and asks how many trees you want to catch.
 Type a number and click **Catch**. 
 You may see some data in a CODAP table while you wait for two things:
-* Everyone else to decide how many fish they want and press **Catch**.
-* Then, the teacher has to end the turn by running the fish market.
+* Everyone else to decide how many trees they want and press **Catch**.
+* Then, the teacher has to end the turn by running the wood market.
 
-At that point, all the fish are sold, you receive your money, and the year changes to the next year.
+At that point, all the trees are sold, you receive your money, and the year changes to the next year.
 
-Then you decide, again, how many fish to catch, and the cycle continues until the game is over.
+Then you decide, again, how many trees to catch, and the cycle continues until the game is over.
 
 ### Ending the game, etc.
 When does the game end? 
@@ -40,7 +40,7 @@ You will probably need to play more than one game to understand how to play well
 You might also want to analyze some of the data that appear on the screen.
 To do that, use CODAP.
 
-For example, you might see how **seen** (the number of fish you see during the year) varies with **year**.
+For example, you might see how **seen** (the number of trees you see during the year) varies with **year**.
 1. Make a graph by pressing the **Graph** button on the toolbar.
 2. Drag the column heading **year** to the graph's horizontal axis.
 3. Drag **seen** to the vertical axis.
@@ -53,7 +53,7 @@ Consider making more graphs, for example, a graph of **before** with **year**.
 | term | definition |
 | ---- | ---------- |
 | **year** | the game year |
-|**seen** | how many fish you saw from your boat |
+|**seen** | how many trees you saw from your boat |
 |**want** | how many fish you said you wanted to catch |
 |**caught** | how many you caught |
 |**before** | how much money you had at the beginning of the year |
