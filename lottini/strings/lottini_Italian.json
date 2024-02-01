@@ -1,0 +1,43 @@
+{
+    "lotti": {
+        "language": "Italiano",
+        "flags": "🇮🇹",
+        "frameTitle": "Giochiamo una sorte di lotteria",
+        "left": "sinistra",
+        "right": "destra",
+        "staticStrings": {
+            "scenarioMenuLabel": "quale scenario? ",
+            "emittingCheckboxLabel": "vuoi emettere i dati in CODAP? ",
+            "showResultsCheckboxLabel": "vuoi vedere i risultati sulla pagina principale? ",
+            "showAllScenariosCheckboxLabel": "vuoi vedere tutti gli scenarii? "
+        },
+        "attributeNames": {
+            "scenario": "scenario",
+            "result": "risultato",
+            "choice": "scelta",
+            "units": "unitá"
+        },
+        "attributeDescriptions": {
+            "scenario": "lo scenario sul quale stai giocando",
+            "result": "risultato dopo ogni turno del gioco",
+            "choice": "la scelta che hai fatto in quel turno",
+            "units": "le unitá (di misura) del risultato"
+        },
+        "scenarioStrings": {
+            "orsi_AB": {
+                "label": "orsi AB",
+                "dsTitle": "i dati sulla orsi",
+                "dsDescription": "un resoconto dell'esperienza in questo gioco",
+                "collTitle": "risultati",
+                "resultUnitSingular": " orso",
+                "resultUnitPlural": " orsi",
+                "turnUnitSingular": " giorno",
+                "turnUnitPlural": " giorni",
+                "story": "Scegli una scatola con orsetti gommosi",
+                "leftLabel": "A",
+                "rightLabel": "B"
+            }
+
+        }
+    }
+}

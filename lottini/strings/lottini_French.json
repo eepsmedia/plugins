@@ -1,0 +1,42 @@
+{
+    "lotti": {
+        "language": "Français",
+        "flags": "🇫🇷",
+        "frameTitle": "L'exploration des loteries",
+        "left": "gauche",
+        "right": "droite",
+        "staticStrings": {
+            "scenarioMenuLabel": "quel scénario?",
+            "emittingCheckboxLabel": "émettre des données dans CODAP? ",
+            "showResultsCheckboxLabel": "montrer les résultats sur la page principale ?␣",
+            "showAllScenariosCheckboxLabel": "montrer tous les scénarios ?␣"
+        },
+        "attributeNames": {
+            "scenario": "scénario",
+            "result": "résultat",
+            "choice": "choix",
+            "units": "unités"
+        },
+        "attributeDescriptions": {
+            "scenario": "",
+            "result": "",
+            "choice": "",
+            "units": ""
+        },
+        "scenarioStrings": {
+            "oursons_AB": {
+                "label": "oursons gélifiés A/B",
+                "dsTitle": "données de l'allocation",
+                "dsDescription": "une trace de votre expérience dans ce jeu",
+                "collTitle": "résultats",
+                "resultUnitSingular": " ourson",
+                "resultUnitPlural": " oursons",
+                "turnUnitSingular": " jour",
+                "turnUnitPlural": " jours",
+                "story": "Choisir une boîte d'oursons gélifiés",
+                "leftLabel": "A",
+                "rightLabel": "B"
+            }
+        }
+    }
+}

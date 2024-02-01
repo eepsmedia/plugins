@@ -1,0 +1,42 @@
+{
+    "lotti": {
+        "language": "Deutsch",
+        "flags": "🇩🇪,🇦🇹,🇨🇭",
+        "frameTitle": "Lotterieforscher",
+        "left": "links",
+        "right": "rechts",
+        "staticStrings": {
+            "scenarioMenuLabel": "Welches Szenario?",
+            "emittingCheckboxLabel": "Ergebnisse in Codap angeben?",
+            "showResultsCheckboxLabel": "Ergebnisse auf Hauptseite zeigen?",
+            "showAllScenariosCheckboxLabel": "Alle Szenarien zeigen?"
+        },
+        "attributeNames": {
+            "scenario": "Szenario",
+            "result": "Ergebnis",
+            "choice": "Wahl",
+            "units": "Einheiten"
+        },
+        "attributeDescriptions": {
+            "scenario": "Das Szenario auf dem Du spielst",
+            "result": "Ergebnis nach einer Runde",
+            "choice": "Die Wahl die Du bei jenem Zeitpunkt getroffen hast",
+            "units": "die Einheiten des Ergebnisses"
+        },
+        "scenarioStrings": {
+            "Gummibärchen_AB": {
+                "label": "Gummibärchen AB",
+                "dsTitle": "Angaben zum Gummibärchen",
+                "dsDescription": "Ein Protokoll Deiner Erfahrung bei diesem Spiel",
+                "collTitle": "Ergebnisse",
+                "resultUnitSingular": " Gummibärchen",
+                "resultUnitPlural": " Gummibärchen",
+                "turnUnitSingular": " Tag",
+                "turnUnitPlural": " Tagen",
+                "story": "Wähle eine Schachtel mit Gummibärchen",
+                "leftLabel": "A",
+                "rightLabel": "B"
+            }
+        }
+    }
+}

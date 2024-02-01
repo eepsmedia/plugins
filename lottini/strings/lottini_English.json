@@ -1,0 +1,47 @@
+{
+    "lottini" : {
+        "language" : "English",
+        "flags": "🇬🇧,🇺🇸",
+        "frameTitle" : "Lottery Explorer",
+        "left" : "left",
+        "right" : "right",
+
+        "staticStrings" : {
+            "scenarioMenuLabel"    : "which scenario? ",
+            "emittingCheckboxLabel"   : "emit data into CODAP? ",
+            "showResultsCheckboxLabel"   : "show results on main page? ",
+            "showAllScenariosCheckboxLabel"   : "show all scenarios? "
+
+        },
+
+        "attributeNames" : {
+            "scenario" : "scenario",
+            "result" : "result",
+            "choice" : "choice",
+            "units" : "units"
+        },
+        "attributeDescriptions" : {
+            "scenario" : "the scenario you are playing",
+            "result" : "the result from one round of the game",
+            "choice" : "the choice you made that turn",
+            "units" : "the units of the result"
+        },
+
+        "scenarioStrings" : {
+            "bears_AB" : {
+                "label"         : "bears AB",
+                "dsTitle"       : "bear data",
+                "dsDescription" : "a record of your experience in this game",
+                "collTitle"     : "results",
+                "resultUnitSingular"    : " bear",
+                "resultUnitPlural"      : " bears",
+                "turnUnitSingular"      : " day",
+                "turnUnitPlural"        : " days",
+                "story"     : "Choose a box with gummy bears",
+                "leftLabel" : "A",
+                "rightLabel" : "B"
+            }
+
+        }
+    }
+}

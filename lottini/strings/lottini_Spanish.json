@@ -1,0 +1,43 @@
+{
+    "lotti": {
+        "language": "Español",
+        "flags": "🇲🇽,🇪🇸,🇨🇷,🇨🇱",
+        "frameTitle": "explorando loterías",
+        "left": "izquierdo",
+        "right": "derecho",
+        "staticStrings": {
+            "scenarioMenuLabel": "¿cuál escenario? ",
+            "emittingCheckboxLabel": "¿emitir datos en CODAP? \n",
+            "showResultsCheckboxLabel": "¿mostrar los resultados en la página principal? ",
+            "showAllScenariosCheckboxLabel": "¿mostrar todos escenarios? "
+        },
+        "attributeNames": {
+            "scenario": "escenario",
+            "result": "resultado",
+            "choice": "elección",
+            "units": "unidades"
+        },
+        "attributeDescriptions": {
+            "scenario": "el escenario en el que juegas",
+            "result": "el resultado de un turno del juego",
+            "choice": "la decisión que tomaste",
+            "units": "las unidades del resultado"
+        },
+        "scenarioStrings": {
+            "ositos_AB": {
+                "label": "ositos AB",
+                "dsTitle": "datos sobre ositos",
+                "dsDescription": "un registro de lo sucedido en el juego",
+                "collTitle": "resultados",
+                "resultUnitSingular": " osito",
+                "resultUnitPlural": " ositos",
+                "turnUnitSingular": " día",
+                "turnUnitPlural": " días",
+                "story": "Escoje una caja con ositos de gominola",
+                "leftLabel": "A",
+                "rightLabel": "B"
+            }
+
+        }
+    }
+}
