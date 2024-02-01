@@ -1,0 +1,106 @@
+<!--
+
+    aranyani index.html
+    Tim Erickson
+
+
+    http://localhost/plugins/aranyani/aranyani
+
+    or, local CODAP, ...
+
+    http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/aranyani/aranyani.html
+
+    aranyani2 edition on xyz:
+
+    https://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=https://codap.xyz/plugins/aranyani2/aranyani
+
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aranyani - Goddess of the Forests</title>
+
+    <!--    CODAP setup-->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+
+    <!--firebase setup-->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+
+    <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+
+
+    <link rel='stylesheet' type='text/css' href='css/aranyani.css'/>
+
+    <script src="src-aranyani/aranyani.js?000"></script>
+    <script src="src-aranyani/ui.js?000"></script>
+    <script src="src-aranyani/Model.js?000"></script>
+    <script src="src-aranyani/aranyaniStart.js?000"></script>
+    <script src="src-aranyani/constants.js?000"></script>
+    <script src="src-aranyani/fireConnect.js?000"></script>
+    <script src="src-aranyani/startFirestore.js?000"></script>
+    <script src="src-aranyani/words.js?000"></script>
+
+    <script src="src-aranyani/connect.js?000"></script>
+
+    <script src="strings/MFS.js?000"></script>
+    <script src="strings/strings.en.js?003"></script>
+    <script src="strings/strings.es.js?003"></script>
+    <script src="strings/strings.de.js?003"></script>
+    <script src="strings/strings.fr.js?001"></script>
+    <script src="strings/localizePlugin.js?000"></script>
+    <script src="strings/tr.js?000"></script>
+    <!--    <script src="strings/strings.en.deprecate.js?000"></script>-->
+
+</head>
+
+
+<body onload="aranyani.initialize()">
+
+<div id="aranyani">
+    <div id="titleBar" class="ui-stripe">
+        <h1 class="ui-stripe-element">aranyani</h1>
+        <img id="refreshButton" alt="refresh" onclick="ui.update()"
+             src="art/refresh.png" class="ui-stripe-element"/>
+        <p class="ui-stripe-element" id="tagline">goddess of the sea</p>
+        <button class="ui-stripe-element" id="logoutButton" onclick="aranyani.initialize()">LOG OUT</button>
+    </div>
+
+    <div id="aranyaniLoginDiv" class="ui-stripe">
+        <input id="loginName" type="text" class="ui-stripe-element">
+        <button id="loginButton" class="ui-stripe-element" onclick="aranyani.handleLogin()">LOGIN</button>
+    </div>
+
+    <div id="aranyaniHeader" class="ui-stripe"></div>
+
+    <!--    div to hold the startup UI for making a new game (or joining an old one)-->
+
+    <div id="aranyaniStartDiv" class="ui-stripe">
+        <div id="newOrOldRadioButtons" class="ui-stripe-element"></div>
+    </div>
+    <div id="aranyaniNewGame" class="ui-stripe">
+        <select id="gameTypesMenu" onchange="aranyaniStart.update()" class="ui-stripe-element"></select>
+        &emsp;
+        <div id="startGameButton" class="ui-stripe-element"></div>
+    </div>
+    <div id="aranyaniOldGames" class="ui-stripe">
+        <div id="gameSelectTable"></div>
+    </div>
+    <div id="aranyaniMarketDiv" class="ui-stripe"></div>
+    <div id="aranyaniPlayerListDiv" class="ui-stripe"></div>
+
+    <div id="gameOverDiv" class="ui-stripe"></div>
+
+</div>
+
+</body>
+</html>

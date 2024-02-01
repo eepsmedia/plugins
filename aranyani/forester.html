@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<!--
+==========================================================================
+
+ * Created by tim on 4/19/18.
+ 
+ 
+ ==========================================================================
+fish in fish
+
+    Author:   Tim Erickson
+
+Copyright (c) 2018 by The Concord Consortium, Inc. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+LOCAL, TESTING:         http://localhost/plugins/fish/?lang=en
+
+On eeps: https://www.eeps.com/codap/fish/fish.html
+
+On greenGeeks:  https://codap.xyz/plugins/fish/fish.html
+
+local plugin only:
+    localhost:8888/plugins/fish/
+
+local in local CODAP
+    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/aranyani/fish.html
+    http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/aranyani/fish.html?lang=fr
+
+
+MySQL general log setup, run this in MYSQL
+set global general_log = 'on';
+set global general_log_file = '/Users/tim/Desktop/f.log';
+SHOW VARIABLES LIKE "general_log%";
+
+
+todo let regular players know who still has to fish
+
+todo: improve end of game messages
+todo: add level with more chance to not see enough
+
+todo: fix bug: at end of game, historical records don't include the very last one. Perhaps only if auto.
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fish</title>
+
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300, 700' rel='stylesheet'>
+
+    <link rel='stylesheet' type='text/css' href='css/forester.css'/>
+
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/TEEUtils.js"></script>
+    <script src="../common/jqueryFolder/jquery.min.js"></script>
+    <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
+
+    <script src="src-fish/fish.js?001"></script>
+
+<!--
+    <script src="src-fish/fishGameConfigurations.js?001"></script>
+-->
+    <script src="strings/fishStrings.js?001a"></script>
+    <script src="strings/MFS.js?000"></script>
+    <script src="strings/strings.en.js?001"></script>
+    <script src="strings/strings.es.js?001"></script>
+    <script src="strings/strings.de.js?003"></script>
+    <script src="strings/strings.fr.js?001"></script>
+
+    <script src="strings/localizePlugin.js?000"></script>
+    <script src="strings/tr.js?000"></script>
+
+
+    <script src="src-fish/fireConnect.js?001"></script>
+    <script src="src-fish/fishCODAPConnector.js?001"></script>
+    <script src="src-fish/fishUI.js?001"></script>
+    <script src="src-fish/fishUserActions.js?001"></script>
+
+    <script src="src-fish/fishHistoricalData.js"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
+    <!--    <script src="https://www.gstatic.com/firebasejs/7.9.0/firebase-analytics.js">-->
+
+</head>
+
+<body onload="fish.initialize()">
+
+
+<div id="fish">
+
+    <!--      status bar at top of plugin    -->
+
+    <div id="statusDIV" class="fish-ui-stripe">
+        <div id="statusText">
+            $<span class="info" id="statusBalance" title="your current balance"></span> |
+            <span class="info" id="statusPlayer" title="your name"></span> |
+            <span class="info" id="statusGame" title="this game's code"></span>
+        </div>
+
+        <div id="clock">
+            <div class="info" id="statusYear" title="the game year">
+
+            </div>
+        </div>
+    </div>
+
+    <!--     we need the player's name?      -->
+
+    <div id="needPlayerNameDIV" class="fish-ui-stripe">
+        <label class="noNameYet fish-stripe-element" id="playerNameLabelText" for="playerName">xxx NAME xxx?</label>
+        <input class="noNameYet fish-stripe-element" type="text" id="playerName">
+        <button id="setNameButton" class="fish-stripe-element"
+                onclick="fish.userActions.pressNameButton('need')"
+                value="setName">xxx SET NAME xxx
+        </button>
+    </div>
+
+    <!--      player enters a code and clicks Join        -->
+
+    <div id="joinGameDIV" class="fish-ui-stripe">
+
+        <label id="gameCodeTextFieldLabelText" for="gameCodeTextField" class="fish-stripe-element">xxx GAME CODE xxx</label>
+        <input type="text" id="gameCodeTextField" class="fish-stripe-element"
+               onchange="fish.ui.gameCodeTextFieldChange()">
+        <button id="joinGameButton" class="fish-stripe-element" onclick="fish.userActions.clickJoinButton()"
+                value="start new game">
+            xxx JOIN xxx
+        </button>
+        <br>
+    </div>
+
+    <!--         In game!     -->
+
+    <!--        user tells how many fish to catch       -->
+    <div id="catchFishDIV" class="fish-ui-stripe">
+        <label id="fishQuantityLabelText" class="fish-stripe-element"
+               for="howManyFish">xxx HOW MANY xxx</label>
+        <input type="number" id="howManyFish" class="fish-stripe-element">
+        <button id="catchButton" class="fish-stripe-element" onclick="fish.userActions.catchFish()"> xxx CATCH xxx
+        </button>
+
+        <label id="automateCatchLabel" for="automateCatchCheckbox"
+               class="fish-stripe-element"> xxx AUTOMATE xxx</label>
+        <input type="checkbox" id="automateCatchCheckbox" class="fish-stripe-element"
+               onchange="fish.userActions.changeAutomation()">
+    </div>
+
+    <div id="fishingDIV" style="display: none">
+        <!--        visible fish            -->
+        <div id="showSeaDIV" class="fish-ui-stripe" height="66"></div>
+        <div id="turnReport" class="fish-ui-stripe"></div>
+    </div>
+
+    <div id="sellingDIV" style="display: none">
+        <div id="showMarketDIV" class="fish-ui-stripe" height="66"></div>
+        <div id="waitingToSellDIV" class="fish-ui-stripe"></div>
+    </div>
+
+    <div id="gameEndDIV" class="fish-ui-stripe">
+        <div>
+            <span id="gameEndText">Content you want the user to see at end of game goes here.</span> <br><br>
+            <button id="startNewGameButton" onclick="fish.startWaitingForNewGame()">OK, join a new game</button>
+        </div>
+    </div>
+
+
+<!--
+    <div id="noticeDIV" class="fish-ui-stripe">
+        <div id="notice"></div>
+    </div>
+-->
+
+    <div id="aboutPlayersDIV" class="fish-ui-stripe">
+        <div id="aboutPlayersText"></div>
+    </div>
+
+    <div id="debug" class="fish-ui-stripe">
+        <span id="debugSpan"></span>
+        <p><a href="https://www.flaticon.com/free-icons/fish" title="fish icons" target="_blank"> Fish icons created by Those Icons -
+            Flaticon</a>"</p>
+    </div>
+</div>
+
+</body>
+</html>

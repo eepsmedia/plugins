@@ -1,0 +1,25 @@
+{
+  "aranyani": {
+    "fishName": "forester",
+    "aranyaniName": "aranyani",
+    "language": "English",
+    "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
+    "staticStrings": {
+    },
+    "attributeNames": {
+    },
+    "attributeDescriptions": {
+    },
+	 "end": {
+      "timeRanOut": "The game ends in year %@1. <br>",
+      "endedEarly": "The game ended early in %@1. <br>",
+      "fiveFishResult": "🐟🐟🐟🐟🐟 Well done! Five fish out of five! <br>The total fish population is healthy --- and so large that you can catch a lot of fish without reducing the fish population. Fishing is now a sustainable source of food.",
+      "fourFishResult": "🐟🐟🐟🐟 Your rating is four fish (out of five). <br>The total number of fish has increased a lot! You can now catch more fish without reducing the population. Can you make it to five stars?",
+      "threeFishResult": "🐟🐟🐟 Your rating is three fish (out of five). <br>The total number of fish has increased! Your fishing business is doing well, but it could be better.",
+      "twoFishResult": "🐟🐟 Your rating is two fish (out of five). <br>The total number of fish has gone down. Your fishing business survived, but the fish population is not healthy.",
+      "oneFishResult": "🐟 Your rating is only one fish (out of five). <br>The total number of fish is very low. You might not be able to keep fishing for much longer.",
+      "zeroFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>The fish will all soon be gone, and the fishing industry has collapsed.",
+      "bankruptFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>You have lost the game because these players have gone bankrupt: %@1."
+    }
+  }
+}
