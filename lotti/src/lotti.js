@@ -30,15 +30,8 @@ const lotti = {
         lotti.results[tChoiceText].sum += tPlainResult;
         lotti.results[tChoiceText].turns += 1;
 
-/*
-        console.log(`${tChoiceText} now has ${lotti.results[tChoiceText].turns} turns,
-                total ${lotti.results[tChoiceText].sum}`);
-*/
-
         //      set the text "behind the door"
         ui.displayResultBehindTheDoor(theResult, tPlainResult, tUnitString);
-        //  theResult.text(tResultWithUnits);     //  set the text within the "result" element
-        //  console.log(`result is ${tResultWithUnits}`);
 
         const theEnglishValues = {
             scenario : lotti.scenarioStrings.label,
