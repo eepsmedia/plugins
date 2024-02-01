@@ -24,7 +24,7 @@
             "units": "las unidades del resultado"
         },
         "scenarioStrings": {
-            "ositos_AB": {
+            "bears_AB": {
                 "label": "ositos AB",
                 "dsTitle": "datos sobre ositos",
                 "dsDescription": "un registro de lo sucedido en el juego",

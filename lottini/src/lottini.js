@@ -53,7 +53,7 @@ const lottini = {
         this.state.scenarioName = iScenarioName;
 
         lottini.scenario = lottini.allScenarios[this.state.scenarioName];
-        this.scenarioStrings = localize.defaultStrings.lottini.scenarioStrings[this.state.scenarioName];    //   DG.plugins.lotti.scenarioStrings[this.state.scenarioName];
+        this.scenarioStrings = DG.plugins.lottini.scenarioStrings[iScenarioName];    //   DG.plugins.lotti.scenarioStrings[this.state.scenarioName];
         await connect.setNewDataset();
         this.resetResults();        //      zero this.results for the new scenario
         ui.SetScenarioUIObjects();

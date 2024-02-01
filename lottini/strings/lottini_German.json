@@ -24,7 +24,7 @@
             "units": "die Einheiten des Ergebnisses"
         },
         "scenarioStrings": {
-            "Gummibärchen_AB": {
+            "bears_AB": {
                 "label": "Gummibärchen AB",
                 "dsTitle": "Angaben zum Gummibärchen",
                 "dsDescription": "Ein Protokoll Deiner Erfahrung bei diesem Spiel",
