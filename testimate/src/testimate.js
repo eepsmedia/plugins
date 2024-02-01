@@ -11,7 +11,7 @@ const testimate = {
     initialize: async function () {
         console.log(`initializing...`);
 
-        await connect.initialize(this.iFrameDescription, null);
+        await connect.initialize( );
         await localize.initialize(localize.figureOutLanguage('en'));
         ui.initialize();
 
