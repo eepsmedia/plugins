@@ -11,6 +11,8 @@ const ui = {
         this.hasUserDIV = document.getElementById(`hasUserName`);
         this.greetingDIV = document.getElementById(`greeting`);
         this.configDIV = document.getElementById(`config`);
+
+        this.appendScenarioMenuGuts();
     },
 
     redraw: function () {
@@ -49,6 +51,8 @@ const ui = {
     makeCardsHTML: function () {
         let out = "";
         const theKeys = scramble(["P", "notP", "Q", "notQ"]);
+        const cardClass = syllo.state.scenario.cardClass;
+
         for (let i = 0; i < theKeys.length; i++) {
             const tWhich = theKeys[i];
 
@@ -57,13 +61,23 @@ const ui = {
             const mouseup = `onmouseup = "handlers.showObverse(this, '${tWhich}')"`;
             const mouseout = `onmouseout = "handlers.showObverse(this, '${tWhich}')"`;
 
-            out += `<input type="button" class="card obverse" 
+            out += `<input type="button" class="card ${cardClass} obverse" 
                         ${mousedown} ${mouseout} ${mouseup} 
                         value="${card.obverse}"> `
         }
         return out;
     },
+
+    appendScenarioMenuGuts: function() {
+        theMenu = document.getElementById("scenarioMenu");
+
+        for (let s in scenarios) {
+            theMenu.add(new Option(s,s));
+        }
+    },
+
 }
+
 
 scramble = function (iArray) {
     let N = iArray.length;

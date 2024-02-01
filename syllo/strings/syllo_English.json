@@ -11,27 +11,40 @@
       "ruleSometimesTrueButtonLabel": "might be true",
       "modeChallengeButtonLabel": "challenge",
       "modeSandboxButtonLabel": "sandbox",
-      "proveRightButton": "I know the rule is right",
-      "proveWrongButton": "I know the rule is wrong",
+      "proveRightButton": "Cards are consistent with the rule",
+      "proveWrongButton": "The rule must be wrong",
       "newGameButton": "new game",
       "userNameBoxLabel": "username: ",
-      "userDoneButton" : "I'm done!",
+      "userDoneButton" : "log out",
       "startButton" : "Start!"
     },
     "eval": {
       "choseRight": "You decided that the rule was correct.",
       "choseWrong": "You decided that the rule was not correct.",
+      "ruleIsCorrect" : "the rule is correct",
+      "ruleIsNotCorrect" : "the rule is wrong",
+      "userOverallEvaluationRight" : "<br>Good job! You are right that •1•.",
+      "userOverallEvaluationWrong" : "<br>Oops! In fact, •1•.",
       "instructions": "Click on cards to see their backs — but click as few as you can to be sure that the rule is correct. Then click the button to check your work.",
-      "choseP": "<br>&emsp;You chose •1•, which is correct!",
+      "choseP": "<br>&emsp;You chose •1•. You needed that information!",
       "noChoseP": "<br>&emsp;You did not choose •1•, but you should have.",
       "choseNotQ": "<br>&emsp;You chose •1•, which is correct (and subtle!)",
       "noChoseNotQ": "<br>&emsp;You did not choose •1•, but you should have. Think carefully about why.",
-      "choseQ": "<br>&emsp;You chose •1•, which is not correct. You do not need to know that.",
-      "choseNotP": "<br>&emsp;You chose •1•, which is not correct. You do not need to know that."
+      "choseQ": "<br>&emsp;You chose •1•, but you shouldn't have. You do not need to know that.",
+      "choseNotP": "<br>&emsp;You chose •1•, but you shouldn't have. You do not need to know that.",
+      "noChoseQ" : "<br>&emsp;You did not choose •1•. Good job! You didn't need that card.",
+      "noChoseNotP" : "<br>&emsp;You did not choose •1•. Great! You didn't need that card."
     },
     "scenarios": {
       "vowels": {
         "story": "The rule is : if a card has a vowel on it, the back will have an odd number."
+      },
+      "rain": {
+        "story" : "The rule is: if it is raining, then the streets are wet.",
+        "P" : "it is&emsp;raining",
+        "notP" : "it is not raining",
+        "Q" : "the streets are wet",
+        "notQ" : "the streets are dry"
       }
     }
   }

@@ -15,10 +15,14 @@ body {
     width: 88px;
     height: 144px;
     margin: 8px;
-    font-size: 72px;
     border-radius: 8px;
+    white-space: normal;
 
     cursor: pointer;
+}
+
+.glyphOnly {
+    font-size: 72px;
 }
 
 .obverse {

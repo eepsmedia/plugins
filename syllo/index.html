@@ -49,6 +49,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     </div>
     <div id="hasUserName">
         <span id="greeting"></span>
+        <input type="button" id="newGameButton" onclick="syllo.newGame()">
         <input type="button" id="userDoneButton" onclick="handlers.userDone()">
     </div>
 </div>
@@ -60,14 +61,17 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <div id="decision">
     <input type="button" id="proveRightButton" onclick="handlers.prove('right')">
     <input type="button" id="proveWrongButton" onclick="handlers.prove('wrong')">
-    <input type="button" id="newGameButton" onclick="syllo.newGame()">
 </div>
 
 <div id="status"></div>
 
 <div id="config">
+
     <details>
         <summary>Configure the game</summary>
+
+        <select id="scenarioMenu" onchange="handlers.changeScenario(this)"></select>
+
         <div class="hBox">
             <div id="ruleTruthConfig">
                 <input type="radio" name="ruleTrueGroup" value=true

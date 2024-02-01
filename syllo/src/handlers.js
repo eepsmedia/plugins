@@ -19,6 +19,14 @@ const handlers = {
 
     //  control handlers
 
+    changeScenario: function(iMenu) {
+        const theKey = document.getElementById("scenarioMenu").value;
+        syllo.state.scenario = scenarios[theKey];        //  actual change
+
+        syllo.newGame( );
+        //  syllo.cycle();      //  unnecessary because of implementScenario
+    },
+
     changeUserName: function () {
         syllo.username = document.getElementById("userNameBox").value;
         syllo.newGame();
