@@ -6,6 +6,7 @@
     "pleaseEnterName" : "Please enter your name and press Start",
 
     "staticStrings": {
+      "copyToCSVbutton" : "Copy data to CSV",
       "counterButtonLabel": "click to count",
       "ruleAlwaysTrueButtonLabel": "is true",
       "ruleSometimesTrueButtonLabel": "might be true",

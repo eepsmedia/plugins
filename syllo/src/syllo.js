@@ -2,6 +2,9 @@ syllo = {
 
     username: null,
     playing: false,
+    /**
+     * Is the rule currently true (was set when the scenario was implements)
+     */
     ruleTrue : true,
     state: {},
     cards: {
@@ -10,6 +13,8 @@ syllo = {
         Q: {obverse: null, reverse: null},
         notQ: {obverse: null, reverse: null},
     },
+
+    loggedMoves : [],
 
     initialize: async function () {
         console.log(`initializing syllo`);
@@ -44,8 +49,8 @@ syllo = {
 
     //      game controllers
 
-    choice: function (iChoice) {
-        const overallChoice = (iChoice === "right");    //  true if they chose rule is correct
+    decision: function (iDecision) {
+        const overallChoice = (iDecision === "right");    //  true if they chose rule is correct
         this.eval = overallChoice ?
             localize.getString("eval.choseRight") : localize.getString("eval.choseWrong");
 
@@ -92,6 +97,7 @@ syllo = {
 
         this.playing = false;       //      game is over, ui will show new game button.
         this.cycle();
+
     },
 
     implementScenario: function ( ) {
@@ -148,8 +154,8 @@ syllo = {
 
     constants: {
         pluginName: `syllo`,
-        version: `2024b`,
-        dimensions: {height: 400, width: 444, minWidth: 444, maxWidth: 444},
+        version: `2024c`,
+        dimensions: {height: 400, width: 444},
 
         defaultState: {
             buttonCount: 0,

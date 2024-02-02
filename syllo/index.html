@@ -22,6 +22,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     <script src="src/connect.js"></script>
     <script src="src/handlers.js"></script>
     <script src="src/scenarios.js"></script>
+    <script src="src/MoveLog.js"></script>
     <script src="strings/localize.js"></script>
 
     <!-- These five scripts take care of the communication with CODAP  -->
@@ -59,8 +60,8 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <div id="cards"></div>
 
 <div id="decision">
-    <input type="button" id="proveRightButton" onclick="handlers.prove('right')">
-    <input type="button" id="proveWrongButton" onclick="handlers.prove('wrong')">
+    <input type="button" id="proveRightButton" onclick="handlers.decide('right')">
+    <input type="button" id="proveWrongButton" onclick="handlers.decide('wrong')">
 </div>
 
 <div id="status"></div>
@@ -75,10 +76,10 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
         <div class="hBox">
             <div id="ruleTruthConfig">
                 <input type="radio" name="ruleTrueGroup" value=true
-                       onchange="handlers.changeRuleTrue(this)" id="ruleAlwaysTrueButton" checked>
+                       onchange="handlers.changeRuleAlwaysTrue(this)" id="ruleAlwaysTrueButton" checked>
                 <label for="ruleAlwaysTrueButton" id="ruleAlwaysTrueButtonLabel">always true</label><br>
                 <input type="radio" name="ruleTrueGroup" value=false
-                       onchange="handlers.changeRuleTrue(this)" id="ruleSometimesTrueButton">
+                       onchange="handlers.changeRuleAlwaysTrue(this)" id="ruleSometimesTrueButton">
                 <label for="ruleSometimesTrueButton" id="ruleSometimesTrueButtonLabel">sometimes true</label>
             </div>
             <div id="gameModeConfig">
@@ -91,6 +92,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
             </div>
         </div>
+        <input type="button" id="copyToCSVbutton" value="copy to CSV" onclick="handlers.copyToCSV()">
     </details>
 </div>
 

@@ -17,6 +17,11 @@ const handlers = {
         }
     },
 
+    copyToCSV : function() {
+        const theCSV = MoveLog.makeCSV(syllo.loggedMoves);
+        navigator.clipboard.writeText(theCSV);
+    },
+
     //  control handlers
 
     changeScenario: function(iMenu) {
@@ -37,8 +42,15 @@ const handlers = {
         syllo.cycle();
     },
 
-    prove: function (iChoice) {
-        syllo.choice(iChoice);
+    decide: function (iDecision) {
+        syllo.decision(iDecision);
+
+        syllo.loggedMoves.push(new MoveLog("decision", {
+            decision : iDecision,
+            truth : syllo.state.ruleTrue,
+        }).record)
+
+        console.log(MoveLog.makeCSV(syllo.loggedMoves));
     },
 
     pressCountButton: function () {
@@ -65,9 +77,15 @@ const handlers = {
         theButton.value = newValue;
         theButton.classList.replace('obverse', 'reverse');
         console.log(`button for ${iWhich} now ${theButton.classList.toString()}`)
+
+        syllo.loggedMoves.push(new MoveLog("card", {
+            frontRole : iWhich,
+            front : card.obverse,
+            back : card.reverse,
+        }).record)
     },
 
-    changeRuleTrue: function (theButton) {
+    changeRuleAlwaysTrue: function (theButton) {
         syllo.state.ruleTrue = theButton.value;
     },
 
