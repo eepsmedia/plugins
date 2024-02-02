@@ -7,7 +7,7 @@
         "right": "derecho",
         "staticStrings": {
             "scenarioMenuLabel": "¿cuál escenario? ",
-            "emittingCheckboxLabel": "¿emitir datos en CODAP? \n",
+            "emittingCheckboxLabel": "¿emitir datos en CODAP? ",
             "showResultsCheckboxLabel": "¿mostrar los resultados en la página principal? ",
             "showAllScenariosCheckboxLabel": "¿mostrar todos escenarios? "
         },
