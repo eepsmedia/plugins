@@ -2,11 +2,10 @@
   "syllo": {
     "flags": "🇬🇧,🇺🇸",
     "language": "English",
-    "greeting" : "Hello, •1•",
-    "pleaseEnterName" : "Please enter your name and press Start",
-
+    "greeting": "Hello, •1•",
+    "pleaseEnterName": "Please enter your name and press Start",
     "staticStrings": {
-      "copyToCSVbutton" : "Copy data to CSV",
+      "copyToCSVbutton": "Copy data to CSV",
       "counterButtonLabel": "click to count",
       "ruleAlwaysTrueButtonLabel": "is true",
       "ruleSometimesTrueButtonLabel": "might be true",
@@ -16,16 +15,16 @@
       "proveWrongButton": "The rule must be wrong",
       "newGameButton": "new game",
       "userNameBoxLabel": "username: ",
-      "userDoneButton" : "log out",
-      "startButton" : "Start!"
+      "userDoneButton": "log out",
+      "startButton": "Start!"
     },
-    "eval": {
+    "howDidIDo": {
       "choseRight": "You decided that the rule was correct.",
       "choseWrong": "You decided that the rule was not correct.",
-      "ruleIsCorrect" : "the rule is correct",
-      "ruleIsNotCorrect" : "the rule is wrong",
-      "userOverallEvaluationRight" : "<br>Good job! You are right that •1•.",
-      "userOverallEvaluationWrong" : "<br>Oops! In fact, •1•.",
+      "ruleIsCorrect": "the rule is correct",
+      "ruleIsNotCorrect": "the rule is wrong",
+      "userOverallEvaluationRight": "<br>Good job! You are right that •1•.",
+      "userOverallEvaluationWrong": "<br>Oops! In fact, •1•.",
       "instructions": "Click on cards to see their backs — but click as few as you can to be sure that the rule is correct. Then click the button to check your work.",
       "choseP": "<br>&emsp;You chose •1•. You needed that information!",
       "noChoseP": "<br>&emsp;You did not choose •1•, but you should have.",
@@ -33,19 +32,78 @@
       "noChoseNotQ": "<br>&emsp;You did not choose •1•, but you should have. Think carefully about why.",
       "choseQ": "<br>&emsp;You chose •1•, but you shouldn't have. You do not need to know that.",
       "choseNotP": "<br>&emsp;You chose •1•, but you shouldn't have. You do not need to know that.",
-      "noChoseQ" : "<br>&emsp;You did not choose •1•. Good job! You didn't need that card.",
-      "noChoseNotP" : "<br>&emsp;You did not choose •1•. Great! You didn't need that card."
+      "noChoseQ": "<br>&emsp;You did not choose •1•. Good job! You didn't need that card.",
+      "noChoseNotP": "<br>&emsp;You did not choose •1•. Great! You didn't need that card."
+    },
+
+    "scenarioSets" : {
+      "vowels0" : {
+        "displayName" : "beginning vowels"
+      },
+      "vowels" : {
+        "displayName" : "vowels"
+      },
+      "rain" : {
+        "displayName" : "rain"
+      },
+      "climate" : {
+        "displayName" : "climate"
+      },
+      "laws" : {
+        "displayName" : "laws"
+      }
     },
     "scenarios": {
-      "vowels": {
-        "story": "The rule is : if a card has a vowel on it, the back will have an odd number."
+      "vowelsVO": {
+        "story": "The rule is: if a card has a vowel on it, the back will have an odd number."
+      },
+      "vowelsCO": {
+        "story": "The rule is: if a card has a consonant on it, the back will have an odd number."
+      },
+      "vowelsEC": {
+        "story": "The rule is: if a card has an even number on it, the back will have a consonant."
       },
       "rain": {
-        "story" : "The rule is: if it is raining, then the streets are wet.",
-        "P" : "it is&emsp;raining",
-        "notP" : "it is not raining",
-        "Q" : "the streets are wet",
-        "notQ" : "the streets are dry"
+        "story": "The rule is: if it is raining, then the streets are wet.",
+        "P": "it is raining",
+        "notP": "it is not raining",
+        "Q": "the streets are wet",
+        "notQ": "the streets are dry"
+      },
+      "ppm400": {
+        "story": "The rule is: if there is more than 400ppm of CO2 in the atmosphere, the Earth's temperature will rise dramatically.",
+        "P": "there is more than 400 ppm of CO2 in the atmosphere",
+        "notP": "there is 400 ppm or less of CO2 in the atmosphere",
+        "Q": "the Earth's temperature is rising dramatically",
+        "notQ": "the Earth's temperature is more or less constant"
+      },
+      "whiskey": {
+        "story": "The law is: You must be at least 18 to drink whiskey.",
+        "P": "Elizabeth is 16 years old",
+        "notP": "Elizabeth is 22 years old",
+        "Q": "Elizabeth may not drink whiskey",
+        "notQ": "Elizabeth may drink whiskey"
+      },
+      "license": {
+        "story": "The law is: You must have a license with you if you drive a car.",
+        "P": "Michael is driving without a license.",
+        "notP": "Michael is driving and has his license.",
+        "Q": "Michael is driving illegally.",
+        "notQ": "Michael is driving legally."
+      },
+      "passport": {
+        "story": "The law is: You can't get a passport without a birth certificate.",
+        "P": "Isabel can get a passport.",
+        "notP": "Isabel cannot get a passport.",
+        "Q": "Isabel has a birth certificate.",
+        "notQ": "Isabel has no birth certificate."
+      },
+      "fever": {
+        "story": "The rule is: All students with a fever must stay away from school.",
+        "P": "Sam has a fever.",
+        "notP": "Sam does not have a fever.",
+        "Q": "Sam stayed home from school.",
+        "notQ": "Sam attended school."
       }
     }
   }

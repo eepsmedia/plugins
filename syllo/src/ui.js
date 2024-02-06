@@ -20,7 +20,7 @@ const ui = {
         const button = ` button count ${syllo.state.buttonCount}`;
         const datasetInfo = syllo.state.datasetName ? `dataset: ${syllo.state.datasetName}` : `no dataset`;
 
-        this.statusDIV.innerHTML = syllo.username ? syllo.eval : localize.getString("pleaseEnterName");
+        this.statusDIV.innerHTML = syllo.username ? syllo.howDidIDo : localize.getString("pleaseEnterName");
         this.storyDIV.innerHTML = `${syllo.state.scenario.story}`;
         this.cardsDIV.innerHTML = this.makeCardsHTML();
         this.greetingDIV.innerHTML = localize.getString('greeting', syllo.username);
@@ -71,8 +71,9 @@ const ui = {
     appendScenarioMenuGuts: function() {
         theMenu = document.getElementById("scenarioMenu");
 
-        for (let s in scenarios) {
-            theMenu.add(new Option(s,s));
+        for (let setKey in scenarioSets) {
+            const theDisplayName = localize.getString(`scenarioSets.${setKey}.displayName`);
+            theMenu.add(new Option(theDisplayName, setKey));
         }
     },
 

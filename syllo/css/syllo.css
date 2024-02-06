@@ -12,6 +12,7 @@ body {
 }
 
 .card {
+    y : 40px;
     width: 88px;
     height: 144px;
     margin: 8px;

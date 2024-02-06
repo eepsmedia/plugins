@@ -71,7 +71,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     <details>
         <summary>Configure the game</summary>
 
-        <select id="scenarioMenu" onchange="handlers.changeScenario(this)"></select>
+        <select id="scenarioMenu" onchange="syllo.setScenarioUsingSetKey(this.value)"></select>
 
         <div class="hBox">
             <div id="ruleTruthConfig">
