@@ -215,7 +215,7 @@ const testimate = {
 
     constants: {
         pluginName: `testimate`,
-        version: `2024d`,
+        version: `2024e`,
         dimensions: {height: 555, width: 444},
 
         emittedDatasetName: `tests and estimates`,     //      for receiving emitted test and estimate results
@@ -234,6 +234,7 @@ const testimate = {
             mostRecentEmittedTest: null,
             focusGroupDictionary : {},
             testParamDictionary : {},
+            valueDictionary : {},       //  records the number in the "value" box
         }
     }
 }

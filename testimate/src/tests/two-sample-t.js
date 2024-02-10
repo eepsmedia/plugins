@@ -56,7 +56,7 @@ class TwoSampleT extends Test {
         this.results.N2 = j1.cols();
         this.results.N = this.results.N1 + this.results.N2;
 
-        this.results.df = this.results.N1 + this.results.N2 - 1;
+        this.results.df = this.results.N1 + this.results.N2 - 2;
         this.results.mean1 = j0.mean();
         this.results.mean2 = j1.mean();
         this.results.s1 = j0.stdev(true);    //      true means SAMPLE SD
@@ -81,10 +81,10 @@ class TwoSampleT extends Test {
 
         const var1oN = j0.variance(true) / this.results.N1;
         const var2oN = j1.variance(true) / this.results.N2;     //  sample variance/N = s^2/N
-        const df2 = (var1oN + var2oN) ** 2 / (var1oN ** 2 / (this.results.N1 - 1) + var2oN ** 2 / (this.results.N2)); //  variance for
-        const df1 = this.results.N1 + this.results.N2 - 1;
+        //  const df2 = (var1oN + var2oN) ** 2 / (var1oN ** 2 / (this.results.N1 - 1) + var2oN ** 2 / (this.results.N2)); //  variance for
+        //  const df1 = this.results.N1 + this.results.N2 - 1;
 
-        this.results.df = df2;
+        //  this.results.df = df2;      //  just use the df calculated earlier: N1 + N2 - 2.
 
         this.results.tCrit = jStat.studentt.inv(theCIparam, this.results.df);    //  1.96-ish for 0.95
         const tAbs = Math.abs(this.results.t);

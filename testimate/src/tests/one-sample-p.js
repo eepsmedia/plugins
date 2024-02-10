@@ -33,10 +33,12 @@ class OneSampleP extends Test {
         const theCIparam = 1 - testimate.state.testParams.alpha / 2;
 
         if (N > 0) {
+            const p0 = testimate.state.testParams.value;
+            const pHat = this.results.successes / N;     //  sample proportion p-hat
             this.results.N = N;
-            this.results.prop = this.results.successes / N;
+            this.results.prop = pHat;
 
-            this.usingBinomial = (N < 30);
+            this.usingBinomial = (N * pHat < 10) || (N * (1 - pHat) < 10);  //  must have ≥ 10 successes AND 10 failures
 
             if (this.usingBinomial) {
 
@@ -52,13 +54,13 @@ class OneSampleP extends Test {
                 this.results.z = "";
                 this.results.zCrit = "";
 
-            } else {        //  not using binomial
+            } else {        //  not using binomial, using z
 
-                this.results.SE = Math.sqrt((this.results.prop) * (1 - this.results.prop) / this.results.N);
-                const SE0 = Math.sqrt((testimate.state.testParams.value) * (1 - testimate.state.testParams.value) / this.results.N);
+                this.results.SE = Math.sqrt((pHat) * (1 - pHat) / N);
+                const SEnull = Math.sqrt((p0) * (1 - p0) / N);
 
                 //  Note: test uses the SE of the null hypothesis (value); CI uses the SE of the sample.
-                this.results.z = (this.results.prop - testimate.state.testParams.value) / SE0;  //  this.results.SE;
+                this.results.z = (pHat - p0) / SEnull;  //  this.results.SE;
 
                 this.results.zCrit = jStat.normal.inv(theCIparam, 0, 1);    //  1.96-ish for 0.95
                 const zAbs = Math.abs(this.results.z);
@@ -66,8 +68,8 @@ class OneSampleP extends Test {
                 if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
                 //  Note: CI uses the SE of the sample (this.results.SE)
-                this.results.CImax = this.results.prop + this.results.zCrit *  this.results.SE;
-                this.results.CImin = this.results.prop - this.results.zCrit * this.results.SE;
+                this.results.CImax = pHat + this.results.zCrit * this.results.SE;
+                this.results.CImin = pHat - this.results.zCrit * this.results.SE;
             }
         }
     }

@@ -15,25 +15,7 @@ class TwoSampleP extends Test {
             = testimate.state.valueDictionary[this.testID]
             ? testimate.state.valueDictionary[this.testID] : 0;
 
-    }/*
-    static rotateSuccessValueA() {
-        const initialValue = testimate.theTest.results.successValueA;
-        const valueSet = [...data.xAttData.valueSet];
-        testimate.theTest.results.successValueA = handlers.nextValueInList(valueSet, initialValue);
-
-        if (testimate.theTest.grouping) {
-            testimate.theTest.results.successValueB = testimate.theTest.results.successValueA;
-        }
-        testimate.refreshDataAndTestResults();
     }
-    static rotateSuccessValueB() {
-        const initialValue = testimate.theTest.results.successValueB;
-        const valueSet = [...data.yAttData.valueSet];
-        testimate.theTest.results.successValueB = handlers.nextValueInList(valueSet, initialValue);
-        testimate.refreshDataAndTestResults();
-    }
-*/
-
 
 
     updateTestResults() {
@@ -90,16 +72,22 @@ class TwoSampleP extends Test {
 
         this.results.N = this.results.N1 + this.results.N2;
         if (this.results.N1 > 0 && this.results.N2 > 0) {
-            this.results.prop = (this.results.successesA + this.results.successesB) / this.results.N;
+            const pHat = (this.results.successesA + this.results.successesB) / this.results.N;   //  p (pooled)
+            const qHat = 1 - pHat;
+            this.results.prop = pHat;
+
             this.results.prop1 = this.results.successesA / this.results.N1;
             this.results.prop2 = this.results.successesB / this.results.N2;
             this.results.SE1 = Math.sqrt(this.results.prop1 * (1 - this.results.prop1) / this.results.N1);
             this.results.SE2 = Math.sqrt(this.results.prop2 * (1 - this.results.prop2) / this.results.N2);
 
-            this.results.SE = Math.sqrt(
-                (this.results.prop1) * (1 - this.results.prop1) / this.results.N1 +
-                (this.results.prop2) * (1 - this.results.prop2) / this.results.N2
-            );
+            //  pooled standard error
+            this.results.SE = Math.sqrt((pHat * qHat) * (1/ this.results.N1 + 1 / this.results.N2));
+
+            this.results.SEinterval = Math.sqrt(
+                this.results.prop1 * (1 - this.results.prop1) / this.results.N1 +
+                this.results.prop2 * (1 - this.results.prop2) / this.results.N2
+            )
 
             //  the test p1 - p2
             this.results.pDiff = this.results.prop1 - this.results.prop2;
@@ -112,19 +100,18 @@ class TwoSampleP extends Test {
             this.results.P = jStat.normal.cdf(-zAbs, 0, 1);
             if (testimate.state.testParams.sides === 2) this.results.P *= 2;
 
-            this.results.CImax = this.results.pDiff + this.results.zCrit * this.results.SE;
-            this.results.CImin = this.results.pDiff - this.results.zCrit * this.results.SE;
+            this.results.CImax = this.results.pDiff + this.results.zCrit * this.results.SEinterval;
+            this.results.CImin = this.results.pDiff - this.results.zCrit * this.results.SEinterval;
         }
     }
 
     makeResultsString() {
-        //  const testDesc = `mean of ${testimate.state.x.name}`;
-
         const N = this.results.N;
         const N2 = this.results.N2;
         const N1 = this.results.N1;
         const pDiff = ui.numberToString(this.results.pDiff, 3);
         const SE = ui.numberToString(this.results.SE);
+        const SEinterval = ui.numberToString(this.results.SEinterval);
 
         const p1 = ui.numberToString(this.results.prop1);
         const p2 = ui.numberToString(this.results.prop2);
@@ -142,7 +129,6 @@ class TwoSampleP extends Test {
 
         const DSdetails = document.getElementById("DSdetails");
         const DSopen = DSdetails && DSdetails.hasAttribute("open");
-
         let out = "<pre>";
 
         const groupingPhrase = `(${testimate.state.x.name} = ${this.results.successValueA}): ${this.results.labelA} - ${this.results.labelB}`;
@@ -154,8 +140,8 @@ class TwoSampleP extends Test {
             `${localize.getString("tests.twoSampleP.testQuestionHead")} ${nonGroupingPhrase} ${comparison}?`;
 
         out += `${resultHed} <br>`;
-        out += `<br>    N = ${N}, SE = ${SE}, z = ${z}, ${P}`;
-        out += `<br>    diff = ${pDiff},  ${conf}% CI = [${CImin}, ${CImax}] `;
+        out += `<br>    N = ${N}, diff = ${pDiff}, z = ${z}, ${P}`;
+        out += `<br>    ${conf}% CI = [${CImin}, ${CImax}],  SE(CI) = ${SEinterval} `;
 
         out += `<details id="DSdetails" ${DSopen ? "open" : ""}>`;
         out += localize.getString("tests.twoSampleP.detailsSummary");
@@ -196,7 +182,7 @@ class TwoSampleP extends Test {
         out += `<tr class="headerRow"><th>${groupColHead}</th><th>N</th><th>${propColHead}</th><th>SE</th></tr>`;
         out += `<tr><td>${groupRowLabelA}</td><td>${succA} / ${N1}</td><td>${p1}</td><td>${SE1}</td></tr>`;
         out += `<tr><td>${groupRowLabelB}</td><td>${succB} / ${N2}</td><td>${p2}</td><td>${SE2}</td></tr>`;
-        out += `<tr><td>${pooled}</td><td>${succA + succB} / ${N}</td><td>${prop}</td><td></td></tr>`;
+        out += `<tr><td>${pooled}</td><td>${succA + succB} / ${N}</td><td>${prop}</td><td>${SE}</td></tr>`;
         out += `</table>`;
 
         return out
