@@ -321,7 +321,7 @@ class AttData {
     }
 
     isBinary() {
-        return this.valueSet.size === 2;
+        return (this.valueSet.size === 2 ||  this.valueSet.size === 1);
     }
 
 

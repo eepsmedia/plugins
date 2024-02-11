@@ -51,7 +51,7 @@ class OneSampleP extends Test {
                     this.results.P = jStat.binomial.cdf(this.results.successes, this.results.N, p0);     //
                 }
                 if (testimate.state.testParams.sides === 2) this.results.P *= 2;
-                if (this.result.P > 1) this.results.P = 1.00;
+                if (this.results.P > 1) this.results.P = 1.00;
 
                 this.results.SE = Math.sqrt((this.results.prop) * (1 - this.results.prop) / this.results.N);
                 this.results.z = "";

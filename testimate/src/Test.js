@@ -83,10 +83,10 @@ class Test {
                 Y.theRawArray &&
                 (data.xAttData.theRawArray.length === data.yAttData.theRawArray.length);
 
-
+            //  loop over all possible test configurations, identified by `id`
             for (let id in Test.configs) {
                 let match = true;
-                const theConfig = Test.configs[id];
+                const theConfig = Test.configs[id];     //  theConfig for THIS test configuration
 
                 if (theConfig.paired && !pairable) match = false;
 
