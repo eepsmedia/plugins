@@ -42,17 +42,24 @@ class OneSampleP extends Test {
 
             if (this.usingBinomial) {
 
-                const binomialResult = binomial.CIbeta(N, this.results.successes, testimate.state.testParams.alpha);
-                this.results.CImin = binomialResult[0];
-                this.results.CImax = binomialResult[1];
-
-                const zAbs = Math.abs(this.results.z);
-                this.results.P = jStat.normal.cdf(-zAbs, 0, 1);     //  todo: fix this for binomial
+                /**
+                 * jStat.binomial.cdf(k, N, p) is the probability that you get between 0 and k successes in N trials
+                 */
+                if (pHat > p0) {    //  the sample prop is high, we'll find the upper tail
+                    this.results.P = 1 - jStat.binomial.cdf(this.results.successes - 1, this.results.N, p0);     //
+                } else {        //  the sample prop is LOW, we'll find the lower tail
+                    this.results.P = jStat.binomial.cdf(this.results.successes, this.results.N, p0);     //
+                }
                 if (testimate.state.testParams.sides === 2) this.results.P *= 2;
+                if (this.result.P > 1) this.results.P = 1.00;
 
                 this.results.SE = Math.sqrt((this.results.prop) * (1 - this.results.prop) / this.results.N);
                 this.results.z = "";
                 this.results.zCrit = "";
+
+                const binomialResult = binomial.CIbeta(N, this.results.successes, testimate.state.testParams.alpha);
+                this.results.CImin = binomialResult[0];
+                this.results.CImax = binomialResult[1];
 
             } else {        //  not using binomial, using z
 
@@ -98,6 +105,7 @@ class OneSampleP extends Test {
         out += `<br><br>    ${r1}`;
 
         if (this.usingBinomial) {
+            out += `<br>    ${P}`;
             out += `<br>    ${conf}% ${localize.getString("CI")} = [${CImin}, ${CImax}]`;
             out += `<br>        (${localize.getString("tests.oneSampleP.usingBinomialProc")})`;
 
