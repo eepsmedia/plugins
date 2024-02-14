@@ -1,7 +1,7 @@
 /**
  * Methods for logistic regression.
  *
- * Math notes! We will be using the GPT-written function `logisticregression()` below to iterate on this function:
+ * Math notes! We will be using the function `logisticregression()` below to iterate on this function:
  *
  * f(x) = 1/(1 + exp(-(b + wx))
  *
@@ -19,6 +19,8 @@
  *
  * which has the happy result that p is the (x) position of that inflection point
  * and m is the slope of the curve at that point.
+ *
+ * p becomes this.results.pos
  *
  */
 class Logistic extends Test {
@@ -81,7 +83,7 @@ class Logistic extends Test {
             console.log(`        logistic regression: initial critical position: ${pos0}`);
             if (!testimate.state.testParams.probe) testimate.state.testParams.probe = pos0;
             this.results.pos = pos0;
-            this.results.slope = 0;
+            this.results.LSlope = 0;
             this.results.iterations = 0;
             this.results.rangeX = theMax - theMin;
 
@@ -97,7 +99,7 @@ class Logistic extends Test {
             X, Y,
             testimate.state.testParams.rate,
             iterations,        //  how many we're running now
-            this.results.slope, this.results.pos
+            this.results.LSlope, this.results.pos
         );
 
         if (this.graphShowing) {
@@ -105,7 +107,7 @@ class Logistic extends Test {
         }
 
         this.results.iterations += Number(iterations);
-        this.results.slope = theResult.currentSlope;
+        this.results.LSlope = theResult.currentSlope;
         this.results.pos = theResult.currentPos;
         this.results.cost = theResult.currentCost;
 
@@ -113,8 +115,8 @@ class Logistic extends Test {
     }
 
     makeFormulaString() {
-        const longSlope = this.results.slope;
-        const shortSlope = ui.numberToString(this.results.slope, 4);
+        const longSlope = this.results.LSlope;
+        const shortSlope = ui.numberToString(this.results.LSlope, 4);
         const shortPos = ui.numberToString(this.results.pos, 4);
         const longPos = this.results.pos;
 
@@ -129,7 +131,7 @@ class Logistic extends Test {
     makeResultsString() {
         const N = this.results.N;
         const cost = ui.numberToString(this.results.cost, 4);
-        const slope = ui.numberToString(this.results.slope, 4);
+        const LSlope = ui.numberToString(this.results.LSlope, 4);
         const pos = ui.numberToString(this.results.pos, 4);
         const LRPbox = ui.logisticRegressionProbeBoxHTML(testimate.state.testParams.probe);
         const graphButton = ui.makeLogisticGraphButtonHTML();
@@ -144,7 +146,7 @@ class Logistic extends Test {
         out += localize.getString("tests.logistic.intro");
         out += `<br>       N = ${N}, ${this.results.iterations} ${localize.getString("iterations")}, ${localize.getString("cost")} = ${cost} ${more10button}<br>`;
         out += `<br>${localize.getString("tests.logistic.model1", testimate.state.y.name, pos)}.`
-        out += `<br>       ${localize.getString("tests.logistic.model2", slope)}<br>`;
+        out += `<br>       ${localize.getString("tests.logistic.model2", LSlope)}<br>`;
         out += `<br>    ${localize.getString("tests.logistic.probFunctionHead")}`
         out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.focusGroupX}) = ${theFormula}`;
 
@@ -156,7 +158,7 @@ class Logistic extends Test {
         out += `<br>    ${localize.getString("tests.logistic.probQuery2", testimate.state.y.name)} = ${LRPbox}`;
 
         if (testimate.state.testParams.probe) {
-            const z = 4 * slope * (testimate.state.testParams.probe - pos);
+            const z = 4 * LSlope * (testimate.state.testParams.probe - pos);
             const probNumber = this.sigmoid(z);
             let probString = "0.000"
             if (probNumber > 0.0000001) {

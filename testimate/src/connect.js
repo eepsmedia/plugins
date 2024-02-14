@@ -301,6 +301,14 @@ connect = {
 
         //  first list the standard attributes (parameters, mostly)
 
+        let theStandardAttributes = {};
+        theStandardAttributes[localize.getString("attributeNames.outcome")] = testimate.state.x.name;
+        theStandardAttributes[localize.getString("attributeNames.predictor")] =
+            (testimate.predictorExists()) ? testimate.state.y.name : "";
+        theStandardAttributes[localize.getString("attributeNames.procedure")] = theConfig.name;
+
+        Object.assign(theItemValues, theStandardAttributes);
+/*
         Object.assign(
             theItemValues,
             {
@@ -309,14 +317,25 @@ connect = {
                 procedure: theConfig.name,
             }
         );
+*/
 
         //  then add "results" values
 
         emittedAttributeNames.forEach(att => {
+            const translatedAttributeName = localize.getString(`attributeNames.${att}`);
+
             if (theTest.results.hasOwnProperty(att)) {
-                theItemValues[att] = theTest.results[att]
+                theItemValues[translatedAttributeName] = theTest.results[att]
             } else {    //  not a result? Maybe it's a parameter!!
-                theItemValues[att] = testimate.state.testParams[att]
+                switch (att) {
+                    case "sign":
+                        theItemValues[translatedAttributeName] = testimate.state.testParams.theSidesOp;
+                        break;
+                    default:
+                        theItemValues[translatedAttributeName] = testimate.state.testParams[att]
+                        break;
+                }
+
             }
         });
 
@@ -346,21 +365,24 @@ connect = {
             //  first construct the "attrs" array
             let theAttrs = [];
             theAttrs.push({
-                name: "outcome",
+                //  name: "outcome",
+                name: localize.getString("attributeNames.outcome"),
                 title: localize.getString("attributeNames.outcome"),
                 type: "categorical",
                 description: localize.getString("attributeDescriptions.outcome")
             });
             if (testimate.predictorExists()) {
                 theAttrs.push({
-                    name: "predictor",
+                    //  name: "predictor",
+                    name: localize.getString("attributeNames.predictor"),
                     title: localize.getString("attributeNames.predictor"),
                     type: "categorical",
                     description: localize.getString("attributeDescriptions.predictor")
                 });
             }
             theAttrs.push({
-                name: "procedure",
+                //  name: "procedure",
+                name: localize.getString("attributeNames.procedure"),
                 title: localize.getString("attributeNames.procedure"),
                 type: "categorical",
                 description: localize.getString("attributeDescriptions.procedure")
@@ -384,7 +406,8 @@ connect = {
 */
 
             theConfig.emitted.split(",").forEach(att => {
-                const theName = att;
+                //  const theName = att;
+                const theName = localize.getString(`attributeNames.${att}`);
                 const theTitle = localize.getString(`attributeNames.${att}`);
                 const theTip = localize.getString(`attributeDescriptions.${att}`);
                 theAttrs.push({
@@ -396,9 +419,10 @@ connect = {
             //  this will become the "values" item in the call
             out = {
                 name: testimate.constants.emittedDatasetName,
-                title: testimate.constants.emittedDatasetName,
+                title:  localize.getString("datasetName"),         // testimate.constants.emittedDatasetName,
                 collections: [{
-                    name: testimate.constants.emittedDatasetName,
+                    name: localize.getString("datasetName"),        //  testimate.constants.emittedDatasetName,
+                    title: localize.getString("datasetName"),
                     attrs: theAttrs
                 }]
             };
