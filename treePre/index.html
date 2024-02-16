@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<!--
+local in local codap :
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/treePre
+-->
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tree-Pre</title>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+
+    <link rel='stylesheet' type='text/css' href='styles/treePre.css'/>
+
+    <script src="src/treePre.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/handlers.js"></script>
+    <script src="strings/localize.js"></script>
+
+    <script src="src/god.js"></script>
+    <script src="src/temple.js"></script>
+    <script src="src/Tree.js"></script>
+
+
+    <!-- These five scripts take care of the communication with CODAP  -->
+    <script src="../../common/src/iframe-phone.js"></script>
+    <script src="../../common/src/codap_helper_newAPI.js"></script>
+    <script src="../../common/src/pluginHelper.js"></script>
+    <script src="../../common/src/pluginLang.js"></script>
+    <script src="../../common/src/codapInterface.js"></script>
+
+</head>
+
+<body>
+<div id="header"></div>
+<div id="status"></div>
+
+<div id="forest"></div>
+
+<input type="button" id="joinButton" value="join!" onclick="handlers.doJoin()">
+<input type="button" id="harvestButton" value="markedTrees!" onclick="handlers.doHarvest()">
+
+
+<hr>
+GOD...
+<div id="god">
+    <input type="button" id="newGameButton" value="join!" onclick="god.newGame()">
+    <input type="button" id="newYearButton" value="join!" onclick="god.newYear()">
+
+</div>
+
+</body>
+
+<script>
+    window.onload = async function () {
+        await treePre.initialize();
+    }
+</script>
+
+</html>

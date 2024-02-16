@@ -1,0 +1,13 @@
+
+
+body {
+    font-family: "Sirin Stencil",sans-serif;
+    font-size: 14px;
+    background-color: forestgreen;
+    color : white;
+}
+
+.tree {
+    width : 50px;
+    padding: 2px;
+}

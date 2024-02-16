@@ -1,0 +1,15 @@
+{
+  "treePre": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "harvestButton" : "harvest marked trees",
+      "joinButton" : "join",
+      "endTurnButton" : "end turn",
+      "newGameButton" : "new game",
+      "newYearButton" : "new year"
+    },
+    "statusText" :  "•1•: •2• has balance $•3•, •4• marked for harvest"
+
+  }
+}
