@@ -67,11 +67,21 @@ const localize = {
         for (const theID in theStaticStrings) {
             if (theStaticStrings.hasOwnProperty(theID)) {
                 const theValue = this.getString(`staticStrings.${theID}`); // theStaticStrings[theID];
-                try {
-                    document.getElementById(theID).innerHTML = theValue;
-                    //  console.log(`Set string for ${theID} in ${iLang}`);
-                } catch (msg) {
-                    console.log(msg + ` on ID = ${theID}`);
+                if (theID.includes("Button") || theID.includes("button")) {
+                    try {
+                        document.getElementById(theID).value = theValue;
+                        //  console.log(`Set string for ${theID} in ${iLang}`);
+                    } catch (msg) {
+                        console.log(msg + ` on ID = ${theID}`);
+                    }
+
+                } else {
+                    try {
+                        document.getElementById(theID).innerHTML = theValue;
+                        //  console.log(`Set string for ${theID} in ${iLang}`);
+                    } catch (msg) {
+                        console.log(msg + ` on ID = ${theID}`);
+                    }
                 }
             }
         }
