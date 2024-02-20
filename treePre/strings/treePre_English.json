@@ -3,13 +3,56 @@
     "flags": "🇬🇧,🇺🇸",
     "language": "English",
     "staticStrings": {
-      "harvestButton" : "harvest marked trees",
       "joinButton" : "join",
       "endTurnButton" : "end turn",
       "newGameButton" : "new game",
+      "endGameButton" : "end this game",
+      "startPlayButton" : "start play",
       "newYearButton" : "new year"
     },
-    "statusText" :  "•1•: •2• has balance $•3•, •4• marked for harvest"
+    "advice" : {
+      "noGame" : "You are not in a game. Enter a game ID and press Join.",
+      "waitingForMarket" : "Waiting for the forest goddess to sell your trees",
+      "play" : "Click on the trees you want to mark for harvest"
+    },
+    "attributeNames" : {
+      "year" : "year",
+      "player" : "player",
+      "what" : "what",
+      "income" : "income",
+      "expense" : "expense",
+      "balance" : "balance",
+      "gameNumber" : "gameNumber"
+    },
+    "attributeDescriptions" : {
+      "year" : "year",
+      "player" : "player",
+      "what" : "what",
+      "income" : "income",
+      "expense" : "expense",
+      "balance" : "balance",
+      "gameNumber" : "game number"
+    },
+    "collectionNames" : {
+      "games" : "games",
+      "years" : "years",
+      "items" : "items"
+    },
+    "debrief" : {
+      "time" : "This game was set to end in •1•",
+      "broke" : "This game ended because •1• went broke",
+      "meanBalance" : "The average balance was •1••2•"
+    },
+    "gameTitle" : "Forester",
+    "datasetTitle" : "forestry records",
+    "datasetDescription" : "Tour bookkeeper's report! What money did you receive and spend?",
+    "playerStatusText" :  "•1•: •2• has balance €•3•, •4• marked for harvest",
+    "harvestNoneText" : "harvest no trees",
+    "harvestSomeTreesText" : "harvest •1•",
+    "trees" : "trees",
+    "tree" : "tree",
+    "moneySymbol" : "$"
+
 
   }
 }

@@ -7,7 +7,34 @@ body {
     color : white;
 }
 
+#headerDiv {
+    font-size : 40px;
+    font-weight: bold;
+    background-color: white;
+    color: forestgreen;
+}
+
+#forestSVG {
+    background-color: rosybrown;
+    padding : 16px;
+    margin : 16px;
+}
+
 .tree {
-    width : 50px;
+    width : 35px;
     padding: 2px;
 }
+
+.treeSVG {
+    fill : forestgreen;
+    cursor: pointer;
+    opacity: 80%;
+    stroke-width: 1px;
+    stroke : white;
+}
+
+.markSVG {
+     stroke : red;
+     cursor: pointer;
+     stroke-width: 2px;
+ }

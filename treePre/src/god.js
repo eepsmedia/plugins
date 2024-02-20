@@ -1,20 +1,20 @@
 const god = {
 
-    forest: [],
     gameParams: {},
-    players: {},        //  Players, keyed by name (Player instances)
-    markedTrees: {},       //  arrays of marked trees, keyed by name
     gamePhase : 'nogame',   //  { nogame | recruit | play | debrief }
-
+    waitingForOrdersFrom : [],
+    gameNumber : 0,
+    debriefInfo : {},
 
     initialize: function () {
     },
 
     addPlayer: function (iPlayer) {
-        const thePlayerName = this.uniquePlayerName(iPlayer.name);
-        iPlayer.name = thePlayerName;
-        this.players[thePlayerName] = iPlayer;
-        this.gameParams.nPlayers = Object.keys(this.players).length;
+        let thePlayerName = iPlayer.name;
+        if (!singlePlayer) iPlayer.name = this.uniquePlayerName(iPlayer.name);
+
+        nature.players[iPlayer.name] = iPlayer;
+
         return iPlayer;
     },
 
@@ -29,96 +29,89 @@ const god = {
      * @param iTrees    simple array of tree indices
      */
     addHarvest: function (iPlayerName, iTrees) {
-        this.markedTrees[iPlayerName] = iTrees;
+        nature.markedTrees[iPlayerName] = iTrees;
+
+        const ix = this.waitingForOrdersFrom.indexOf(iPlayerName);
+        if (ix === -1) {
+            console.log(`could not find ${iPlayerName} in ${this.waitingForOrdersFrom}`);
+        } else {
+            this.waitingForOrdersFrom.splice(ix, 1);   //    remove it!
+        }
+        if (this.waitingForOrdersFrom.length === 0) {
+            this.gamePhase = god.phases.kReadyForMarket;
+        }
     },
 
     newGame: function () {
-        this.gamePhase = 'recruit';
+        this.gameNumber++;
+        this.gamePhase = god.phases.kRecruit;
         this.gameParams = {...this.defaultGameParams};
-        this.newForest();
+        this.gameParams.year = (new Date()).getFullYear();
+        this.gameParams.endingYear = this.gameParams.year + this.gameParams.duration;
+        nature.newForest();
         temple.godSpeaksToPlayer('newGame');
     },
 
     startPlay : function() {
-        this.gamePhase = 'play';
-        this.newYear();     //  the first year
+        this.gamePhase = god.phases.kWaitingForOrders;
+        this.waitingForOrdersFrom = Object.keys(nature.players);
+        temple.godSpeaksToPlayer('newYear');        //  first year
     },
 
-    endGame : function() {
-        this.gamePhase = 'debrief';
+    endGame : function(reason) {
+        this.gamePhase = god.phases.kDebrief;
+        this.debriefInfo = {
+            reason : reason
+        }
         temple.godSpeaksToPlayer('endGame');
     },
 
-    newYear: function () {
-        this.processHarvest();
-        this.gameParams.gameYear++;
-        this.grow();
-        temple.godSpeaksToPlayer('newYear')
+    newYear : function() {
+        nature.grow();
+        this.gameParams.year++;
+        temple.godSpeaksToPlayer('newYear');
+        console.log(`****    New year ${this.gameParams.year}`);
     },
 
-    newForest: function () {
-        this.forest = [];
-        let index = 0;
+    endYear: async function () {
+        const endGame = await nature.processHarvest();        //  last act of the old year
+        temple.godSpeaksToPlayer('endYear');
 
-        for (let col = 0; col < this.gameParams.columns; col++) {
-            for (let row = 0; row < this.gameParams.rows; row++) {
-                const theAge = Math.floor(2 * this.gameParams.yearsToAdult * Math.random());
-                this.forest.push(new Tree(index, theAge));
-                index++;
-            }
+        if (endGame.end) {
+            this.endGame(endGame)
+        } else {
+            this.newYear();
         }
     },
 
-    grow: function () {
-        this.forest.forEach(tree => {
-            if (tree.age > 0) {
-                tree.age++;
-            } else {
-                if (Math.random() < tree.seedlingProbability) {
-                    tree.age = 1;
-                }
-            }
-        })
-    },
 
-    treeAgesArray: function () {
-        let out = [];
-        for (let i = 0; i < this.forest.length; i++) {
-            out.push(this.forest[i].age);
-        }
-        return out;
-    },
-
-
-    processHarvest: function () {
-        //  look at all players' requests, mark the appropriate trees
-        for (playerName in this.markedTrees) {
-            this.markedTrees[playerName].forEach(treeNumber => {
-                this.forest[treeNumber].harvesters.push(playerName);
-            })
-        }
-
-        this.forest.forEach(tree => {
-            tree.harvestMe();
-        })
-
-        this.markedTrees = {};      //  blank these puppies
-    },
 
     defaultGameParams: {
-        gameYear: 2025,
-        nPlayers: 1,
-        balanceStart: 10000,
-        adultTreePrice: 1000,
-        rows: 5,
-        columns: 6,
-        yearsToAdult: 10,
+        year: 2025,
+        endingYear: 0,
+        duration : 20,
+        balanceStart: 5000,
+        rows: 3,
+        columns: 10,
         harvestLimit: 10,
-        salary: 500,
-        harvestCost: 200,
-        seedlingProbability: 0.5,
+        salary: 800,
+        harvestCost: 400,
+        seedlingProbability: 0.75,
         maxHarvest: 10,
+        yearsToAdult: 10,
+        adultTreePrice: 1000,
+        minSalesAge : 4
     },
+
+    phases : {
+        kRecruit : "recruit",
+        kPlay : "play",
+        kNoGame : "nogame",
+        kDebrief : "debrief",
+        kReadyForMarket : "market",
+        kWaitingForOrders : "collecting orders",
+    },
+
 
 }
 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D3</title>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style>
+        .round {
+            fill: deepskyblue;
+        }
+
+        .bar {
+            stroke: black;
+            stroke-width: 4px
+        }
+    </style>
+</head>
+<body>
+<p title="this is a paragraph">A bunch of text for testing titles</p>
+<svg width="100" height="100" id="goal">
+    <g>
+        <circle cx="30" cy="50" r="20" class="round" title="a circle"></circle>
+        <path d="M20,50L40,50" class="bar"></path>
+    </g>
+    <g>
+        <circle cx="80" cy="50" r="20" class="round"></circle>
+        <path d="M70,50L90,50" class="bar"></path>
+    </g>
+</svg>
+
+<br>
+
+<svg width="300" height="100" id="attempt"></svg>
+</body>
+
+<script>
+    const theData = [
+        {x: 30, r: 20, len: 20, boff: -10},
+        {x: 70, r: 20, len: 20, boff: -10}
+    ];
+
+    function makeGroup() {
+        const iter = d3.select("#attempt")
+            .data(theData)
+            .join("g");
+
+        iter.next(g => {
+            g.append("circle")
+                .attr("cx", d => d.x)
+                .attr("cy", 50)
+                .attr("r", d => d.r)
+                .attr("class", "round")
+            g.append("path")
+                .attr("d", "M0,50L20,50")
+                .attr("class", "bar")
+        })
+    }
+
+    function groupOnly() {
+        let theGroup = D3.g();
+
+    }
+
+    window.onload = function () {
+        makeGroup();
+    }
+</script>
+
+</html>

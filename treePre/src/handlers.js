@@ -22,17 +22,19 @@ const handlers = {
 
     doJoin : function() {
 
-        const proposedusername = "foo"; //  todo: replace with getting it from a text box
+        const proposedusername = "Joachim"; //  todo: replace with getting it from a text box
         treePre.state.me = new Player(proposedusername);
         temple.playerSpeaksToGod("join");
 
-        treePre.gamePhase = "waiting";
+        treePre.gamePhase = treePre.phases.kWaiting;
         treePre.cycle();
     },
 
     doHarvest : function() {
         temple.playerSpeaksToGod("harvest");
-        treePre.gamePhase = "waiting for market";
+        treePre.gamePhase = treePre.phases.kWaitingForMarket;
+        if (singlePlayer) god.endYear();    //  god does not have to wait for everybody
+        treePre.cycle();
     },
 
     pressCountButton: function () {
@@ -40,13 +42,14 @@ const handlers = {
         treePre.cycle();
     },
 
-    markTree: function(tIndex) {
-        const where = treePre.markedTrees.indexOf(tIndex);
-        if (where != -1) {
-            treePre.markedTrees.splice(where,1);
+    markTreeSVG: function(event, data) {
+        const whichOne = treePre.markedTrees.indexOf(data.index);
+        if (whichOne != -1) {
+            treePre.markedTrees.splice(whichOne,1);
         } else if (treePre.markedTrees.length < god.gameParams.maxHarvest) {
-            treePre.markedTrees.push(tIndex);
+            treePre.markedTrees.push(data.index);
         }
+
         treePre.cycle();
     },
 

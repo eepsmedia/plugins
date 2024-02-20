@@ -1,41 +1,43 @@
 const temple = {
 
-    playerHearsGod : function(iMessage) {
+    playerHearsGod: function (iMessage) {
 
-        switch(iMessage.type) {
-            case 'newYear':
-                treePre.newYear(iMessage.content.players, iMessage.content.trees);
-                break;
+        switch (iMessage.type) {
             case 'newGame':
-                treePre.newGame();
-                    //      treePre.newGame(iMessage.content.players, iMessage.content.trees);
+                treePre.newGame(iMessage.content);
+                break;
+            case 'endYear':
+                treePre.endYear(iMessage.content);
+                break;
+            case 'newYear':
+                treePre.newYear(iMessage.content);
                 break;
             case 'endGame':
-                treePre.endGame();
+                treePre.endGame(iMessage.content);
                 break;
             default:
                 break;
         }
     },
 
-    playerSpeaksToGod : function(type) {
+    playerSpeaksToGod: function (type) {
         let message = {};
 
         switch (type) {
             case "join":
                 message = {
-                    type : 'join',
-                    content : {
-                        'player' : treePre.state.me
+                    type: 'join',
+                    content: {
+                        'player': treePre.state.me
                     }
                 }
                 break;
             case "harvest":
                 message = {
-                    type : 'harvest',
-                    content : {
-                        playerName : treePre.state.me.name,
-                        trees : treePre.markedTrees
+                    type: 'harvest',
+                    content: {
+                        playerName: treePre.state.me.name,
+                        trees: treePre.markedTrees
                     }
                 }
                 break;
@@ -46,9 +48,9 @@ const temple = {
         this.godHearsPlayer(message);
     },
 
-    godHearsPlayer : function(iMessage) {
+    godHearsPlayer: function (iMessage) {
 
-        switch(iMessage.type) {
+        switch (iMessage.type) {
             case 'join':
                 god.addPlayer(iMessage.content.player);
                 break;
@@ -61,31 +63,58 @@ const temple = {
         }
     },
 
-    godSpeaksToPlayer : function(type) {
+    godSpeaksToPlayer: function (type) {
         let message = {};
 
-        switch(type) {
-            case 'newYear':
+        switch (type) {
+            case 'newGame' :
                 message = {
-                    type : 'newYear',
-                    content : {
-                        players : god.players,
-                        trees : god.treeAgesArray(),
+                    type: 'newGame',
+                    content: {
+                        year: god.gameParams.year,
+                        players: nature.players,
+                        trees: nature.treeAgesAndIndicesArray(),
                     }
                 }
                 break;
 
-            case 'newGame' :
+            case 'endYear':
                 message = {
-                    type : 'newGame',
+                    type: 'endYear',
                     content: {
-                        players : god.players,
-                        trees : god.treeAgesArray(),
+                        year: god.gameParams.year,
+                        players: nature.players,
+                        trees: nature.treeAgesAndIndicesArray(),
+                        transactions: nature.currentTransactions,
+                    }
+                }
+                break;
+
+            case 'newYear':
+                message = {
+                    type: 'newYear',
+                    content: {
+                        year: god.gameParams.year,
+                        players: nature.players,
+                        trees: nature.treeAgesAndIndicesArray(),
+                        transactions: nature.currentTransactions,
                     }
                 }
                 break;
 
             case 'endGame' :
+                const content = {
+                    year: god.gameParams.year,
+                    players: nature.players,
+                    trees: nature.treeAgesAndIndicesArray(),
+                    transactions: nature.allTransactions
+                };
+
+                const endContent = {...god.debriefInfo, ...content};
+                message = {
+                    type: 'endGame',
+                    content: endContent
+                }
                 break;
 
             default:

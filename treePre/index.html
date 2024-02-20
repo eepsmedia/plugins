@@ -15,6 +15,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
           href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
 
     <link rel='stylesheet' type='text/css' href='styles/treePre.css'/>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <script src="src/treePre.js"></script>
     <script src="src/ui.js"></script>
@@ -23,8 +24,11 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     <script src="strings/localize.js"></script>
 
     <script src="src/god.js"></script>
+    <script src="src/nature.js"></script>
     <script src="src/temple.js"></script>
     <script src="src/Tree.js"></script>
+    <script src="src/Transaction.js"></script>
+    <script src="src/forestView.js"></script>
 
 
     <!-- These five scripts take care of the communication with CODAP  -->
@@ -39,7 +43,9 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <body>
 <div id="header"></div>
 <div id="status"></div>
+<div id="advice"></div>
 
+<svg id="forestSVG"></svg>
 <div id="forest"></div>
 
 <input type="button" id="joinButton" value="join!" onclick="handlers.doJoin()">
@@ -47,10 +53,14 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
 
 <hr>
-GOD...
+Aranyani...goddess of the forest
+<div id="godStatus"></div>
 <div id="god">
-    <input type="button" id="newGameButton" value="join!" onclick="god.newGame()">
-    <input type="button" id="newYearButton" value="join!" onclick="god.newYear()">
+    <input type="button" id="startPlayButton" value="join!" onclick="god.startPlay()">
+    <input type="button" id="newYearButton" value="turn!" onclick="god.endYear()">
+    <br>
+    <input type="button" id="newGameButton" value="new!" onclick="god.newGame()">
+    <input type="button" id="endGameButton" value="end!" onclick="god.endGame()">
 
 </div>
 
