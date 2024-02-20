@@ -4,6 +4,8 @@
     "mazuName": "mazu",
     "language": "English",
     "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
+    "currencySymbol" : "$",
+
     "staticStrings": {
       "automateCatchLabel": "automate? ",
       "playerNameLabelText": "what's your name? ",
@@ -81,7 +83,8 @@
       "twoFishResult": "🐟🐟 Your rating is two fish (out of five). <br>The total number of fish has gone down. Your fishing business survived, but the fish population is not healthy.",
       "oneFishResult": "🐟 Your rating is only one fish (out of five). <br>The total number of fish is very low. You might not be able to keep fishing for much longer.",
       "zeroFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>The fish will all soon be gone, and the fishing industry has collapsed.",
-      "bankruptFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>You have lost the game because these players have gone bankrupt: %@1."
+      "bankruptFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>You have lost the game because these players have gone bankrupt: %@1.",
+      "meanBalanceResult" : "At the end of the game, the average balance was %@1%@2"
     }
   }
 }

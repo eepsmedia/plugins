@@ -220,6 +220,7 @@ const ui = {
 
         return `
         Game over! Players got ${theGame.fishStars}/5 fish!
+        Their mean balance was ${DG.plugins.mazu.currencySymbol}${theGame.meanBalance}.
         `
     },
 }

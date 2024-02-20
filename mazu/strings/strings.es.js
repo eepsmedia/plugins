@@ -4,6 +4,8 @@ mazuStrings.es = {
         "mazuName": "mazu",
         "language": "español",
         "flags": "🇲🇽,🇪🇸,🇨🇷,🇨🇱",
+        "currencySymbol" : "€",
+
         "staticStrings": {
             "automateCatchLabel": "automatizar? ",
             "playerNameLabelText": "¿cómo se llama? ",
@@ -76,7 +78,8 @@ mazuStrings.es = {
             "twoFishResult": "🐟🐟 Tu puntuación es de dos peces (de cinco). <br>El número total de peces ha disminuido. Su negocio de pesca ha sobrevivido, pero la población de peces no es saludable.",
             "oneFishResult": "🐟 Tu puntuación es sólo un pez (de cinco). <br>El número total de peces es muy bajo. Es posible que no pueda seguir pescando durante mucho tiempo.",
             "zeroFishResult": "💀  Su puntuación es de cero peces (de cinco)! <br> Los peces pronto desaparecerán y la industria pesquera se ha hundido.",
-            "bankruptFishResult": "💀  Su puntuación es de cero peces (de cinco)! <br>Has perdido el juego porque estos jugadores han quebrado: %@1."
+            "bankruptFishResult": "💀  Su puntuación es de cero peces (de cinco)! <br>Has perdido el juego porque estos jugadores han quebrado: %@1.",
+            "meanBalanceResult" : "<br>Al final del juego, el saldo medio era de %@1%@2"
         },
         "everyoneHasFished": "Todos han pescado.",
         "waitingForYouToLogIn": "A la espera de que se conecte",

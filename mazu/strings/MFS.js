@@ -295,6 +295,8 @@ const MFS = {
             if (tMessageParts.length === 0) {
                 out = "...dang! We don't really know why!";
             } else {
+
+                tMessageParts.push(tr(DG.plugins.mazu.end.meanBalanceResult, DG.plugins.mazu.currencySymbol, theGame.meanBalance));
                 out = tMessageParts.join(" ");
             }
         } else {
@@ -345,19 +347,5 @@ const MFS = {
         let ix = 0;
         return s.replace(/%@[0-9]?/g, replacer);
     },
-}
-
-//  https://stackoverflow.com/questions/53879088/join-an-array-by-commas-and-and
-
-const makeCommaSeparatedString = (arr, useOxfordComma) => {
-    const listStart = arr.slice(0, -1).join(', ')
-    const listEnd = arr.slice(-1)
-    const conjunction = arr.length <= 1
-        ? ''
-        : useOxfordComma && arr.length > 2
-            ? ', and '
-            : ' and '
-
-    return [listStart, listEnd].join(conjunction)
 }
 

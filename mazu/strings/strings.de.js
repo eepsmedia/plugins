@@ -4,6 +4,8 @@ mazuStrings.de = {
         "mazuName": "Mazu",
         "language": "Deutsch",
         "flags": "🇩🇪, 🇦🇹, 🇨🇭",
+        "currencySymbol" : "€",
+
         "staticStrings": {
             "automateCatchLabel": "Automatisieren? ",
             "playerNameLabelText": "Wie ist dein Name? ",
@@ -77,7 +79,8 @@ mazuStrings.de = {
             "twoFishResult": "🐟🐟 Deine Bewertung ist zwei Fische (von fünf). <br>die Gesamtzahl der Fische ist zurückgegangen. Dein Fischereigeschäft hat überlebt, aber der Fischbestand ist nicht gesund.",
             "oneFishResult": "🐟 Deine Bewertung ist nur ein Fisch (von fünf). <br>die Gesamtzahl der Fische ist sehr gering. Du kannst möglicherweise nicht mehr lange fischen.",
             "zeroFishResult": "💀 Deine Bewertung ist null Fische (von fünf)! <br>Die Fische werden alle bald weg sein und die Fischereiindustrie ist zusammengebrochen.",
-            "bankruptFishResult": "💀 Deine Bewertung ist null Fische (von fünf)! <br>Du hast das Spiel verloren, weil diese Spieler bankrott gegangen sind: %@1."
+            "bankruptFishResult": "💀 Deine Bewertung ist null Fische (von fünf)! <br>Du hast das Spiel verloren, weil diese Spieler bankrott gegangen sind: %@1.",
+            "meanBalanceResult" : "<br>Am Ende des Spiels betrug der durchschnittliche Kontostand %@1%@2"
         },
         "everyoneHasFished": "Jeder hat Fische gefangen.",
         "waitingForYouToLogIn": "Man wartet darauf, dass Du Dich einloggst.",

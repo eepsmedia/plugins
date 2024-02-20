@@ -4,6 +4,7 @@ mazuStrings.en = {
         "mazuName" : "mazu",
         "language" : "English",
         "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
+        "currencySymbol" : "$",
 
         "staticStrings" : {
             "automateCatchLabel"    : "automate? ",
@@ -126,6 +127,7 @@ mazuStrings.en = {
             "oneFishResult": "🐟 Your rating is only one fish (out of five). <br>The total number of fish is very low. You might not be able to keep fishing for much longer.",
             "zeroFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>The fish will all soon be gone, and the fishing industry has collapsed.",
             "bankruptFishResult": "\uD83D\uDC80 Your rating is zero fish (out of five)! <br>You have lost the game because these players have gone bankrupt: %@1.",
+            "meanBalanceResult" : "<br>At the end of the game, the mean balance was %@1%@2"
         },
 
         "timeTerms" : {

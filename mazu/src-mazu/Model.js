@@ -157,14 +157,20 @@ class Model extends Object {
         //  update the local copy of the turns
         //  adding unitPrice, income, and after fields
 
+        let sumBalance = 0;
+
         thisYearsTurns.forEach((t) => {
             t.unitPrice = tUnitPrice;
             t.income = tUnitPrice * Number(t.caught);
             const tAfter = Number(t.before) + t.income - Number(t.expenses);
             t.after = Math.round(tAfter);
+            sumBalance += t.after;
             t.pop = newPopulation;
             t.player = t.playerName;
         });
+
+        //  for Andreas. This gets calculated in an end check; not the right place.
+        this.theGame["meanBalance"] = sumBalance / thisYearsTurns.length;
 
         let thePromises = [];       //  for updating the game in the firebaseDB
         let theItemValues = [];     //  for uploading into CODAP
@@ -192,6 +198,7 @@ class Model extends Object {
         //  Turns are done; see if the game is over; update the game.
 
         const endCheck = await this.checkForEndGame();   //  sets theGame.gameState if won or lost, also theGame.reason.
+
         if (endCheck.end) {
             this.theGame.outOfTime = endCheck.time;
             this.theGame.fishStars = endCheck.fishStars;
