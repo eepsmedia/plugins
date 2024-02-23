@@ -118,6 +118,8 @@ const nature = {
         for (let i = 0; i < this.forest.length; i++) {
             out.push({
                 age : this.forest[i].age,
+                hue : this.forest[i].hue,
+                seedlingProbability : this.forest[i].seedlingProbability,
                 index : i
             });
         }

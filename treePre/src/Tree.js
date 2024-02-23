@@ -5,6 +5,7 @@ class Tree {
         this.age = iAge;
         this.seedlingProbability = god.gameParams.seedlingProbability;
         this.harvesters = [];     //  no one has marked this tree
+        this.hue = (1/360) * Math.round(100 + Math.random() * 40);     //  green between 100° and 140°
     }
 
     treeValue() {
@@ -44,3 +45,6 @@ class Tree {
         return `<${Math.round(this.age, 2)}>`;
     }
 }
+
+
+

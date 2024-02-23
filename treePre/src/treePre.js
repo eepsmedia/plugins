@@ -86,7 +86,7 @@ const treePre = {
 
     constants: {
         pluginName: "treePre",
-        version: 0.001,
+        version: "2024a",
         dimensions: {height: 555, width: 444},
 
         defaultState: {
