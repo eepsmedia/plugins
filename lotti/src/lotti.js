@@ -92,14 +92,14 @@ const lotti = {
     },
 
     constants : {
-        version : "2024a",
+        version : "2024b",
         dsName : "lottiDataset",
         collName : "records",
 
         freshState : {
             optEmitToCODAP : false,
             optShowResults : false,
-            optShowAllScenarios : false,
+            optShowAllScenarios : true,
             scenarioName : null,
         },
     }
