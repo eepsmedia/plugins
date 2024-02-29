@@ -1,0 +1,60 @@
+{
+  "genova": {
+    "flags": "🇩🇪,🇦🇹,🇨🇭",
+    "language": "Deutsch",
+    "staticStrings": {
+      "newGameButton": "neues Spiel",
+      "sellButton": "Verkaufen Sie Policen und schicken Sie Schiffe",
+      "newYearButton": "neues Jahr",
+      "tagline": "Ein Spiel über Versicherungen und Handel",
+      "basicQuestion": "Was würden Sie verlangen, um eine Sendung im Wert von 10.000 Lira zu versichern?",
+      "premiumLabel": "Premiumpreis in Lira:",
+      "Genova": "Genua<img src='art/ship.png' width='40'>"
+    },
+    "attributeNames": {
+      "year": "Jahr",
+      "price": "Preis",
+      "ships": "Schiffe",
+      "sank": "versank",
+      "before": "davor",
+      "after": "danach",
+      "gameNumber": "Num"
+    },
+    "attributeDescriptions": {
+      "year": "Spieljahr",
+      "price": "der Preis, den Sie für eine Police festlegen",
+      "ships": "Wie viele Schiffe haben Ihre Police gekauft?",
+      "sank": "Wie viele Ihrer Schiffe sind gesunken?",
+      "before": "wie viel Geld Sie zu Beginn der Runde hatten",
+      "after": "wie viel Geld du am Ende der Runde hattest",
+      "gameNumber": "von welchem Spiel die Daten stammen"
+    },
+    "collectionNames": {
+      "games": "Spiele",
+      "years": "Jahre",
+      "items": "Artikel"
+    },
+    "frameTitle" : "das Versicherungsspiel",
+    "gameTitle": "Genua",
+    "datasetTitle": "Daten aus Genua",
+    "gamesCollectionName": "Spiele",
+    "yearsCollectionName": "Jahre",
+    "datasetDescription": "Eine Aufzeichnung der Leistung Ihres Unternehmens",
+    "currency": "Lira",
+    "ships": "Schiffe",
+    "ship": "Schiff",
+    "one": "eins",
+    "gameOverLoss": "<br>Du bist bankrott gegangen! Du hast das Jahr mit •1• Lira begonnen,<br> aber Sie mussten Ihren Kunden •2• Lira zahlen.<br> Vielleicht hätte man mehr verlangen sollen...",
+    "gameOverWin": "<br>Sie haben jetzt •1• Lira,<br> Sie haben also in •2• Jahren viel Geld verdient!<br> Das ist ein Sieg für eine genuesische Versicherungsgesellschaft!",
+    "ifYouCharge": "Wenn Sie •1• Lira als Prämie verlangen, kauft •2• Ihre Police.",
+    "waitingForPrice": "Warten auf einen passenden Preis...",
+    "howManySailed": "In •1• segelten •2• von Genua aus",
+    "pricePrompt": "Wenn Sie einen Preis gefunden haben, der Ihnen gefällt, klicken Sie auf „Polices verkaufen und Schiffe versenden“.<br> um Ihr Geld einzusammeln und •1• nach Brügge zu senden!",
+    "salesReport": "Sie haben •1• Policen für jeweils •2• verkauft,<br> für einen Gesamtumsatz von •3• Lira!",
+    "sinkReportOne": ", aber nur •1• zurückgegeben.<br> Sie mussten dem einen unglücklichen Versicherungsnehmer 2 Lira zahlen",
+    "sinkReportMany": ", aber nur •1• zurückgegeben.<br> Sie mussten •2• Lira an die •3• unglücklichen Versicherungsnehmer zahlen",
+    "sinkReportNone": ", und sie kamen alle zurück! Sie müssen keine Forderungen auszahlen!",
+    "currentStatus": "Das Jahr ist •1•. Sie haben •2• Lira auf der Bank.",
+    "shippingWillAppear": "Versandberichte werden hier angezeigt."
+  }
+}

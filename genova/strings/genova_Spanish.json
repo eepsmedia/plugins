@@ -1,0 +1,60 @@
+{
+  "genova": {
+    "flags": "🇲🇽,🇪🇸,🇨🇷,🇨🇱",
+    "language": "español",
+    "staticStrings": {
+      "newGameButton": "nuevo juego",
+      "sellButton": "vender pólizas y enviar barcos",
+      "newYearButton": "Año Nuevo",
+      "tagline": "Un juego sobre seguros y comercio.",
+      "basicQuestion": "¿Cuánto cobraría por asegurar un envío por valor de 10.000 liras?",
+      "premiumLabel": "Precio premium en liras:",
+      "Genova": "Génova <img src='art/ship.png' width='40'>"
+    },
+    "attributeNames": {
+      "year": "año",
+      "price": "precio",
+      "ships": "barcos",
+      "sank": "hundido",
+      "before": "saldo_antes",
+      "after": "saldo_después",
+      "gameNumber": "número"
+    },
+    "attributeDescriptions": {
+      "year": "año del juego",
+      "price": "el precio que usted establece para una póliza",
+      "ships": "¿Cuántos barcos compraron tu póliza?",
+      "sank": "¿Cuántos de tus barcos se hundieron?",
+      "before": "cuánto dinero tenías al comienzo del turno",
+      "after": "cuanto dinero tenías al final del turno",
+      "gameNumber": "de qué juego son los datos"
+    },
+    "collectionNames": {
+      "games": "juegos",
+      "years": "años",
+      "items": "elementos"
+    },
+    "frameTitle" : "Genova: juego de seguros",
+    "gameTitle": "Génova",
+    "datasetTitle": "datos de Génova",
+    "gamesCollectionName": "juegos",
+    "yearsCollectionName": "años",
+    "datasetDescription": "Un registro del desempeño de su empresa",
+    "currency": "lira",
+    "ships": "barcos",
+    "ship": "barco",
+    "one": "un",
+    "gameOverLoss": "<br>¡Quebraste! Empezaste el año con •1• lira,<br>pero tenías que pagar •2• liras a tus clientes.<br> Quizás deberías haber cobrado más...",
+    "gameOverWin": "<br>Ahora tienes •1• lira,<br> ¡Así que has ganado mucho dinero en •2• años!<br> ¡Eso es una victoria para una compañía de seguros genovesa!",
+    "ifYouCharge": "Si cobra •1• lira como prima, •2• comprará su póliza.",
+    "waitingForPrice": "Esperando un precio adecuado...",
+    "howManySailed": "En •1•, •2• zarpó de Génova",
+    "pricePrompt": "Cuando tengas un precio que te guste,<br>haz clic en &quot;Vender pólizas y enviar envíos&quot;<br>para recoger tu dinero y enviar •1• a Brujas!",
+    "salesReport": "Vendiste •1• pólizas por •2• cada una,<br> &gt;¡para unos ingresos totales de •3• liras!",
+    "sinkReportOne": ", pero solo •1• devolvió.<br>Tuviste que pagar •2• liras al desafortunado asegurado.",
+    "sinkReportMany": ", pero solo •1• devolvió.<br>Tuviste que pagar •2• liras a los •3• desafortunados asegurados.",
+    "sinkReportNone": "¡Y todos regresaron! ¡No tienes que pagar ningún reclamo!",
+    "currentStatus": "El año es •1•. Tienes •2• liras en el banco.",
+    "shippingWillAppear": "Los informes de envío aparecerán aquí."
+  }
+}
