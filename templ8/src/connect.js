@@ -15,8 +15,9 @@ const connect = {
         codapInterface.on('get', 'interactiveState', "", handlers.getPluginState);
 
         await codapInterface.init(this.iFrameDescriptor, handlers.restorePluginFromStore);
-        await this.registerForDragDropEvents();     //  if you're acce[ting drops!
+        await this.registerForDragDropEvents();     //  if you're accepting drops!
         await this.allowReorg();
+        await this.renameIFrame(localize.getString("frameTitle"));  //  localize the frame title
 
     },
 
@@ -35,6 +36,18 @@ const connect = {
         console.log(`registered for drags and drops. Index ${this.attributeDragDropSubscriberIndex}`);
 
     },
+
+    renameIFrame : async function(iName){
+        const theMessage = {
+            action : "update",
+            resource : "interactiveFrame",
+            values : {
+                title : iName,
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
 
     /**
      * Kludge to ensure that a dataset is reorg-able.

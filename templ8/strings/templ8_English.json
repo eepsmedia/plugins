@@ -4,7 +4,9 @@
     "language": "English",
     "staticStrings": {
       "counterButtonLabel" : "click to count"
-    }
+    },
+
+    "frameTitle" : "a template plugin"
 
   }
 }
