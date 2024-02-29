@@ -17,7 +17,7 @@ const connect = {
         await this.allowReorg();
 
         await this.makeNewDataset();
-
+        await this.renameIFrame(localize.getString("frameTitle"));
     },
 
     emitTransactions : async function(TT) {
@@ -29,6 +29,7 @@ const connect = {
             theValues = {};
             theValues[localize.getString("attributeNames.gameNumber")]  = god.gameNumber;
             theValues[localize.getString("attributeNames.year")]  = T.date;
+            theValues[localize.getString("attributeNames.biomass")]  = T.biomass;
             theValues[localize.getString("attributeNames.player")]  = T.pName;
             theValues[localize.getString("attributeNames.balance")]  = T.balance;
             theValues[localize.getString("attributeNames.what")]  = T.reason;
@@ -79,6 +80,7 @@ const connect = {
             values : {
                 type : 'graph',
                 name : "theGraph",
+                dataContext : treePre.constants.datasetName,
                 title : localize.getString("graphName"),
                 xAttributeName : localize.getString("attributeNames.year"),
                 yAttributeName : localize.getString("attributeNames.balance"),
@@ -88,6 +90,18 @@ const connect = {
         };
         await codapInterface.sendRequest( theMessage );
     },
+
+    renameIFrame : async function(iName){
+        const theMessage = {
+            action : "update",
+            resource : "interactiveFrame",
+            values : {
+                title : iName,
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
 
     getDataSetupObject: function () {
 
@@ -123,6 +137,12 @@ const connect = {
                         {
                             name: localize.getString("attributeNames.year"),
                             description: localize.getString("attributeDescriptions.year"),
+                            type : "numeric"
+                        },
+                        {
+                            name: localize.getString("attributeNames.biomass"),
+                            description: localize.getString("attributeDescriptions.biomass"),
+                            type : "numeric"
                         }
                     ]
                 },
