@@ -58,6 +58,37 @@ const connect = {
         await pluginHelper.initDataSet(theDSObject);
     },
 
+    makeCaseTableAppear : async function() {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'caseTable',
+                dataContext : treePre.constants.datasetName,
+                name : localize.getString("datasetTitle"),
+                cannotClose : false
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
+    makeGraphAppear : async function() {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'graph',
+                name : "theGraph",
+                title : localize.getString("graphName"),
+                xAttributeName : localize.getString("attributeNames.year"),
+                yAttributeName : localize.getString("attributeNames.balance"),
+                legendAttributeName : localize.getString("attributeNames.gameNumber"),
+                cannotClose : false
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
     getDataSetupObject: function () {
 
         return {

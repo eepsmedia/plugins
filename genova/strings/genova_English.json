@@ -1,0 +1,61 @@
+{
+  "genova": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "newGameButton" : "new game",
+      "sellButton" : "sell policies and send ships",
+      "newYearButton" : "new year",
+      "tagline" : "A game about insurance and trade",
+      "basicQuestion" : "What would you charge to insure a shipment worth 10000 lira?",
+      "premiumLabel" : "Premium price in lira:",
+      "Genova" : "Genova <img src='art/ship.png' width='40'>"
+    },
+    "attributeNames" : {
+      "year" : "year",
+      "price" : "price",
+      "ships" : "ships",
+      "sank" : "sank",
+      "before" : "bank_before",
+      "after" : "bank_after",
+      "gameNumber" : "num"
+    },
+    "attributeDescriptions" : {
+      "year" : "year",
+      "price" : "the price you set for a policy",
+      "ships" : "how many ships bought your policy",
+      "sank" : "how many of your ships sank",
+      "before" : "how much money you had at the start of the turn",
+      "after" : "how much money you had at the end of the turn",
+      "gameNumber" : "which game the data are from"
+    },
+    "collectionNames" : {
+      "games" : "games",
+      "years" : "years",
+      "items" : "items"
+    },
+    "frameTitle" : "Genova insurance game",
+    "gameTitle" : "Genova",
+    "datasetTitle" : "Genova data",
+    "gamesCollectionName" : "games",
+    "yearsCollectionName" : "years",
+    "datasetDescription" : "A record of your company's performance",
+
+    "currency" : "lira",
+    "ships" : "ships",
+    "ship" : "ship",
+    "one" : "one",
+    "currentStatus" : "The year is •1•. You have •2• lira in the bank.",
+    "shippingWillAppear" : "Shipping reports will appear here.",
+    "gameOverLoss" : "<br>You went bankrupt! You started the year with •1• lira,<br>but you had to pay •2• lira to your customers.<br>Maybe you should have charged more...",
+    "gameOverWin" : "<br>You now have •1• lira,<br>so you have made a lot of money in •2• years!<br>That's a win for a Genovese insurance company!",
+    "ifYouCharge" : "If you charge •1• lira as a premium, •2• will buy your policy.",
+    "waitingForPrice" : "Waiting for a suitable price...",
+    "howManySailed" : "In •1•, •2• sailed from Genova",
+    "pricePrompt" : "When you have a price you like,<br>click \"•1•\"<br>to collect your money and send •2• to Bruges!",
+    "salesReport" : "You sold •1• policies for •2• each,<br>for a total revenue of •3• lira!",
+    "sinkReportOne" : ", but only •1• returned.<br>You had to pay •2• lira to the one unfortunate policyholder",
+    "sinkReportMany" : ", but only •1• returned.<br>You had to pay •2• lira to the •3• unfortunate policyholders",
+    "sinkReportNone" : ", and they all returned! You don't have to pay out any claims!"
+  }
+}

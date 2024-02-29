@@ -4,13 +4,14 @@ const connect = {
 
     init: async function () {
         await codapInterface.init(this.iFrameDescription, null);
-        await pluginHelper.initDataSet(this.genovaDataSetupObject);
+        await pluginHelper.initDataSet(this.getGenovaDataSetupObject());
 
         //  restore the state if possible
 
         this.state = await codapInterface.getInteractiveState();
 
         this.makeIframeMutable();
+        this.renameIFrame(localize.getString("frameTitle"));
     },
 
     emitData: function (iValues) {
@@ -24,6 +25,31 @@ const connect = {
 
     dataSent: function () {
         console.log(`record set to CODAP`);
+    },
+
+    makeCaseTableAppear :  async function(context, name) {
+        const theMessage = {
+            action : "create",
+            resource : "component",
+            values : {
+                type : 'caseTable',
+                dataContext : context,
+                name : name,
+                cannotClose : true
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
+    },
+
+    renameIFrame : async function(iName){
+        const theMessage = {
+            action : "update",
+            resource : "interactiveFrame",
+            values : {
+                title : iName,
+            }
+        };
+        await codapInterface.sendRequest( theMessage );
     },
 
     makeIframeMutable: function () {
@@ -41,73 +67,88 @@ const connect = {
     },
 
     iFrameDescription: {
-        version: '2022b',
+        version: k.kVersion,
         name: 'Genova',
         title: 'Genova insurance simulation',
         dimensions: {width: 444, height: 555},
         preventDataContextReorg: false,
     },
 
-    genovaDataSetupObject: {
-        name: k.kGenovaDatasetName,
-        title: k.kGenovaDatasetTitle,
-        description: 'Genova Data',
-        collections: [
-            {
-                name: k.kGenovaTopLevelCollectionName,
-                labels: {
-                    singleCase: "game",
-                    pluralCase: "games",
-                    setOfCasesWithArticle: "a set of games"
-                },
+    getGenovaDataSetupObject: function() {
 
-                attrs: [ // note how this is an array of objects.
-                    {name: "num", type: 'categorical', precision: 0, description: "game number"},
-                ]
-            },
-            {
-                name: k.kGenovaBottomLevelCollectionName,
-                parent: k.kGenovaTopLevelCollectionName,
-                labels: {
-                    singleCase: "year",
-                    pluralCase: "years",
-                    setOfCasesWithArticle: "a set of years"
-                },
-                attrs: [ // note how this is an array of objects.
-                    {name: "year", type: 'numeric', precision: 0, description: "year"},
-                    {name: "price", type: 'numeric', precision: 0, unit: "lira", description: "price for a policy"},
-                    {
-                        name: "bank-before",
-                        type: 'numeric',
-                        precision: 0,
-                        unit: "lira",
-                        description: "balance at the beginning of the year"
+        return {
+            name: k.kGenovaDatasetName,
+            title: localize.getString("datasetTitle"),
+            description: 'Genova Data',
+            collections: [
+                {
+                    name: localize.getString("gamesCollectionName"),
+                    labels: {
+                        singleCase: "game",
+                        pluralCase: "games",
+                        setOfCasesWithArticle: "a set of games"
                     },
-                    {
-                        name: "bank-after",
-                        type: 'numeric',
-                        precision: 0,
-                        unit: "lira",
-                        description: "balance at the end of the year"
-                    },
-                    {
-                        name: "boats",
-                        type: 'numeric',
-                        precision: 0,
-                        unit: "boats",
-                        description: "number of boats that bought your policy"
-                    },
-                    {
-                        name: "sank",
-                        type: 'numeric',
-                        precision: 0,
-                        unit: "boats",
-                        description: "number of boats that sank"
-                    },
-                ]
 
-            }
-        ]
+                    attrs: [ // note how this is an array of objects.
+                        {
+                            name: localize.getString("attributeNames.gameNumber"),
+                            type: 'categorical',
+                            description: localize.getString("attributeDescriptions.gameNumber")
+                        },
+                    ]
+                },
+                {
+                    name: localize.getString("yearsCollectionName"),
+                    parent: localize.getString("gamesCollectionName"),
+                    labels: {
+                        singleCase: "year",
+                        pluralCase: "years",
+                        setOfCasesWithArticle: "a set of years"
+                    },
+                    attrs: [ // note how this is an array of objects.
+                        {
+                            name: localize.getString("attributeNames.year"),
+                            type: 'numeric', precision: 0,
+                            description: localize.getString("attributeDescriptions.year")
+                        },
+                        {
+                            name: localize.getString("attributeNames.price"),
+                            type: 'numeric', precision: 0,
+                            unit: localize.getString("currency"),
+                            description: localize.getString("attributeDescriptions.price")
+                        },
+                        {
+                            name: localize.getString("attributeNames.before"),
+                            type: 'numeric',
+                            precision: 0,
+                            unit: localize.getString("currency"),
+                            description: localize.getString("attributeDescriptions.before")                        },
+                        {
+                            name: localize.getString("attributeNames.after"),
+                            type: 'numeric',
+                            precision: 0,
+                            unit: localize.getString("currency"),
+                            description: localize.getString("attributeDescriptions.after")
+                        },
+                        {
+                            name: localize.getString("attributeNames.ships"),
+                            type: 'numeric',
+                            precision: 0,
+                            unit: localize.getString("ships"),
+                            description: localize.getString("attributeDescriptions.ships")
+                        },
+                        {
+                            name: localize.getString("attributeNames.sank"),
+                            type: 'numeric',
+                            precision: 0,
+                            unit: localize.getString("ships"),
+                            description: localize.getString("attributeDescriptions.sank")
+                        },
+                    ]
+
+                }
+            ]
+        }
     },
 
 }

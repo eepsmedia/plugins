@@ -2,7 +2,7 @@
 
 <!--
 
-Local w/CODAP:         http://localhost/codap/static/dg/en/cert/index.html?di=http://localhost/plugins/genova/
+Local w/CODAP:         http://localhost/~tim/codap/static/dg/en/cert/index.html?di=http://localhost/~tim/plugins/genova/
 
 
 -->
@@ -26,46 +26,42 @@ Local w/CODAP:         http://localhost/codap/static/dg/en/cert/index.html?di=ht
     <script src="../../common/src/pluginHelper.js"></script>
     <script src="../../common/src/pluginLang.js"></script>
 
-    <script src="src/genovaConstants.js"></script>
     <script src="src/genova.js"></script>
     <script src="src/connect.js"></script>
+
+    <script src="strings/localize.js"></script>
+    <script src="strings/genova_English.json"></script>
+
 
 </head>
 <body onload="genova.start()">
 
-<h1>Genova <img src="art/ship.png" width="40"></h1>
-<p>A game about insurance and trade</p>
+<h1 id="Genova">Genova <img src="art/ship.png" width="40"></h1>
+<p id="tagline">A game about insurance and trade</p>
 <div id="status"></div>
 
 <div id="gameOverDiv">
     <p id="gameOverText"></p>
-    <button onclick="genova.start()">new game</button>
+    <input type="button" id="newGameButton" onclick="genova.start()">
 </div>
 
 <div id="playingDiv">
-    <p>What would you charge to insure a shipment worth 10000 lira?</p>
-    <label for="premium">Premium price in lira:</label>
+    <p id="basicQuestion">This is the basic prompt</p>
+    <label id="premiumLabel" for="premium">Premium price in lira:</label>
     <input id="premium" type="number" oninput="genova.setPrice()">
     <p id="marketReport"></p>
 
     <div id="sellDiv">
         <p id="sellPrompt">This is the sell prompt!</p>
-        <button onclick="genova.sellAndSend();">Sell policies and send ships</button>
+        <input type="button" id="sellButton" onclick="genova.sellAndSend();">
     </div>
-
-<!--
-    <div id="sendDiv">
-        <p>When you are ready, send the ships to Bruges! Hope for good weather!</p>
-        <button onclick="">Send ships</button>
-    </div>
--->
 
     <p id="damageReport"></p>
 </div>
 
 <div id="credits">
     <p>
-        <a href="https://www.flaticon.com/free-icons/ship" title="ship icons">Ship icons created by Freepik -
+        <a href="https://www.flaticon.com/free-icons/ship" title="ship icons">Ship icon created by Freepik at
             Flaticon</a>
     </p>
 </div>
