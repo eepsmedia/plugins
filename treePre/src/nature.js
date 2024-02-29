@@ -3,6 +3,8 @@
 const nature = {
 
     forest: [],
+    initialBiomass : null,
+    biomass : 0,
     markedTrees: {},       //  arrays of marked trees, keyed by name
 
     players: {},        //  Players, keyed by name (Player instances)
@@ -10,12 +12,24 @@ const nature = {
     currentTransactions : [],
 
     initialize : function() {
-
     },
 
     grow: function () {
-        let growth = [];
+        this.biomass = this.calculateBiomass();
+        const growthFactor = this.biomass / this.initialBiomass;
+
+        //  let growth = [];
         this.forest.forEach(tree => {
+
+            if (tree.age > 0) {
+                tree.age += growthFactor;
+            } else {
+                if (Math.random() < growthFactor) {
+                    tree.age = Math.random();   //  seedlings between 0 and 1 year old
+                }
+            }
+
+/*
             const myNeighbors = this.neighbors(tree);
             let neighborAgeSum = 0;
             myNeighbors.forEach(t => {
@@ -23,32 +37,54 @@ const nature = {
             });
             const neighborAgeFactor = neighborAgeSum / 4 / god.gameParams.yearsToAdult;
             growth[tree.index] = 0.6 + 0.4 * neighborAgeFactor;
+*/
         })
 
-        console.log(`age factors : ${growth.map((a) => a.toFixed(2))}`);
+        //  console.log(`age factors : ${growth.map((a) => a.toFixed(2))}`);
 
+/*
         this.forest.forEach(tree => {
             if (tree.age > 0) {
                 tree.age += growth[tree.index];
             } else {
                 if (Math.random() < tree.seedlingProbability) {
-                    tree.age = Math.random();
+                    tree.age = Math.random();   //  seedlings between 0 and 1 year old
                 }
             }
         })
+*/
+
+        console.log(`year ${god.gameParams.year} growth factor ${growthFactor}`);
+
+    },
+
+    calculateBiomass : function() {
+        let biomass = 0;
+
+        this.forest.forEach( tree => {
+            biomass += tree.age;
+        })
+        return biomass;
     },
 
     newForest: function () {
+        let ages = [];
+        const nTrees = god.gameParams.columns * god.gameParams.rows;
+        for (let i = 0; i < nTrees; i++) {ages[i] = i * 1.5 * god.gameParams.yearsToAdult / nTrees}
+        ages.scramble();
+
         this.forest = [];
         let index = 0;
 
         for (let col = 0; col < god.gameParams.columns; col++) {
             for (let row = 0; row < god.gameParams.rows; row++) {
-                const theAge = Math.floor(2 * god.gameParams.yearsToAdult * Math.random());
+                const theAge = ages[index];
                 this.forest.push(new Tree(index, theAge));
                 index++;
             }
         }
+        this.initialBiomass = this.calculateBiomass();
+        this.biomass = this.calculateBiomass();
     },
 
     processHarvest: async function () {
@@ -78,7 +114,9 @@ const nature = {
         let balanceSum = 0;
 
         for (const pName in this.players) {
-            const salary = new Transaction(pName, god.gameParams.year, -god.gameParams.salary, "salary");
+            const salary = new Transaction(
+                pName, god.gameParams.year, this.biomass, -god.gameParams.salary, "salary"
+            );
             this.currentTransactions.push(salary);
             balanceSum += salary.balance;
             if (salary.balance < 0) {
@@ -126,3 +164,17 @@ const nature = {
         return out;
     },
 }
+
+/**
+ * Scramble the values in the array. Defined at the bottom of `scrambler.js`.
+ */
+Array.prototype.scramble = function () {
+    const N = this.length;
+
+    for (let i = 0; i < N; i++) {
+        const other = Math.floor(Math.random() * N);
+        const temp = this[i];
+        this[i] = this[other];
+        this[other] = temp;
+    }
+};

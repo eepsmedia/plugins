@@ -1,0 +1,57 @@
+{
+  "treePre": {
+    "flags": "🇲🇽,🇪🇸,🇨🇷,🇨🇱",
+    "language": "español",
+    "staticStrings": {
+      "joinButton": "unirse",
+      "endTurnButton": "Fin del turno",
+      "newGameButton": "nuevo juego",
+      "endGameButton": "terminar este juego",
+      "startPlayButton": "empezar a jugar",
+      "newYearButton": "Año Nuevo"
+    },
+    "advice": {
+      "noGame": "No estás en un juego. Ingresa un ID de juego y presiona Unirse.",
+      "waitingForMarket": "Esperando a que la diosa del bosque venda tus árboles",
+      "play": "Haga clic en los árboles que desea marcar para la cosecha."
+    },
+    "attributeNames": {
+      "year": "año",
+      "player": "jugador(a)",
+      "what": "actividad",
+      "income": "ingresos",
+      "expense": "gastos",
+      "balance": "balance",
+      "gameNumber": "número de juego"
+    },
+    "attributeDescriptions": {
+      "year": "año del juego",
+      "player": "nombre del jugador(a)",
+      "what": "qué",
+      "income": "ingresos por la venta de árboles",
+      "expense": "gastos",
+      "balance": "balance",
+      "gameNumber": "numero de juego"
+    },
+    "collectionNames": {
+      "games": "juegos",
+      "years": "años",
+      "items": "elementos"
+    },
+    "debrief": {
+      "time": "Este juego debía terminar en •1•",
+      "broke": "Este juego terminó porque •1• quebró.",
+      "meanBalance": "El saldo promedio fue de •1••2•"
+    },
+    "frameTitle" : "Guardabosque",
+    "gameTitle": "Guardabosque",
+    "datasetTitle": "registros forestales",
+    "datasetDescription": "¡Informe del contable del viaje! ¿Qué dinero recibió y gastó?",
+    "playerStatusText": "•1•: •2• tiene saldo •5••3•, •4• marcado para cosecha",
+    "harvestNoneText": "no cosechar árboles",
+    "harvestSomeTreesText": "cosecha •1•",
+    "trees": "árboles",
+    "tree": "árbol",
+    "moneySymbol": "€"
+  }
+}

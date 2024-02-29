@@ -83,6 +83,7 @@ const temple = {
                     type: 'endYear',
                     content: {
                         year: god.gameParams.year,
+                        biomass : nature.biomass,
                         players: nature.players,
                         trees: nature.treeAgesAndIndicesArray(),
                         transactions: nature.currentTransactions,
@@ -95,6 +96,7 @@ const temple = {
                     type: 'newYear',
                     content: {
                         year: god.gameParams.year,
+                        biomass : nature.biomass,
                         players: nature.players,
                         trees: nature.treeAgesAndIndicesArray(),
                         transactions: nature.currentTransactions,
@@ -105,6 +107,7 @@ const temple = {
             case 'endGame' :
                 const content = {
                     year: god.gameParams.year,
+                    biomass : nature.biomass,
                     players: nature.players,
                     trees: nature.treeAgesAndIndicesArray(),
                     transactions: nature.allTransactions

@@ -5,17 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8f6aa61c-59ba-47c1-9392-7a61e9a9fe1e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../treePre/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/src/connect.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/src/god.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/src/handlers.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/src/treePre.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/src/ui.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/strings/localize.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/strings/treePre_English.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../treePre/styles/treePre.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../treePre/strings/treePre_German.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../treePre/strings/treePre_Spanish.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../scrambler/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strings/localize.js" beforeDir="false" afterPath="$PROJECT_DIR$/strings/localize.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/Transaction.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/Transaction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/Tree.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/Tree.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/connect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/god.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/god.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/handlers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/nature.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/nature.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/temple.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/temple.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/treePre.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/treePre.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/strings/treePre_English.json" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/strings/treePre_English.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/styles/treePre.css" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/styles/treePre.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +77,7 @@
       <workItem from="1692654462717" duration="3167000" />
       <workItem from="1706526280514" duration="2567000" />
       <workItem from="1707677295721" duration="2271000" />
+      <workItem from="1709219060714" duration="1487000" />
     </task>
     <servers />
   </component>

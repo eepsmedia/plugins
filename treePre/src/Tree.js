@@ -31,8 +31,12 @@ class Tree {
                 money /= (doom + 1);
             }
             this.harvesters.forEach( playerName => {
-                const transIn = new Transaction(playerName, god.gameParams.year, money, "harvest");
-                const transOut = new Transaction(playerName, god.gameParams.year, -god.gameParams.harvestCost, "wages");
+                const transIn = new Transaction(
+                    playerName, god.gameParams.year, nature.biomass, money, "harvest"
+                );
+                const transOut = new Transaction(
+                    playerName, god.gameParams.year, nature.biomass, -god.gameParams.harvestCost, "wages"
+                );
                 nature.currentTransactions.push(transOut);
                 nature.currentTransactions.push(transIn);
             })

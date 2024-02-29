@@ -20,6 +20,14 @@ body {
     margin : 16px;
 }
 
+#userControls {
+    display: inline;
+}
+
+#showDataButton {
+    float: right;
+}
+
 .tree {
     width : 35px;
     padding: 2px;

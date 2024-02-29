@@ -103,7 +103,8 @@ const ui = {
                 `${treePre.markedTrees.length} ${localize.getString('trees')}` ;
 
             out = localize.getString("playerStatusText",
-                treePre.state.year, treePre.state.me.name, balance, marked);
+                treePre.state.year, treePre.state.me.name, balance, marked,
+                localize.getString("moneySymbol"));
         }
         return out;
     },
@@ -113,7 +114,9 @@ const ui = {
 
         switch (treePre.gamePhase) {
             case treePre.phases.kNoGame:
-                out = localize.getString("advice.noGame");
+                out = singlePlayer ?
+                    localize.getString("advice.noGameSingle"):
+                    localize.getString("advice.noGame");
                 break;
             case treePre.phases.kPlay:
                 out = localize.getString("advice.play");

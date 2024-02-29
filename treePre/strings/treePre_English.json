@@ -8,15 +8,18 @@
       "newGameButton" : "new game",
       "endGameButton" : "end this game",
       "startPlayButton" : "start play",
+      "showDataButton" : "show data",
       "newYearButton" : "new year"
     },
     "advice" : {
       "noGame" : "You are not in a game. Enter a game ID and press Join.",
+      "noGameSingle" : "Click 'new game' to start.",
       "waitingForMarket" : "Waiting for the forest goddess to sell your trees",
       "play" : "Click on the trees you want to mark for harvest"
     },
     "attributeNames" : {
       "year" : "year",
+      "biomass" : "biomass",
       "player" : "player",
       "what" : "what",
       "income" : "income",
@@ -26,6 +29,7 @@
     },
     "attributeDescriptions" : {
       "year" : "year",
+      "biomass" : "biomass",
       "player" : "player",
       "what" : "what",
       "income" : "income",
@@ -43,10 +47,12 @@
       "broke" : "This game ended because •1• went broke",
       "meanBalance" : "The average balance was •1••2•"
     },
+    "frameTitle" : "Forester",
     "gameTitle" : "Forester",
     "datasetTitle" : "forestry records",
     "datasetDescription" : "Your bookkeeper's report! What money did you receive and spend?",
-    "playerStatusText" :  "•1•: •2• has balance €•3•, •4• marked for harvest",
+    "graphTitle" : "Forestry financial graph",
+    "playerStatusText" :  "•1•: •2• has balance •5••3•, •4• marked for harvest",
     "harvestNoneText" : "harvest no trees",
     "harvestSomeTreesText" : "harvest •1•",
     "trees" : "trees",

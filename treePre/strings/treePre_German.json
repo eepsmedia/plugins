@@ -1,0 +1,62 @@
+{
+  "treePre": {
+    "flags": "🇩🇪,🇦🇹,🇨🇭",
+    "language": "Deutsch",
+    "staticStrings": {
+      "joinButton": "Mach mit",
+      "endTurnButton": "Endrunde",
+      "newGameButton": "neues Spiel",
+      "endGameButton": "Beende dieses Spiel",
+      "startPlayButton": "Beginnen Sie mit dem Spielen",
+      "newYearButton": "neues Jahr",
+      "showDataButton": "Daten anzeigen"
+    },
+    "advice": {
+      "noGame": "Du bist nicht in einem Spiel. Geben Sie eine Spiel-ID ein und klicken Sie auf „Beitreten“.",
+      "waitingForMarket": "Ich warte darauf, dass die Waldgöttin deine Bäume verkauft",
+      "play": "Klicken Sie auf die Bäume, die Sie zur Ernte markieren möchten",
+      "noGameSingle": "Klicken Sie zum Starten auf „Neues Spiel“."
+    },
+    "attributeNames": {
+      "year": "Spieljahr",
+      "player": "Spieler",
+      "what": "Was",
+      "income": "Einkunft",
+      "expense": "Aufwand",
+      "balance": "Gleichgewicht",
+      "gameNumber": "Spielnummer",
+      "biomass": "Biomasse"
+    },
+    "attributeDescriptions": {
+      "year": "Spieljahr",
+      "player": "Name des Spielers",
+      "what": "Was",
+      "income": "Einkommen aus dem Baumverkauf",
+      "expense": "Aufwand",
+      "balance": "Gleichgewicht",
+      "gameNumber": "Spielnummer",
+      "biomass": "Biomasse"
+    },
+    "collectionNames": {
+      "games": "Spiele",
+      "years": "Jahre",
+      "items": "Artikel"
+    },
+    "debrief": {
+      "time": "Dieses Spiel sollte im Jahr •1• enden.",
+      "broke": "Dieses Spiel endete, weil •1• pleite ging",
+      "meanBalance": "Der durchschnittliche Saldo betrug •1••2•"
+    },
+    "gameTitle": "Förster",
+    "datasetTitle": "forstwirtschaftliche Aufzeichnungen",
+    "datasetDescription": "Der Bericht Ihres Buchhalters! Welches Geld haben Sie erhalten und ausgegeben?",
+    "playerStatusText": "•1•: •2• hat den Saldo •5••3•, •4• zur Ernte markiert",
+    "harvestNoneText": "Keine Bäume ernten",
+    "harvestSomeTreesText": "Ernte •1•",
+    "trees": "Bäume",
+    "tree": "Baum",
+    "moneySymbol": "€",
+    "frameTitle": "Förster",
+    "graphTitle": "Finanzdiagramm für die Forstwirtschaft"
+  }
+}

@@ -47,7 +47,9 @@ const god = {
         this.gamePhase = god.phases.kRecruit;
         this.gameParams = {...this.defaultGameParams};
         this.gameParams.year = (new Date()).getFullYear();
-        this.gameParams.endingYear = this.gameParams.year + this.gameParams.duration;
+        this.gameParams.endingYear =
+            this.gameParams.year + this.gameParams.durationMin
+            + Math.round(Math.random() * this.gameParams.durationVar);
         nature.newForest();
         temple.godSpeaksToPlayer('newGame');
     },
@@ -89,7 +91,8 @@ const god = {
     defaultGameParams: {
         year: 2025,
         endingYear: 0,
-        duration : 20,
+        durationMin : 18,
+        durationVar : 7,
         balanceStart: 5000,
         rows: 3,
         columns: 10,

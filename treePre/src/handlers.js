@@ -37,6 +37,11 @@ const handlers = {
         treePre.cycle();
     },
 
+    doShowData : function() {
+        connect.makeCaseTableAppear();
+        connect.makeGraphAppear();
+    },
+
     pressCountButton: function () {
         treePre.state.buttonCount++;
         treePre.cycle();

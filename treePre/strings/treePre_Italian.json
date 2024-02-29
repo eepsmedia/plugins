@@ -1,0 +1,62 @@
+{
+  "treePre": {
+    "flags": "🇮🇹",
+    "language": "Italiano",
+    "staticStrings": {
+      "joinButton": "giuntura",
+      "endTurnButton": "fine turno",
+      "newGameButton": "nuovo gioco",
+      "endGameButton": "finisci questo gioco",
+      "startPlayButton": "iniziare a giocare",
+      "newYearButton": "Capodanno",
+      "showDataButton": "mostrare i dati"
+    },
+    "advice": {
+      "noGame": "Non sei in un gioco. Inserisci un ID gioco e premi Partecipa.",
+      "waitingForMarket": "Aspettando che la dea della foresta venda i tuoi alberi",
+      "play": "Clicca sugli alberi che vuoi contrassegnare per il raccolto",
+      "noGameSingle": "Fai clic su &quot;Nuovo gioco&quot; per iniziare."
+    },
+    "attributeNames": {
+      "year": "anno",
+      "player": "giocatore",
+      "what": "Che cosa",
+      "income": "reddito",
+      "expense": "spese",
+      "balance": "bilancia",
+      "gameNumber": "numero di gioco",
+      "biomass": "biomassa"
+    },
+    "attributeDescriptions": {
+      "year": "anno",
+      "player": "giocatore",
+      "what": "Che cosa",
+      "income": "reddito",
+      "expense": "spese",
+      "balance": "bilancia",
+      "gameNumber": "numero di gioco",
+      "biomass": "biomassa"
+    },
+    "collectionNames": {
+      "games": "Giochi",
+      "years": "anni",
+      "items": "elementi"
+    },
+    "debrief": {
+      "time": "La partita doveva finire tra •1•",
+      "broke": "Questa partita è finita perché •1• è andato in fallimento",
+      "meanBalance": "Il saldo medio è stato •1••2•"
+    },
+    "gameTitle": "Guardaboschi",
+    "datasetTitle": "registri forestali",
+    "datasetDescription": "Il rapporto del tuo contabile! Quanti soldi hai ricevuto e speso?",
+    "playerStatusText": "•1•: •2• ha il saldo •5••3•, •4• destinato al raccolto",
+    "harvestNoneText": "non raccogliere alberi",
+    "harvestSomeTreesText": "raccolto •1•",
+    "trees": "alberi",
+    "tree": "albero",
+    "moneySymbol": "$",
+    "frameTitle": "Guardaboschi",
+    "graphTitle": "Grafico finanziario forestale"
+  }
+}

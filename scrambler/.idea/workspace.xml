@@ -5,9 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c44578a-f35c-4a86-88c7-ae363c3e14a7" name="Changes" comment="scrambler 1.5. Language json source files">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/Programmer Guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/Programmer Guide.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../testimate/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../testimate/src/handlers.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../treePre/strings/treePre_German.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../treePre/strings/treePre_Spanish.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../templ8/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../templ8/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/connect.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/connect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/god.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/god.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/handlers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/handlers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/nature.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/nature.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/treePre.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/treePre.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/src/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/src/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/strings/treePre_English.json" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/strings/treePre_English.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../treePre/styles/treePre.css" beforeDir="false" afterPath="$PROJECT_DIR$/../treePre/styles/treePre.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +39,7 @@
         <entry key="$PROJECT_DIR$/.." value="c22c56d99effaf81cb5dc13c407d29b4a96966ab" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../common" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -62,29 +71,29 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;arbor-d3&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/tim/Sites/plugins/scrambler&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;copyright&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/tim/Sites/plugins/scrambler",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "copyright",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -109,6 +118,7 @@
       <workItem from="1688500263237" duration="7346000" />
       <workItem from="1688766943771" duration="1840000" />
       <workItem from="1705862353438" duration="1964000" />
+      <workItem from="1709232222972" duration="82000" />
     </task>
     <task id="LOCAL-00001" summary="re-adding a bunch of files esp scrambler">
       <created>1634523392257</created>
