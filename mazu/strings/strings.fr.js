@@ -4,8 +4,6 @@ mazuStrings.fr = {
         "mazuName": "mazu",
         "language": "Français",
         "flags": "🇫🇷",
-        "currencySymbol" : "€",
-
         "staticStrings": {
             "automateCatchLabel": "automatiser? ",
             "playerNameLabelText": "Comment t'appelles-tu ? ",
@@ -50,7 +48,7 @@ mazuStrings.fr = {
             "game": "code",
             "result": "résultats de la partie (combien de poisson vous avez obtenu parmi les 5)",
             "level": "difficulté",
-            "itemID": ""
+            "itemID": "itemID"
         },
         "mazuFrameTitle": "Mazu, Déesse de la mer",
         "fishFrameTitle": "Partie de pêche",
@@ -80,7 +78,7 @@ mazuStrings.fr = {
             "oneFishResult": "🐟 votre score n'est que de un poisson (sur cinq). <br>Le nombre total de poisson est très bas. Vous ne pourrez peut être plus pêcher pour très longtemps.",
             "zeroFishResult": "💀 Votre score est de zero poisson (sur cinq)! <br>Les poissons auront bientôt tous disparu, et l'industrie de la pêche s'est effondrée.",
             "bankruptFishResult": "💀 Votre score est de zero poisson (sur cinq)! <br>Vous avez perdu la partie car ces joueurs ont fait faillite: %!1.",
-            "meanBalanceResult" : "<br>À la fin du jeu, le solde moyen était de %@2 %@1"
+            "meanBalanceResult": "<br>À la fin du jeu, le solde moyen était de %@2 %@1"
         },
         "everyoneHasFished": "Tout le monde a pêché.",
         "waitingForYouToLogIn": "En attente de vôtre connexion",
@@ -89,7 +87,7 @@ mazuStrings.fr = {
         "seenFishReport": "Cette année, vous avez vu %@1 poissons.",
         "caughtAllReport": "<br>Vous avez attrapé les %@1 poissons que vous vouliez pêcher.",
         "caughtSomeReport": "<br>Vous vouliez pêcher %@1 poissons, mais vois n'en n'avez attrapé que %@2.",
-        "recentTurnReport": "Vôtre dernier tours complet était à l'année %@1.<br>Vous avez vu %@2 poissons, vous en vouliez %@3 et en avez attrapé %@4.<br>Vous les avez vendu pour $%@5 chacun pour un total de $%@6.",
+        "recentTurnReport": "Vôtre dernier tours complet était à l'année %@1.<br>Vous avez vu %@2 poissons, vous en vouliez %@3 et en avez attrapé %@4.<br>Vous les avez vendu pour %@7%@5 chacun pour un total de %@7%@6.",
         "buttons": {
             "leaveGameButton": "quitter la partie",
             "sellFishButton": "vendre du poisson",
@@ -111,6 +109,7 @@ mazuStrings.fr = {
             "hour": "heures",
             "day": "jours",
             "month": "mois"
-        }
+        },
+        "currencySymbol": "€"
     }
 }

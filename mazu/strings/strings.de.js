@@ -89,7 +89,7 @@ mazuStrings.de = {
         "seenFishReport": "Diese Jahr hast Du %@1 Fische gesehen. ",
         "caughtAllReport": "Du hast %@1 Fische gefangen, wie Du wolltest. ",
         "caughtSomeReport": "<br> Du wolltest %@1 Fische, hast Du aber nur %@2 gefangen. ",
-        "recentTurnReport": "Deine letzte volle Runde war das Jahr %@1.<br>Du hast %@2 Fische gesehen, wolltest %@3 und hast %@4 gefangen.<br>Du hast sie für jeweils $%@5 verkauft, also insgesamt $%@6.",
+        "recentTurnReport": "Deine letzte volle Runde war das Jahr %@1.<br>Du hast %@2 Fische gesehen, wolltest %@3 und hast %@4 gefangen.<br>Du hast sie für jeweils %@7%@5 verkauft, also insgesamt %@7%@6.",
         "buttons": {
             "leaveGameButton": "Spiel verlassen",
             "sellFishButton": "Fisch verkaufen",

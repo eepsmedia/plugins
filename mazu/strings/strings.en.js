@@ -113,7 +113,7 @@ mazuStrings.en = {
         "seenFishReport" :  "This year, you saw %@1 fish.",
         "caughtAllReport" : "<br>You caught the %@1 fish you wanted.",
         "caughtSomeReport" : "<br>You wanted %@1 fish, but caught only %@2.",
-        "recentTurnReport" : "Your last full turn was year %@1.<br>You saw %@2 fish, wanted %@3 and caught %@4.<br>You sold them for $%@5 each for a total of $%@6.",
+        "recentTurnReport" : "Your last full turn was year %@1.<br>You saw %@2 fish, wanted %@3 and caught %@4.<br>You sold them for %@7%@5 each for a total of %@7%@6.",
 
         //  end of game text
 
