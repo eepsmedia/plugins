@@ -230,7 +230,8 @@ const MFS = {
         const out = tr(
             DG.plugins.mazu.recentTurnReport,
             iTurn.year, iTurn.seen, iTurn.want,
-            iTurn.caught, iTurn.unitPrice, iTurn.income
+            iTurn.caught, iTurn.unitPrice, iTurn.income,
+            DG.plugins.mazu.currencySymbol
         );
         return out;
     },

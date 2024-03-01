@@ -74,6 +74,7 @@ const temple = {
                         year: god.gameParams.year,
                         players: nature.players,
                         trees: nature.treeAgesAndIndicesArray(),
+                        forestDimensions: god.gameParams.forestDimensions,
                     }
                 }
                 break;

@@ -34,7 +34,7 @@ const treePre = {
         this.gamePhase = treePre.phases.kRecruit;
         this.state.year = iContent.year;
         this.treeData = [...iContent.trees];
-        forestView.newForest();
+        forestView.newForest(iContent.forestDimensions);
 
         if (singlePlayer) {
             handlers.doJoin();

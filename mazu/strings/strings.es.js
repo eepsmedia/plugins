@@ -88,7 +88,7 @@ mazuStrings.es = {
         "seenFishReport": "Este año, Ud ha visto %@1 peces.",
         "caughtAllReport": "<br>Ha cogido el %@1 de peces que quería.",
         "caughtSomeReport": "<br>Quería %@1 de peces, pero pescó solo %@2.",
-        "recentTurnReport": "Su último turno completo fue el año %@1.<br>Vio %@2 peces, quizo %@3 y pescó %@4.<br>Los vendió por $%@5 cada uno para un total de $%@6.",
+        "recentTurnReport": "Su último turno completo fue el año %@1.<br>Vio %@2 peces, quizo %@3 y pescó %@4.<br>Los vendió por %@7%@5 cada uno para un total de %@7%@6.",
         "buttons": {
             "leaveGameButton": "salir del juego",
             "sellFishButton": "vender pescado",
