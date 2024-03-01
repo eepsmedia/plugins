@@ -5,9 +5,9 @@
     "staticStrings": {
       "newGameButton": "nuovo gioco",
       "sellButton": "vendere polizze e inviare navi",
-      "newYearButton": "Capodanno",
-      "tagline": "Un gioco sull&#39;assicurazione e sul commercio",
-      "basicQuestion": "Quanto ti costerebbe assicurare una spedizione del valore di 10000 lire?",
+      "newYearButton": "nuovo anno",
+      "tagline": "Un gioco sull'assicurazione e sul commercio",
+      "basicQuestion": "Quanto prenderesti per assicurare una spedizione  di 10000 lire?",
       "premiumLabel": "Prezzo premium in lire:",
       "Genova": "Genova<img src='art/ship.png' width='40'>"
     },
@@ -15,7 +15,7 @@
       "year": "anno",
       "price": "prezzo",
       "ships": "navi",
-      "sank": "affondò",
+      "sank": "affondato",
       "before": "banca_prima",
       "after": "banca_dopo",
       "gameNumber": "numero"
@@ -25,7 +25,7 @@
       "price": "il prezzo che hai fissato per una polizza",
       "ships": "quante navi hanno acquistato la tua polizza",
       "sank": "quante delle vostre navi sono affondate",
-      "before": "quanti soldi avevi all&#39;inizio del turno",
+      "before": "quanti soldi avevi all'inizio del turno",
       "after": "quanti soldi avevi alla fine del turno",
       "gameNumber": "da quale gioco provengono i dati"
     },
@@ -34,7 +34,6 @@
       "years": "anni",
       "items": "elementi"
     },
-    "frameTitle" : "Genova: gioco dell'assicurazione",
     "gameTitle": "Genova",
     "datasetTitle": "Dati di Genova",
     "gamesCollectionName": "Giochi",
@@ -44,7 +43,7 @@
     "ships": "navi",
     "ship": "nave",
     "one": "uno",
-    "gameOverLoss": "<br>Sei andato in bancarotta! Hai iniziato l&#39;anno con •1• lira,<br> ma dovevi pagare •2• lire ai tuoi clienti.<br> Forse avresti dovuto pagare di più...",
+    "gameOverLoss": "<br>Sei andato in bancarotta! Hai iniziato l'anno con •1• lira,<br> ma dovevi pagare •2• lire ai tuoi clienti.<br> Forse avresti dovuto pagare di più...",
     "gameOverWin": "<br>Ora hai •1• lira,<br> quindi hai guadagnato un sacco di soldi in •2• anni!<br> Una vittoria per una compagnia assicurativa genovese!",
     "ifYouCharge": "Se addebiti •1• lira come premio, •2• acquisterà la tua polizza.",
     "waitingForPrice": "In attesa di un prezzo adeguato...",
@@ -54,7 +53,7 @@
     "sinkReportOne": ", ma solo •1• è tornato.<br> Dovevi pagare •2• lire allo sfortunato assicurato",
     "sinkReportMany": ", ma solo •1• è tornato.<br> Dovevi pagare •2• lire agli sfortunati assicurati •3•",
     "sinkReportNone": ", e tornarono tutti! Non devi pagare alcun risarcimento!",
-    "currentStatus": "L&#39;anno è •1•. Hai •2• lire in banca.",
+    "currentStatus": "L'anno è •1•. Hai •2• lire in banca.",
     "shippingWillAppear": "I rapporti sulla spedizione verranno visualizzati qui."
   }
 }
