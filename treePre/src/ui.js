@@ -7,7 +7,7 @@ const ui = {
         this.headerDiv = document.getElementById("header");
         this.statusDiv = document.getElementById("status");
         this.adviceDiv = document.getElementById("advice");
-        this.forestDiv = document.getElementById("forest");
+        this.forestDiv = document.getElementById("forestSVG");
         this.harvestButton = document.getElementById("harvestButton");
 
         forestView.initialize(d3.select("#forestSVG"));
@@ -32,10 +32,12 @@ const ui = {
 
         document.getElementById("joinButton").style.display =
             (treePre.gamePhase === treePre.phases.kRecruit) ? 'block' : 'none';
-        document.getElementById("forest").style.display =
+        document.getElementById("forestSVG").style.display =
             (treePre.gamePhase === treePre.phases.kPlay ||
                 treePre.gamePhase === treePre.phases.kWaitingForMarket) ? 'block' : 'none';
         document.getElementById("harvestButton").style.display =
+            (treePre.gamePhase === treePre.phases.kPlay) ? 'block' : 'none';
+        document.getElementById("showDataButton").style.display =
             (treePre.gamePhase === treePre.phases.kPlay) ? 'block' : 'none';
 
         document.getElementById("startPlayButton").style.display =
@@ -66,7 +68,7 @@ const ui = {
     },
 
     /**
-     * View of the forest entirely in buttons. Good for debugging.
+     * View of the forestSVG entirely in buttons. Good for debugging.
      *
      * @returns {string}
      */

@@ -86,16 +86,12 @@ const god = {
         }
     },
 
-
-
     defaultGameParams: {
         year: 2025,
         endingYear: 0,
         durationMin : 18,
         durationVar : 7,
         balanceStart: 5000,
-        rows: 3,
-        columns: 10,
         harvestLimit: 10,
         salary: 1500,
         harvestCost: 100,
@@ -103,7 +99,14 @@ const god = {
         maxHarvest: 10,
         yearsToAdult: 10,
         adultTreePrice: 1000,
-        minSalesAge : 4
+        minSalesAge : 4,
+        forestDimensions: {
+            rows: 3,
+            columns: 10,
+            cellWidth : 30,
+            cellHeight : 50,
+            ranFrac : 0.5
+        }
     },
 
     phases : {

@@ -42,18 +42,6 @@ const nature = {
 
         //  console.log(`age factors : ${growth.map((a) => a.toFixed(2))}`);
 
-/*
-        this.forest.forEach(tree => {
-            if (tree.age > 0) {
-                tree.age += growth[tree.index];
-            } else {
-                if (Math.random() < tree.seedlingProbability) {
-                    tree.age = Math.random();   //  seedlings between 0 and 1 year old
-                }
-            }
-        })
-*/
-
         console.log(`year ${god.gameParams.year} growth factor ${growthFactor}`);
 
     },
@@ -68,16 +56,21 @@ const nature = {
     },
 
     newForest: function () {
+        const kColumns = god.gameParams.forestDimensions.columns;
+        const kRows = god.gameParams.forestDimensions.rows;
+
+        //  create array of ages and scramble it
         let ages = [];
-        const nTrees = god.gameParams.columns * god.gameParams.rows;
+        const nTrees = kColumns * kRows;
         for (let i = 0; i < nTrees; i++) {ages[i] = i * 1.5 * god.gameParams.yearsToAdult / nTrees}
         ages.scramble();
 
+        //  make .forest array and make new Trees to fill it
         this.forest = [];
         let index = 0;
 
-        for (let col = 0; col < god.gameParams.columns; col++) {
-            for (let row = 0; row < god.gameParams.rows; row++) {
+        for (let col = 0; col < kColumns; col++) {
+            for (let row = 0; row < kRows; row++) {
                 const theAge = ages[index];
                 this.forest.push(new Tree(index, theAge));
                 index++;
@@ -154,12 +147,9 @@ const nature = {
     treeAgesAndIndicesArray: function () {
         let out = [];
         for (let i = 0; i < this.forest.length; i++) {
-            out.push({
-                age : this.forest[i].age,
-                hue : this.forest[i].hue,
-                seedlingProbability : this.forest[i].seedlingProbability,
-                index : i
-            });
+            let theTree = {...this.forest[i]};
+            theTree.harvesters = null;
+            out.push(theTree);
         }
         return out;
     },

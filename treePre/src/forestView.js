@@ -1,6 +1,6 @@
 const forestView = {
 
-    forest: null,      //      the D3 object
+    forestSVG: null,      //      the D3 object
     aCircle: null,
     cellWidth: 0,
     cellHeight: 0,
@@ -10,49 +10,62 @@ const forestView = {
     theTrees: [],
 
     initialize: function (iBigSVG) {
-        this.forest = iBigSVG;
-        },
+        this.forestSVG = iBigSVG;
+    },
 
     /**
      * Add the sub-svgs for the trees, give them IDs based on their indices.
      */
-    newForest: function () {
+    newForest: function (iDims) {
+
+        this.cellHeight = iDims.cellHeight;
+        this.cellWidth = iDims.cellWidth;
+
+        const viewWidth = (iDims.columns + iDims.ranFrac) * this.cellWidth;
+        const viewHeight = (iDims.rows + iDims.ranFrac) * this.cellHeight;
+        const viewBoxString = `0 0 ${viewWidth} ${viewHeight}`;
+
+        this.forestSVG.attr("viewBox", viewBoxString);
 
         //  todo: set these as a result of a notification; we do not know God directly!
 
-        this.cellWidth = 30;
-        this.cellHeight = 50;
-        this.rows = god.gameParams.rows;
-        this.columns = god.gameParams.columns;
+        this.theTrees = [...treePre.treeData];      //  a clone
 
-        this.forest.selectAll('svg > *').remove();
+        //  this.forestSVG.selectAll('svg > *').remove();
 
-        this.forest
-            .selectAll('svg')
-            .data(treePre.treeData)
-            .join("svg")       //      was "rect"
-            .attr("x", (d, i) => {return this.cellWidth * (i % this.columns)})
-            .attr("y", (d, i) => {return this.cellHeight * (Math.floor(i / this.columns))})
-            .attr("width", (d, i) => {return this.cellWidth})
-            .attr("height", (d, i) => {return this.cellHeight})
-            .append("g")
-            .append("path")
-            .attr("d", (d, i) => {return this.getTreePath(d)})
-            .attr("title", (d, i) => {return `age ${d.age}`})
+        d3.select('#forestDisplay')
+            .selectAll('path')
+            .data(this.theTrees)
+            .join("path")       //      was "rect"
+            .attr("d", (d, i) => {
+                return this.getTreePath(d)
+            })
+            .attr("title", (d, i) => {
+                return `age ${d.age}`
+            })
             .on("click", handlers.markTreeSVG)
-            .attr("class", (d, i) => {return treePre.markedTrees.includes(i) ? "markSVG" : "treeSVG"})
-
+            .attr("class", (d, i) => {
+                return treePre.markedTrees.includes(i) ? "markSVG" : "treeSVG"
+            })
     },
 
     updateD3Forest: function () {
-        this.forest
-            .selectAll('svg')
-            .data(treePre.treeData)
-            .join("svg")       //      was "rect"
-            .select("path")
-            .attr("d", (d, i) => {return this.getTreePath(d)})
-            .attr("fill", (d, i) => {return forestView.getColor(d)})
-            .attr("class", (d, i) => {return treePre.markedTrees.includes(i) ? "markSVG" : "treeSVG"})
+        this.theTrees = [...treePre.treeData];      //  a clone
+
+
+        d3.select('#forestDisplay')
+            .selectAll('path')
+            .data(this.theTrees)
+            .join("path")       //      was "rect"
+            .attr("d", (d, i) => {
+                return this.getTreePath(d)
+            })
+            .attr("fill", (d, i) => {
+                return forestView.getColor(d)
+            })
+            .attr("class", (d, i) => {
+                return treePre.markedTrees.includes(i) ? "markSVG" : "treeSVG"
+            })
 
     },
 
@@ -64,7 +77,7 @@ const forestView = {
      *
      * @param d     data from the tree. using d.age and d.hue.
      */
-    getColor : function(d) {
+    getColor: function (d) {
         const ageFactor = d.age / god.gameParams.yearsToAdult;
         const light = 0.75;
         const dark = 0.60;
@@ -79,44 +92,24 @@ const forestView = {
         return rgbString;
     },
 
-    getTreeGroup : function(d) {
-
-        let group = d3.group();
-    },
-
     getTreePath: function (d) {
+        let left = d.x;
+        let top = d.y;
         let path = d3.path();
         const age = d.age > god.gameParams.yearsToAdult ? god.gameParams.yearsToAdult : d.age;
         const propSize = age / god.gameParams.yearsToAdult;
         const width = this.cellWidth * propSize;
-        const left = (this.cellWidth - width) / 2;
+        left += (this.cellWidth - width) / 2;
 
-        path.moveTo(left, this.cellHeight)
-        path.lineTo(left + width, this.cellHeight)
-        path.lineTo(left + width / 2, this.cellHeight * (1 - propSize))
+        path.moveTo(left, top + this.cellHeight)
+        path.lineTo(left + width, top + this.cellHeight)
+        path.lineTo(left + width / 2, top + this.cellHeight * (1 - propSize))
         path.closePath();
 
         const out = path.toString();
         return out;
     },
 
-    getMarkPath : function(d) {
-        let out = "";
-        if (treePre.markedTrees.includes(d.index)) {
-            const centerX = this.cellWidth / 2;
-            const centerY = this.cellHeight / 2;
-            const size = 5;
-
-            let path = d3.path();
-            path.moveTo(centerX - size, centerY - size);
-            path.lineTo(centerX + size, centerY + size);
-            path.moveTo(centerX - size, centerY + size);
-            path.lineTo(centerX + size, centerY - size);
-            out = path.toString();
-        }
-
-        return out;
-    },
 
     redraw: function () {
         this.updateD3Forest();
@@ -147,12 +140,24 @@ function HSVtoRGB(h, s, v) {
     q = v * (1 - f * s);
     t = v * (1 - (1 - f) * s);
     switch (i % 6) {
-        case 0: r = v, g = t, b = p; break;
-        case 1: r = q, g = v, b = p; break;
-        case 2: r = p, g = v, b = t; break;
-        case 3: r = p, g = q, b = v; break;
-        case 4: r = t, g = p, b = v; break;
-        case 5: r = v, g = p, b = q; break;
+        case 0:
+            r = v, g = t, b = p;
+            break;
+        case 1:
+            r = q, g = v, b = p;
+            break;
+        case 2:
+            r = p, g = v, b = t;
+            break;
+        case 3:
+            r = p, g = q, b = v;
+            break;
+        case 4:
+            r = t, g = p, b = v;
+            break;
+        case 5:
+            r = v, g = p, b = q;
+            break;
     }
     return {
         r: Math.round(r * 255),

@@ -7,23 +7,37 @@ body {
     color : white;
 }
 
-#headerDiv {
-    font-size : 40px;
+#header {
+    font-size : 24px;
     font-weight: bold;
+    padding : 4px;
     background-color: white;
     color: forestgreen;
 }
 
+#status {
+    padding: 4px;
+}
+
+#advice {
+    padding : 4px;
+}
+
 #forestSVG {
     background-color: rosybrown;
-    padding : 16px;
-    margin : 16px;
+    padding : 6px;
+    margin-top : 16px;
+    margin-bottom : 16px;
 }
 
 #userControls {
-    display: inline;
+    display: block;
+    height: 24px;
 }
 
+#harvestButton {
+    float: left;
+}
 #showDataButton {
     float: right;
 }
