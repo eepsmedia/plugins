@@ -23,9 +23,10 @@
       "what": "Che cosa",
       "income": "reddito",
       "expense": "spese",
-      "balance": "bilancia",
+      "balance": "saldo",
       "gameNumber": "numero di gioco",
-      "biomass": "biomassa"
+      "biomass": "biomassa",
+      "endBalance": "saldo_final"
     },
     "attributeDescriptions": {
       "year": "anno",
@@ -33,9 +34,10 @@
       "what": "Che cosa",
       "income": "reddito",
       "expense": "spese",
-      "balance": "bilancia",
+      "balance": "saldo",
       "gameNumber": "numero di gioco",
-      "biomass": "biomassa"
+      "biomass": "biomassa",
+      "endBalance": "saldo_final"
     },
     "collectionNames": {
       "games": "Giochi",
@@ -55,7 +57,7 @@
     "harvestSomeTreesText": "raccolto •1•",
     "trees": "alberi",
     "tree": "albero",
-    "moneySymbol": "$",
+    "moneySymbol": "€",
     "frameTitle": "Guardaboschi",
     "graphTitle": "Grafico finanziario forestale"
   }

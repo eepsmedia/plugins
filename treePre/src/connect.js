@@ -143,7 +143,7 @@ const connect = {
                             name: localize.getString("attributeNames.endBalance"),
                             description: localize.getString("attributeDescriptions.endBalance"),
                             type : "numeric",
-                            formula : "last(balance)"
+                            formula : `last(${localize.getString("attributeNames.balance")})`
                         },
                         {
                             name: localize.getString("attributeNames.biomass"),

@@ -19,6 +19,7 @@
     },
     "attributeNames": {
       "year": "Spieljahr",
+      "endBalance" : "Endsaldo",
       "player": "Spieler",
       "what": "Was",
       "income": "Einkunft",
@@ -29,6 +30,7 @@
     },
     "attributeDescriptions": {
       "year": "Spieljahr",
+      "endBalance" : "Endsaldo",
       "player": "Name des Spielers",
       "what": "Was",
       "income": "Einkommen aus dem Baumverkauf",
