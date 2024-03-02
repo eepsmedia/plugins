@@ -83,7 +83,7 @@ const connect = {
                 dataContext : treePre.constants.datasetName,
                 title : localize.getString("graphName"),
                 xAttributeName : localize.getString("attributeNames.year"),
-                yAttributeName : localize.getString("attributeNames.balance"),
+                yAttributeName : localize.getString("attributeNames.endBalance"),
                 legendAttributeName : localize.getString("attributeNames.gameNumber"),
                 cannotClose : false
             }
@@ -138,6 +138,12 @@ const connect = {
                             name: localize.getString("attributeNames.year"),
                             description: localize.getString("attributeDescriptions.year"),
                             type : "numeric"
+                        },
+                        {
+                            name: localize.getString("attributeNames.endBalance"),
+                            description: localize.getString("attributeDescriptions.endBalance"),
+                            type : "numeric",
+                            formula : "last(balance)"
                         },
                         {
                             name: localize.getString("attributeNames.biomass"),

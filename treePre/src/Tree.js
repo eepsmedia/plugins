@@ -7,21 +7,46 @@ class Tree {
         this.harvesters = [];     //  no one has marked this tree
         this.hue = (1/360) * Math.round(100 + Math.random() * 40);     //  green between 100° and 140°
 
-        this.makeCoordinates(index);
+        //  dimensions: x and y of base, h and w.
+        this.dim = this.makeBaseCoordinates();
+        this.sizeFromAge();     //  sets h and w
+
     }
 
-    makeCoordinates(index) {
+    makeBaseCoordinates() {
         const kColumns = god.gameParams.forestDimensions.columns;
         const kRows = god.gameParams.forestDimensions.rows;
         const kHeight = god.gameParams.forestDimensions.cellHeight;
         const kWidth = god.gameParams.forestDimensions.cellWidth;
 
-        const bX = (index % kColumns) * kWidth;
-        const bY = Math.floor(index / kColumns) * kHeight;
+        //  base x and y, upper left of its grid cell
+        const bX = (this.index % kColumns) * kWidth;
+        const bY = Math.floor(this.index / kColumns) * kHeight;
 
-        this.x = bX + Math.random() * kWidth * god.gameParams.forestDimensions.ranFrac;
-        this.y = bY + Math.random() * kHeight * god.gameParams.forestDimensions.ranFrac;
+        return {
+            x : Math.round(bX + Math.random() * kWidth * god.gameParams.forestDimensions.ranFrac + kWidth/2),
+            y : Math.round(bY + Math.random() * kHeight * god.gameParams.forestDimensions.ranFrac + kHeight)
+        }
     }
+
+    growBy(idAge) {
+        this.age += idAge;
+        this.sizeFromAge();
+    }
+
+    sizeFromAge( ) {
+        let vAge = this.age;    //  virtual age, linearly related to height
+        if (this.age > god.gameParams.yearsToAdult) {
+            vAge = god.gameParams.yearsToAdult + 0.2 * (god.gameParams.yearsToAdult - this.age);
+        }
+        const smallest = 0.2;
+        const theFrac = this.age / god.gameParams.yearsToAdult;
+        const fracTwo = (smallest + (1-smallest) * theFrac);
+
+        this.dim.h = Math.round(fracTwo * god.gameParams.forestDimensions.cellHeight),
+        this.dim.w = Math.round(fracTwo * god.gameParams.forestDimensions.cellWidth)
+    }
+
 
     treeValue() {
         let out = 0;
@@ -56,6 +81,7 @@ class Tree {
                 nature.currentTransactions.push(transIn);
             })
             this.age = 0;
+            this.sizeFromAge();
         }
         this.harvesters = [];
     }

@@ -19,6 +19,7 @@
     },
     "attributeNames" : {
       "year" : "year",
+      "endBalance" : "endBalance",
       "biomass" : "biomass",
       "player" : "player",
       "what" : "what",
@@ -29,6 +30,7 @@
     },
     "attributeDescriptions" : {
       "year" : "year",
+      "endBalance" : "endBalance",
       "biomass" : "biomass",
       "player" : "player",
       "what" : "what",

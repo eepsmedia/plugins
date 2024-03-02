@@ -87,7 +87,7 @@ const treePre = {
     constants: {
         pluginName: "treePre",
         datasetName : "forestryDataset",
-        version: "2024b",
+        version: "2024c",
         dimensions: {height: 555, width: 444},
 
         defaultState: {

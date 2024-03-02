@@ -22,22 +22,13 @@ const nature = {
         this.forest.forEach(tree => {
 
             if (tree.age > 0) {
-                tree.age += growthFactor;
+                tree.growBy(growthFactor);
             } else {
-                if (Math.random() < growthFactor) {
-                    tree.age = Math.random();   //  seedlings between 0 and 1 year old
+                if (Math.random() < growthFactor) {     //  probability of seedling sprouting
+                    tree.growBy(Math.random());   //  seedlings between 0 and 1 year old
                 }
             }
 
-/*
-            const myNeighbors = this.neighbors(tree);
-            let neighborAgeSum = 0;
-            myNeighbors.forEach(t => {
-                neighborAgeSum += (t.age > god.gameParams.yearsToAdult ? god.gameParams.yearsToAdult : t.age);
-            });
-            const neighborAgeFactor = neighborAgeSum / 4 / god.gameParams.yearsToAdult;
-            growth[tree.index] = 0.6 + 0.4 * neighborAgeFactor;
-*/
         })
 
         //  console.log(`age factors : ${growth.map((a) => a.toFixed(2))}`);

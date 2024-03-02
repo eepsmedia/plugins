@@ -48,8 +48,8 @@ const god = {
         this.gameParams = {...this.defaultGameParams};
         this.gameParams.year = (new Date()).getFullYear();
         this.gameParams.endingYear =
-            this.gameParams.year + this.gameParams.durationMin
-            + Math.round(Math.random() * this.gameParams.durationVar);
+            this.gameParams.year + this.gameParams.durationMin + 5;
+            //  + Math.round(Math.random() * this.gameParams.durationVar);
         nature.newForest();
         temple.godSpeaksToPlayer('newGame');
     },

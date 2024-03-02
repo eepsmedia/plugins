@@ -8,11 +8,11 @@ body {
 }
 
 #header {
-    font-size : 24px;
+    font-size : 16px;
     font-weight: bold;
     padding : 4px;
-    background-color: white;
-    color: forestgreen;
+    background-color: forestgreen;
+    color: yellow;
 }
 
 #status {

@@ -52,6 +52,10 @@ const forestView = {
     updateD3Forest: function () {
         this.theTrees = [...treePre.treeData];      //  a clone
 
+        this.theTrees.sort((a, b) => {
+            return a.dim.y - b.dim.y;
+        });
+
 
         d3.select('#forestDisplay')
             .selectAll('path')
@@ -64,7 +68,7 @@ const forestView = {
                 return forestView.getColor(d)
             })
             .attr("class", (d, i) => {
-                return treePre.markedTrees.includes(i) ? "markSVG" : "treeSVG"
+                return treePre.markedTrees.includes(d.index) ? "markSVG" : "treeSVG"
             })
 
     },
@@ -93,17 +97,15 @@ const forestView = {
     },
 
     getTreePath: function (d) {
-        let left = d.x;
-        let top = d.y;
+        const dim = d.dim;
         let path = d3.path();
-        const age = d.age > god.gameParams.yearsToAdult ? god.gameParams.yearsToAdult : d.age;
-        const propSize = age / god.gameParams.yearsToAdult;
-        const width = this.cellWidth * propSize;
-        left += (this.cellWidth - width) / 2;
 
-        path.moveTo(left, top + this.cellHeight)
-        path.lineTo(left + width, top + this.cellHeight)
-        path.lineTo(left + width / 2, top + this.cellHeight * (1 - propSize))
+        path.moveTo(dim.x, dim.y);                  //  base of tree
+        if (dim.h > 0) {
+            path.lineTo(dim.x - dim.w / 2, dim.y);
+            path.lineTo(dim.x, dim.y - dim.h);      //  top of tree
+            path.lineTo(dim.x + dim.w / 2, dim.y);
+        }
         path.closePath();
 
         const out = path.toString();
