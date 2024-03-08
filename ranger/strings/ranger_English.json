@@ -1,0 +1,17 @@
+{
+  "ranger": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "counterButtonLabel" : "click to count",
+      "selectModeLabel" : "select",
+      "setAsideModeLabel" : "set aside",
+      "noneModeLabel" : "none"
+    },
+
+    "pluginName" : "ranger",
+    "frameTitle" : "ranger: restrict cases using a time-like attribute",
+    "rangeGraphTitle" : "range graph"
+
+  }
+}
