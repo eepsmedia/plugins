@@ -1,3 +1,10 @@
+/**
+ * Class Tree.
+ * Maintains a single Tree.
+ * A lot of this is about the visual representation.
+ *
+ * `nature.forest` is an array of Trees.
+ */
 class Tree {
 
     constructor(index, iAge) {
@@ -13,6 +20,12 @@ class Tree {
 
     }
 
+    /**
+     * Find x and y view coordinates for the base of the tree.
+     * This is random within a rectangle determined by row and column.
+     *
+     * @returns {{x: number, y: number}}
+     */
     makeBaseCoordinates() {
         const kColumns = god.gameParams.forestDimensions.columns;
         const kRows = god.gameParams.forestDimensions.rows;

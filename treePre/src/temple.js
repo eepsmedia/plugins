@@ -1,3 +1,9 @@
+/**
+ * This singleton modearates communication between the player and God.
+ *
+ * Did it this way so that if we go multiplayer, that communication will be isolated here.
+ * @type {{godSpeaksToPlayer: temple.godSpeaksToPlayer, godHearsPlayer: temple.godHearsPlayer, playerSpeaksToGod: temple.playerSpeaksToGod, playerHearsGod: temple.playerHearsGod}}
+ */
 const temple = {
 
     playerHearsGod: function (iMessage) {

@@ -1,5 +1,8 @@
-
-
+/**
+ * This singleton is the model class for the forest
+ *
+ * @type {{processHarvest: (function(): Promise<{end: boolean}>), forest: *[], biomass: number, grow: nature.grow, currentTransactions: *[], players: {}, calculateBiomass: (function(): number), markedTrees: {}, newForest: nature.newForest, neighbors: (function(*): []), initialize: nature.initialize, initialBiomass: null, treeAgesAndIndicesArray: (function(): *[])}}
+ */
 const nature = {
 
     forest: [],
@@ -14,6 +17,9 @@ const nature = {
     initialize : function() {
     },
 
+    /**
+     * Grow each of the Trees in this.forest
+     */
     grow: function () {
         this.biomass = this.calculateBiomass();
         const growthFactor = this.biomass / this.initialBiomass;
@@ -30,13 +36,15 @@ const nature = {
             }
 
         })
-
         //  console.log(`age factors : ${growth.map((a) => a.toFixed(2))}`);
-
         console.log(`year ${god.gameParams.year} growth factor ${growthFactor}`);
 
     },
 
+    /**
+     * Simple calculation of biomass, a standin for the forest health
+     * @returns {number}
+     */
     calculateBiomass : function() {
         let biomass = 0;
 
@@ -46,6 +54,9 @@ const nature = {
         return biomass;
     },
 
+    /**
+     * Create a new version of teh forest (the Array `this.forest`)
+     */
     newForest: function () {
         const kColumns = god.gameParams.forestDimensions.columns;
         const kRows = god.gameParams.forestDimensions.rows;
@@ -122,6 +133,12 @@ const nature = {
         return endGame;
     },
 
+    /**
+     * Find the four neighbors for this tree (toroidal topology)
+     *
+     * @param iTree
+     * @returns {[]}
+     */
     neighbors : function(iTree) {
         out = [];
 
@@ -135,6 +152,11 @@ const nature = {
         return out;
     },
 
+    /**
+     * Process the data in `this.forest` into a similar array, but without the `harvesters` member.
+     *
+     * @returns {*[]}
+     */
     treeAgesAndIndicesArray: function () {
         let out = [];
         for (let i = 0; i < this.forest.length; i++) {
@@ -147,7 +169,7 @@ const nature = {
 }
 
 /**
- * Scramble the values in the array. Defined at the bottom of `scrambler.js`.
+ * Scramble the values in the array. Found at the bottom of `scrambler.js`.
  */
 Array.prototype.scramble = function () {
     const N = this.length;
