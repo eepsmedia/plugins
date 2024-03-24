@@ -47,6 +47,19 @@ summary {
     font-size: large;
 }
 
+#datasetDIV {
+    display: flex;
+    align-items: center;
+}
+
+#datasetDIV div:last-child {
+    margin-left: auto;
+}
+
+#datasetSPAN {
+    padding : 4px;
+}
+
 #attributeStrip {
     width : 100%;
     background-color: var(--bg-body-color);
@@ -90,6 +103,11 @@ summary {
     cursor: pointer;
 }
 
+.infoIcon  {
+    width:  20px;
+    height: 20px;
+    padding: 4px;
+}
 
 #xDIV, #yDIV {
     border-radius: 6px;

@@ -10,6 +10,7 @@ ui = {
     yType: null,
 
     datasetDIV: null,
+    datasetSPAN: null,
     testHeaderDIV: null,
     resultsDIV: null,      //  results DIV
     configDIV: null,
@@ -27,6 +28,7 @@ ui = {
         this.yNameDIV = document.getElementById(`yAttributeName`);
 
         this.datasetDIV = document.getElementById(`datasetDIV`);
+        this.datasetSPAN = document.getElementById(`datasetSPAN`);
         this.testHeaderDIV = document.getElementById(`testHeaderDIV`);
         this.resultsDIV = document.getElementById(`resultsDIV`);
         this.configDIV = document.getElementById(`configureDIV`);
@@ -47,7 +49,7 @@ ui = {
             if (testimate.theTest && testimate.theTest.testID) {
 
                 //      create the text and other display information for the results
-                this.datasetDIV.innerHTML = await this.makeDatasetGuts();
+                this.datasetSPAN.innerHTML = await this.makeDatasetGuts();
                 this.testHeaderDIV.innerHTML = this.makeTestHeaderGuts();   //  includes making the choice menu
                 this.resultsDIV.innerHTML = testimate.theTest.makeResultsString();
                 this.configDIV.innerHTML = testimate.theTest.makeConfigureGuts();
@@ -344,6 +346,10 @@ ui = {
         return out;
     },
 
+    /**
+     * Make the contents of the top DIV, which lists the dataset name plus some other stuff.
+     * @returns {Promise<string>}
+     */
     makeDatasetGuts: async function () {
         const randomPhrase = ui.hasRandom ? localize.getString('hasRandom') : localize.getString('noRandom');
 
