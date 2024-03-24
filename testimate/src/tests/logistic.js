@@ -135,7 +135,12 @@ class Logistic extends Test {
         const pos = ui.numberToString(this.results.pos, 4);
         const LRPbox = ui.logisticRegressionProbeBoxHTML(testimate.state.testParams.probe);
         const graphButton = ui.makeLogisticGraphButtonHTML();
-        const theFormula = this.makeFormulaString().shortFormula;
+        const theFormulas = this.makeFormulaString();
+        const theShortFormula = theFormulas.shortFormula;
+        const theLongFormula = theFormulas.longFormula;
+
+        console.log(theLongFormula);
+
         const more10button = `<input type = "button" 
             value = "${localize.getString("nMore", 10)}" 
             onclick = "handlers.doMoreIterations(10)"`;
@@ -144,14 +149,16 @@ class Logistic extends Test {
         let out = "<pre>";
 
         out += localize.getString("tests.logistic.intro");
-        out += `<br>       N = ${N}, ${this.results.iterations} ${localize.getString("iterations")}, ${localize.getString("cost")} = ${cost} ${more10button}<br>`;
+        out += `<br>       N = ${N}, ${this.results.iterations} ${localize.getString("iterations")}, ${localize.getString("cost")} = ${cost} ${more10button}<br><br>`;
+
+        //  model
         out += `<br>${localize.getString("tests.logistic.model1", testimate.state.y.name, pos)}.`
-        out += `<br>       ${localize.getString("tests.logistic.model2", LSlope)}<br>`;
+        out += `<br>       ${localize.getString("tests.logistic.model2", LSlope)}`;
         out += `<br>    ${localize.getString("tests.logistic.probFunctionHead")}`
-        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.focusGroupX}) = ${theFormula}`;
+        out += `<br>       prob(${data.xAttData.name} = ${testimate.state.testParams.focusGroupX}) = ${theShortFormula}`;
 
         out += `<br><br>${graphButton}&emsp;`;
-        out += `<input type='button' value="${copyFormulaWords}" onclick="navigator.clipboard.writeText(testimate.theTest.makeFormulaString().longFormula)">`;
+        out += `<input type='button' value="${copyFormulaWords}" onclick="navigator.clipboard.writeText('${theLongFormula}')">`;
 
         out += `<br><br>`;
         out += localize.getString("tests.logistic.probQuery1", testimate.state.x.name, testimate.state.testParams.focusGroupX);
