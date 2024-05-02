@@ -7,7 +7,8 @@ templ8 = {
 
     initialize : async function() {
         console.log(`initializing templ8`);
-        await localize.initialize(localize.figureOutLanguage('en'));
+        this.state.lang = localize.figureOutLanguage('en');
+        await localize.initialize(this.state.lang);
         await connect.initialize( );        //  initialize the connection with CODAP
 
         ui.initialize();

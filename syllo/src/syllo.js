@@ -168,7 +168,7 @@ syllo = {
 
     constants: {
         pluginName: `syllo`,
-        version: `2024c`,
+        version: `2024d`,
         dimensions: {height: 400, width: 444},
 
         defaultState: {

@@ -4,6 +4,7 @@
 local just this: http://localhost/~tim/plugins/syllo/
 local in local codap :
 http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/syllo
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/syllo?lang=es
 
 -->
 
@@ -34,13 +35,9 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 
 
 </head>
-<body>
 
-<!--
-<h2>syllo task</h2>
-<input type="button" id="counterButton" value="click to count" onclick="handlers.pressCountButton()">
-<label for="counterButton" id="counterButtonLabel"></label>
--->
+
+<body>
 
 <div id="header">
     <div id="needsUserName">
@@ -49,19 +46,24 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
         <input type="button" id="startButton" onclick="handlers.changeUserName()">
     </div>
     <div id="hasUserName">
-        <span id="greeting"></span>
-        <input type="button" id="newGameButton" onclick="syllo.newGame()">
-        <input type="button" id="userDoneButton" onclick="handlers.userDone()">
+        <div id="greeting"></div>
+        <div id="headerButtons">
+            <input type="button" id="newGameButton" onclick="syllo.newGame()">
+            &ensp;
+            <input type="button" id="userDoneButton" onclick="handlers.userDone()">
+        </div>
     </div>
 </div>
 
-<div id="story"></div>
+<div id="gameField">
+    <div id="story"></div>
 
-<div id="cards"></div>
+    <div id="cards"></div>
 
-<div id="decision">
-    <input type="button" id="proveRightButton" onclick="handlers.decide('right')">
-    <input type="button" id="proveWrongButton" onclick="handlers.decide('wrong')">
+    <div id="decision">
+        <input type="button" id="proveRightButton" onclick="handlers.decide('right')">
+        <input type="button" id="proveWrongButton" onclick="handlers.decide('wrong')">
+    </div>
 </div>
 
 <div id="status"></div>

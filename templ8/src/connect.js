@@ -14,7 +14,10 @@ const connect = {
         codapInterface.on('update', 'interactiveState', "", handlers.restorePluginFromStore);
         codapInterface.on('get', 'interactiveState', "", handlers.getPluginState);
 
-        await codapInterface.init(this.iFrameDescriptor, handlers.restorePluginFromStore);
+        await codapInterface.init(
+            this.getIFrameDescriptor(),
+            handlers.restorePluginFromStore         //  restores the state, if any
+        );
         await this.registerForDragDropEvents();     //  if you're accepting drops!
         await this.allowReorg();
         await this.renameIFrame(localize.getString("frameTitle"));  //  localize the frame title
@@ -71,11 +74,13 @@ const connect = {
      * Constant descriptor for the iFrame.
      * Find and edit the values in `templ8.constants`
      */
-    iFrameDescriptor: {
-        name: templ8.constants.pluginName,
-        title: templ8.constants.pluginName,
-        version: templ8.constants.version,
-        dimensions: templ8.constants.dimensions,      //      dimensions,
+    getIFrameDescriptor: function() {
+        return {
+            name: templ8.constants.pluginName,
+            title: localize.getString("frameTitle"),
+            version: templ8.constants.version,
+            dimensions: templ8.constants.dimensions,      //      dimensions,
+        }
     },
 
 }

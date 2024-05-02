@@ -23,7 +23,7 @@ const ui = {
         this.statusDIV.innerHTML = syllo.username ? syllo.howDidIDo : localize.getString("pleaseEnterName");
         this.storyDIV.innerHTML = `${syllo.state.scenario.story}`;
         this.cardsDIV.innerHTML = this.makeCardsHTML();
-        this.greetingDIV.innerHTML = localize.getString('greeting', syllo.username);
+        this.greetingDIV.innerHTML = localize.getString('greeting', syllo.username) + '&emsp;';
 
         this.setVisibility();
     },
@@ -32,9 +32,9 @@ const ui = {
     setVisibility : function() {
         if (syllo.username) {
             this.needsUserDIV.style.display = 'none';
-            this.hasUserDIV.style.display = 'block';
+            this.hasUserDIV.style.display = 'flex';
             this.storyDIV.style.display = 'block';
-            this.cardsDIV.style.display = 'block';
+            this.cardsDIV.style.display = 'flex';   //  makes them line up correctly!
             this.decisionDIV.style.display = 'block';
             this.configDIV.style.display = 'block';
         } else {

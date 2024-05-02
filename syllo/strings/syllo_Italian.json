@@ -1,0 +1,123 @@
+{
+  "syllo": {
+    "flags": "🇮🇹",
+    "language": "Italiano",
+    "greeting": "Ciao, •1•",
+    "pleaseEnterName": "Inserisci il tuo nome e premi Avvia",
+    "staticStrings": {
+      "counterButtonLabel": "fare clic per contare",
+      "ruleAlwaysTrueButtonLabel": "è vero",
+      "ruleSometimesTrueButtonLabel": "potrebbe essere vero",
+      "modeChallengeButtonLabel": "sfida",
+      "modeSandboxButtonLabel": "sabbiera",
+      "proveRightButton": "Le carte sono coerenti con la regola",
+      "proveWrongButton": "La regola deve essere sbagliata",
+      "newGameButton": "nuovo gioco",
+      "userNameBoxLabel": "nome utente: ",
+      "userDoneButton": "disconnettersi",
+      "startButton": "Inizio!",
+      "copyToCSVbutton": "Copia i dati in CSV"
+    },
+    "eval": {
+      "choseRight": "Hai deciso che la regola era corretta.",
+      "choseWrong": "Hai deciso che la regola non era corretta.",
+      "instructions": "Fai clic sulle carte per vederne il retro, ma fai clic il meno possibile per essere sicuro che la regola sia corretta. Quindi fare clic sul pulsante per controllare il tuo lavoro.",
+      "choseP": "<br>Hai scelto •1•, che è corretto!",
+      "noChoseP": "<br>Non hai scelto •1•, ma avresti dovuto farlo.",
+      "choseNotQ": "<br>Hai scelto •1•, che è corretto (e sottile!)",
+      "noChoseNotQ": "<br>Non hai scelto •1•, ma avresti dovuto farlo. Pensa attentamente al perché.",
+      "choseQ": "<br>Hai scelto •1•, che non è corretto. Non è necessario che tu lo sappia.",
+      "choseNotP": "<br>Hai scelto •1•, che non è corretto. Non è necessario che tu lo sappia."
+    },
+    "scenarios": {
+      "vowels": {
+        "story": "La regola è: se una carta ha una vocale, il retro avrà un numero dispari."
+      },
+      "vowelsVO": {
+        "story": "La regola è: se su una carta c&#39;è una vocale, il retro avrà un numero dispari."
+      },
+      "vowelsCO": {
+        "story": "La regola è: se su una carta c&#39;è una consonante, il retro avrà un numero dispari."
+      },
+      "vowelsEC": {
+        "story": "La regola è: se su una carta c&#39;è un numero pari, il retro avrà una consonante."
+      },
+      "rain": {
+        "story": "La regola è: se piove, le strade sono bagnate.",
+        "P": "sta piovendo",
+        "notP": "non sta piovendo",
+        "Q": "le strade sono bagnate",
+        "notQ": "le strade sono asciutte"
+      },
+      "ppm400": {
+        "story": "La regola è: se nell&#39;atmosfera ci sono più di 400 ppm di CO2, la temperatura della Terra aumenterà drasticamente.",
+        "P": "nell’atmosfera sono presenti più di 400 ppm di CO2",
+        "notP": "ci sono 400 ppm o meno di CO2 nell&#39;atmosfera",
+        "Q": "la temperatura della Terra sta aumentando drammaticamente",
+        "notQ": "la temperatura della Terra è più o meno costante"
+      },
+      "whiskey": {
+        "story": "La legge è: devi avere almeno 18 anni per bere whisky.",
+        "P": "Elisabetta ha 16 anni",
+        "notP": "Elisabetta ha 22 anni",
+        "Q": "Elizabeth potrebbe non bere whisky",
+        "notQ": "Elizabeth potrebbe bere whisky"
+      },
+      "license": {
+        "story": "La legge è: devi avere la patente con te se guidi un&#39;auto.",
+        "P": "Michael guida senza patente.",
+        "notP": "Michael guida e ha la patente.",
+        "Q": "Michael sta guidando illegalmente.",
+        "notQ": "Michael guida legalmente."
+      },
+      "passport": {
+        "story": "La legge è: non puoi ottenere un passaporto senza un certificato di nascita.",
+        "P": "Isabel può ottenere un passaporto.",
+        "notP": "Isabel non può ottenere il passaporto.",
+        "Q": "Isabel ha un certificato di nascita.",
+        "notQ": "Isabel non ha certificato di nascita."
+      },
+      "fever": {
+        "story": "La regola è: tutti gli studenti con la febbre devono stare lontani da scuola.",
+        "P": "Sam ha la febbre.",
+        "notP": "Sam non ha la febbre.",
+        "Q": "Sam è rimasto a casa da scuola.",
+        "notQ": "Sam ha frequentato la scuola."
+      }
+    },
+    "howDidIDo": {
+      "choseRight": "Hai deciso che la regola era corretta.",
+      "choseWrong": "Hai deciso che la regola non era corretta.",
+      "ruleIsCorrect": "la regola è corretta",
+      "ruleIsNotCorrect": "la regola è sbagliata",
+      "userOverallEvaluationRight": "<br>Buon lavoro! Hai ragione quando dice •1•.",
+      "userOverallEvaluationWrong": "<br>Ops! Infatti, •1•.",
+      "instructions": "Fai clic sulle carte per vederne il retro, ma fai clic il meno possibile per essere sicuro che la regola sia corretta. Quindi fare clic sul pulsante per controllare il tuo lavoro.",
+      "choseP": "<br>Hai scelto •1•. Avevi bisogno di quell&#39;informazione!",
+      "noChoseP": "<br>Non hai scelto •1•, ma avresti dovuto farlo.",
+      "choseNotQ": "<br>Hai scelto •1•, che è corretto (e sottile!)",
+      "noChoseNotQ": "<br>Non hai scelto •1•, ma avresti dovuto farlo. Pensa attentamente al perché.",
+      "choseQ": "<br>Hai scelto •1•, ma non avresti dovuto. Non è necessario che tu lo sappia.",
+      "choseNotP": "<br>Hai scelto •1•, ma non avresti dovuto. Non è necessario che tu lo sappia.",
+      "noChoseQ": "<br>Non hai scelto •1•. Buon lavoro! Non ti serviva quella carta.",
+      "noChoseNotP": "<br>Non hai scelto •1•. Grande! Non ti serviva quella carta."
+    },
+    "scenarioSets": {
+      "vowels0": {
+        "displayName": "vocali iniziali"
+      },
+      "vowels": {
+        "displayName": "vocali"
+      },
+      "rain": {
+        "displayName": "piovere"
+      },
+      "climate": {
+        "displayName": "clima"
+      },
+      "laws": {
+        "displayName": "legislazione"
+      }
+    }
+  }
+}

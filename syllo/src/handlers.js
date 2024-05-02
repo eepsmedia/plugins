@@ -63,7 +63,7 @@ const handlers = {
         const newValue = card.obverse;
         theButton.value = newValue;
         theButton.classList.replace('reverse', 'obverse');
-        console.log(`button for ${iWhich} now ${theButton.classList.toString()}`)
+        console.log(`button for ${iWhich} is now classed [ ${theButton.classList.toString()} ]`)
     },
 
     showReverse: function (theButton, iWhich) {
