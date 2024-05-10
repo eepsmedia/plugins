@@ -1,0 +1,43 @@
+/**
+css for BOTH forest apps
+ */
+
+body {
+    /* font-family: 'Sirin Stencil',sans-serif;font-size: 16px; */
+    font-family: 'Rokkitt',sans-serif;font-size: 16px;
+    height: 100vh;
+    margin : 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: forestgreen;
+    color : white;
+    margin : 0;
+    padding : 8px;
+}
+
+input {
+    margin-left: 1em;
+}
+
+#header, #signin, #getGame, #startGameControls, #playGameControls, #players, #trees {
+    padding : 8px;
+}
+
+.stripe {
+    /*
+    display : flex;
+    */
+    align-items: center;
+}
+
+.pill {
+    font-family: 'Sirin Stencil';
+    font-weight: bold;
+    background-color: forestgreen;
+    color : white;
+    border-radius: 6px;
+    padding: 4px;
+    margin-left: 1em;
+}

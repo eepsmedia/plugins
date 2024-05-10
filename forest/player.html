@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forester</title>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link rel="stylesheet"  href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
+    <link rel='stylesheet' type='text/css' href='css/forest.css'/>
+
+    <script src="src/common/constants.js"></script>
+    <script src="src/common/Message.js"></script>
+    <script src="src/common/gameConfigs.js"></script>
+    <script src="strings/localize.js"></script>
+
+    <!--
+        <script src="src/common/Player.js"></script>
+    -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+</head>
+
+<!--
+    Note the absence of onclick designations in the UI.
+    We use `.addEventListener()`, which calls you will find in `...handlers.initialize()`.
+-->
+<body>
+
+<h1>Forester</h1>
+<div id="header" class="stripe"></div>
+<div id="signin" class="stripe">
+    <label for="inputHandle" id="inputHandleLabel"></label>
+    <input type="text" id="inputHandle">
+    <input type="button" id="buttonPlayerLogin">
+</div>
+
+<div id="getGame" class="stripe">
+    <label for="inputGameCode" id="inputGameCodeLabel"></label>
+    <input type="text" id="inputGameCode">
+    <input type="button" id="buttonJoinGame">
+</div>
+
+<div id="trees" class="stripe">
+
+</div>
+
+<div id="playGameControls" class="stripe">
+    <input type="button" id="buttonHarvest">
+
+</div>
+
+<script type="module">
+    import {initialize} from "./src/player/player.js"
+    initialize();
+</script>
+
+</body>
+</html>

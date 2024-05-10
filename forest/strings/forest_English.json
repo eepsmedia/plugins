@@ -1,0 +1,26 @@
+{
+  "forest" : {
+    "forestGameName" : "forest",
+    "language": "English",
+    "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
+    "currency" : "$",
+
+    "staticStrings" : {
+      "inputHandleLabel" : "your handle",
+      "buttonGodLogin" : "log in",
+      "buttonNewGame" : "new game",
+      "buttonStartGame" : "start game",
+      "buttonPlayerLogin" : "set name",
+      "inputGameCodeLabel" : "enter the game code",
+      "buttonJoinGame" : "join game",
+      "buttonHarvest" : "harvest",
+      "buttonDoMarket" : "sell trees"
+    },
+    "attributeNames" : {
+
+    },
+    "attributeDescriptions" : {
+
+    }
+  }
+}
