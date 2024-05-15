@@ -26,7 +26,7 @@ export async function initialize() {
 }
 
 export async function sendMessage(iMessage) {
-    console.log(`Sending message: ${JSON.stringify(iMessage)}`);
+    console.log(iMessage);
     if (!messagesCR && iMessage.contents.gameCode) {
         messagesCR = FB.collection(db, `games/${iMessage.contents.gameCode}/messages`);
     }

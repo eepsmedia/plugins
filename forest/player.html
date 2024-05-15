@@ -14,8 +14,8 @@
 
     <script src="src/common/constants.js"></script>
     <script src="src/common/Message.js"></script>
+    <script src="src/common/Tree.js"></script>
     <script src="src/common/gameConfigs.js"></script>
-    <script src="strings/localize.js"></script>
 
     <!--
         <script src="src/common/Player.js"></script>
@@ -33,6 +33,7 @@
 
 <h1>Forester</h1>
 <div id="header" class="stripe"></div>
+<div id="advice" class="stripe"></div>
 <div id="signin" class="stripe">
     <label for="inputHandle" id="inputHandleLabel"></label>
     <input type="text" id="inputHandle">
@@ -45,12 +46,25 @@
     <input type="button" id="buttonJoinGame">
 </div>
 
-<div id="trees" class="stripe">
+<svg id="forestSVG">
+    <g id="forestDisplay"></g>
+</svg>
 
+<div id="forest" class="stripe">
 </div>
 
 <div id="playGameControls" class="stripe">
     <input type="button" id="buttonHarvest">
+
+</div>
+
+<div id="finance">
+    <h2>Finance</h2>
+    <div id="financeHeader">
+        <span id="financialStemForYear"></span>
+        <select id="menuFinancialYears"></select>
+    </div>
+    <table id="financeTable"></table>
 
 </div>
 

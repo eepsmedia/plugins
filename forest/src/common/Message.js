@@ -17,4 +17,8 @@ class Message {
             contents : this.contents
         }
     }
+
+    toString() {
+        return  `  µµ  Message (${this.date}) ${this.toGod ? "from " : " to "} ${this.playerID} re ${this.subject}`;
+    }
 }

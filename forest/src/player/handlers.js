@@ -1,5 +1,6 @@
 import * as Temple from '../common/temple.js';
 import * as Player from './player.js';
+import * as Financials from './financials.js';
 import * as UI from './ui.js';
 //      import * as Fire from "../common/fire.js";
 
@@ -8,6 +9,8 @@ export function initialize() {
     document.getElementById("buttonPlayerLogin").addEventListener('click', playerLogin);
     document.getElementById("buttonJoinGame").addEventListener('click', joinGame);
     document.getElementById("buttonHarvest").addEventListener('click', harvest);
+
+    document.getElementById("menuFinancialYears").addEventListener('change', Financials.onSelectYear);
 
     console.log(`Handlers initialized`);
 }
@@ -56,6 +59,4 @@ export function gotAllMessages(theMessages) {
             }
         }
     })
-
-
 }

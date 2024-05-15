@@ -11,6 +11,7 @@ import {subscribeToPlayerMessages} from "../common/fire.js";
 
 export async function playerSpeaksToGod(type, iContents = {}) {
     let message = null;
+    let success = false;
 
     switch (type) {
         case "join":
@@ -19,10 +20,10 @@ export async function playerSpeaksToGod(type, iContents = {}) {
 
             if (exists) {
                 message = new Message(
-                    Player.me.id, true, Player.gameState.year, "join", {gameCode: tGameCode, handle: Player.me.data.handle}
+                    Player.me.id, true, Player.year, "join", {gameCode: tGameCode, handle: Player.me.data.handle}
                 );
                 subscribeToPlayerMessages(Player.me.id, tGameCode); //  so we'll know when the game starts
-
+                success = true;
             } else {
                 console.log(`*** Game ${tGameCode} does not exist *** (temple)`);
                 swal("oops!",`game "${tGameCode}" does not exist`,"error");
@@ -30,14 +31,16 @@ export async function playerSpeaksToGod(type, iContents = {}) {
             break;
         case "harvest":
             message = new Message(
-                Player.me.id, true, Player.gameState.year, "harvest", iContents
+                Player.me.id, true, Player.year, "harvest", iContents
             );
+            success = true;
             break;
 
         default:
             break;
     }
     if (message) Fire.sendMessage(message.asObject());
+    return success;
 }
 
 export function godSpeaksToPlayer(type, iPlayerID, iContents = {}) {

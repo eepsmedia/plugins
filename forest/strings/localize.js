@@ -94,7 +94,7 @@ async function setStaticStrings() {
  * @param iDefaultLanguage  the default language in case none of the following work
  * @returns {*}     resulting two-letter code
  */
-function figureOutLanguage(iDefaultLanguage) {
+export function figureOutLanguage(iDefaultLanguage) {
 
     languages = Object.keys(fileNameMap);
     let lOut = iDefaultLanguage;

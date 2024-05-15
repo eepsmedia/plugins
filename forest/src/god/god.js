@@ -7,19 +7,23 @@ import * as UI from "./ui.js"
 export let godData = null;
 export let phase;     //   no god yet
 
+export let theLang = 'en';
+
 export async function initialize() {
     console.log(`init in progress`);
+
+    theLang = Localize.figureOutLanguage(theLang);
 
     await Fire.initialize();
     await Handlers.initialize();
     await Localize.initialize('en');
-    phase = godPhases.kGodless;         //  need someone to log in
+    phase = godPhases.kBegin;         //  need someone to log in
     UI.update();
 }
 
 export async function setGodData(iHandle) {
     godData = await Fire.setGodWithHandle(iHandle);
-    phase = godPhases.kNoGame;     //      we have a God, but still no actual game.
+    phase = godPhases.kMakeGame;     //      we have a God, but still no actual game.
     UI.update();
 }
 
@@ -32,14 +36,14 @@ export async function doNewGame() {
     UI.update();
 }
 
-export function doPlayerJoin(iID, iHandle) {
-    const result = Game.makeNewPlayer(iID, iHandle);
+export async function doPlayerJoin(iID, iHandle) {
+    const result = await Game.makeNewPlayer(iID, iHandle);
     UI.update();
 }
 
 export function doStartGame() {
     Game.startGame();
-    phase = godPhases.kCollectingMoves;    //  now we're looking for all players to submit moves
+    phase = godPhases.kCollectMoves;    //  now we're looking for all players to submit moves
     UI.update();
 }
 
@@ -60,7 +64,7 @@ export async function doMarket() {
 
 async function endYear()   {
     Game.newYear();
-    phase = godPhases.kCollectingMoves;
+    phase = godPhases.kCollectMoves;
     UI.update();
 }
 

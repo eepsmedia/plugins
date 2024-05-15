@@ -21,7 +21,7 @@ input {
     margin-left: 1em;
 }
 
-#header, #signin, #getGame, #startGameControls, #playGameControls, #players, #trees {
+#header, #advice, #signin, #getGame, #startGameControls, #playGameControls, #players, #trees {
     padding : 8px;
 }
 
@@ -33,11 +33,52 @@ input {
 }
 
 .pill {
-    font-family: 'Sirin Stencil';
+    font-family: 'Sirin Stencil',sans-serif;
     font-weight: bold;
     background-color: forestgreen;
     color : white;
     border-radius: 6px;
     padding: 4px;
     margin-left: 1em;
+}
+
+.tableOfPlayers {
+    border-collapse: collapse;
+    background-color: #eeeeee;
+}
+.tableOfPlayers th {
+    padding: 6px;
+    text-align: left;
+    background-color: forestgreen;
+    color: white;
+}
+
+.tableOfPlayers td {
+    padding : 6px;
+}
+
+.tableOfPlayers tr:nth-child(even){background-color: #ddffdd;}
+
+#finance {
+    padding : 6px;
+}
+
+.moneyCell {
+    text-align: right;
+}
+
+.treeSVG {
+    /*
+    fill : forestgreen;
+    */
+    cursor: pointer;
+    opacity: 80%;
+    stroke-width: 1px;
+    stroke : white;
+}
+
+.markSVG {
+    stroke : red;
+    cursor: pointer;
+    stroke-width: 2px;
 }

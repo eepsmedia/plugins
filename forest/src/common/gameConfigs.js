@@ -27,19 +27,19 @@ const gameConfigs = {
 
 const playerPhases = {
     kBegin : "begin",
-    kEnteringGame : "entering game",
-    kWaitForStart : "wait for start",
-    kMarkingTrees : "marking trees",
-    kWaitingForMarket : "waiting for market",
-    kDebrief: "debrief",
+    kEnterGame : "enteringGame",
+    kWaitForStart : "waitingForStart",
+    kMarkTrees : "markingTrees",
+    kWaitForMarket : "waitingForMarket",
+    kDebrief: "debriefing",
 }
 
 const godPhases = {
-    kGodless: "no god yet",
-    kNoGame: "making game",
+    kBegin: "begin",
+    kMakeGame: "makingGame",
     kRecruit: "recruiting",
-    kCollectingMoves: "collecting",
-    kReadyForMarket: "ready for market",
-    kDebrief: "debrief",
+    kCollectMoves: "collectingMoves",
+    kReadyForMarket: "readyForMarket",
+    kDebrief: "debriefing",
 }
 

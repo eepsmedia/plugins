@@ -5,6 +5,33 @@
     "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
     "currency" : "$",
 
+    "noPlayersYet" : "No players have signed in yet.",
+    "harvestOneTree" : "harvest one tree",
+    "harvestNTrees" : "harvest •1• trees",
+
+    "viewTrees" : "view trees",
+    "viewFinance" : "view finance",
+    "tableHeadFinance" : "<tr><th>item</th><th>income</th><th>expense</th><th>balance</th></tr>tr>",
+
+    "harvestTreeNumber" : "harvest tree #•1•",
+    "sellTreeNumber" : "sell tree #•1•",
+    "shareRevenue" : "you shared the revenue on tree •1• with •2• other group(s)",
+    "startingBalance" : "starting balance",
+    "salaryReason" : "fixed salary",
+
+    "advice" : {
+      "begin" : "Enter a \"handle\" to use in the game and press&nbsp;<b>•1•</b>.",
+      "enteringGame" : "You are not in a game. Enter a game ID and press&nbsp;<b>•1•</b>.",
+      "waitingForStart" : "Waiting for the forest goddess to start the game",
+      "waitingForMarket" : "Waiting for the forest goddess to sell your trees",
+      "markingTrees" : "Click on the trees you want to mark for harvest",
+      "begin" : "Enter a \"handle\" to use in the game and press&nbsp;<b>•1•</b>.",
+      "makingGame" : "To create a game, press&nbsp;<b>•1•</b>.",
+      "recruiting" : "When all players have joined, press&nbsp;<b>•1•</b>&nbsp;to start the game.",
+      "collectingMoves" : "Waiting for all players to harvest their trees.",
+      "readyForMarket" : "All players have harvested! Press&nbsp;<b>•1•</b>&nbsp;to sell their trees and start the next year."
+    },
+
     "staticStrings" : {
       "inputHandleLabel" : "your handle",
       "buttonGodLogin" : "log in",
@@ -14,7 +41,8 @@
       "inputGameCodeLabel" : "enter the game code",
       "buttonJoinGame" : "join game",
       "buttonHarvest" : "harvest",
-      "buttonDoMarket" : "sell trees"
+      "buttonDoMarket" : "sell trees",
+      "financialStemForYear" : "Income and expenses for year&nbsp;"
     },
     "attributeNames" : {
 

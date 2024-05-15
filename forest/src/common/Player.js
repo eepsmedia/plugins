@@ -5,11 +5,16 @@ class Player {
         this.handle = iHandle;
         this.balance = 0;
         this.gameCode = null;
-        this.harvest = null;
+        this.harvest = [];
+        this.currentFinance = {};
+    }
+
+    receives(amount) {
+        this.balance += amount;
     }
 
     toString() {
-        return(`${this.handle} (${this.id}) bal: ${this.balance}`);
+        return(`${this.handle} (${this.id})`);
     }
 
     asObject() {
@@ -18,7 +23,8 @@ class Player {
             handle: this.handle,
             balance: this.balance,
             gameCode : this.gameCode,
-            harvest : this.harvest
+            harvest : this.harvest,
+            currentFinance : this.currentFinance
         }
     }
 }
