@@ -106,10 +106,6 @@ function makeOtherTexts() {
     document.getElementById("buttonFinance").value = financeLabel;
 }
 
-function makeDebriefText(iInfo) {
-    return "debrief text goes here";
-}
-
 function setVisibility() {
     const theVis = visibility[Player.phase];
 

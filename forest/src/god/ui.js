@@ -1,11 +1,8 @@
 import * as God from './god.js';
 import * as Game from './game.js';
 import * as Nature from './nature.js';
-import * as Player from "../player/player.js";
 import * as Localize from "../../strings/localize.js";
-import {gameEndSummary} from "./game.js";
 
-const headerDIV = document.getElementById("header");
 const headerGutsDIV = document.getElementById("headerGuts");
 const adviceDIV = document.getElementById("advice");
 const playersDIV = document.getElementById("players");
@@ -44,8 +41,7 @@ function makeExtrasMenu() {
 function setVisibility() {
     const theVis = visibility[God.phase];
     for (const eKey in theVis) {
-        const vis = theVis[eKey];
-        document.getElementById(eKey).style.display = vis;
+        document.getElementById(eKey).style.display = theVis[eKey];
     }
 }
 
@@ -113,9 +109,6 @@ function makeDebriefGuts() {
     return out;
 }
 
-function makeDebriefText(iInfo) {
-    return "debrief text goes here";
-}
 
 function makePlayers() {
     let out = Localize.getString("noPlayersYet");

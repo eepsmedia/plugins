@@ -1,7 +1,7 @@
-import * as Temple from '../common/temple.js';
+//  import * as Temple from '../common/temple.js';
 import * as Player from './player.js';
 import * as Financials from './financials.js';
-import * as UI from './ui.js';
+//  import * as UI from './ui.js';
 //      import * as Fire from "../common/fire.js";
 
 export function initialize() {

@@ -1,8 +1,6 @@
 import * as Player from '../player/player.js';
-import * as God from '../god/god.js';
 import * as Game from '../god/game.js';
 import * as Fire from '../common/fire.js';
-import {subscribeToPlayerMessages} from "../common/fire.js";
 
 
 /**
@@ -22,7 +20,7 @@ export async function playerSpeaksToGod(type, iContents = {}) {
                 message = new Message(
                     Player.me.id, true, Player.year, "join", {gameCode: tGameCode, handle: Player.me.data.handle}
                 );
-                subscribeToPlayerMessages(Player.me.id, tGameCode); //  so we'll know when the game starts
+                Fire.subscribeToPlayerMessages(Player.me.id, tGameCode); //  so we'll know when the game starts
                 success = true;
             } else {
                 console.log(`*** Game ${tGameCode} does not exist *** (temple)`);
@@ -44,7 +42,7 @@ export async function playerSpeaksToGod(type, iContents = {}) {
 }
 
 export function godSpeaksToPlayer(type, iPlayerID, iContents = {}) {
-    let message = null;
+    let message;
 
     switch (type) {
 

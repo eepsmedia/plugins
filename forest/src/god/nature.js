@@ -3,9 +3,6 @@ import * as Game from './game.js';
 let forest = [];
 export let initialBiomass = null;
 export let biomass = 0;
-let markedTrees = {};      //  arrays of marked trees, keyed by player ID
-
-let currentTransactions = [];
 
 export function initialize() {
 }

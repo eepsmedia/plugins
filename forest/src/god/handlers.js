@@ -1,7 +1,7 @@
 import * as UI from './ui.js';
-import * as Fire from '../common/fire.js';
+//  import * as Fire from '../common/fire.js';
 import * as God from './god.js';
-import * as Game from './game.js';
+//  import * as Game from './game.js';
 
 export function initialize() {
     /*
@@ -27,7 +27,6 @@ async function godLogin() {
 }
 
 function newGame() {
-    const theName = "foo";
     God.doNewGame();
 }
 

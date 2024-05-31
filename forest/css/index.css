@@ -28,7 +28,7 @@ limitations under the License.
 
 body, html, td {
     position : relative;
-    margin : 0px;
+    margin : 0;
     font-family: 'IBM Plex Sans Condensed', sans-serif; font-size: 14px;
     font-weight: 300;
     color : #444;

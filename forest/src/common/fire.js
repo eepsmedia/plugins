@@ -79,10 +79,10 @@ export async function setGodWithHandle( iHandle ) {
     const q =  FB.query(godsCR, FB.where("handle", "==", iHandle));
     const querySnapshot = await FB.getDocs(q);
 
-    if (querySnapshot.size == 1) {      //  yes, it's there!
+    if (querySnapshot.size === 1) {      //  yes, it's there!
         const theSnap = querySnapshot.docs[0];
         out = theSnap.data();
-    } else if (querySnapshot.size == 0) {
+    } else if (querySnapshot.size === 0) {
         out = {handle : iHandle};             //  todo: get email and name
         const newGodRef = FB.doc(godsCR, iHandle);
         FB.setDoc(newGodRef, out);
@@ -97,7 +97,7 @@ export async function createFirebaseGameRecord(iGameData )  {
     const q =  FB.query(gamesCR, FB.where("gameCode", "==", iGameData.gameCode));
     const querySnapshot = await FB.getDocs(q);
 
-    if (querySnapshot.size == 1) {     //    we found one
+    if (querySnapshot.size === 1) {     //    we found one
         swal({icon : "error", text : `${iGameData.gameCode} already exists`});
     }
 

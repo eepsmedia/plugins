@@ -72,7 +72,7 @@ class Tree {
             vAge = this.params.yearsToAdult + 0.2 * (this.params.yearsToAdult - this.age);
         }
         const smallest = 0.2;
-        const theFrac = this.age / this.params.yearsToAdult;
+        const theFrac = vAge / this.params.yearsToAdult;
         const fracTwo = (smallest + (1-smallest) * theFrac);    //  so fracTwo ranges linearly from 0.2 to 1.
         const fracTwoWidth = fracTwo > 0.6 ? 0.6 : fracTwo;     //  peg at 0.6
 
