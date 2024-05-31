@@ -6,9 +6,9 @@
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
-    <link rel="stylesheet"  href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
 
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono:wght@100..800" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:300,700' rel='stylesheet'>
     <link rel='stylesheet' type='text/css' href='css/forest.css'/>
 
@@ -32,6 +32,9 @@
 <body>
 
 <h1>Forester</h1>
+<!--  forest icon
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M280-80v-160H0l154-240H80l280-400 120 172 120-172 280 400h-74l154 240H680v160H520v-160h-80v160H280Zm389-240h145L659-560h67L600-740l-71 101 111 159h-74l103 160Zm-523 0h428L419-560h67L360-740 234-560h67L146-320Zm0 0h155-67 252-67 155-428Zm523 0H566h74-111 197-67 155-145Zm-149 80h160-160Zm201 0Z"/></svg>
+-->
 <div id="header" class="stripe"></div>
 <div id="advice" class="stripe"></div>
 <div id="signin" class="stripe">
@@ -46,11 +49,14 @@
     <input type="button" id="buttonJoinGame">
 </div>
 
+<div id="debrief">
+</div>
+
 <svg id="forestSVG">
     <g id="forestDisplay"></g>
 </svg>
 
-<div id="forest" class="stripe">
+<div id="forestStatus" class="stripe">
 </div>
 
 <div id="playGameControls" class="stripe">
@@ -58,18 +64,22 @@
 
 </div>
 
+
 <div id="finance">
-    <h2>Finance</h2>
     <div id="financeHeader">
         <span id="financialStemForYear"></span>
         <select id="menuFinancialYears"></select>
     </div>
-    <table id="financeTable"></table>
+    <div id="financeBody">
+        <table id="financeTable"></table>
+        <div id="financeTableNotes"></div>
+    </div>
 
 </div>
 
 <script type="module">
     import {initialize} from "./src/player/player.js"
+
     initialize();
 </script>
 

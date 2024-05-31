@@ -1,7 +1,7 @@
 import * as Game from './game.js';
 
 let forest = [];
-let initialBiomass = null;
+export let initialBiomass = null;
 export let biomass = 0;
 let markedTrees = {};      //  arrays of marked trees, keyed by player ID
 
@@ -35,7 +35,8 @@ export function grow() {
     })
     //  console.log(`age factors : ${growth.map((a) => a.toFixed(2))}`);
     console.log(`year ${Game.gameData.year} growth factor ${growthFactor}`);
-
+    biomass = calculateBiomass();       //  new biomass.
+    return biomass;
 }
 
 export function recordHarvestAtTree(iPlayerID, iTreeIndex) {
@@ -94,7 +95,9 @@ export function newForest() {
         }
     }
     initialBiomass = calculateBiomass();
-    biomass = calculateBiomass();
+    biomass = initialBiomass;
+
+    return biomass;
 }
 
 
@@ -104,10 +107,14 @@ export function newForest() {
  * @returns {*[]}
  */
 export function getForestDataForDisplay() {
-    let out = [];
+    let out = {
+        biomass : biomass,
+        trees : []
+    }
+
     for (let i = 0; i < forest.length; i++) {
         let theTree = forest[i];
-        out.push(theTree.getDisplayData());
+        out.trees.push(theTree.getDisplayData());
     }
     return out;
 }

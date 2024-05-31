@@ -74,10 +74,12 @@ async function listAllGods() {
  */
 export async function setGodWithHandle( iHandle ) {
     let out = null;
+
+    //  does the handle already exist in FB?
     const q =  FB.query(godsCR, FB.where("handle", "==", iHandle));
     const querySnapshot = await FB.getDocs(q);
 
-    if (querySnapshot.size == 1) {
+    if (querySnapshot.size == 1) {      //  yes, it's there!
         const theSnap = querySnapshot.docs[0];
         out = theSnap.data();
     } else if (querySnapshot.size == 0) {
@@ -90,6 +92,14 @@ export async function setGodWithHandle( iHandle ) {
 }
 
 export async function createFirebaseGameRecord(iGameData )  {
+
+    //  is there already a game with this code?
+    const q =  FB.query(gamesCR, FB.where("gameCode", "==", iGameData.gameCode));
+    const querySnapshot = await FB.getDocs(q);
+
+    if (querySnapshot.size == 1) {     //    we found one
+        swal({icon : "error", text : `${iGameData.gameCode} already exists`});
+    }
 
     //  add a `.created` field as a timestamp
     iGameData["created"] = FB.Timestamp.fromDate(new Date());

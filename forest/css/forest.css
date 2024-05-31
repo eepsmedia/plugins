@@ -4,25 +4,44 @@ css for BOTH forest apps
 
 body {
     /* font-family: 'Sirin Stencil',sans-serif;font-size: 16px; */
-    font-family: 'Rokkitt',sans-serif;font-size: 16px;
+    font-family: 'Rokkitt', sans-serif;
+    font-size: 16px;
     height: 100vh;
-    margin : 0;
+    margin: 0;
     padding: 0;
+    max-width: 666px;
+}
+
+h1, h2 {
+    margin: 0;
 }
 
 h1 {
     background-color: forestgreen;
-    color : white;
-    margin : 0;
-    padding : 8px;
+    color: white;
+    padding: 8px;
 }
 
 input {
     margin-left: 1em;
 }
 
-#header, #advice, #signin, #getGame, #startGameControls, #playGameControls, #players, #trees {
-    padding : 8px;
+#header, #advice, #signin, #getGame, #startGameControls, #debrief, #playGameControls, #players, #trees, #forestSVG, #forestStatus {
+    padding: 8px;
+}
+
+#debrief {
+    padding: 1em;
+    margin-left: 1cm;
+    background-color: darksalmon;
+}
+
+#buttonDebriefNewGame {
+    margin-left: auto;
+}
+
+#menuExtras {
+    margin-left: auto;
 }
 
 .stripe {
@@ -33,10 +52,10 @@ input {
 }
 
 .pill {
-    font-family: 'Sirin Stencil',sans-serif;
+    font-family: 'Sirin Stencil', sans-serif;
     font-weight: bold;
     background-color: forestgreen;
-    color : white;
+    color: white;
     border-radius: 6px;
     padding: 4px;
     margin-left: 1em;
@@ -46,6 +65,7 @@ input {
     border-collapse: collapse;
     background-color: #eeeeee;
 }
+
 .tableOfPlayers th {
     padding: 6px;
     text-align: left;
@@ -54,13 +74,27 @@ input {
 }
 
 .tableOfPlayers td {
-    padding : 6px;
+    padding: 6px;
 }
 
-.tableOfPlayers tr:nth-child(even){background-color: #ddffdd;}
+.tableOfPlayers tr:nth-child(even) {
+    background-color: #ddffdd;
+}
 
 #finance {
-    padding : 6px;
+    padding: 2em;
+    margin-left: 1cm;
+    background-color: bisque;
+}
+
+#financeBody {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    padding-top: 1.5em;
+}
+
+#financeBody td {
+    min-width: 2cm;
 }
 
 .moneyCell {
@@ -74,11 +108,21 @@ input {
     cursor: pointer;
     opacity: 80%;
     stroke-width: 1px;
-    stroke : white;
+    stroke: white;
 }
 
 .markSVG {
-    stroke : red;
+    stroke: crimson;
     cursor: pointer;
     stroke-width: 2px;
+}
+
+.harvestedSVG {
+    opacity : 20%;
+    color : forestgreen;
+    stroke: crimson;
+    stroke-width: 2px;
+    stroke-opacity: 100%;
+    stroke-dasharray: 5, 5;
+    cursor: none;
 }

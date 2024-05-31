@@ -17,7 +17,9 @@
     <script src="src/god/Transaction.js"></script>
     <script src="src/common/Message.js"></script>
     <script src="src/common/Tree.js"></script>
+<!--
     <script src="src/common/forestView.js"></script>
+-->
     <script src="src/common/gameConfigs.js"></script>
 
     <script src="src/common/Player.js"></script>    <!-- needed by Game -->
@@ -33,7 +35,12 @@
 <body>
 
 <h1>Aranyani</h1>
-<div id="header" class="stripe"></div>
+<div id="header" class="stripe">
+    <div id="headerGuts" class="stripe"></div>
+    <select id="menuExtras">
+    </select>
+</div>
+
 <div id="advice" class="stripe"></div>
 <div id="signin" class="stripe">
     <label for="inputHandle" id="inputHandleLabel"></label>
@@ -42,6 +49,7 @@
 </div>
 
 <div id="getGame" class="stripe">
+    <select id="configurationMenu"></select>
     <input type="button" id="buttonNewGame">
 </div>
 
@@ -51,7 +59,14 @@
 </div>
 
 <div id="playGameControls" class="stripe">
-    <input type="button" id="buttonDoMarket">
+    <input type="button" id="buttonDoMarket">       <!-- the sell trees button      -->
+</div>
+
+<div id="debrief" class="stripe">
+    <div id="debriefText"></div>
+    <div id="debriefControls" class="stripe">
+        <input type="button" id="buttonDebriefNewGame">
+    </div>
 </div>
 
 <div id="players" class="stripe">

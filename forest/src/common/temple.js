@@ -15,7 +15,7 @@ export async function playerSpeaksToGod(type, iContents = {}) {
 
     switch (type) {
         case "join":
-            const tGameCode = document.getElementById("inputGameCode").value;
+            const tGameCode = document.getElementById("inputGameCode").value.toLowerCase();     //  important for iPad
             const exists = await Fire.getGameFromCode(tGameCode);
 
             if (exists) {
@@ -56,51 +56,16 @@ export function godSpeaksToPlayer(type, iPlayerID, iContents = {}) {
             message = new Message(iPlayerID, false, Game.gameData.year, 'newYear', iContents);
             break;
 
-        case 'endYear':
-            message = {
-                type: 'endYear',
-                content: {
-                    year: god.gameParams.year,
-                    biomass: nature.biomass,
-                    players: nature.players,
-                    trees: nature.treeAgesAndIndicesArray(),
-                    transactions: nature.currentTransactions,
-                }
-            }
+        case 'endYear' :
+            message = new Message(iPlayerID, false, Game.gameData.year, 'endYear', iContents);
             break;
 
-/*
-        case 'newYear':
-            message = {
-                type: 'newYear',
-                content: {
-                    year: god.gameParams.year,
-                    biomass: nature.biomass,
-                    players: nature.players,
-                    trees: nature.treeAgesAndIndicesArray(),
-                    transactions: nature.currentTransactions,
-                }
-            }
-            break;
-*/
-
-        case 'endGame' :
-            const content = {
-                year: god.gameParams.year,
-                biomass: nature.biomass,
-                players: nature.players,
-                trees: nature.treeAgesAndIndicesArray(),
-                transactions: nature.allTransactions
-            };
-
-            const endContent = {...god.debriefInfo, ...content};
-            message = {
-                type: 'endGame',
-                content: endContent
-            }
+        case 'endGame':
+            message = new Message(iPlayerID, false, Game.gameData.year, 'endGame', iContents);
             break;
 
         default:
+            //      todo    add error alert here
             break;
     }
 

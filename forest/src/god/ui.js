@@ -1,22 +1,44 @@
 import * as God from './god.js';
 import * as Game from './game.js';
+import * as Nature from './nature.js';
 import * as Player from "../player/player.js";
 import * as Localize from "../../strings/localize.js";
+import {gameEndSummary} from "./game.js";
 
 const headerDIV = document.getElementById("header");
+const headerGutsDIV = document.getElementById("headerGuts");
 const adviceDIV = document.getElementById("advice");
 const playersDIV = document.getElementById("players");
+const debriefTextDIV = document.getElementById("debriefText");
+const extrasMENU = document.getElementById("menuExtras");
 
 export function initialize() {
+    //  only do this once!
+    document.getElementById("configurationMenu").innerHTML = makeConfigurationMenuGuts();
 
 }
 
 export function update() {
-    headerDIV.innerHTML = makeHeader();
+    headerGutsDIV.innerHTML = makeHeaderGuts();
     adviceDIV.innerHTML = makeAdvice();
     playersDIV.innerHTML = makePlayers();
+    extrasMENU.innerHTML = makeExtrasMenu();
+
+    if (God.phase === godPhases.kDebrief) {
+        debriefTextDIV.innerHTML = makeDebriefGuts();
+    }
 
     setVisibility();
+}
+
+function makeExtrasMenu() {
+    let out = "";
+    out += `<option value="placeHolder" selected>${Localize.getString("menu.extrasPlaceholder")}</option>`;
+    out += `<option value="abandonGame">${Localize.getString("menu.itemAbandonGame")}</option>`;
+    out += `<option value="earlyMarket">${Localize.getString("menu.itemEarlyMarket")}</option>`;
+    out += `<option value="copyData">${Localize.getString("menu.itemCopyData")}</option>`;
+
+    return out;
 }
 
 function setVisibility() {
@@ -27,14 +49,16 @@ function setVisibility() {
     }
 }
 
-function makeHeader() {
+function makeHeaderGuts() {
     const me = God.godData;
     const tGame = Game.gameData;
     const god = me ? `${me.handle}` : ``;
     const year = isNaN(tGame.year) ? "" : tGame.year;
     const game = tGame.gameCode ? `<span class="pill">${tGame.gameCode}</span>` : ``;
-    return `${god} ${year} | ${God.phase} ${game}`;
+    const biomass = Math.round(Game.gameData.biomass);
+    return `${god} ${year} | ${God.phase} | biomass: ${biomass} ${game}`;
 }
+
 
 function makeAdvice() {
     let out;
@@ -61,7 +85,7 @@ function makeAdvice() {
             out = Localize.getString("advice.readyForMarket", buttonTitle);
             break;
         case godPhases.kDebrief:
-            out = makeDebriefText(Player.debriefInfo);
+            out = Localize.getString("advice.debriefGod");
             break;
         default:
             out = "some advice might appear here!"
@@ -72,6 +96,23 @@ function makeAdvice() {
 
 }
 
+function makeDebriefGuts() {
+    let out = `<h2>${Localize.getString("end.head")}</h2>`;
+    out += "<p>" + Localize.getString("end.meanBalance", Localize.getString("currency"), Math.round(Game.gameEndSummary.meanBalance)) + "</p>"
+    out += "<p>" + Localize.getString("end.biomass", Math.round(Game.gameEndSummary.biomass)) + "<br>";
+    out += Localize.getString("end.initialBiomass", Math.round(Nature.initialBiomass)) + "</p>";
+    out += Localize.getString("end.because");        //  the game ended because
+    out += "<ul>";
+    Game.gameEndSummary.broke.forEach(pb => {
+        out += `<li>${Localize.getString("end.broke", pb)}</li>`;
+    })
+    if (Game.gameEndSummary.time) {
+        out += `<li>${Localize.getString("end.time", Game.gameEndSummary.time)}</li>`;
+    }
+    out += "</ul>";
+    return out;
+}
+
 function makeDebriefText(iInfo) {
     return "debrief text goes here";
 }
@@ -80,22 +121,25 @@ function makePlayers() {
     let out = Localize.getString("noPlayersYet");
 
     if (Object.keys(Game.players).length > 0) {
-        out = `Players:<br>`;
-        out += `<table class="tableOfPlayers"><tr><th>player</th><th>balance</th><th>harvest</th></tr>`;
+        out = `<table class="tableOfPlayers"><tr><th>player</th><th>balance</th><th>harvest</th></tr>`;
         for (let p in Game.players) {
             const who = Game.players[p];
-            const theBalance = numberToString(who.balance);
+            const theBalance = Math.round(who.balance);
             const theHarvest = who.harvest.join(", ");      //  string version with nice spaces
-            out += `<tr><td>${who.handle} (${who.id})</td><td>${theBalance}</td><td>${(who.harvest) ? theHarvest : "-"}</td></tr>`;
+            out += `<tr><td>${who.handle} (${who.id})</td><td>${theBalance}</td><td>${(who.harvest.length > 0) ? theHarvest : "-"}</td></tr>`;
         }
         out += "</table>"
-        if (Game.waitingFor.length) {
-
+        if (Game.waitingFor.length && God.phase === godPhases.kCollectMoves) {
             out += `Waiting for ${Game.waitingFor.join(", ")}`;
-
-        } else {
-            out += `Not waiting for players.`;
         }
+    }
+    return out;
+}
+
+function makeConfigurationMenuGuts() {
+    let out = "";
+    for (const config in gameConfigs) {
+        out += `<option value="${config}">${Localize.getString(config)}</option> `;
     }
     return out;
 }
@@ -146,6 +190,7 @@ const visibility = {
         "playGameControls": "none",
         "players": "none",
         "trees": "none",
+        "debrief": "none"
     },
     "makingGame": {
         "header": "flex",
@@ -156,6 +201,7 @@ const visibility = {
         "playGameControls": "none",
         "players": "none",
         "trees": "none",
+        "debrief": "none"
     },
     "recruiting": {
         "header": "flex",
@@ -166,17 +212,19 @@ const visibility = {
         "playGameControls": "none",
         "players": "block",
         "trees": "none",
+        "debrief": "none"
 
     },
-    "collecting": {
+    "collectingMoves": {
         "header": "flex",
         "advice": "flex",
         "signin": "none",
         "getGame": "none",
         "startGameControls": "none",
-        "playGameControls": "flex",
+        "playGameControls": "none",
         "players": "block",
         "trees": "flex",
+        "debrief": "none"
 
     },
     "readyForMarket": {
@@ -188,17 +236,19 @@ const visibility = {
         "playGameControls": "flex",
         "players": "block",
         "trees": "flex",
+        "debrief": "none"
 
     },
     "debriefing": {
         "header": "flex",
         "advice": "flex",
         "signin": "none",
-        "getGame": "flex",
+        "getGame": "none",
         "startGameControls": "none",
-        "playGameControls": "flex",
+        "playGameControls": "none",
         "players": "block",
         "trees": "flex",
+        "debrief": "block"
 
     }
 }

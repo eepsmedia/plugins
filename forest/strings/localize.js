@@ -35,7 +35,9 @@ function replaceSubstrings(originalString, ...substitutions) {
     // Replace each match with the corresponding substitution
     const resultString = originalString.replace(regex, (match, index) => {
         const substitutionIndex = parseInt(index, 10) - 1; // Adjust index to zero-based
-        return substitutions[substitutionIndex] || match; // Use substitution or original match if not available
+        let theSub = substitutions[substitutionIndex];
+        if (theSub === 0) theSub = "0";     //  special case for falsy value!
+        return theSub || match; // Use substitution or original match if not available
     });
 
     return resultString;

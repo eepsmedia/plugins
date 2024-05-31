@@ -9,15 +9,25 @@ import * as God from "../god/god.js";
 
 let yearList = [];      //      Array of strings; keys in rawData.
 
-let year = "1967";      //      a string
+let year = "";      //      a string
 
 let rawData = {};
 
 let currentData = {};
 
-export function update() {
+export function update(iYear = "") {
+    year = iYear || Player.year;
+
     if (prepFinancials()) {
-        document.getElementById("financeTable").innerHTML = makeFinancialTableGuts();
+        document.getElementById("financeHeader").style.display = "block";
+        const tableGuts =  makeFinancialTableGuts();
+        document.getElementById("financeTable").innerHTML = tableGuts.guts;
+        document.getElementById("financeTableNotes").innerHTML = tableGuts.notes;
+        document.getElementById("menuFinancialYears").value = year;
+
+    } else {
+        document.getElementById("financeHeader").style.display = "none";
+        document.getElementById("financeTableNotes").innerHTML = Localize.getString("financeNoDataYet");
     }
 }
 
@@ -35,25 +45,46 @@ function prepFinancials() {
 }
 
 function makeFinancialTableGuts() {
-    let guts = Localize.getString("tableHeadFinance");  //  table heading: reason (e.g., wages), income, expense, balance
-    const currency = Localize.getString("currency");
+    let out = {
+        guts : Localize.getString("tableHeadFinance"),
+        notes : ""
+    }
 
-    guts += `<tr><td>${Localize.getString("startingBalance")}</td><td></td><td></td><td  class="moneyCell">${currency}${currentData.startingBalance}</td></tr>`;
+    const currency = Localize.getString("currency");
+    //  first row is the starting balance
+    const startingBalanceString = Math.round(currentData.startingBalance);
+    out.guts += `<tr><td>${Localize.getString("startingBalance")}</td><td></td><td></td><td  class="moneyCell">${currency}${startingBalanceString}</td></tr>`;
 
     currentData.lineItems.forEach(lineItem => {
-        const amountString = numberToString(lineItem.amount);
-        const balanceString = numberToString(lineItem.balanceAfter);
+        const amountString = Math.round(lineItem.amount);
+        const balanceString = Math.round(lineItem.balanceAfter);
 
         const incomeCell = lineItem.amount > 0 ? `<td class="moneyCell">${currency}${amountString}</td>` : `<td></td>`;
         const expenseCell = lineItem.amount < 0 ? `<td  class="moneyCell">${currency}${Math.abs(amountString)}</td>` : `<td></td>`;
-        let reasonCellGuts = lineItem.amount > 0 ?
-            Localize.getString("sellTreeNumber", lineItem.notes.treeNo) :
-            Localize.getString("harvestTreeNumber", lineItem.notes.treeNo);
-        if (lineItem.reason === "salary") reasonCellGuts = Localize.getString("salaryReason");
 
-        guts += `<tr><td>${reasonCellGuts}</td>${incomeCell}${expenseCell}<td  class="moneyCell">${currency}${balanceString}</td></tr>`;
+        let reasonCellGuts;
+        switch(lineItem.reason) {
+            case "harvest":
+                reasonCellGuts = Localize.getString("sellTreeNumber", lineItem.notes.treeNo);
+                break;
+            case "wages":
+                reasonCellGuts = Localize.getString("harvestTreeNumber", lineItem.notes.treeNo);
+                break;
+            case "salary":
+                reasonCellGuts = Localize.getString("salaryReason");
+                break;
+            default:
+                reasonCellGuts = "Unknown reason!";
+                break;
+        }
+
+        if (lineItem.notes.harvesters && lineItem.notes.harvesters.length > 1) {
+            out.notes += Localize.getString("shareRevenue", lineItem.notes.treeNo, lineItem.notes.harvesters.length - 1) + "<br>";
+        }
+
+        out.guts += `<tr><td>${reasonCellGuts}</td>${incomeCell}${expenseCell}<td  class="moneyCell">${currency}${balanceString}</td></tr>`;
     })
-    return guts;
+    return out;
 }
 
 function makeYearMenu(data) {
@@ -68,9 +99,9 @@ function makeYearMenu(data) {
 }
 
 export function onSelectYear() {
-    year = document.getElementById("menuFinancialYears").value;     //  string
-    currentData = rawData[year];
-    update();
+    const tYear = document.getElementById("menuFinancialYears").value;     //  string
+    //  currentData = rawData[tYear];
+    update(tYear);
 }
 
 export function numberToString(iValue, iFigs = 2) {

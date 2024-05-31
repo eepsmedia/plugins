@@ -13,6 +13,10 @@ export let markedTrees = [];
 
 export let forest = [];
 
+export let gameEndSummary = {};
+
+let biomass;
+
 let gameData = {};
 
 export let annualReportData = {};
@@ -48,12 +52,18 @@ export async function doJoinGame() {
     UI.update();
 }
 
+/**
+ * Receive a message to start the game.
+ *
+ * @param contents  has the information we need, including the forest
+ */
 export function doStartGame(contents) {
+    console.log(`Player.doStartGame(contents)`);
     phase = playerPhases.kMarkTrees;
 
     me.data = {...contents.me};
     me.id = contents.me.id;     //  where we learn what out ID is.
-    forest = contents.forest;     //  the forest data!
+    forest = contents.forest.trees;     //  the forest data!
     year = contents.year;
     gameData = contents.gameData
 
@@ -74,37 +84,50 @@ export async function doHarvest() {
     await Temple.playerSpeaksToGod("harvest", markedTrees);
 
     //  chop down these trees and display the result even before the year is over.
+/*
     markedTrees.forEach(T => {
         const theTree = forest[T];
         theTree.age = 0;
         theTree.dim.h = 0;
         theTree.dim.w = 0;
     })
+*/
 
     UI.update();
 }
 
-export function doNewYear(contents) {
-    console.log(`doNewYear, year ${year}`);
-    phase = playerPhases.kMarkTrees;
-    me.data = {...contents.me};     //  includes balance
-    forest = contents.forest;
-    year = contents.year;
+export function doEndYear(contents) {
+
+    me.data.balance = contents.me.balance;     //  update balance at end of year
     markedTrees =  [];
 
     //  annualReportData is an object with year, startingBalance, and lineItems.
     //  lineItems is an array. Each lineItem is an object with amount, reason, notes, balanceAfter.
     //  for tree income, notes is an object created in Tree.js with treeNo, totalValue, and harvesters (an Array)
-    //  todo: we would not need this check if we had a separate endYear message.
+
     if (contents.me.currentFinance.year) {
         annualReportData[contents.me.currentFinance.year] = contents.me.currentFinance;
     }
-
     UI.update();
+}
+
+export function doNewYear(contents) {
+    console.log(`Player•doNewYear(contents), year ${year}`);
+
+    phase = playerPhases.kMarkTrees;
+    me.data = {...contents.me};     //  includes balance
+    forest = contents.forest.trees;
+    biomass = contents.forest.biomass;
+    console.log(`Player.doNewYear() biomass = ${biomass}`);
+    year = contents.year;
+
+    UI.update(true);
 }
 
 export function doEndGame(contents) {
     phase = playerPhases.kDebrief;
+    gameEndSummary = contents.end;     //  from Game.gameEndSummary.
+
     UI.update();
 }
 

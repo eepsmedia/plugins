@@ -9,15 +9,39 @@
     "harvestOneTree" : "harvest one tree",
     "harvestNTrees" : "harvest •1• trees",
 
+    "markedTreeList" : "Trees marked for harvest: •1•",
+
     "viewTrees" : "view trees",
     "viewFinance" : "view finance",
-    "tableHeadFinance" : "<tr><th>item</th><th>income</th><th>expense</th><th>balance</th></tr>tr>",
+    "tableHeadFinance" : "<tr><th>item</th><th class=\"moneyCell\">income</th><th class=\"moneyCell\">expense</th><th class=\"moneyCell\">balance</th></tr>tr>",
 
     "harvestTreeNumber" : "harvest tree #•1•",
     "sellTreeNumber" : "sell tree #•1•",
     "shareRevenue" : "you shared the revenue on tree •1• with •2• other group(s)",
     "startingBalance" : "starting balance",
     "salaryReason" : "fixed salary",
+    "financeNoDataYet" : "There is no financial data yet! Sell some trees!",
+
+    "normalGameConfig" : "vanilla",
+    "quickGameConfig" : "quick",
+
+    "end" : {
+      "head" : "The game is over!",
+      "because" : "The game ended because: ",
+      "myBalance" : "Your balance was •1••2•",
+      "meanBalance" : "The players' mean balance was •1••2•",
+      "biomass" : "The forest biomass was •1• at the end",
+      "initialBiomass" : "(The initial biomass was •1•.)",
+      "broke" : "Player •1• went broke",
+      "time" : "This game ended in •1•"
+    },
+
+    "menu" : {
+      "extrasPlaceholder" : "extras",
+      "itemAbandonGame" : "Abandon this game",
+      "itemEarlyMarket" : "Sell the trees early",
+      "itemCopyData" : "copy data to clipboard"
+    },
 
     "advice" : {
       "begin" : "Enter a \"handle\" to use in the game and press&nbsp;<b>•1•</b>.",
@@ -29,7 +53,9 @@
       "makingGame" : "To create a game, press&nbsp;<b>•1•</b>.",
       "recruiting" : "When all players have joined, press&nbsp;<b>•1•</b>&nbsp;to start the game.",
       "collectingMoves" : "Waiting for all players to harvest their trees.",
-      "readyForMarket" : "All players have harvested! Press&nbsp;<b>•1•</b>&nbsp;to sell their trees and start the next year."
+      "readyForMarket" : "All players have harvested! Press&nbsp;<b>•1•</b>&nbsp;to sell their trees and start the next year.",
+      "debriefPlayer" :  "Think about what happened in this game and what you might do differently next time.",
+      "debriefGod" :  "Facilitate a discussion about what happened and what they might do differently."
     },
 
     "staticStrings" : {
@@ -42,7 +68,8 @@
       "buttonJoinGame" : "join game",
       "buttonHarvest" : "harvest",
       "buttonDoMarket" : "sell trees",
-      "financialStemForYear" : "Income and expenses for year&nbsp;"
+      "financialStemForYear" : "Income and expenses for year&nbsp;",
+      "buttonDebriefNewGame" : "Set up for a new game"
     },
     "attributeNames" : {
 

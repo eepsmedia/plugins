@@ -6,6 +6,7 @@ class Player {
         this.balance = 0;
         this.gameCode = null;
         this.harvest = [];
+        this.harvestDone = false;
         this.currentFinance = {};
     }
 
@@ -24,6 +25,7 @@ class Player {
             balance: this.balance,
             gameCode : this.gameCode,
             harvest : this.harvest,
+            harvestDone : this.harvestDone,
             currentFinance : this.currentFinance
         }
     }

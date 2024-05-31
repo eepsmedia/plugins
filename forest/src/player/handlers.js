@@ -54,6 +54,10 @@ export function gotAllMessages(theMessages) {
                     Player.doNewYear(m.contents);
                     break;
 
+                case 'endYear':
+                    Player.doEndYear(m.contents);
+                    break;
+
                 default:
                     break;
             }

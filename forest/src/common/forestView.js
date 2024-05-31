@@ -1,5 +1,6 @@
 import * as Player from '../player/player.js';
 import * as PlayerUI from '../player/ui.js';
+import {phase} from "../player/player.js";
 
 let forestSVG = null;      //      the D3 object
 
@@ -50,6 +51,7 @@ function updateD3Forest() {
         });
 
 
+
         d3.select('#forestDisplay')
             .selectAll('path')
             .data(theTrees)
@@ -61,7 +63,11 @@ function updateD3Forest() {
                 return getColor(d)
             })
             .attr("class", (d, i) => {
-                return Player.markedTrees.includes(d.index) ? "markSVG" : "treeSVG"
+                let theClass = "treeSVG";
+                if  (Player.markedTrees.includes(d.index)) {
+                    theClass = (Player.phase === playerPhases.kWaitForMarket) ? "harvestedSVG" : "markSVG";
+                }
+                return theClass;
             })
     }
 }

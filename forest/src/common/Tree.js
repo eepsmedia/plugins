@@ -45,14 +45,15 @@ class Tree {
         const kRows = this.params.forestDimensions.rows;
         const kHeight = this.params.forestDimensions.cellHeight;
         const kWidth = this.params.forestDimensions.cellWidth;
+        const kFrac = this.params.forestDimensions.ranFrac;
 
         //  base x and y, upper left of its grid cell
         const bX = (this.index % kColumns) * kWidth;
         const bY = Math.floor(this.index / kColumns) * kHeight;
 
         return {
-            x : Math.round(bX + Math.random() * kWidth * this.params.forestDimensions.ranFrac + kWidth/2),
-            y : Math.round(bY + Math.random() * kHeight * this.params.forestDimensions.ranFrac + kHeight)
+            x : Math.round(bX + Math.random() * kWidth * kFrac + kWidth/2),
+            y : Math.round(bY + Math.random() * kHeight * kFrac + kHeight)
         }
     }
 
@@ -72,10 +73,11 @@ class Tree {
         }
         const smallest = 0.2;
         const theFrac = this.age / this.params.yearsToAdult;
-        const fracTwo = (smallest + (1-smallest) * theFrac);
+        const fracTwo = (smallest + (1-smallest) * theFrac);    //  so fracTwo ranges linearly from 0.2 to 1.
+        const fracTwoWidth = fracTwo > 0.6 ? 0.6 : fracTwo;     //  peg at 0.6
 
-        this.dim.h = Math.round(fracTwo * this.params.forestDimensions.cellHeight),
-        this.dim.w = Math.round(fracTwo * this.params.forestDimensions.cellWidth)
+        this.dim.h = Math.round(fracTwo * this.params.forestDimensions.cellHeight);
+        this.dim.w = Math.round(fracTwoWidth * this.params.forestDimensions.cellWidth);
     }
 
 

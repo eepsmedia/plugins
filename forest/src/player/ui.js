@@ -7,8 +7,10 @@ import * as Financials from './financials.js';
 const financeDIV = document.getElementById("finance");
 const headerDIV = document.getElementById("header");
 const adviceDIV = document.getElementById("advice");
+const debriefDIV = document.getElementById("debrief");
+const forestStatusDIV = document.getElementById("forestStatus");
 
-let viewingFinance = false;
+export let viewingFinance = false;
 
 export async function initialize() {
 
@@ -16,11 +18,21 @@ export async function initialize() {
 
 }
 
-export function update() {
+export function update(iFinancial = false) {
+    viewingFinance = iFinancial;
+
     headerDIV.innerHTML = makeHeader();
     adviceDIV.innerHTML = makeAdvice();
+    forestStatusDIV.innerHTML = makeForestStatus();
     ForestView.redraw(Player.forest, Player.markedTrees);
-    Financials.update();
+
+    if (viewingFinance) {
+        Financials.update();
+    }
+
+    if (Player.phase === playerPhases.kDebrief) {
+        debriefDIV.innerHTML = makeDebriefGuts();
+    }
 
     addSpecialHandlers();
     makeOtherTexts();
@@ -32,12 +44,11 @@ function makeHeader() {
     const tGameCode = myData.gameCode;
 
     const tYear = Player.year > 2020 ? Player.year : "";
-    const tBalance = isNaN(myData.balance) ? "" : `${Localize.getString('currency')}${Financials.numberToString(myData.balance)}`;
-
+    const tBalance = isNaN(myData.balance) ? "" : `${Localize.getString('currency')}${Math.round(myData.balance)}`;
     const thePlayer = myData.handle ? `${myData.handle}` : ``;
     const theGame = tGameCode ? `&nbsp;<span class="pill">${tGameCode}</span>&nbsp;` : `no game yet`;
     const buttonFinance = `<input type='button' id='buttonFinance'></input>`;
-    return `${thePlayer} ${tYear} ${tBalance} | ${theGame} (${Player.phase}) ${buttonFinance}`;
+    return `${thePlayer} ${tYear} ${tBalance} | ${theGame} (${Player.phase}) ${buttonFinance} `;
 
 }
 
@@ -64,7 +75,7 @@ function makeAdvice() {
             out = Localize.getString("advice.waitingForMarket");
             break;
         case playerPhases.kDebrief:
-            out = makeDebriefText(Player.debriefInfo);
+            out = Localize.getString("advice.debriefPlayer");
             break;
         default:
             out = "some advice might appear here!"
@@ -73,6 +84,15 @@ function makeAdvice() {
 
     return out;
 
+}
+
+function makeForestStatus() {
+    let out = "";
+    if (Player.markedTrees.length) {
+        out = Localize.getString("markedTreeList", Player.markedTrees.join(", "));
+    }
+
+    return out;
 }
 
 function makeOtherTexts() {
@@ -99,6 +119,7 @@ function setVisibility() {
         }
         headerDIV.style.display = "flex";
         financeDIV.style.display = "block";
+
     } else {
         for (const eKey in theVis) {
             const vis = theVis[eKey];
@@ -108,10 +129,29 @@ function setVisibility() {
     }
 }
 
+function makeDebriefGuts() {
+    let out = `<h2>${Localize.getString("end.head")}</h2>`;
+    out += "<p>" + Localize.getString("end.myBalance", Localize.getString("currency"), Math.round(Player.me.data.balance)) + "<br>"
+    out += Localize.getString("end.meanBalance", Localize.getString("currency"), Math.round(Player.gameEndSummary.meanBalance)) + "</p>"
+    out += "<p>" + Localize.getString("end.biomass", Math.round(Player.gameEndSummary.biomass)) + "<br>";
+    out += Localize.getString("end.initialBiomass", Math.round(Player.gameEndSummary.initialBiomass))  + "</p>";
+
+    out += Localize.getString("end.because");        //  the game ended because
+    out += "<ul>";
+    Player.gameEndSummary.broke.forEach(pb => {
+        out += `<li>${Localize.getString("end.broke", pb)}</li>`;
+    })
+    if (Player.gameEndSummary.time) {
+        out += `<li>${Localize.getString("end.time", Player.gameEndSummary.time)}</li>`;
+    }
+    out += "</ul>";
+    return out;
+}
+
 function addSpecialHandlers() {
     document.getElementById("buttonFinance").addEventListener('click', () => {
         viewingFinance = !viewingFinance;
-        update();
+        update(viewingFinance);
     });
 }
 
@@ -123,9 +163,9 @@ const visibility = {
         "signin" : "flex",
         "getGame" : "none",
         "forestSVG" :  "none",
-        "forest" :  "none",
+        "forestStatus" :  "none",
         "playGameControls" :  "none",
-
+        "debrief" : "none",
     },
     "enteringGame" : {
         "header" : "flex",
@@ -133,9 +173,9 @@ const visibility = {
         "signin" : "none",
         "getGame" : "flex",
         "forestSVG" :  "none",
-        "forest" :  "none",
+        "forestStatus" :  "none",
         "playGameControls" :  "none",
-
+        "debrief" : "none",
     },
     "waitingForStart" : {
         "header" : "flex",
@@ -143,9 +183,9 @@ const visibility = {
         "signin" : "none",
         "getGame" : "none",
         "forestSVG" :  "none",
-        "forest" :  "none",
+        "forestStatus" :  "none",
         "playGameControls" :  "none",
-
+        "debrief" : "none",
     },
     "markingTrees" : {
         "header" : "flex",
@@ -153,9 +193,9 @@ const visibility = {
         "signin" : "none",
         "getGame" : "none",
         "forestSVG" :  "flex",
-        "forest" :  "flex",
+        "forestStatus" :  "flex",
         "playGameControls" :  "flex",
-
+        "debrief" : "none",
     },
     "waitingForMarket" : {
         "header" : "flex",
@@ -163,8 +203,9 @@ const visibility = {
         "signin" : "none",
         "getGame" : "none",
         "forestSVG" :  "flex",
-        "forest" :  "flex",
+        "forestStatus" :  "flex",
         "playGameControls" :  "none",
+        "debrief" : "none",
     },
     "debriefing" : {
         "header" : "flex",
@@ -172,8 +213,8 @@ const visibility = {
         "signin" : "none",
         "getGame" : "none",
         "forestSVG" :  "flex",
-        "forest" :  "flex",
+        "forestStatus" :  "flex",
         "playGameControls" :  "none",
-
+        "debrief" : "block",
     }
 }
