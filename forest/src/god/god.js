@@ -46,7 +46,7 @@ export async function doNewGame() {
 export async function doPlayerJoin(iID, iHandle) {
     console.log(`god • doPlayerJoin() • ${iID}`);
 
-    const result = await Game.makeNewPlayer(iID, iHandle);
+    const thePlayer = Game.makeNewPlayer(iID, iHandle);
     UI.update();
 }
 

@@ -63,7 +63,11 @@ export function godSpeaksToPlayer(type, iPlayerID, iContents = {}) {
             break;
 
         default:
-            //      todo    add error alert here
+            swal({
+                title : "oops!",
+                text : `God is trying to send a ${type} message, which shouldn't happen.`,
+                icon : 'error'
+            });
             break;
     }
 

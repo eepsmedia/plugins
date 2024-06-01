@@ -5,7 +5,6 @@ import * as Localize from "../../strings/localize.js";
 
 export let players = {};        //  object of Players keyed by id
 export let waitingFor = [];
-
 export let gameEndSummary = {};
 
 let CSVsummary = "";
@@ -30,7 +29,8 @@ export async function makeNewGame(iGod, iCode) {
 
     for (const pid in oldPlayers) {
         const who = oldPlayers[pid];
-        makeNewPlayer(pid, who.handle);
+        const newPlayer = makeNewPlayer(pid, who.handle);
+        console.log(`Game • makeNewGame() new player: ${newPlayer}`);
     }
 
 }
@@ -308,21 +308,16 @@ function tellPlayerOfEndGame(iWho, iEnd) {
  *
  * @param iID       the ID of the new player
  * @param iHandle   the new player's "handle"
- * @returns {Promise<boolean>}
+ * @returns {Player}    the new Player instance
  */
 export async function makeNewPlayer(iID, iHandle) {
     console.log(`game • makeNewPlayer() • ${iHandle}`);
 
     const thePlayer = new Player(iID, iHandle);
     thePlayer.gameCode = gameData.gameCode;
-    const result = await Fire.godAddsPlayer(thePlayer);   //  entire player, not handle, add to DB
+    players[iID] = thePlayer;        //  add to our internal list
 
-    if (result) {
-        players[iID] = thePlayer;        //  add to our internal list
-    } else {
-        console.log(`*** TROUBLE adding ${iHandle} to ${gameData.gameCode}`);
-    }
-    return result;
+    return thePlayer;
 }
 
 function getOneCSVSummaryLine(player) {

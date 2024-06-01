@@ -1,5 +1,5 @@
 import {db} from "../../cred.js";
-import * as Game from "../god/game.js"
+//  import * as Game from "../god/game.js"
 import * as Handlers from "../god/handlers.js"
 import * as PHandlers from "../player/handlers.js"
 
@@ -8,11 +8,11 @@ import  * as FB from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firest
 //  let db = null;
 let gamesCR = null;     //      = all games collection reference
 let godsCR = null;
-let playersCR = null;   //  collection ref for the players collection the game.
+//  let playersCR = null;   //  collection ref for the players collection the game.
 let messagesCR = null;   //  collection ref for the players collection the game.
 
 let gameDR = null;      //  document reference for our particular game.
-let playerDR = null;      //  document reference for our particular player.
+//  let playerDR = null;      //  document reference for our particular player.
 
 //  unsubscribers
 let unsubGodMessages = null;
@@ -176,6 +176,7 @@ export async function playerJoinsGame(iPlayer, iGame) {
  * @param iPlayer       the Player instance to be added
  * @returns {Promise<boolean>}      tru or false
  */
+/*
 export async function godAddsPlayer(iPlayer){
     let success = false;
 
@@ -191,4 +192,4 @@ export async function godAddsPlayer(iPlayer){
         }
 
     return success;
-}
+}*/
