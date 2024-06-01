@@ -17,8 +17,9 @@ let currentData = {};
 
 export function update(iYear = "") {
     year = iYear || Player.year;
+    const ready = prepFinancials();
 
-    if (prepFinancials()) {
+    if (ready) {
         document.getElementById("financeHeader").style.display = "block";
         const tableGuts =  makeFinancialTableGuts();
         document.getElementById("financeTable").innerHTML = tableGuts.guts;
@@ -29,6 +30,8 @@ export function update(iYear = "") {
         document.getElementById("financeHeader").style.display = "none";
         document.getElementById("financeTableNotes").innerHTML = Localize.getString("financeNoDataYet");
     }
+
+    return ready;
 }
 
 function prepFinancials() {

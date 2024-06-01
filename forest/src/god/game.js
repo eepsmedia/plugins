@@ -1,13 +1,14 @@
 import * as Fire from "../common/fire.js";
 import * as Temple from "../common/temple.js";
 import * as Nature from "./nature.js";
+import * as Localize from "../../strings/localize.js";
 
 export let players = {};        //  object of Players keyed by id
 export let waitingFor = [];
 
 export let gameEndSummary = {};
 
-let historicalSummary = {};
+let CSVsummary = "";
 
 let currentTransactions = [];
 let allTransactions = {};
@@ -35,7 +36,7 @@ export async function makeNewGame(iGod, iCode) {
 }
 
 function resetGameVariables() {
-    historicalSummary = {};
+    CSVsummary = Localize.getString("summaryTableHead");
     currentTransactions = [];
     allTransactions = {};
     gameEndSummary = {};
@@ -58,32 +59,22 @@ export function startGame() {
     gameData.year = (new Date()).getFullYear() - 1;
     gameData.endingYear = gameData.year + gameData.durationMin + Math.round(Math.random() * gameData.durationVar);
 
-    historicalSummary[gameData.year] = {
-        biomass : gameData.initialBiomass,
-        meanBalance : gameData.startingBalance
-    }
-
     for (const p in players) {
         const who = players[p];
         who.balance = gameData.startingBalance;
+        gameEndSummary.meanBalance = who.balance;
+        CSVsummary += "\n" + getOneCSVSummaryLine(who);
+
         tellPlayerOfStartGame(who);
-        //newYear();      //  includes update
     }
 
+
+    //  newYear();
+    gameData.year++;    //  advance to new year (without calling newYear() which grows the forest; don't want that.
     waitingFor = checkReadyForMarket();
 
 }
 
-
-function tellPlayerOfStartGame(iWho) {
-    const contents = {
-        me: iWho.asObject(),       //  includes the new balance
-        year: gameData.year,
-        forest: Nature.getForestDataForDisplay(),
-        gameData: gameData
-    }
-    Temple.godSpeaksToPlayer('startGame', iWho.id, contents);
-}
 
 export function newYear() {
     console.log(`game • newYear()`);
@@ -93,6 +84,7 @@ export function newYear() {
 
     for (let p in players) {
         const who = players[p];
+        who.year = gameData.year;   //  update the player's year
         tellPlayerOfNewYear(who);
     }
 
@@ -179,7 +171,6 @@ async function processHarvest() {
     //  side effect: changes gameEndSummary.
     implementAndSortAllCurrentTransactions(currentTransactions);
 
-
     //  calculate the mean balance...
     let balanceSum = 0;     //      balance of ALL players
     for (const p in players) {
@@ -254,21 +245,26 @@ export async function market() {
 
 
 export async function endYear() {
-    console.log(`game • endYear()`);
+    console.log(`game • endYear() for ${gameData.year}`);
 
     //  inform players of year end, giving them their financial data.
 
     for (let p in players) {
         const who = players[p];
+        CSVsummary += "\n" + getOneCSVSummaryLine(who); //  record possible CODAP data
         tellPlayerOfYearEnd(who);
     }
+}
 
-    //      file appropriate summary data
 
-    historicalSummary[gameData.year] = {
-        biomass : Nature.biomass,
-        meanBalance : gameEndSummary.meanBalance
+function tellPlayerOfStartGame(iWho) {
+    const contents = {
+        me: iWho.asObject(),       //  includes the new balance
+        year: gameData.year,
+        forest: Nature.getForestDataForDisplay(),
+        gameData: gameData
     }
+    Temple.godSpeaksToPlayer('startGame', iWho.id, contents);
 }
 
 function tellPlayerOfYearEnd(iWho) {
@@ -329,13 +325,21 @@ export async function makeNewPlayer(iID, iHandle) {
     return result;
 }
 
-export function getDataForCODAP() {
-    let out = "year,biomass,meanBalance\n";
-
-    for (const year in historicalSummary) {
-        const theSummary = historicalSummary[year];
-        out += `${year},${theSummary.biomass},${theSummary.meanBalance}\n`;
-    }
-    return out;
+function getOneCSVSummaryLine(player) {
+    const theLine = [
+        gameData.year,
+        gameData.biomass,
+        gameEndSummary.meanBalance,
+        player.id,
+        player.harvest.length,
+        player.balance
+    ]
+    return theLine.join(", ");      //      comma-separated values
 }
+
+
+export function getDataForCODAP() {
+    return CSVsummary;
+}
+
 

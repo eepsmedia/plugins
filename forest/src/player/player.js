@@ -112,14 +112,13 @@ export function doEndYear(contents) {
 }
 
 export function doNewYear(contents) {
-    console.log(`Player•doNewYear(contents), year ${year}`);
-
     phase = playerPhases.kMarkTrees;
+
     me.data = {...contents.me};     //  includes balance
     forest = contents.forest.trees;
     biomass = contents.forest.biomass;
-    console.log(`Player.doNewYear() biomass = ${biomass}`);
     year = contents.year;
+    console.log(`Player•doNewYear(contents), year ${year}, biomass = ${biomass}`);
 
     UI.update(true);
 }

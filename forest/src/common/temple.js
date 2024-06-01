@@ -47,7 +47,7 @@ export function godSpeaksToPlayer(type, iPlayerID, iContents = {}) {
     switch (type) {
 
         case 'startGame' :
-            message = new Message(iPlayerID, false, Game.gameData.year, 'startGame', iContents);
+            message = new Message(iPlayerID, false, Game.gameData.year + 1, 'startGame', iContents);
             break;
 
         case 'newYear' :

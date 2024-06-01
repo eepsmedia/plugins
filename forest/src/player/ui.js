@@ -13,9 +13,7 @@ const forestStatusDIV = document.getElementById("forestStatus");
 export let viewingFinance = false;
 
 export async function initialize() {
-
     ForestView.initialize(d3.select("#forestSVG"));
-
 }
 
 export function update(iFinancial = false) {
@@ -27,7 +25,10 @@ export function update(iFinancial = false) {
     ForestView.redraw(Player.forest, Player.markedTrees);
 
     if (viewingFinance) {
-        Financials.update();
+        const anyFinancialData = Financials.update();
+        if (!anyFinancialData) {
+            viewingFinance = false;     //  no financials? Show the trees.
+        }
     }
 
     if (Player.phase === playerPhases.kDebrief) {

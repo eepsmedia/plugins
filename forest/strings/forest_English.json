@@ -25,6 +25,8 @@
     "normalGameConfig" : "vanilla",
     "quickGameConfig" : "quick",
 
+    "summaryTableHead" : "year, biomass, meanBalance, playerID, playerTreeCount, playerBalance",
+
     "end" : {
       "head" : "The game is over!",
       "because" : "The game ended because: ",
