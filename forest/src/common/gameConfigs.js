@@ -2,7 +2,7 @@ const gameConfigs = {
     normalGameConfig : {
         godHandle : "",
         gameCode : "",
-        year: 2025,
+        year: 1967,
         biomass : 0,
         initialBiomass : 0,
         endingYear: 0,
@@ -28,7 +28,7 @@ const gameConfigs = {
     quickGameConfig : {
         godHandle : "",
         gameCode : "",
-        year: 2025,
+        year: 1967,
         biomass : 0,
         initialBiomass : 0,
         endingYear: 0,

@@ -17,25 +17,17 @@ export let gameData = {...gameConfigs["normalGameConfig"]};
 export async function makeNewGame(iGod, iCode) {
     console.log(`game • makeNewGame()`);
 
+    resetAllData();
     const config = document.getElementById("configurationMenu").value;
     gameData = {...gameConfigs[config]};
     gameData.godHandle = iGod;
     gameData.gameCode = iCode;
     await Fire.createFirebaseGameRecord(gameData);
-    resetGameVariables();
-
-    const oldPlayers = {...players};    //   shallow clone
-    players = {};
-
-    for (const pid in oldPlayers) {
-        const who = oldPlayers[pid];
-        const newPlayer = makeNewPlayer(pid, who.handle);
-        console.log(`Game • makeNewGame() new player: ${newPlayer}`);
-    }
-
 }
 
-function resetGameVariables() {
+export function resetAllData() {
+    gameData = {...gameConfigs["normalGameConfig"]};
+    players = {};
     CSVsummary = Localize.getString("summaryTableHead");
     currentTransactions = [];
     allTransactions = {};
@@ -43,7 +35,8 @@ function resetGameVariables() {
     waitingFor = [];
 }
 
-export function startGame() {
+
+export async function startGame() {
     console.log(`game • startGame()`);
 
     const nPlayers = Object.keys(players).length;
@@ -68,6 +61,7 @@ export function startGame() {
         tellPlayerOfStartGame(who);
     }
 
+    await Fire.updateGameWithPlayerList(gameData.gameCode, players);
 
     //  newYear();
     gameData.year++;    //  advance to new year (without calling newYear() which grows the forest; don't want that.
@@ -291,6 +285,7 @@ export function endGame(iEnd) {
         const who = players[p];
         tellPlayerOfEndGame(who, iEnd);
     }
+    Fire.updateGameWithPlayerList(gameData.gameCode, players);  //  did not await this
 }
 
 function tellPlayerOfEndGame(iWho, iEnd) {

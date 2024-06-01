@@ -9,10 +9,15 @@ export function initialize() {
     document.getElementById("buttonPlayerLogin").addEventListener('click', playerLogin);
     document.getElementById("buttonJoinGame").addEventListener('click', joinGame);
     document.getElementById("buttonHarvest").addEventListener('click', harvest);
+    document.getElementById("buttonDebriefNewGame").addEventListener('click', playerResetPlayer);
 
     document.getElementById("menuFinancialYears").addEventListener('change', Financials.onSelectYear);
 
     console.log(`Handlers initialized`);
+}
+
+function playerResetPlayer() {
+    Player.doResetPlayer();
 }
 
 async function playerLogin() {

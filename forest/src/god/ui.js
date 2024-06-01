@@ -18,7 +18,7 @@ export function initialize() {
 export function update() {
     headerGutsDIV.innerHTML = makeHeaderGuts();
     adviceDIV.innerHTML = makeAdvice();
-    playersDIV.innerHTML = makePlayers();
+    playersDIV.innerHTML = makePlayersTable();
     extrasMENU.innerHTML = makeExtrasMenu();
 
     if (God.phase === godPhases.kDebrief) {
@@ -110,7 +110,7 @@ function makeDebriefGuts() {
 }
 
 
-function makePlayers() {
+function makePlayersTable() {
     let out = Localize.getString("noPlayersYet");
 
     if (Object.keys(Game.players).length > 0) {

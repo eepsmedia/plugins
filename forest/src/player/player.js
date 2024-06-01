@@ -79,19 +79,26 @@ export function doStartGame(contents) {
     UI.update();
 }
 
+function resetPlayerData() {
+    annualReportData = {};      //  resets financial data
+    markedTrees = [];
+    forest = [];
+}
+
+/**
+ * Having completed a game, the player resets. They keep their id and handle, but lose their
+ * game code, so go back to that state.
+ */
+export function doResetPlayer() {
+    phase = playerPhases.kEnterGame;
+    resetPlayerData();
+    document.getElementById("inputGameCode").value = "";
+    UI.update();
+}
+
 export async function doHarvest() {
     phase = playerPhases.kWaitForMarket;
     await Temple.playerSpeaksToGod("harvest", markedTrees);
-
-    //  chop down these trees and display the result even before the year is over.
-/*
-    markedTrees.forEach(T => {
-        const theTree = forest[T];
-        theTree.age = 0;
-        theTree.dim.h = 0;
-        theTree.dim.w = 0;
-    })
-*/
 
     UI.update();
 }

@@ -1,6 +1,7 @@
 import * as UI from './ui.js';
 //  import * as Fire from '../common/fire.js';
 import * as God from './god.js';
+
 //  import * as Game from './game.js';
 
 export function initialize() {
@@ -13,7 +14,7 @@ export function initialize() {
     document.getElementById("buttonStartGame").addEventListener('click', startGame);
     document.getElementById("buttonDoMarket").addEventListener('click', doMarket);
     document.getElementById("configurationMenu").addEventListener('change', doConfigChange);
-    document.getElementById("buttonDebriefNewGame").addEventListener('click', godLogin);
+    document.getElementById("buttonDebriefNewGame").addEventListener('click', godReset);
 
     document.getElementById("menuExtras").addEventListener("change", doMenuExtras)
 
@@ -24,6 +25,10 @@ async function godLogin() {
     const theHandle = document.getElementById("inputHandle").value;
     console.log(`logging in ${theHandle} as God`);
     God.setGodData(theHandle);
+}
+
+function godReset() {
+    God.doResetGod();
 }
 
 function newGame() {

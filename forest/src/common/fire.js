@@ -115,6 +115,17 @@ export async function createFirebaseGameRecord(iGameData )  {
     }
 }
 
+export async function updateGameWithPlayerList(iCode, iPlayers) {
+    let playerList = [];
+
+    for (const p in iPlayers) {
+        const who = iPlayers[p];
+        playerList.push(who.asObject());
+    }
+
+    await FB.updateDoc(gameDR, {players : playerList});
+}
+
 export function subscribeToMessagesToGod( ) {
     const q =  FB.query(messagesCR, FB.where("toGod", "==", true));
 

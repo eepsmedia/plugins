@@ -5,6 +5,7 @@
     "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
     "currency" : "$",
 
+    "playerTitle" : "Forester",
     "noPlayersYet" : "No players have signed in yet.",
     "harvestOneTree" : "harvest one tree",
     "harvestNTrees" : "harvest •1• trees",

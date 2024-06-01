@@ -7,8 +7,9 @@ import * as Financials from './financials.js';
 const financeDIV = document.getElementById("finance");
 const headerDIV = document.getElementById("header");
 const adviceDIV = document.getElementById("advice");
-const debriefDIV = document.getElementById("debrief");
+const debriefTextDIV = document.getElementById("debriefText");
 const forestStatusDIV = document.getElementById("forestStatus");
+const titleStripH1 = document.getElementById("playerTitleStrip");
 
 export let viewingFinance = false;
 
@@ -19,6 +20,7 @@ export async function initialize() {
 export function update(iFinancial = false) {
     viewingFinance = iFinancial;
 
+    titleStripH1.innerHTML = makeTitle();
     headerDIV.innerHTML = makeHeader();
     adviceDIV.innerHTML = makeAdvice();
     forestStatusDIV.innerHTML = makeForestStatus();
@@ -32,7 +34,7 @@ export function update(iFinancial = false) {
     }
 
     if (Player.phase === playerPhases.kDebrief) {
-        debriefDIV.innerHTML = makeDebriefGuts();
+        debriefTextDIV.innerHTML = makeDebriefGuts();
     }
 
     addSpecialHandlers();
@@ -40,16 +42,26 @@ export function update(iFinancial = false) {
     setVisibility();
 }
 
+function makeTitle() {
+    //      e.g., Forester 2036 (tim) €5678
+    const myData = Player.me.data;
+    const theYear = Player.year > 2000 ? Player.year : "";
+    const theTitle = Localize.getString("playerTitle");       //      "Forester"
+    const theBalance = isNaN(myData.balance) ? "" : `${Localize.getString('currency')}${Math.round(myData.balance)}`;
+    const theHandle = myData.id ? `${myData.handle}` : "";
+
+    return `${theTitle} ${theYear} ${theHandle} ${theBalance} `;
+}
+
 function makeHeader() {
     const myData = Player.me.data;
     const tGameCode = myData.gameCode;
 
-    const tYear = Player.year > 2020 ? Player.year : "";
-    const tBalance = isNaN(myData.balance) ? "" : `${Localize.getString('currency')}${Math.round(myData.balance)}`;
-    const thePlayer = myData.handle ? `${myData.handle}` : ``;
+    //  const tBalance = isNaN(myData.balance) ? "" : `${Localize.getString('currency')}${Math.round(myData.balance)}`;
+    const thePlayer = myData.id ? `${myData.id}` : ``;
     const theGame = tGameCode ? `&nbsp;<span class="pill">${tGameCode}</span>&nbsp;` : `no game yet`;
     const buttonFinance = `<input type='button' id='buttonFinance'></input>`;
-    return `${thePlayer} ${tYear} ${tBalance} | ${theGame} (${Player.phase}) ${buttonFinance} `;
+    return ` ${thePlayer} | ${Player.phase}  ${buttonFinance} ${theGame} `;
 
 }
 

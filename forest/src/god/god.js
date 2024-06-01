@@ -30,6 +30,17 @@ export async function setGodData(iHandle) {
     UI.update();
 }
 
+/**
+ * Having completed a game, God resets to make a new game.
+ * We keep God's handle; no need to make a new FB record.
+ * God still has to make a new game, after which she will see players join.
+ */
+export function doResetGod() {
+    phase = godPhases.kMakeGame;
+    Game.resetAllData(); //  as if there's no game. Salient: erases Game.players.
+    UI.update();
+}
+
 export async function doNewGame() {
     console.log(`god • doNewGame()()`);
 
@@ -50,10 +61,11 @@ export async function doPlayerJoin(iID, iHandle) {
     UI.update();
 }
 
-export function doStartGame() {
+export async function doStartGame() {
     console.log(`god • doStartGame()`);
+    phase = godPhases.kCollectMoves;    //  now we're looking for all players to submit moves
 
-    Game.startGame();
+    await Game.startGame();
     //  doNewYear();    //  includes update
     UI.update();
 }
