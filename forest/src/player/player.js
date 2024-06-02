@@ -128,7 +128,8 @@ export function doNewYear(contents) {
     year = contents.year;
     console.log(`Player•doNewYear(contents), year ${year}, biomass = ${biomass}`);
 
-    UI.update(true);
+    const showFinancials = document.getElementById("checkboxShowFinancialsOnNewYear").checked;
+    UI.update(showFinancials);
 }
 
 export function doEndGame(contents) {

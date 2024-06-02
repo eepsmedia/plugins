@@ -16,7 +16,8 @@ export function getForest() {
  */
 export function grow() {
     biomass = calculateBiomass();
-    const growthFactor = biomass / initialBiomass;
+    let growthFactor = biomass / initialBiomass;
+    if (growthFactor < 0.2) growthFactor = 0.2;     //      minimum growth
 
     //  let growth = [];
     forest.forEach(tree => {

@@ -32,7 +32,7 @@ const gameConfigs = {
         biomass : 0,
         initialBiomass : 0,
         endingYear: 0,
-        durationMin : 2,
+        durationMin : 3,
         durationVar : 0,
         startingBalance: 5000,
         harvestLimit: 10,

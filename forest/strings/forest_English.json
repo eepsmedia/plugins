@@ -15,7 +15,7 @@
 
     "viewTrees" : "view trees",
     "viewFinance" : "view finance",
-    "tableHeadFinance" : "<tr><th>item</th><th class=\"moneyCell\">income</th><th class=\"moneyCell\">expense</th><th class=\"moneyCell\">balance</th></tr>tr>",
+    "tableHeadFinance" : "<tr><th>item</th><th class=\"moneyCell\">income</th><th class=\"moneyCell\">expense</th><th class=\"moneyCell\">balance</th></tr>",
 
     "harvestTreeNumber" : "harvest tree #•1•",
     "sellTreeNumber" : "sell tree #•1•",
@@ -76,7 +76,8 @@
       "buttonHarvest" : "harvest",
       "buttonDoMarket" : "sell trees",
       "financialStemForYear" : "Income and expenses for year&nbsp;",
-      "buttonDebriefNewGame" : "Set up for a new game"
+      "buttonDebriefNewGame" : "Set up for a new game",
+      "checkboxShowFinancialsOnNewYearLabel" : "show this every new year"
     },
     "attributeNames" : {
 
