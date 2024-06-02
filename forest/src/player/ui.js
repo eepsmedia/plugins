@@ -59,7 +59,9 @@ function makeHeader() {
 
     //  const tBalance = isNaN(myData.balance) ? "" : `${Localize.getString('currency')}${Math.round(myData.balance)}`;
     const thePlayer = myData.id ? `${myData.id}` : ``;
-    const theGame = tGameCode ? `&nbsp;<span class="pill">${tGameCode}</span>&nbsp;` : `no game yet`;
+    const theGame = tGameCode ?
+        `&nbsp;<span class="pill">${tGameCode}</span>&nbsp;` :
+        `&nbsp;<span class="pill">${Localize.getString("noGameYet")}</span>&nbsp;`;
     const buttonFinance = `<input type='button' id='buttonFinance'></input>`;
     return ` ${thePlayer} | ${Player.phase}  ${buttonFinance} ${theGame} `;
 

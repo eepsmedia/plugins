@@ -52,28 +52,43 @@ export async function startGame() {
     gameData.year = (new Date()).getFullYear() - 1;
     gameData.endingYear = gameData.year + gameData.durationMin + Math.round(Math.random() * gameData.durationVar);
 
+    //  finish installing all pre-start data for each player
     for (const p in players) {
         const who = players[p];
         who.balance = gameData.startingBalance;
         gameEndSummary.meanBalance = who.balance;
-        CSVsummary += "\n" + getOneCSVSummaryLine(who);
+    }
 
+    //  record the pre-start data for posterity
+    await Fire.updateGameWithPlayerList(gameData.gameCode, players);
+    CSVsummary += makeCSVforAllPlayers();
+
+    //  now set the year to the first real year of the game
+    gameData.year++;    //  advance to new year (without calling newYear() which grows the forest; don't want that.
+
+    //  tell all players and give them the starting information
+    for (const p in players) {
+        const who = players[p];
         tellPlayerOfStartGame(who);
     }
 
-    await Fire.updateGameWithPlayerList(gameData.gameCode, players);
-
-    //  newYear();
-    gameData.year++;    //  advance to new year (without calling newYear() which grows the forest; don't want that.
+    //  make sure we're waiting for everybody!
     waitingFor = checkReadyForMarket();
 
 }
 
+function makeCSVforAllPlayers() {
+    let out = "";
+    for (const p in players) {
+        const who = players[p];
+        out += "\n" + getOneCSVSummaryLine(who);
+    }
+    return out;
+}
 
 export function newYear() {
     console.log(`game • newYear()`);
 
-    gameData.biomass = Nature.grow();
     gameData.year++;
 
     for (let p in players) {
@@ -200,8 +215,8 @@ function implementAndSortAllCurrentTransactions(iTransactions) {
         })
         if (who.balance < 0) {
             gameEndSummary.end = true;
-            console.log(`****    GAME OVER: ${thePlayer.playerID}} went bankrupt ****`);
-            gameEndSummary.broke.push(thePlayer.playerID);
+            console.log(`****    GAME OVER: ${who.id}} went bankrupt ****`);
+            gameEndSummary.broke.push(who.id);
         }
     })
 
@@ -239,15 +254,16 @@ export async function market() {
 
 
 export async function endYear() {
-    console.log(`game • endYear() for ${gameData.year}`);
+    gameData.biomass = Nature.grow();
+    console.log(`game • endYear() for ${gameData.year} (biomass = ${Nature.biomass} or ${gameData.biomass}`);
 
     //  inform players of year end, giving them their financial data.
 
     for (let p in players) {
-        const who = players[p];
-        CSVsummary += "\n" + getOneCSVSummaryLine(who); //  record possible CODAP data
-        tellPlayerOfYearEnd(who);
+        tellPlayerOfYearEnd(players[p]);
     }
+
+    CSVsummary += makeCSVforAllPlayers();       //      update CODAP data
 }
 
 

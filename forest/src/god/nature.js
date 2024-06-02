@@ -49,6 +49,7 @@ export function harvestMarkedTrees() {
         allHarvestTransactions = [...allHarvestTransactions, ...newTransactions];
     })
 
+    biomass = calculateBiomass();   //  biomass after harvest = end of year
     return allHarvestTransactions;
 }
 

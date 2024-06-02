@@ -127,7 +127,8 @@ These are set up in `common/temple.js` and actually implemented in `Fire.sendMes
 Messages themselves are instances of the `Message` class (`common/Message.js`).
 Here is its defining constructor:
 ```javascript
-    constructor(iPlayerID, iToGod, iDate, iSubject, iContents) { 
+    constructor(iPlayerID, iToGod, iDate, iSubject, iContents) {
+        this.playerID = iPlayerID;  //  the player ID
         //  etc
     }
 ```
@@ -137,9 +138,9 @@ the date in game years;
 the "subject", which is the type of the message;
 and the contents, which is an Object containing the actual message.
 
-The types are:
+The message types are:
 
-#### From God to a player
+#### From God to a player (`toGod = false`)
 
 **startGame**
 The game you signed up to is now starting,
@@ -165,7 +166,7 @@ God checks the game-end criteria.
 If the game has ended, this message gets sent
 with information about why the game ended.
 
-#### From a player to God
+#### From a player to God (`toGod = true`)
 
 **join** 
 Hey, God, I have joined your game!
@@ -175,6 +176,71 @@ The contents include my handle and playerID.
 I have specified which trees I will cut down this year.
 They appear in an array in the contents.
 
+#### How messages are received
+
+When an app initializes firebase (`Fire.initialize()`),
+it sets up listeners to the appropriate messages and types.
+These get captured in `handlers.js` and then immediately
+shipped off to `God` or `Player`.
+
+Example of subscribing to the notification (`fire.js`):
+
+```javascript
+export function subscribeToPlayerMessages( iPlayerID, iGameCode) {
+    messagesCR = FB.collection(db, `games/${iGameCode}/messages`);
+    const q = FB.query(messagesCR,FB.where("playerID", "==", iPlayerID));
+
+    unsubPlayerMessages = FB.onSnapshot(q, (qss) => {
+        let allMessages = [];
+        qss.forEach( messageSnap => {         //  each of these is a doc snapshot, but already datified
+            const theMessageID = messageSnap.id;
+            allMessages.push({id : theMessageID, data : messageSnap.data()});
+        })
+        PHandlers.gotAllMessages(allMessages);
+    })
+}
+```
+
+Example of catching notifications (`PHandlers`, i.e., `player/handlers.js`):
+
+```javascript
+let processedMessages = [];
+
+export function gotAllMessages(theMessages) {
+    console.log(`player got all ${theMessages.length} message(s)...`);
+
+    theMessages.forEach(async mSnapData => {
+
+        //  look only at new messages...
+        if (!processedMessages.includes(mSnapData.id)) {
+            processedMessages.push(mSnapData.id);
+
+            const m = mSnapData.data;   //  already in object form
+
+            switch (m.subject) {
+                case "startGame":
+                    Player.doStartGame(m.contents);
+                    break;
+
+                case "endGame":
+                    Player.doEndGame(m.contents);
+                    break;
+
+                case 'newYear':
+                    Player.doNewYear(m.contents);
+                    break;
+
+                case 'endYear':
+                    Player.doEndYear(m.contents);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    })
+}
+```
 ## Game phases
 
 In both the `god` and `player` apps, the principal module (`god/god.js` and `player/player.js`)

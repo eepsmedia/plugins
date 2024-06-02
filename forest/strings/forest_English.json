@@ -7,6 +7,7 @@
 
     "playerTitle" : "Forester",
     "noPlayersYet" : "No players have signed in yet.",
+    "noGameYet" : "no game yet",
     "harvestOneTree" : "harvest one tree",
     "harvestNTrees" : "harvest •1• trees",
 
@@ -37,6 +38,10 @@
       "initialBiomass" : "(The initial biomass was •1•.)",
       "broke" : "Player •1• went broke",
       "time" : "This game ended in •1•"
+    },
+
+    "phases" : {
+
     },
 
     "menu" : {

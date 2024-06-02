@@ -44,6 +44,7 @@ export function doResetGod() {
 export async function doNewGame() {
     console.log(`god • doNewGame()()`);
 
+    testGameNumber = Math.round(Math.random() * 1234567890123);     //      comment out for local testing
     const tGameCode = eepsWords.newGameCode(testGameNumber);
     testGameNumber++;
 

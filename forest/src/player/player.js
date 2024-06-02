@@ -40,6 +40,7 @@ export async function doLogin() {
     me.data.handle = theHandle;
     me.data.id = me.id;
     phase = playerPhases.kEnterGame;
+    document.title = me.id;
 
     UI.update();
 }
