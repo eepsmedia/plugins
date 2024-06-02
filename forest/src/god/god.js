@@ -13,6 +13,11 @@ export let theLang = 'en';
 
 export async function initialize() {
     console.log(`god • init in progress`);
+    if (navigator.clipboard) {
+        console.log('Clipboard API available');
+    } else {
+        console.log('Clipboard API NOT available');
+    }
 
     theLang = Localize.figureOutLanguage(theLang);
 
@@ -20,6 +25,7 @@ export async function initialize() {
     await Handlers.initialize();
     await Localize.initialize('en');
     await UI.initialize();
+
     phase = godPhases.kBegin;         //  need someone to log in
     UI.update();
 }

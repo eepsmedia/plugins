@@ -16,7 +16,8 @@ export function initialize() {
     document.getElementById("configurationMenu").addEventListener('change', doConfigChange);
     document.getElementById("buttonDebriefNewGame").addEventListener('click', godReset);
 
-    document.getElementById("menuExtras").addEventListener("change", doMenuExtras)
+    // document.getElementById("menuExtras").addEventListener("change", doMenuExtras)
+    document.getElementById("buttonCopyData").addEventListener("click", God.doCopyData)
 
     console.log(`Handlers initialized`);
 }

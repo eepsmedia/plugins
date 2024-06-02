@@ -77,7 +77,8 @@
       "buttonDoMarket" : "sell trees",
       "financialStemForYear" : "Income and expenses for year&nbsp;",
       "buttonDebriefNewGame" : "Set up for a new game",
-      "checkboxShowFinancialsOnNewYearLabel" : "show this every new year"
+      "checkboxShowFinancialsOnNewYearLabel" : "show this every new year",
+      "buttonCopyData" : "copy data"
     },
     "attributeNames" : {
 

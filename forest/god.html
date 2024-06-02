@@ -34,11 +34,19 @@
 
 <body>
 
-<h1>Aranyani</h1>
+<h1 id="appTitleStripe" class="stripe">
+    <span id="appTitle">Aranyani</span>
+    <span id="versionText" class="version">1.0</span>
+</h1>
+
 <div id="header" class="stripe">
     <div id="headerGuts" class="stripe"></div>
+    <input type="image" src="art/copyIcon.png" id="buttonCopyData" class="iconButton"
+           value="copy data" title="copy CSV data to clipboard" alt="copy data to clipboard">
+<!--
     <select id="menuExtras">
     </select>
+-->
 </div>
 
 <div id="advice" class="stripe"></div>

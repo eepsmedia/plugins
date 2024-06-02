@@ -20,6 +20,7 @@ h1 {
     background-color: forestgreen;
     color: white;
     padding: 8px;
+    display: flex;
 }
 
 input {
@@ -40,8 +41,18 @@ input {
     margin-left: auto;
 }
 
-#menuExtras {
+#buttonCopyData {
     margin-left: auto;
+}
+
+.iconButton {
+    width : 0.6cm
+}
+
+.version {
+    margin-left: auto;
+    font-size: 0.5cm;
+    font-weight: normal;
 }
 
 .stripe {
@@ -52,8 +63,14 @@ input {
 }
 
 .pill {
+    /*
     font-family: 'Sirin Stencil', sans-serif;
+    */
+    /*
     font-weight: bold;
+    */
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+
     background-color: forestgreen;
     color: white;
     border-radius: 6px;

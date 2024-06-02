@@ -12,6 +12,7 @@ const extrasMENU = document.getElementById("menuExtras");
 export function initialize() {
     //  only do this once!
     document.getElementById("configurationMenu").innerHTML = makeConfigurationMenuGuts();
+    document.getElementById("versionText").innerHTML = forest.constants.version;
 
 }
 
@@ -19,7 +20,7 @@ export function update() {
     headerGutsDIV.innerHTML = makeHeaderGuts();
     adviceDIV.innerHTML = makeAdvice();
     playersDIV.innerHTML = makePlayersTable();
-    extrasMENU.innerHTML = makeExtrasMenu();
+    //  extrasMENU.innerHTML = makeExtrasMenu();
 
     if (God.phase === godPhases.kDebrief) {
         debriefTextDIV.innerHTML = makeDebriefGuts();
@@ -49,10 +50,10 @@ function makeHeaderGuts() {
     const me = God.godData;
     const tGame = Game.gameData;
     const god = me ? `${me.handle}` : ``;
-    const year = isNaN(tGame.year) ? "" : tGame.year;
+    const year = isNaN(tGame.year) || tGame.year < 2000 ? "" : tGame.year;
     const game = tGame.gameCode ? `<span class="pill">${tGame.gameCode}</span>` : ``;
     const biomass = Math.round(Game.gameData.biomass);
-    return `${god} ${year} | ${God.phase} | biomass: ${biomass} ${game}`;
+    return `${god} ${year} (${God.phase}) biomass: ${biomass} ${game}`;
 }
 
 
