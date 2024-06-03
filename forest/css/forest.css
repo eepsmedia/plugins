@@ -33,6 +33,11 @@ input {
     padding-bottom: 4px;
 }
 
+#header {
+    height : 0.8cm;
+
+}
+
 #debrief {
     padding: 1em;
     margin-left: 1cm;
@@ -72,7 +77,6 @@ input {
     display : flex;
     */
     align-items: center;
-    height : 0.8cm;
 }
 
 .pill {

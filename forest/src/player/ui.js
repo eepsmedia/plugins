@@ -3,9 +3,9 @@ import * as Localize from "../../strings/localize.js"
 import * as ForestView from "../common/forestView.js"
 import * as Financials from './financials.js';
 
-
 const financeDIV = document.getElementById("finance");
 const headerDIV = document.getElementById("header");
+const headerGutsDIV = document.getElementById("headerGuts");
 const adviceDIV = document.getElementById("advice");
 const debriefTextDIV = document.getElementById("debriefText");
 const forestStatusDIV = document.getElementById("forestStatus");
@@ -21,7 +21,7 @@ export function update(iFinancial = false) {
     viewingFinance = iFinancial;
 
     titleStripH1.innerHTML = makeTitle();
-    headerDIV.innerHTML = makeHeader();
+    headerGutsDIV.innerHTML = makeHeaderGuts();
     adviceDIV.innerHTML = makeAdvice();
     forestStatusDIV.innerHTML = makeForestStatus();
     ForestView.redraw(Player.forest, Player.markedTrees);
@@ -53,7 +53,7 @@ function makeTitle() {
     return `${theTitle} ${theYear} ${theHandle} ${theBalance} `;
 }
 
-function makeHeader() {
+function makeHeaderGuts() {
     const myData = Player.me.data;
     const tGameCode = myData.gameCode;
 
@@ -138,6 +138,11 @@ function setVisibility() {
         }
         financeDIV.style.display = "none";
     }
+
+    //  set visibility of copy button
+    document.getElementById("buttonCopyData").style.display =
+        Player.isThereCSVData() ? "block" : "none";
+
 }
 
 function makeDebriefGuts() {

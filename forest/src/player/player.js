@@ -68,7 +68,8 @@ export function doStartGame(contents) {
     me.id = contents.me.id;     //  where we learn what out ID is.
     forest = contents.forest.trees;     //  the forest data!
     year = contents.year;
-    gameData = contents.gameData
+    gameData = contents.gameData;
+    CSVsummary = Localize.getString("summaryTableHead");
 
     ForestView.setParams(gameData);     //  includes forest dimensions
     ForestView.newForest(forest);
@@ -79,6 +80,8 @@ export function doStartGame(contents) {
         text : `The game has begun, it's ${year} and your ID is ${me.id}.`,
         icon : 'success'
     });
+
+    document.getElementById("checkboxShowFinancialsOnNewYear").checked = true;  //  fix that checkbox
     UI.update();
 }
 
@@ -156,6 +159,10 @@ export async function initialize() {
 
     UI.update();
     console.log(`player init complete`);
+}
+
+export function isThereCSVData() {
+    return CSVsummary.includes("\n");
 }
 
 export async function doCopyData() {
