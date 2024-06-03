@@ -15,6 +15,8 @@ export let forest = [];
 
 export let gameEndSummary = {};
 
+let CSVsummary = "";        //      text in CSV format to be assembled here, then copied for pasting into CODAP etc
+
 let biomass;
 
 let gameData = {};
@@ -134,7 +136,10 @@ export function doNewYear(contents) {
 
 export function doEndGame(contents) {
     phase = playerPhases.kDebrief;
+
+    me.data = {...contents.me};     //  includes balance
     gameEndSummary = contents.end;     //  from Game.gameEndSummary.
+    CSVsummary = contents.CSVsummary;
 
     UI.update();
 }
@@ -153,4 +158,19 @@ export async function initialize() {
     console.log(`player init complete`);
 }
 
+export async function doCopyData() {
+    const theData = CSVsummary;
+    const lineCount = (theData.match(/\n/g) || []).length;
+
+    try {
+        await navigator.clipboard.writeText(theData);
+        swal({
+            icon : "info",
+            title: Localize.getString("messages.titleCopyDone"),
+            text: Localize.getString("messages.textCopyDone", lineCount)
+        })
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 
