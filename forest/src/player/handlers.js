@@ -1,8 +1,5 @@
-//  import * as Temple from '../common/temple.js';
 import * as Player from './player.js';
 import * as Financials from './financials.js';
-//  import * as UI from './ui.js';
-//      import * as Fire from "../common/fire.js";
 
 export function initialize() {
 
@@ -12,6 +9,7 @@ export function initialize() {
     document.getElementById("buttonDebriefNewGame").addEventListener('click', playerResetPlayer);
 
     document.getElementById("menuFinancialYears").addEventListener('change', Financials.onSelectYear);
+    document.getElementById("buttonCopyData").addEventListener("click", Player.doCopyData)
 
     console.log(`Handlers initialized`);
 }
