@@ -7,6 +7,7 @@ const treePre = {
     gamePhase : null, //    { nogame | recruit | play | debrief | waiting }
     transactions : [],
     debriefInfo : {},
+    name : 'Joachim',
 
     initialize: async function () {
         console.log(`initializing treePre`);
@@ -23,6 +24,11 @@ const treePre = {
 
     cycle: function () {
         ui.redraw();
+    },
+
+    setName : function (iName) {
+        treePre.state.me = new Player(iName);
+        this.cycle();
     },
 
     /**
@@ -87,7 +93,7 @@ const treePre = {
     constants: {
         pluginName: "treePre",
         datasetName : "forestryDataset",
-        version: "2024c",
+        version: "2024d",
         dimensions: {height: 555, width: 444},
 
         defaultState: {

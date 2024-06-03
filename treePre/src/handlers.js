@@ -19,13 +19,15 @@ const handlers = {
 
     //  control handlers
 
+    doEnterName : function() {
+        const theName = document.getElementById("textName").value;
+        if (theName.length > 2) {
+            treePre.setName(theName);
+        }
+    },
 
     doJoin : function() {
-
-        const proposedusername = "Joachim"; //  todo: replace with getting it from a text box
-        treePre.state.me = new Player(proposedusername);
         temple.playerSpeaksToGod("join");
-
         treePre.gamePhase = treePre.phases.kWaiting;
         treePre.cycle();
     },

@@ -11,7 +11,7 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tree-Pre</title>
+    <title>Saplings</title>
 
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
@@ -51,6 +51,12 @@ http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~t
     <g id="forestDisplay"></g>
 </svg>
 <div id="forest"></div>
+
+<div id="enterNameDIV"  >
+    <label for="textName" id="labelTextName"></label>
+    <input type="text" id="textName">
+    <input type="button" id="buttonEnterName" onclick="handlers.doEnterName()">
+</div>
 
 <div id="userControls">
     <input type="button" id="joinButton" value="join!" onclick="handlers.doJoin()">

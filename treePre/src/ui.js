@@ -30,6 +30,9 @@ const ui = {
 
     setVisibility: function () {
 
+        document.getElementById("enterNameDIV").style.display =
+            treePre.state.me ? 'none' : 'block';
+
         document.getElementById("joinButton").style.display =
             (treePre.gamePhase === treePre.phases.kRecruit) ? 'block' : 'none';
         document.getElementById("forestSVG").style.display =
@@ -60,7 +63,7 @@ const ui = {
 
         if (nHarvest) {
             const treeText = (nHarvest === 1) ?
-            `one ${localize.getString('tree')}` :
+                `one ${localize.getString('tree')}` :
                 `${nHarvest} ${localize.getString('trees')}`;
             out = localize.getString("harvestSomeTreesText", treeText);
         }

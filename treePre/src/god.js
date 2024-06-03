@@ -1,20 +1,16 @@
 const god = {
 
     gameParams: {},
-    gamePhase : 'nogame',   //  { nogame | recruit | play | debrief }
-    waitingForOrdersFrom : [],
-    gameNumber : 0,
-    debriefInfo : {},
+    gamePhase: 'nogame',   //  { nogame | recruit | play | debrief }
+    gameNumber: 0,
+    debriefInfo: {},
 
     initialize: function () {
     },
 
     addPlayer: function (iPlayer) {
         let thePlayerName = iPlayer.name;
-        if (!singlePlayer) iPlayer.name = this.uniquePlayerName(iPlayer.name);
-
         nature.players[iPlayer.name] = iPlayer;
-
         return iPlayer;
     },
 
@@ -30,16 +26,7 @@ const god = {
      */
     addHarvest: function (iPlayerName, iTrees) {
         nature.markedTrees[iPlayerName] = iTrees;
-
-        const ix = this.waitingForOrdersFrom.indexOf(iPlayerName);
-        if (ix === -1) {
-            console.log(`could not find ${iPlayerName} in ${this.waitingForOrdersFrom}`);
-        } else {
-            this.waitingForOrdersFrom.splice(ix, 1);   //    remove it!
-        }
-        if (this.waitingForOrdersFrom.length === 0) {
-            this.gamePhase = god.phases.kReadyForMarket;
-        }
+        this.gamePhase = god.phases.kReadyForMarket;
     },
 
     newGame: function () {
@@ -49,26 +36,26 @@ const god = {
         this.gameParams.year = (new Date()).getFullYear();
         this.gameParams.endingYear =
             this.gameParams.year + this.gameParams.durationMin + 5;
-            //  + Math.round(Math.random() * this.gameParams.durationVar);
+        //  + Math.round(Math.random() * this.gameParams.durationVar);
         nature.newForest();
         temple.godSpeaksToPlayer('newGame');
     },
 
-    startPlay : function() {
+    startPlay: function () {
         this.gamePhase = god.phases.kWaitingForOrders;
-        this.waitingForOrdersFrom = Object.keys(nature.players);
+        treePre.state.me.balance = god.gameParams.balanceStart;
         temple.godSpeaksToPlayer('newYear');        //  first year
     },
 
-    endGame : function(reason) {
+    endGame: function (reason) {
         this.gamePhase = god.phases.kDebrief;
         this.debriefInfo = {
-            reason : reason
+            reason: reason
         }
         temple.godSpeaksToPlayer('endGame');
     },
 
-    newYear : function() {
+    newYear: function () {
         nature.grow();
         this.gameParams.year++;
         temple.godSpeaksToPlayer('newYear');
@@ -89,8 +76,8 @@ const god = {
     defaultGameParams: {
         year: 2025,
         endingYear: 0,
-        durationMin : 18,
-        durationVar : 7,
+        durationMin: 18,
+        durationVar: 7,
         balanceStart: 5000,
         harvestLimit: 10,
         salary: 1500,
@@ -99,23 +86,23 @@ const god = {
         maxHarvest: 10,
         yearsToAdult: 10,
         adultTreePrice: 1000,
-        minSalesAge : 4,
+        minSalesAge: 4,
         forestDimensions: {
             rows: 3,
             columns: 10,
-            cellWidth : 30,
-            cellHeight : 50,
-            ranFrac : 0.5
+            cellWidth: 30,
+            cellHeight: 50,
+            ranFrac: 0.5
         }
     },
 
-    phases : {
-        kRecruit : "recruit",
-        kPlay : "play",
-        kNoGame : "nogame",
-        kDebrief : "debrief",
-        kReadyForMarket : "market",
-        kWaitingForOrders : "collecting orders",
+    phases: {
+        kRecruit: "recruit",
+        kPlay: "play",
+        kNoGame: "nogame",
+        kDebrief: "debrief",
+        kReadyForMarket: "market",
+        kWaitingForOrders: "collecting orders",
     },
 
 

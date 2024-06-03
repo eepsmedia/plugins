@@ -9,7 +9,9 @@
       "endGameButton" : "end this game",
       "startPlayButton" : "start play",
       "showDataButton" : "show data",
-      "newYearButton" : "new year"
+      "newYearButton" : "new year",
+      "labelTextName" : "enter your name",
+      "buttonEnterName" : "log in"
     },
     "advice" : {
       "noGame" : "You are not in a game. Enter a game ID and press Join.",
