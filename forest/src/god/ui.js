@@ -44,6 +44,10 @@ function setVisibility() {
     for (const eKey in theVis) {
         document.getElementById(eKey).style.display = theVis[eKey];
     }
+
+    //  set visibility of copy button
+    document.getElementById("buttonCopyData").style.display =
+        Game.isThereCSVData() ? "block" : "none";
 }
 
 function makeHeaderGuts() {

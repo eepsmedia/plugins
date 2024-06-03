@@ -44,6 +44,10 @@
 
     },
 
+    "messages" : {
+      "titleCopyDone" : "Clipped!",
+      "textCopyDone" : "You have successfully copied •1• records to the clipboard. You can now paste them into a CODAP table or a spreadsheet."
+    },
     "menu" : {
       "extrasPlaceholder" : "extras",
       "itemAbandonGame" : "Abandon this game",
