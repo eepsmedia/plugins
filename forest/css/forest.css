@@ -29,6 +29,8 @@ input {
 
 #header, #advice, #signin, #getGame, #startGameControls, #debrief, #playGameControls, #players, #trees, #forestSVG, #forestStatus {
     padding: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 #debrief {
@@ -46,7 +48,17 @@ input {
 }
 
 .iconButton {
-    width : 0.6cm
+    width : 0.5cm;
+    padding : 0.15cm;
+    border-radius: 0.4cm;
+}
+.iconButton:hover {
+    width : 0.6cm;
+}
+.iconButton:active {
+    width : 0.6cm;
+    background-color: lightgray;
+    color : white;
 }
 
 .version {
@@ -60,6 +72,7 @@ input {
     display : flex;
     */
     align-items: center;
+    height : 0.8cm;
 }
 
 .pill {

@@ -94,21 +94,12 @@ export function doPlayerHarvest(id, contents) {
     UI.update();
 }
 
-
 export async function doMarket() {
     console.log(`god • doMarket()`);
 
     const end = await Game.market();
     await doEndYear(end);
     //  no update needed because we now call `endYear()`
-}
-
-function doEndGame(iEnd) {
-    console.log(`god • doEndGame()`);
-
-    phase = godPhases.kDebrief;
-    Game.endGame(iEnd);
-    UI.update();
 }
 
 async function doEndYear(iEnd)   {
@@ -123,6 +114,14 @@ async function doEndYear(iEnd)   {
     }
 }
 
+function doEndGame(iEnd) {
+    console.log(`god • doEndGame()`);
+
+    phase = godPhases.kDebrief;
+    Game.endGame(iEnd);
+    UI.update();
+}
+
 export async function doAbandonGame() {
     console.log(`Abandoning game `);
 }
@@ -134,8 +133,15 @@ export async function doEarlyMarket() {
 export async function doCopyData() {
     console.log("copying god data to clipboard");
     const theData = Game.getDataForCODAP();
+    const lineCount = (theData.match(/\n/g) || []).length;
+
     try {
         await navigator.clipboard.writeText(theData);
+        swal({
+            icon : "info",
+            title: Localize.getString("messages.titleCopyDone"),
+            text: Localize.getString("messages.textCopyDone", lineCount)
+        })
     } catch (error) {
         console.error(error.message);
     }

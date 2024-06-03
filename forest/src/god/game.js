@@ -7,7 +7,7 @@ export let players = {};        //  object of Players keyed by id
 export let waitingFor = [];
 export let gameEndSummary = {};
 
-let CSVsummary = "";
+let CSVsummary = "";        //      text in CSV format to be assembled here, then copied for pasting into CODAP etc
 
 let currentTransactions = [];
 let allTransactions = {};
@@ -309,7 +309,8 @@ function tellPlayerOfEndGame(iWho, iEnd) {
         year: gameData.year,
         me: iWho.asObject(),       //  includes the new balance
         forest: Nature.getForestDataForDisplay(),
-        end : iEnd
+        end : iEnd,
+        CSVsummary : CSVsummary
     }
     Temple.godSpeaksToPlayer('endGame', iWho.id, contents);
 }
@@ -343,6 +344,9 @@ function getOneCSVSummaryLine(player) {
     return theLine.join(", ");      //      comma-separated values
 }
 
+export function isThereCSVData() {
+    return CSVsummary.includes("\n");
+}
 
 export function getDataForCODAP() {
     return CSVsummary;
