@@ -32,13 +32,13 @@
     },
     "attributeDescriptions" : {
       "year" : "year",
-      "endBalance" : "endBalance",
-      "biomass" : "biomass",
-      "player" : "player",
-      "what" : "what",
-      "income" : "income",
-      "expense" : "expense",
-      "balance" : "balance",
+      "endBalance" : "your balance (money) at the end of the year",
+      "biomass" : "biomass: the total amount of plants in the forest",
+      "player" : "your name",
+      "what" : "what this transaction is about",
+      "income" : "money you receive for selling trees",
+      "expense" : "your costs: wages for workers and your salary",
+      "balance" : "your balance (money)",
       "gameNumber" : "game number"
     },
     "collectionNames" : {
@@ -49,10 +49,10 @@
     "debrief" : {
       "time" : "This game was set to end in •1•",
       "broke" : "This game ended because •1• went broke",
-      "meanBalance" : "The average balance was •1••2•"
+      "meanBalance" : "The balance was •1••2•"
     },
-    "frameTitle" : "Forester",
-    "gameTitle" : "Forester",
+    "frameTitle" : "Saplings",
+    "gameTitle" : "Saplings",
     "datasetTitle" : "forestry records",
     "datasetDescription" : "Your bookkeeper's report! What money did you receive and spend?",
     "graphTitle" : "Forestry financial graph",
