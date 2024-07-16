@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<!--
+local just this: http://localhost/~tim/plugins/monopoly/
+local in local codap :
+http://localhost/~tim/codap/static/dg/en/cert/index.html?di=https://localhost/~tim/plugins/monopoly/
+
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>monopoly</title>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Sirin+Stencil:wght@400;700">
+
+    <link rel='stylesheet' type='text/css' href='css/monopoly.css'/>
+
+<!--
+    <script src="src/monopoly.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/connect.js"></script>
+    <script src="src/handlers.js"></script>
+-->
+    <script src="strings/localize.js"></script>
+
+    <!-- These five scripts take care of the communication with CODAP  -->
+    <script src="../common/iframe-phone.js"></script>
+    <script src="../common/codap_helper_newAPI.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/pluginLang.js"></script>
+
+
+</head>
+<body>
+
+<h2>Monopoly simulator</h2>
+<div id="status"></div>
+<input type="button" id="rollButton" value="roll">
+<input type="button" id="copyButton" value="c">
+</body>
+
+<script type="module">
+    import {initialize} from "./src/monopoly.js";
+    initialize();
+</script>
+
+</html>

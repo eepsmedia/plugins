@@ -1,0 +1,13 @@
+{
+  "monopoly": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "rollButton" : "roll 400",
+      "copyButton" : "copy"
+    },
+
+    "frameTitle" : "monopoly simulator"
+
+  }
+}
