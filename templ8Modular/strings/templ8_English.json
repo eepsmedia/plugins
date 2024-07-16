@@ -1,0 +1,18 @@
+{
+  "templ8": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "counterButtonLabel" : "click to count"
+    },
+    "attributeNames" : {
+      "time" : "time",
+      "count" : "count",
+      "interval" : "interval"
+    },
+    "frameTitle" : "a template plugin",
+    "outputDatasetTitle" : "template data table",
+    "dataCollectionTitle" : "data"
+
+  }
+}
