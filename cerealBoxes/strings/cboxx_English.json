@@ -1,0 +1,29 @@
+{
+  "cboxx": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "counterButtonLabel" : "click to count",
+      "numberOfCardsLabel" : "number of different cards",
+      "numberOfRunsInputLabel" : "number of runs",
+      "doOneRunButton" : "one run"
+
+    },
+
+    "attNames" : {
+      "run" : "run",
+      "count" : "count",
+      "types" : "types",
+      "card" : "card"
+    },
+
+    "doRunsButton" : "•1• runs",
+
+    "frameTitle" : "Cereal Boxes",
+    "datasetName" : "CerealBoxSimulationData",
+    "datasetTitle" : "Cereal Box simulation data",
+    "runCollectionName" : "runs",
+    "boxCollectionName" : "boxes"
+
+  }
+}
