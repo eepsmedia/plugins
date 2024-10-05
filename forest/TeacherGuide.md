@@ -10,12 +10,13 @@ The teacher (or game leader) will give you that code.
 It will consist of three words separated by periods, such as `house.dog.limit`.
 
 Enter that code, press **Join**.
-For now, it's essential that no one else uses the same name in that particular game...so be sure that's organized in your game or class!
+Your name will get five digits appended (like, `tim71644`).
+This is in case two people have the same name.
 
 ### Regular game play
 Then you'll see a display that tells you the year (such as 2025) and shows you a forest of (triangular) trees.
 Click the trees you want to harvest (limit: 10) and press **Harvest**.
-Now you wait for
+Now you wait...
 * Everyone else to harvest their trees.
 * Then, the teacher has to end the turn by selling all the trees you cut down.
 
@@ -45,20 +46,28 @@ For now, this game is ridiculously low-security.
 There is no password.
 
 To create a new game, choose a "level" from the menu (start with `vanilla`) and click **new game**.
-You might want to make a short game first so students learn the mechanics.
+You might want to make a "short" game first so students learn the mechanics.
 
 You will see the game code, which consists of three words separated by periods, as in `house.dog.limit`.
 
 Tell all the players that code.
 They need to enter it into their computers to join the game.
+You will see their names appear on your screen as they join.
+
+Once **all** students have joined, press the button to start the game. 
+
+Very important: wait for all students to join before you start the game! 
+The number of trees depends on the number of players, 
+so once the game starts, no one new can join. 
 
 ## Game play
-As they join, you will see their names appearing in a table on your screen.
-You will also see when they decide which trees they want to harvest.
+After students choose which trees to harvest,
+you can see that list on your screen.
+When all students have made their choices, the `sell trees` button appears.
 
-When everyone is done harvesting, you can press the **market** button to activate the wood market.
-Then everyone's trees are sold.
-On their computers, students see their money arrive, and they get another chance to decide on a number of trees to cut down.
+When you press `sell trees`, everyone's trees are sold.
+On their computers, students see a report on that year's finances, 
+and they get another chance to decide which trees to cut down.
 
 The cycle continues until the game ends.
 
@@ -66,13 +75,19 @@ The cycle continues until the game ends.
 You might also want to analyze some of the data that appear on the screen.
 To do that, use CODAP.
 
-For example, you might see how **seen** (the number of fish you see during the year) varies with **year**.
+To get the data from your game into CODAP, do the following:
+1. Click the "copy" icon near the upper right of your `Aranyani` window. This copies data to the clipboard.
+2. Open a blank CODAP document. (https://codap.concord.org.app)
+3. Go to the `Tables` tool. Click it and choose **new from clipboard**.
+
+For example, you might see how **biomass** (the total "weight" of all the trees) varies with **year**.
 1. Make a graph by pressing the **Graph** button on the toolbar.
 2. Drag the column heading **year** to the graph's horizontal axis.
-3. Drag **seen** to the vertical axis.
+3. Drag **biomass** to the vertical axis.
 
-As you play, the graph will update.
-Consider making more graphs, for example, a graph of **before** with **year**.
+To update the data, re-copy it using the copy icon. 
+In CODAP, go to Tables again and again choose **new from clipboard**. 
+You will have an option to replace the data in your table.
 
 ### Some data definitions:
 
