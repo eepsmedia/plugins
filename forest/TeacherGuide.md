@@ -71,8 +71,80 @@ and they get another chance to decide which trees to cut down.
 
 The cycle continues until the game ends.
 
+### Teacher note!
+Everyone has to press their **Harvest** button or no one can move forward.
+So you may have to remind a student (player) to do that.
+
+### Pitfalls!
+
+Studnets easily understand that they are cutting down trees and making money.
+But they may need help understanding the details of what is happening. 
+
+As much as you can, avoid _telling_ them the answers to their questions,
+but rather encourage them to figure it out. 
+This can be as simple as asking a student's question to the whole class,
+to see if someone else  already knows.
+That way, the "authority" in students' eyes is the game (and themselves)
+rather than you. 
+
+One example of this kind of thing is the issue of what happens
+when two teams mark the same tree.
+Do **not** say, "then the revenue gets split between the teams,
+but you each pay the cost of sending a crew out."
+Instead, help them discover that for themsleves.
+
+One way is to point out the "financial" screen that appears at the beginning of a turn.
+Some students just click past it because it's a bunch of boring numbers.
+Therefore, ask students to stop at that screen on the next turn, and have a discussion:
+
+Ask them what information is on the screen, and what it means.
+Then ask if anyone sees a message about sharing revenue.
+Have them read what it says, and ask the class what they think it means.
+Ask how much it cost their company to harvest that tree.
+Ask what they think that means: is it better to share a tree or to get one all by yourself?
+
+That is, you're asking leading questions, but the students are drawing the concusions. 
+
+Use this same overall principle in the debriefing after a game ends.
+
+
+## About debriefing
+
+After a game ends, it's up to you to facilitate a dicussion about what happened. 
+Here are some issues that come up.
+
+### Biomass
+Students may not be familiar with this term.
+Ask what they think, but in this case, after that dicussion, it's OK to tell them:
+In this game, **biomass** is the total amount of biological material that's in all of the trees put together.
+So it represents the **overall health of the forest**.
+
+So, at the end of the game, if **biomass** has gone up, hooray!
+Your forest is healthier than when the game started.
+(But if it has gone down a little, you've actually still done well.)
+
+### The end of the game
+It is deliberately unclear how the game ends.
+Do your best not to tell students what you think or know,
+but rather ask them what they think.
+Promote a discussion about that.
+
+Notice that the discussion might center on two very different topics:
+* What are the *game* rules, that is, what happens for the game to decide if you have won or lost?
+* What do the game rules *mean*, that is, what winning or losing has to do with the forestry business and the health of the forest?
+
+Also, students may eventually notice that when the game ends,
+it's the whole group that has either won or lost---not an individual. 
+
+### Plans for the future
+This game works best when you play it at least twice.
+So a good question is: 
+"What would you do next time to get a better result?"
+and let the students work it out. 
+In our experience, they often organize themselves very well.
+
 ### Using data to help understand
-You might also want to analyze some of the data that appear on the screen.
+You (and the tsudents) might also want to analyze some of the data that appear on the screen.
 To do that, use CODAP.
 
 To get the data from your game into CODAP, do the following:
@@ -97,18 +169,3 @@ You will have an option to replace the data in your table.
 | **biomass**        | the total "mass" of all the trees in the forest      |
 | **averageBalance** | the mean balance (money) of all the teams            |
 
-## What else?
-Everyone has to press their **Harvest** button or no one can move forward.
-So you may have to remind a student (player) to do that.
-
-It is deliberately unclear how the game ends.
-Do your best not to tell students what you think or know,
-but rather ask them what they think.
-Promote a discussion about that.
-
-Notice that the discussion might center on two very different topics:
-* What are the *game* rules, that is, what happens for the game to decide if you have won or lost?
-* What do the game rules *mean*, that is, what winning or losing has to do with the forestry business and the health of the forest?
-
-Also, students may eventually notice that when the game ends,
-it's the whole group that has either won or lost---not an individual. 
