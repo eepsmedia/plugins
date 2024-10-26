@@ -60,7 +60,7 @@ Very important: wait for all students to join before you start the game!
 The number of trees depends on the number of players, 
 so once the game starts, no one new can join. 
 
-## Game play
+### Game play
 After students choose which trees to harvest,
 you can see that list on your screen.
 When all students have made their choices, the `sell trees` button appears.
@@ -77,17 +77,17 @@ So you may have to remind a student (player) to do that.
 
 ### Pitfalls!
 
-Studnets easily understand that they are cutting down trees and making money.
-But they may need help understanding the details of what is happening. 
+Students easily understand that they are cutting down trees and making money, 
+but they may need help understanding the details of what is happening. 
 
 As much as you can, avoid _telling_ them the answers to their questions,
 but rather encourage them to figure it out. 
 This can be as simple as asking a student's question to the whole class,
-to see if someone else  already knows.
+to see if someone else already knows.
 That way, the "authority" in students' eyes is the game (and themselves)
 rather than you. 
 
-One example of this kind of thing is the issue of what happens
+One example of this is the issue of what happens
 when two teams mark the same tree.
 Do **not** say, "then the revenue gets split between the teams,
 but you each pay the cost of sending a crew out."
@@ -98,7 +98,9 @@ Some students just click past it because it's a bunch of boring numbers.
 Therefore, ask students to stop at that screen on the next turn, and have a discussion:
 
 Ask them what information is on the screen, and what it means.
-Then ask if anyone sees a message about sharing revenue.
+Help them distinguish money coming in from money going out,
+and help them imagine what those amounts are for. 
+Then ask if anyone sees a message about sharing revenue with another team.
 Have them read what it says, and ask the class what they think it means.
 Ask how much it cost their company to harvest that tree.
 Ask what they think that means: is it better to share a tree or to get one all by yourself?
@@ -108,22 +110,12 @@ That is, you're asking leading questions, but the students are drawing the concu
 Use this same overall principle in the debriefing after a game ends.
 
 
-## About debriefing
+### About debriefing
 
 After a game ends, it's up to you to facilitate a dicussion about what happened. 
 Here are some issues that come up.
 
-### Biomass
-Students may not be familiar with this term.
-Ask what they think, but in this case, after that dicussion, it's OK to tell them:
-In this game, **biomass** is the total amount of biological material that's in all of the trees put together.
-So it represents the **overall health of the forest**.
-
-So, at the end of the game, if **biomass** has gone up, hooray!
-Your forest is healthier than when the game started.
-(But if it has gone down a little, you've actually still done well.)
-
-### The end of the game
+#### The end of the game
 It is deliberately unclear how the game ends.
 Do your best not to tell students what you think or know,
 but rather ask them what they think.
@@ -136,14 +128,27 @@ Notice that the discussion might center on two very different topics:
 Also, students may eventually notice that when the game ends,
 it's the whole group that has either won or lost---not an individual. 
 
-### Plans for the future
+#### About biomass
+Students may not be familiar with this term.
+Ask what they think, but in this case, after that dicussion, it's OK to tell them:
+In this game, **biomass** is the total amount of biological material that's in all of the trees put together.
+So it represents the **overall health of the forest**.
+
+So, at the end of the game, if **biomass** has gone up, hooray!
+Your forest is healthier than when the game started.
+Even if it has gone down a little, you've actually done well.
+On the other hand, if the biomass is half what it was at the beginning, 
+that shows that the forest is now unhealthy. 
+
+
+#### Plans for the future
 This game works best when you play it at least twice.
 So a good question is: 
 "What would you do next time to get a better result?"
 and let the students work it out. 
 In our experience, they often organize themselves very well.
 
-### Using data to help understand
+#### Using data to help understand
 You (and the tsudents) might also want to analyze some of the data that appear on the screen.
 To do that, use CODAP.
 
@@ -161,7 +166,7 @@ To update the data, re-copy it using the copy icon.
 In CODAP, go to Tables again and again choose **new from clipboard**. 
 You will have an option to replace the data in your table.
 
-### Some data definitions:
+#### Some data definitions:
 
 | term               | definition                                           |
 |--------------------|------------------------------------------------------|
