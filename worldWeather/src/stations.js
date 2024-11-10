@@ -133,6 +133,30 @@ const stations = {
 
     stationList: [
         {
+            "name": "Tehran",
+            "stationid": "IR000407540",
+            "latitude": 35.683,
+            "longitude": 51.317,
+            "elevation": 1191,
+            "name2": "TEHRAN MEHRABAD"
+        },
+        {
+            "name": "Tabriz, Iran",
+            "stationid": "IR000040706",
+            "latitude": 38.08,
+            "longitude": 46.28,
+            "elevation": 1361,
+            "name2": "TABRIZ"
+        },
+        {
+            "name": "Kerman, Iran",
+            "stationid": "IR000040841",
+            "latitude": 30.25,
+            "longitude": 56.967,
+            "elevation": 1754,
+            "name2": "KERMAN"
+        },
+        {
             "name": "Auckland, NZ",
             "stationid": "NZM00093110",
             "latitude": -37,
