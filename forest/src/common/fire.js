@@ -2,6 +2,7 @@ import {db} from "../../cred.js";
 //  import * as Game from "../god/game.js"
 import * as Handlers from "../god/handlers.js"
 import * as PHandlers from "../player/handlers.js"
+import * as Localize from "../../strings/localize.js";
 
 import  * as FB from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
@@ -98,7 +99,8 @@ export async function createFirebaseGameRecord(iGameData )  {
     const querySnapshot = await FB.getDocs(q);
 
     if (querySnapshot.size === 1) {     //    we found one
-        swal({icon : "error", text : `${iGameData.gameCode} already exists`});
+        const theText = Localize.getString("alerts.gameCodeAlreadyExistsText", iGameData.gameCode);
+        swal({icon : "error", text : theText});
     }
 
     //  add a `.created` field as a timestamp

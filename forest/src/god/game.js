@@ -41,7 +41,9 @@ export async function startGame() {
 
     const nPlayers = Object.keys(players).length;
     if (nPlayers > 9) {
-        swal({icon: "error", "text" : `${nPlayers} is too many players for now!`});
+        //  const theText = `${nPlayers} is too many players for now!`
+        const theText = Localize.getString("alerts.tooManyPlayersText", nPlayers);
+        swal({icon: "error", title: Localize.getString("oops"), text : theText});
     }
     const newDimensions = forestDimensions[nPlayers];
     gameData.forestDimensions.columns = newDimensions.w;

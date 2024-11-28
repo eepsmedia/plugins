@@ -149,7 +149,7 @@ function makeDebriefGuts() {
     let out = `<h2>${Localize.getString("end.head")}</h2>`;
     out += "<p>" + Localize.getString("end.myBalance", Localize.getString("currency"), Math.round(Player.me.data.balance)) + "<br>"
     out += Localize.getString("end.meanBalance", Localize.getString("currency"), Math.round(Player.gameEndSummary.meanBalance)) + "</p>"
-    out += "<p>" + Localize.getString("end.biomass", Math.round(Player.gameEndSummary.biomass)) + "<br>";
+    out += "<p>" + Localize.getString("end.biomassMessage", Math.round(Player.gameEndSummary.biomass)) + "<br>";
     out += Localize.getString("end.initialBiomass", Math.round(Player.gameEndSummary.initialBiomass))  + "</p>";
 
     out += Localize.getString("end.because");        //  the game ended because

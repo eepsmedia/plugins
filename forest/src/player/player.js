@@ -76,8 +76,10 @@ export function doStartGame(contents) {
 
     console.log(`Game start! Got a forest with ${forest.length} trees.`)
     swal({
-        title : "Game starts!",
-        text : `The game has begun, it's ${year} and your ID is ${me.id}.`,
+        //  title : "Game starts!",
+        title : Localize.getString("alerts.startGameTitle"),
+        //  text : `The game has begun, it's ${year} and your ID is ${me.id}.`,
+        text : Localize.getString("alerts.startGameMessage", year, me.id),
         icon : 'success'
     });
 
@@ -151,7 +153,10 @@ export async function initialize() {
     console.log(`player init in progress`);
 
     await Fire.initialize();
-    await Localize.initialize('en');
+
+    await Localize.initialize(Localize.figureOutLanguage('en'));
+    //  await Localize.initialize('en');
+
     await Handlers.initialize();
     await UI.initialize();
 
@@ -173,8 +178,8 @@ export async function doCopyData() {
         await navigator.clipboard.writeText(theData);
         swal({
             icon : "info",
-            title: Localize.getString("messages.titleCopyDone"),
-            text: Localize.getString("messages.textCopyDone", lineCount)
+            title: Localize.getString("alerts.titleCopyDone"),
+            text: Localize.getString("alerts.textCopyDone", lineCount)
         })
     } catch (error) {
         console.error(error.message);

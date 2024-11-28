@@ -4,6 +4,7 @@
     "language": "English",
     "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
     "currency" : "$",
+    "biomass" : "biomass",
 
     "playerTitle" : "Forester",
     "noPlayersYet" : "No players have signed in yet.",
@@ -16,6 +17,8 @@
     "viewTrees" : "view trees",
     "viewFinance" : "view finance",
     "tableHeadFinance" : "<tr><th>item</th><th class=\"moneyCell\">income</th><th class=\"moneyCell\">expense</th><th class=\"moneyCell\">balance</th></tr>",
+    "tableHeadPlayerList" : "<table class=\"tableOfPlayers\"><tr><th>player</th><th>balance</th><th>harvest</th></tr>",
+    "waitingFor" : "Waiting for •1•",
 
     "harvestTreeNumber" : "harvest tree #•1•",
     "sellTreeNumber" : "sell tree #•1•",
@@ -29,12 +32,14 @@
 
     "summaryTableHead" : "year, biomass, meanBalance, playerID, playerTreeCount, playerBalance",
 
+    "oops" : "oops!",
+
     "end" : {
       "head" : "The game is over!",
       "because" : "The game ended because: ",
       "myBalance" : "Your balance was •1••2•",
       "meanBalance" : "The players' mean balance was •1••2•",
-      "biomass" : "The forest biomass was •1• at the end",
+      "biomassMessage" : "The forest biomass was •1• at the end",
       "initialBiomass" : "(The initial biomass was •1•.)",
       "broke" : "Player •1• went broke",
       "time" : "This game ended in •1•"
@@ -44,10 +49,19 @@
 
     },
 
-    "messages" : {
+    "alerts" : {
+
+      "startGameTitle" : "Game starts!",
+      "startGameMessage" : "The game has begun! It's •1• and your ID is •2•.",
       "titleCopyDone" : "Clipped!",
-      "textCopyDone" : "You have successfully copied •1• records to the clipboard. You can now paste them into a CODAP table or a spreadsheet."
+      "textCopyDone" : "You have successfully copied •1• records to the clipboard. You can now paste them into a CODAP table or a spreadsheet.",
+      "gameCodeAlreadyExistsText" : "Game code •1• aleady exists",
+      "gameDoesNotExistText" : "Game •1• does not exist! Check that code!",
+      "tooManyPlayersText" : "•1• is too many players for now!!",
+      "badMessageType" : "God is trying to send a •1• message, which shouldn't happen."
     },
+
+
     "menu" : {
       "extrasPlaceholder" : "extras",
       "itemAbandonGame" : "Abandon this game",

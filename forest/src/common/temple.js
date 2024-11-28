@@ -1,6 +1,7 @@
 import * as Player from '../player/player.js';
 import * as Game from '../god/game.js';
 import * as Fire from '../common/fire.js';
+import * as Localize from "../../strings/localize.js"
 
 
 /**
@@ -23,8 +24,14 @@ export async function playerSpeaksToGod(type, iContents = {}) {
                 Fire.subscribeToPlayerMessages(Player.me.id, tGameCode); //  so we'll know when the game starts
                 success = true;
             } else {
+                const theText = 
                 console.log(`*** Game ${tGameCode} does not exist *** (temple)`);
-                swal("oops!",`game "${tGameCode}" does not exist`,"error");
+                //  swal("oops!",`game "${tGameCode}" does not exist`,"error");
+                swal({
+                    title : Localize.getString("oops"),
+                    text : Localize.getString("alerts.gameDoesNotExistText", tGameCode),
+                    icon : "error"
+                });
             }
             break;
         case "harvest":
@@ -63,9 +70,10 @@ export function godSpeaksToPlayer(type, iPlayerID, iContents = {}) {
             break;
 
         default:
+            const theText = Localize.getString("alerts.badMessageType", type);
             swal({
-                title : "oops!",
-                text : `God is trying to send a ${type} message, which shouldn't happen.`,
+                title : Localize.getString("oops"),
+                text : theText,
                 icon : 'error'
             });
             break;

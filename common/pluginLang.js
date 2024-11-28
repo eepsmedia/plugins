@@ -83,7 +83,7 @@ const pluginLang = {
         return langParam;
     },
 
-    pluralize: function (iSingular = "noun", iArticle = "") {
+    pluralize: function (iSingular = "noun", iArticle = "", iLang = "en") {
         const specialNouns = [
             "fish", "deer", "series", "offspring", "sheep", "bison", "cod",
         ]

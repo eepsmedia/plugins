@@ -19,11 +19,13 @@ export async function initialize() {
         console.log('Clipboard API NOT available');
     }
 
-    theLang = Localize.figureOutLanguage(theLang);
+    //  theLang = Localize.figureOutLanguage(theLang);
 
     await Fire.initialize();
     await Handlers.initialize();
-    await Localize.initialize('en');
+    await Localize.initialize(Localize.figureOutLanguage('en'));
+    //  await Localize.initialize('en');
+
     await UI.initialize();
 
     phase = godPhases.kBegin;         //  need someone to log in
@@ -139,8 +141,8 @@ export async function doCopyData() {
         await navigator.clipboard.writeText(theData);
         swal({
             icon : "info",
-            title: Localize.getString("messages.titleCopyDone"),
-            text: Localize.getString("messages.textCopyDone", lineCount)
+            title: Localize.getString("alerts.titleCopyDone"),
+            text: Localize.getString("alerts.textCopyDone", lineCount)
         })
     } catch (error) {
         console.error(error.message);

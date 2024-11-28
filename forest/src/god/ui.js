@@ -100,7 +100,7 @@ function makeAdvice() {
 function makeDebriefGuts() {
     let out = `<h2>${Localize.getString("end.head")}</h2>`;
     out += "<p>" + Localize.getString("end.meanBalance", Localize.getString("currency"), Math.round(Game.gameEndSummary.meanBalance)) + "</p>"
-    out += "<p>" + Localize.getString("end.biomass", Math.round(Game.gameEndSummary.biomass)) + "<br>";
+    out += "<p>" + Localize.getString("end.biomassMessage", Math.round(Game.gameEndSummary.biomass)) + "<br>";
     out += Localize.getString("end.initialBiomass", Math.round(Nature.initialBiomass)) + "</p>";
     out += Localize.getString("end.because");        //  the game ended because
     out += "<ul>";
@@ -119,7 +119,7 @@ function makePlayersTable() {
     let out = Localize.getString("noPlayersYet");
 
     if (Object.keys(Game.players).length > 0) {
-        out = `<table class="tableOfPlayers"><tr><th>player</th><th>balance</th><th>harvest</th></tr>`;
+        out = Localize.getString("tableHeadPlayerList");
         for (let p in Game.players) {
             const who = Game.players[p];
             const theBalance = Math.round(who.balance);
@@ -128,7 +128,9 @@ function makePlayersTable() {
         }
         out += "</table>"
         if (Game.waitingFor.length && God.phase === godPhases.kCollectMoves) {
-            out += `Waiting for ${Game.waitingFor.join(", ")}`;
+            const waitList = Game.waitingFor.join(", ");
+            out += Localize.getString("waitingFor", waitList);
+            //  out += `Waiting for ${waitList}`;
         }
     }
     return out;
