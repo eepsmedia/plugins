@@ -54,12 +54,6 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
     <script src="../../common/src/codapInterface.js"></script>
     <script src="../../common/src/pluginHelper.js"></script>
     <script src="../../common/src/TEEUtils.js"></script>
-    <script src="../../common/src/pluginLang.js"></script>
-
-    <script src="src/binomial.js"></script>
-    <script src="src/binomial.ui.js"></script>
-    <script src="src/connect.js"></script>
-    <script src="src/strings.js"></script>
 
     <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
@@ -67,13 +61,13 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
 <body>
 
 <div id="main">
-    <div id="constant">
+    <div id="banner">
         <h3>Binomial Simulator</h3>
     </div>
 
     <div id="container">
         <div id="description">
-
+            <button id="engageButton">Engage!</button>
         </div>
 
 
@@ -134,12 +128,17 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
 </div>
 </body>
 
+<!--    used to be in the module that follows...
 
-<script>
-    document.addEventListener("DOMContentLoaded", (event) => {
-        console.log("DOMContentLoaded: " + JSON.stringify(event));
-        binomial.initialize();
-    });
+document.addEventListener("DOMContentLoaded", (event) => {
+    console.log("DOMContentLoaded: " + JSON.stringify(event));
+    binomial.initialize();
+});
+-->
+
+<script type="module">
+    import {initialize} from "./src/binomial.js"
+    initialize();
 </script>
 
 </html>
