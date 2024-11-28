@@ -26,16 +26,17 @@ limitations under the License.
 
 */
 
+import * as Root from './binomial.js'
+import * as Language from "./pluginLang.js"
 
-connect = {
 
-    connectToCODAP: async function () {
-        await codapInterface.init(this.iFrameDescriptor, null);
-    },
+    export async function connectToCODAP() {
+        await codapInterface.init(Root.iFrameDescriptor, null);
+    }
 
-    initialize: async function () {
+    export async function initialize() {
         try {
-            await pluginHelper.initDataSet(this.getBinomialDataContextSetupObject());
+            await pluginHelper.initDataSet(getBinomialDataContextSetupObject());
 
             //  restore the state if possible
             //  texty.state = codapInterface.getInteractiveState();
@@ -58,61 +59,52 @@ connect = {
         };
 
         const updateResult = await codapInterface.sendRequest(tMessage);
-
-    },
+    }
 
     /**
      *
      * @param iValues   an array of objects, each of which has runNumber, # of successes, failures, and total
      * @returns {Promise<void>}
      */
-    emitData: async function (iValues) {
+    export async function emitData(iValues) {
 
         iValues = pluginHelper.arrayify(iValues);
         try {
-            const res = await pluginHelper.createItems(iValues, binomial.constants.kBinomialDataSetName);
+            const res = await pluginHelper.createItems(iValues, Root.constants.kBinomialDataSetName);
         } catch (msg) {
             console.log("Problem emitting items using iValues[0] = " + JSON.stringify(iValues[0]));
             console.log(msg);
         }
-    },
+    }
 
-    makeTableAppear: function () {
+    export function makeTableAppear() {
         codapInterface.sendRequest({
             "action": "create",
             "resource": "component",
             "values": {
                 "type": "caseTable",
-                "name": binomial.constants.kBinomialDataSetName,
+                "name": Root.constants.kBinomialDataSetName,
             }
         })
-    },
+    }
 
-    destroyDataset : async function() {
+    export async function destroyDataset() {
         await codapInterface.sendRequest({
             action : "delete",
-            resource : `dataContext[${binomial.constants.kBinomialDataSetName}]`,
+            resource : `dataContext[${Root.constants.kBinomialDataSetName}]`,
         });
-        console.log(`deleted [${binomial.constants.kBinomialDataSetName}]`);
-    },
+        console.log(`deleted [${Root.constants.kBinomialDataSetName}]`);
+    }
 
-    iFrameDescriptor: {
-        version: binomial.constants.kVersion,
-        name: 'binomial',
-        title: 'Binomial Simulator',
-        dimensions: {width: 366, height: 466},
-        preventDataContextReorg: false,
-    },
-
-    getBinomialDataContextSetupObject: function () {
+    function getBinomialDataContextSetupObject() {
         const theObject = {
-            name: binomial.constants.kBinomialDataSetName,
-            title: binomial.constants.kBinomialDataSetTitle,
+            name: Root.constants.kBinomialDataSetName,
+            title: Root.constants.kBinomialDataSetTitle,
             description: 'binomial experiment data',
             collections:
                 [
                     {
-                        name: binomial.constants.kRunCollectionName,
+                        name: Root.constants.kRunCollectionName,
                         labels: {
                             singleCase: "run",
                             pluralCase: "runs",
@@ -121,32 +113,32 @@ connect = {
 
                         attrs: [ // note how this is an array of objects.
                             {name: "runNumber", type: 'categorical', description: "run number"},
-                            {name: `${pluginLang.pluralize(binomial.state.words.atomicEventName)}`,
-                                type: 'numeric', description: `number of ${pluginLang.pluralize(binomial.state.words.atomicEventName)} per experiment`},
-                            {name: `${pluginLang.pluralize(binomial.state.words.experimentName)}`,
-                                type: 'numeric', description: `number of ${pluginLang.pluralize(binomial.state.words.experimentName)} per run`},
+                            {name: `${Language.pluralize(Root.state.words.atomicEventName)}`,
+                                type: 'numeric', description: `number of ${Language.pluralize(Root.state.words.atomicEventName)} per experiment`},
+                            {name: `${Language.pluralize(Root.state.words.experimentName)}`,
+                                type: 'numeric', description: `number of ${Language.pluralize(Root.state.words.experimentName)} per run`},
                             {name: "trueP", type : "numeric", precision : 4,
-                                description: `true probability of ${binomial.state.words.eventSuccess}`},
+                                description: `true probability of ${Root.state.words.eventSuccess}`},
                         ]
                     },
                     {
-                        name: pluginLang.pluralize(binomial.state.words.experimentName),
+                        name: Language.pluralize(Root.state.words.experimentName),
                         labels: {
-                            singleCase: binomial.state.words.experimentName,
-                            pluralCase: pluginLang.pluralize(binomial.state.words.experimentName),
+                            singleCase: Root.state.words.experimentName,
+                            pluralCase: Language.pluralize(Root.state.words.experimentName),
                             setOfCasesWithArticle:
-                                `the ${pluginLang.pluralize(binomial.state.words.experimentName)} from one run`,
+                                `the ${Language.pluralize(Root.state.words.experimentName)} from one run`,
                         },
 
-                        parent: binomial.constants.kRunCollectionName,
+                        parent: Root.constants.kRunCollectionName,
 
                         attrs: [ // note how this is an array of objects.
                             {
-                                name: binomial.state.words.eventSuccess,
+                                name: Root.state.words.eventSuccess,
                                 type: 'numeric',
                             },
                             {
-                                name: binomial.state.words.eventFailure,
+                                name: Root.state.words.eventFailure,
                                 type: 'numeric',
                             },
                         ]
@@ -155,7 +147,4 @@ connect = {
                 ]
         }
         return theObject;
-    },
-
-
-}
+    }

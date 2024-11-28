@@ -2,6 +2,7 @@
 ==========================================================================
 
  * Created by tim on 11/8/21.
+ * Made modular 2024-11-27, in prep for localization
  
  
  ==========================================================================
@@ -26,11 +27,10 @@ limitations under the License.
 
 */
 
-const binomialStrings = {
 
-    initializeStrings: async function (iLang = "en") {
+    export async function initializeStrings(iLang = "en") {
 
-        const theStrings = binomialStrings[iLang];
+        const theStrings = strings_en;  //  binomialStrings[iLang];
 
         //  substitute all the static strings in the IU (by `id`)
         for (const theID in theStrings.staticStrings) {
@@ -45,20 +45,20 @@ const binomialStrings = {
             }
         }
         return theStrings;
-    },
+    }
 
-    languages : [`en`, 'de'],
+    export const languages = [`en`, 'de'];
 
-    en : {
+    const strings_en = {
         name : "English",
         flags : ["🇬🇧", "🇺🇸", "🇳🇿", "🇨🇦"],
 
         staticStrings : {
             changeVocabWarning : `Note: Changing this vocabulary will delete your data on the next run.`,
         }
-    },
+    }
 
-    de : {
+    const de = {
         name : "Deutsch",
         flags : ["🇩🇪"],
 
@@ -66,4 +66,3 @@ const binomialStrings = {
             changeVocabWarning : `XXX Note: Changing this vocabulary will delete your data on the next run.`,
         }
     }
-}
