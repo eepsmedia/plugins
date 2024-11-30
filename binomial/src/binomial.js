@@ -28,7 +28,7 @@ limitations under the License.
 
 import * as UI from "./binomial.ui.js"
 import * as Connect from "./connect.js"
-import * as Language from "./pluginLang.js"
+import * as Language from "../strings/localize.js"
 import * as Strings from "./strings.js"
 
 
@@ -44,24 +44,33 @@ export async function initialize() {
     state = await codapInterface.getInteractiveState();
 
     if (Object.keys(state).length === 0) {
+        const freshState = getFreshState();
         codapInterface.updateInteractiveState(freshState);
         state = freshState;
     } else {
     }
 
-    state.lang = Language.figureOutLanguage('en', Strings.languages);
-    strings = await Strings.initializeStrings(state.lang);
+    state.lang = await Language.initialize();
+    addWordsToState();
 
     UI.setInputToState();
 
     await Connect.initialize();
 
-    UI.update();
     initializeHandlers();
+    update();
 }
 
 function initializeHandlers() {
-    document.getElementById("engageButton").addEventListener('click', engage);
+
+    document.getElementById("probabilityOfSuccessInput").addEventListener('change', update);
+    document.getElementById("numberOfAtomicEventsInput").addEventListener('change', update);
+    document.getElementById("numberOfExperimentsInput").addEventListener('change', update);
+
+    document.getElementById("atomicEventNameInput").addEventListener('change', nameChange);
+    document.getElementById("eventSuccessInput").addEventListener('change', nameChange);
+    document.getElementById("eventFailureInput").addEventListener('change', nameChange);
+    document.getElementById("experimentNameInput").addEventListener('change', nameChange);
 }
 
 export async function engage() {
@@ -101,16 +110,16 @@ export async function engage() {
 
 function update() {
     const probabilityString = document.getElementById("probabilityOfSuccessInput").value;
-    state.parsedProbability = binomial.utilities.stringFractionDecimalOrPercentToNumber(probabilityString);
+    state.parsedProbability = utilities.stringFractionDecimalOrPercentToNumber(probabilityString);
     const theProb = state.parsedProbability.theNumber;
 
     if (state.parsedProbability.theString !== "") {
         if (theProb >= 0 && theProb <= 1) {
             state.atomicEventsPerExperiment = Number(document.getElementById("numberOfAtomicEventsInput").value);
             state.experimentsPerRun = Number(document.getElementById("numberOfExperimentsInput").value);
-            if (state.experimentsPerRun > binomial.constants.kMaxExperimentsPerRun) {
-                state.experimentsPerRun = binomial.constants.kMaxExperimentsPerRun;
-                document.getElementById("numberOfExperimentsInput").value = binomial.constants.kMaxExperimentsPerRun;
+            if (state.experimentsPerRun > constants.kMaxExperimentsPerRun) {
+                state.experimentsPerRun = constants.kMaxExperimentsPerRun;
+                document.getElementById("numberOfExperimentsInput").value = constants.kMaxExperimentsPerRun;
             }
         } else {
             Swal.fire({
@@ -130,17 +139,19 @@ function update() {
     }
 
     UI.update();
+    document.getElementById("engageButton").addEventListener('click',   engage);
+
 }
 
 function nameChange() {
-    binomial.dirty = true;
+    dirty = true;
 
     state.words.atomicEventName = document.getElementById("atomicEventNameInput").value;
     state.words.eventSuccess = document.getElementById("eventSuccessInput").value;
     state.words.eventFailure = document.getElementById("eventFailureInput").value;
     state.words.experimentName = document.getElementById("experimentNameInput").value;
 
-    UI.update();
+    update();
 }
 
 async function reset() {
@@ -149,20 +160,24 @@ async function reset() {
 }
 
 
-const freshState = {
-    words: {
-        atomicEventName: "flip",
-        eventSuccess: "heads",
-        eventFailure: "tails",
-        experimentName: "experiment",
-    },
+function getFreshState() {
+    const theState = {
+        parsedProbability: {theNumber: 0.5, theString: "1/2",},
+        atomicEventsPerExperiment: 10,
+        experimentsPerRun: 100,
+        runNumber: 0,
+    }
+    return theState
+}
 
-    parsedProbability: {theNumber: 0.5, theString: "1/2",},
+function addWordsToState() {
+    state["words"] = {
+        atomicEventName: Language.getString("words.atomicEventName"),
+            eventSuccess: Language.getString("words.eventSuccess"),
+            eventFailure: Language.getString("words.eventFailure"),
+            experimentName: Language.getString("words.experimentName"),
+    }
 
-    atomicEventsPerExperiment: 10,
-    experimentsPerRun: 100,
-
-    runNumber: 0,
 }
 
 const utilities = {

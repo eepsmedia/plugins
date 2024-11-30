@@ -27,7 +27,7 @@ limitations under the License.
 */
 
 import * as Root from './binomial.js'
-import * as Language from "./pluginLang.js"
+import * as Language from "../strings/localize.js"
 
 
     export async function connectToCODAP() {
@@ -112,13 +112,24 @@ import * as Language from "./pluginLang.js"
                         },
 
                         attrs: [ // note how this is an array of objects.
-                            {name: "runNumber", type: 'categorical', description: "run number"},
+                            {name: "runNumber", type: 'categorical', description: Language.getString("attributeDescriptions.runNumber")},
                             {name: `${Language.pluralize(Root.state.words.atomicEventName)}`,
-                                type: 'numeric', description: `number of ${Language.pluralize(Root.state.words.atomicEventName)} per experiment`},
-                            {name: `${Language.pluralize(Root.state.words.experimentName)}`,
-                                type: 'numeric', description: `number of ${Language.pluralize(Root.state.words.experimentName)} per run`},
+                                type: 'numeric',
+                                description: Language.getString("attributeDescriptions.eventsPerExperiment",
+                                    Language.pluralize(Root.state.words.atomicEventName),
+                                    Root.state.words.experimentName
+                                ),
+                            },
+                            {
+                                name: `${Language.pluralize(Root.state.words.experimentName)}`,    //  experimentsPerRun
+                                type: 'numeric',
+                                description: Language.getString("attributeDescriptions.experimentsPerRun",
+                                    Language.pluralize(Root.state.words.experimentName)
+                                )
+                            },
                             {name: "trueP", type : "numeric", precision : 4,
-                                description: `true probability of ${Root.state.words.eventSuccess}`},
+                                description: Language.getString("attributeDescriptions.trueP", Root.state.words.eventSuccess)
+                            },
                         ]
                     },
                     {
@@ -136,10 +147,18 @@ import * as Language from "./pluginLang.js"
                             {
                                 name: Root.state.words.eventSuccess,
                                 type: 'numeric',
+                                description: Language.getString("attributeDescriptions.eventSuccess",
+                                    Root.state.words.eventSuccess,
+                                    Root.state.words.experimentName
+                                )
                             },
                             {
                                 name: Root.state.words.eventFailure,
                                 type: 'numeric',
+                                description: Language.getString("attributeDescriptions.eventFailure",
+                                    Root.state.words.eventFailure,
+                                    Root.state.words.experimentName
+                                )
                             },
                         ]
                     }

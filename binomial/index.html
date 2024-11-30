@@ -76,19 +76,18 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
             <div>
                 <input type="text" class="number-input"
                        id="probabilityOfSuccessInput"
-                       onchange="binomial.update()"
                        title="enter a fraction, decimal, or percent as your probability"
                 >
                 <label for="probabilityOfSuccessInput" id="probabilityOfSuccessInputLabel">foo</label>
             </div>
             <div>
                 <input type="number" id="numberOfAtomicEventsInput" value="10"  class="number-input"
-                       min="1" max="20000" onchange="binomial.update()">
+                       min="1" max="20000">
                 <label for="numberOfAtomicEventsInput" id="numberOfAtomicEventsInputLabel">bar</label>
             </div>
             <div>
                 <input type="number" id="numberOfExperimentsInput" value="100"  class="number-input"
-                       min="1" max="400" onchange="binomial.update()">
+                       min="1" max="400" >
                 <label for="numberOfExperimentsInput" id="numberOfExperimentsInputLabel">baz</label>
             </div>
 
@@ -99,22 +98,22 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
             <h4>Vocabulary</h4>
 
             <div>
-                <input type="text" id="atomicEventNameInput" value="flip" onchange="binomial.nameChange()"
+                <input type="text" id="atomicEventNameInput" value="flip"
                        class="name-input">
-                <label for="atomicEventNameInput">the basic event</label>
+                <label for="atomicEventNameInput" id="atomicEventNameLabel">the basic event</label>
             </div>
             <div>
-                <input type="text" id="eventSuccessInput" value="heads" onchange="binomial.nameChange()"
+                <input type="text" id="eventSuccessInput" value="heads"
                        class="name-input">
                 <label for="eventSuccessInput" id="eventSuccessInputLabel">baz</label>
             </div>
             <div>
-                <input type="text" id="eventFailureInput" value="tails" onchange="binomial.nameChange()"
+                <input type="text" id="eventFailureInput" value="tails"
                        class="name-input">
                 <label for="eventFailureInput" id="eventFailureInputLabel">foo</label>
             </div>
             <div>
-                <input type="text" id="experimentNameInput" value="experiment" onchange="binomial.nameChange()"
+                <input type="text" id="experimentNameInput" value="experiment"
                        class="name-input">
                 <label for="experimentNameInput" id="experimentNameInputLabel">bar</label>
             </div>

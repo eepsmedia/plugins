@@ -1,0 +1,54 @@
+{
+  "binomial" : {
+    "binomialGameName" : "binomial",
+    "language": "English",
+    "flags": "🇬🇧,🇺🇸,🇳🇿,🇨🇦",
+
+    "summaryTableHead" : "year, biomass, meanBalance, playerID, playerTreeCount, playerBalance",
+
+    "oops" : "oops!",
+
+    "staticStrings" : {
+      "atomicEventNameLabel" : "the basic event",
+      "changeVocabWarning" : "Note: Changing this vocabulary will delete your data on the next run."
+    },
+
+    "words": {
+      "atomicEventName" : "flip",
+      "eventSuccess" : "heads",
+      "eventFailure" : "tails",
+      "experimentName" : "experiment"
+    },
+
+    "labels" : {
+      "probabilityLabelText" : "probability of <b>•1•</b> is •2•",
+      "eventSuccessInputLabel" : "possible result of one •1•",
+      "eventFailureInputLabel" : "the alternative to <b>•1•</b>",
+      "experimentNameInputLabel" : "what do you call a set of •1• •2•?",
+
+      "experimentsPerRunLabelTextMain" : "•1• per run ",
+      "experimentsPerRunLabelTextFinePrint" : "Probably between 100 and 400."
+    },
+
+    "description" : {
+      "line1" : "One •1• is either <b>•2•</b> or <b>•3•</b>",
+      "line2" : "The probability of <b>•1•</b> is <b>•2•</b>",
+      "line3" : "One •1• consists of <b>•2•</b> •3•",
+      "line4" : "Press <button id=\"engageButton\">Engage!</button> to simulate <b>•1•</b> •2•"
+    },
+
+    "attributeNames" : {
+      "runNumber" : "runNumber",
+      "trueProbability" : "trueP"
+    },
+
+    "attributeDescriptions" : {
+      "runNumber" : "run number",
+      "eventsPerExperiment" : "number of •1• per •2•",
+      "experimentsPerRun" : "number of •1• per run",
+      "trueP" : "true probability of •1•",
+      "eventSuccess" : "the number of •1• in this •2•",
+      "eventFailure" : "the number of •1• in this •2•"
+    }
+  }
+}
