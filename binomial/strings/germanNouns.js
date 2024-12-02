@@ -81,6 +81,9 @@ function getEntryFromUser(iSingular) {
                 // Add the new word to the local dictionary
                 theDictionary.push(theEntry);
 
+                //  Add the new word to the Firebase repository
+                Fire.addPlural(theEntry);
+
                 //  clean up
                 germanNounsModal.close();
                 doneButton.removeEventListener('click', onDone);

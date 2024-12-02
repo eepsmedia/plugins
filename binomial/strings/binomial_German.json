@@ -28,9 +28,9 @@
       "numberOfEventsLimitFinePrint" : "Nicht mehr als 20000."
     },
     "description": {
-      "line1": "Ein •1• ist entweder <b>•2•</b> oder <b>•3•</b>",
+      "line1": "Ein/e •1• ist entweder <b>•2•</b> oder <b>•3•</b>",
       "line2": "Die Wahrscheinlichkeit von <b>•1•</b> ist <b>•2•</b>",
-      "line3": "Eine •1• besteht aus <b>•2•</b> •3•",
+      "line3": "Ein/e •1• besteht aus <b>•2•</b> •3•",
       "line4": "Drücken Sie <button id=\"engageButton\">Engage!</button> um <b>•1•</b> •2• zu simulieren"
     },
     "attributeNames": {
@@ -42,8 +42,8 @@
       "eventsPerExperiment": "Anzahl von •1• pro •2•",
       "experimentsPerRun": "Anzahl der •1• pro Lauf",
       "trueProbability": "wahre Wahrscheinlichkeit von •1•",
-      "eventSuccess": "die Anzahl der •1• in diesem •2•",
-      "eventFailure": "die Anzahl der •1• in diesem •2•"
+      "eventSuccess": "die Anzahl der •1• in dieser/m •2•",
+      "eventFailure": "die Anzahl der •1• in dieser/m •2•"
     }
   }
 }
