@@ -58,11 +58,12 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
     <script src="../../common/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
 </head>
+
 <body>
 
 <div id="main">
     <div id="banner">
-        <h3>Binomial Simulator</h3>
+        <h3 id="mainHeading">Binomial Simulator</h3>
     </div>
 
     <div id="container">
@@ -81,13 +82,13 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
                 <label for="probabilityOfSuccessInput" id="probabilityOfSuccessInputLabel">foo</label>
             </div>
             <div>
-                <input type="number" id="numberOfAtomicEventsInput" value="10"  class="number-input"
+                <input type="number" id="numberOfAtomicEventsInput" value="10" class="number-input"
                        min="1" max="20000">
                 <label for="numberOfAtomicEventsInput" id="numberOfAtomicEventsInputLabel">bar</label>
             </div>
             <div>
-                <input type="number" id="numberOfExperimentsInput" value="100"  class="number-input"
-                       min="1" max="400" >
+                <input type="number" id="numberOfExperimentsInput" value="100" class="number-input"
+                       min="1" max="400">
                 <label for="numberOfExperimentsInput" id="numberOfExperimentsInputLabel">baz</label>
             </div>
 
@@ -117,7 +118,8 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
                        class="name-input">
                 <label for="experimentNameInput" id="experimentNameInputLabel">bar</label>
             </div>
-            <p id="changeVocabWarning" class="fine-print">Note: Changing this vocabulary will delete your data on the next run.</p>
+            <p id="changeVocabWarning" class="fine-print">Note: Changing this vocabulary will delete your data on the
+                next run.</p>
             <!--
                         <p>Enter the words you want to use in this simulator, then press <button onclick="binomial.reset()">Reset</button>.</p>
             -->
@@ -125,6 +127,43 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
         </div>
     </div>
 </div>
+
+<dialog id="germanNounsModal">
+    <h3 id="pluralModalTitle">Wir brauchen den Plural!</h3>
+    <p>Dieses Wort ist nicht im Wörterbuch enthalten. Bitte geben Sie den Artikel und die Pluralform an.</p>
+    <table>
+        <tr>
+            <td>
+                <label for="singularInput">singular:</label>
+            </td>
+            <td>
+                <select id="singularArticleMenu">
+                    <option value="der">der</option>
+                    <option value="die">die</option>
+                    <option value="das">das</option>
+                </select>
+                <input type="text" id="singularInput">
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="pluralInput">plural:</label>
+            </td>
+            <td>
+                die <input type="text" id="pluralInput">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="button" id="doneButton" value="fertig">
+            </td>
+
+        </tr>
+    </table>
+</dialog>
+
 </body>
 
 <!--    used to be in the module that follows...
@@ -137,6 +176,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 <script type="module">
     import {initialize} from "./src/binomial.js"
+
     initialize();
 </script>
 

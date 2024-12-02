@@ -1,15 +1,10 @@
 
 import * as Root from '../src/binomial.js'
+import * as Deutsch from "./germanNouns.js"
 
 let DG = {
     plugins: null,
 };
-
-let germanPlurals = {
-    Katz : {
-        plural : "Kätze"
-    }
-}
 
 let defaultStrings = {};
 let languages = [];
@@ -23,6 +18,15 @@ export async function initialize() {
 
     console.log(`done loading language strings for ${theLang}  `);
     setStaticStrings();
+
+    if (theLang === "de") {
+        try {
+            await Deutsch.initialize();
+            console.log(`success opening the German plurals database!`);
+        } catch (err) {
+            console.error(`error opening the German plurals database: ${err}`);
+        }
+    }
 
     return theLang;
 }
@@ -155,34 +159,53 @@ function getLangFromURL() {
     return langParam;
 }
 
-export function pluralize(iSingular = "") {
+export function getNoun(iSingular, pPlural, pDefArt=false, pIndefArt = false, pAccusative = false) {
     const theLang = Root.state.lang || "en";
+    let out = iSingular;
 
     if (theLang === "de") {
-        return pluralize_de(iSingular);
+        out = ""
+        const plural = pluralize_de(iSingular);
     } else if (theLang === "en") {
-        return pluralize_en(iSingular);
+        out = "";
+        if (pDefArt) out = "the ";
+        if (pIndefArt) {
+            out =  "aeiouh".includes(iSingular[0]) ? "an " : "a ";
+        } else {
+            if (pPlural) {
+                out += pluralize_en(iSingular);
+            } else {
+                out += iSingular;
+            }
+        }
     } else {
-        return null;
-    }
-}
-
-async function pluralize_de(iSingular = "Katz") {
-    let thePlural = "";
-
-    if (Object.keys(germanPlurals).length === 0) {
-        console.log("have to get the German plural dictionary");
-
+        out = `plural failure!`;
     }
 
-    let possiblePlural = germanPlurals[iSingular];
-    if (possiblePlural) return possiblePlural;
-
+    return out
 }
+
+
+export async function pluralize(iSingular = "") {
+    const theLang = Root.state.lang || "en";
+    let out = iSingular;
+
+    if (theLang === "de") {
+        out = await Deutsch.pluralize(iSingular);
+    } else if (theLang === "en") {
+        out = pluralize_en(iSingular);
+    } else {
+        out = `plural failure!`;
+    }
+
+    return out
+}
+
+
 
 function pluralize_en(iSingular = "noun", iArticle = "") {
     const specialNouns = [
-        "fish", "deer", "series", "offspring", "sheep", "bison", "cod",
+        "fish", "deer", "series", "offspring", "sheep", "bison", "cod", "heads", "tails"
     ]
 
     let thePlural = iSingular;

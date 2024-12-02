@@ -51,7 +51,7 @@ export async function initialize() {
     }
 
     state.lang = await Language.initialize();
-    addWordsToState();
+    await addWordsToState();
 
     UI.setInputToState();
 
@@ -94,12 +94,13 @@ export async function engage() {
             }
         }
         const aResult = {};
-        aResult["runNumber"] = state.runNumber;
-        aResult[state.words.eventSuccess] = nSuccesses;
-        aResult[state.words.eventFailure] = (state.atomicEventsPerExperiment) - nSuccesses;
-        aResult[Language.pluralize(state.words.atomicEventName, 'en')] = state.atomicEventsPerExperiment;
-        aResult[Language.pluralize(state.words.experimentName, 'en')] = state.experimentsPerRun;
-        aResult["trueP"] = state.parsedProbability.theNumber;
+        aResult[Language.getString("attributeNames.runNumber")] = state.runNumber;
+        aResult[state.words.eventSuccessPlural] = nSuccesses;
+        aResult[state.words.eventFailurePlural] = (state.atomicEventsPerExperiment) - nSuccesses;
+        aResult[state.words.atomicEventNamePlural] = state.atomicEventsPerExperiment;
+        aResult[state.words.experimentNamePlural] = state.experimentsPerRun;
+        const probAttName = Language.getString("attributeNames.trueProbability");
+        aResult[probAttName] = state.parsedProbability.theNumber;
 
         results.push(aResult);
     }
@@ -108,7 +109,7 @@ export async function engage() {
     Connect.makeTableAppear();
 }
 
-function update() {
+async function update() {
     const probabilityString = document.getElementById("probabilityOfSuccessInput").value;
     state.parsedProbability = utilities.stringFractionDecimalOrPercentToNumber(probabilityString);
     const theProb = state.parsedProbability.theNumber;
@@ -138,18 +139,23 @@ function update() {
         })
     }
 
-    UI.update();
+    await UI.update();
     document.getElementById("engageButton").addEventListener('click',   engage);
 
 }
 
-function nameChange() {
+async function nameChange() {
     dirty = true;
 
-    state.words.atomicEventName = document.getElementById("atomicEventNameInput").value;
-    state.words.eventSuccess = document.getElementById("eventSuccessInput").value;
-    state.words.eventFailure = document.getElementById("eventFailureInput").value;
-    state.words.experimentName = document.getElementById("experimentNameInput").value;
+    state.words.atomicEventName = document.getElementById("atomicEventNameInput").value.trim();
+    state.words.eventSuccess = document.getElementById("eventSuccessInput").value.trim();
+    state.words.eventFailure = document.getElementById("eventFailureInput").value.trim();
+    state.words.experimentName = document.getElementById("experimentNameInput").value.trim();
+
+    state.words.atomicEventNamePlural = await Language.pluralize(state.words.atomicEventName);
+    state.words.experimentNamePlural = await Language.pluralize(state.words.experimentName);
+    state.words.eventSuccessPlural = await Language.pluralize(state.words.eventSuccess);
+    state.words.eventFailurePlural = await Language.pluralize(state.words.eventFailure);
 
     update();
 }
@@ -170,13 +176,17 @@ function getFreshState() {
     return theState
 }
 
-function addWordsToState() {
+async function addWordsToState() {
     state["words"] = {
+        eventSuccess: Language.getString("words.eventSuccess"),
+        eventFailure: Language.getString("words.eventFailure"),
         atomicEventName: Language.getString("words.atomicEventName"),
-            eventSuccess: Language.getString("words.eventSuccess"),
-            eventFailure: Language.getString("words.eventFailure"),
-            experimentName: Language.getString("words.experimentName"),
+        experimentName: Language.getString("words.experimentName"),
     }
+    state.words.atomicEventNamePlural = await Language.pluralize(state.words.atomicEventName);
+    state.words.experimentNamePlural = await Language.pluralize(state.words.experimentName);
+    state.words.eventSuccessPlural = await Language.pluralize(state.words.eventSuccess);
+    state.words.eventFailurePlural = await Language.pluralize(state.words.eventFailure);
 
 }
 
@@ -215,7 +225,7 @@ export const iFrameDescriptor = {
     version: "001c",
     name: 'binomial',
     title: 'Binomial Simulator',
-    dimensions: {width: 366, height: 466},
+    dimensions: {width: 444, height: 512},
     preventDataContextReorg: false,
 }
 

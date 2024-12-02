@@ -1,0 +1,49 @@
+{
+  "binomial": {
+    "binomialGameName": "binomisch",
+    "language": "Deutsch",
+    "flags": "🇩🇪,🇦🇹,🇨🇭",
+    "summaryTableHead": "Jahr, Biomasse, Mittelwertbilanz, Spieler-ID, Spielerbaumanzahl, Spielerbilanz",
+    "oops": "Hoppla!",
+    "staticStrings": {
+      "mainHeading" : "Binomial-Simulator",
+      "atomicEventNameLabel": "die Grundveranstaltung",
+      "changeVocabWarning": "Hinweis: Wenn Sie dieses Vokabular ändern, werden Ihre Daten beim nächsten Lauf gelöscht.",
+      "pluralModalTitle": "Deutsche Plurale"
+    },
+    "words": {
+      "atomicEventName": "Münzwurf",
+      "eventSuccess": "Kopf",
+      "eventFailure": "Zahl",
+      "experimentName": "Experiment"
+    },
+    "labels": {
+      "probabilityLabelText": "Die Wahrscheinlichkeit von <b>•1•</b> ist •2•",
+      "eventSuccessInputLabel": "mögliches Ergebnis für ein/e/n •1•",
+      "eventFailureInputLabel": "die Alternative zu <b>•1•</b>",
+      "experimentNameInputLabel": "Wie nennt man einen Satz von •1• •2•?",
+      "experimentsPerRunLabelTextMain": "•1• pro Lauf ",
+      "experimentsPerRunLabelTextFinePrint": "Wahrscheinlich zwischen 100 und 400.",
+      "numberOfEventsLabelTextMain" : "•1• pro •2• ",
+      "numberOfEventsLimitFinePrint" : "Nicht mehr als 20000."
+    },
+    "description": {
+      "line1": "Ein •1• ist entweder <b>•2•</b> oder <b>•3•</b>",
+      "line2": "Die Wahrscheinlichkeit von <b>•1•</b> ist <b>•2•</b>",
+      "line3": "Eine •1• besteht aus <b>•2•</b> •3•",
+      "line4": "Drücken Sie <button id=\"engageButton\">Engage!</button> um <b>•1•</b> •2• zu simulieren"
+    },
+    "attributeNames": {
+      "runNumber": "LaufNummer",
+      "trueProbability": "wahrWarsch"
+    },
+    "attributeDescriptions": {
+      "runNumber": "Laufnummer",
+      "eventsPerExperiment": "Anzahl von •1• pro •2•",
+      "experimentsPerRun": "Anzahl der •1• pro Lauf",
+      "trueProbability": "wahre Wahrscheinlichkeit von •1•",
+      "eventSuccess": "die Anzahl der •1• in diesem •2•",
+      "eventFailure": "die Anzahl der •1• in diesem •2•"
+    }
+  }
+}

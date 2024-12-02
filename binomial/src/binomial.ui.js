@@ -29,7 +29,7 @@ limitations under the License.
 import * as Root from './binomial.js'
 import * as Language from "../strings/localize.js"
 
-    export function update() {
+    export async function update() {
         const descriptionDiv = document.getElementById("description");
         const probabilityOfSuccessInputBox = document.getElementById("probabilityOfSuccessInput");
         const probabilityOfSuccessLabel = document.getElementById("probabilityOfSuccessInputLabel");
@@ -39,17 +39,24 @@ import * as Language from "../strings/localize.js"
         const eventFailureLabel = document.getElementById("eventFailureInputLabel");
         const experimentNameLabel = document.getElementById("experimentNameInputLabel");
 
-        descriptionDiv.innerHTML = makeDescription();
+        descriptionDiv.innerHTML = await makeDescription();
 
         //  construct experiment label, like "10 experiments per run, probably between 100 and 400"
-        let experimentsLabelText = Language.getString("labels.experimentsPerRunLabelTextMain", Language.pluralize(Root.state.words.experimentName));
+        let experimentsLabelText = Language.getString(
+            "labels.experimentsPerRunLabelTextMain",
+            Root.state.words.experimentNamePlural
+        );
         experimentsLabelText += `<span class="fine-print">${Language.getString("labels.experimentsPerRunLabelTextFinePrint")}</span>`
         numberOfExperimentsLabel.innerHTML = experimentsLabelText;
 
-        numberOfAtomicEventsLabel.innerHTML =
-            `${Language.pluralize(Root.state.words.atomicEventName)} per ${Root.state.words.experimentName}
-             <span class="fine-print">Not more than 20000.</span>
-            `;
+        //  construct number of events per experiment label, like "5 children per family, not more than 20000"
+        let numberOfEventsPerExperimentLabelText = Language.getString(
+            "labels.numberOfEventsLabelTextMain",
+            Root.state.words.atomicEventNamePlural,
+            Root.state.words.experimentName
+        );
+        numberOfEventsPerExperimentLabelText += `<span class="fine-print">${Language.getString("labels.numberOfEventsLimitFinePrint")}</span>`;    //  fine print
+        numberOfAtomicEventsLabel.innerHTML = numberOfEventsPerExperimentLabelText;
 
         //  settings
         probabilityOfSuccessInputBox.innerHTML = Root.state.parsedProbability.string;
@@ -66,13 +73,13 @@ import * as Language from "../strings/localize.js"
         experimentNameLabel.innerHTML = Language.getString(
             "labels.experimentNameInputLabel",
             Root.state.atomicEventsPerExperiment,
-            Language.pluralize(Root.state.words.atomicEventName)
+            Root.state.words.atomicEventNamePlural,
         );
 
     }
 
 
-    function makeDescription() {
+    async function makeDescription() {
 
         const line1 = Language.getString("description.line1",
             Root.state.words.atomicEventName,
@@ -86,15 +93,14 @@ import * as Language from "../strings/localize.js"
         const line3 = Language.getString("description.line3",
             Root.state.words.experimentName,
             Root.state.atomicEventsPerExperiment,
-            Language.pluralize(Root.state.words.atomicEventName)
+            Root.state.words.atomicEventNamePlural,
         );
         const line4 = Language.getString("description.line4",
             Root.state.experimentsPerRun,
-            Language.pluralize(Root.state.words.experimentName)
+            Root.state.words.experimentNamePlural,
         );
 
         return  `    ${line1}<br/>${line2}<br/>${line3}<br/>${line4}`;
-
     }
 
     export function setInputToState() {

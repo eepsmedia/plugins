@@ -36,7 +36,7 @@ import * as Language from "../strings/localize.js"
 
     export async function initialize() {
         try {
-            await pluginHelper.initDataSet(getBinomialDataContextSetupObject());
+            await pluginHelper.initDataSet(await getBinomialDataContextSetupObject());
 
             //  restore the state if possible
             //  texty.state = codapInterface.getInteractiveState();
@@ -96,7 +96,7 @@ import * as Language from "../strings/localize.js"
         console.log(`deleted [${Root.constants.kBinomialDataSetName}]`);
     }
 
-    function getBinomialDataContextSetupObject() {
+    async function getBinomialDataContextSetupObject() {
         const theObject = {
             name: Root.constants.kBinomialDataSetName,
             title: Root.constants.kBinomialDataSetTitle,
@@ -112,51 +112,59 @@ import * as Language from "../strings/localize.js"
                         },
 
                         attrs: [ // note how this is an array of objects.
-                            {name: "runNumber", type: 'categorical', description: Language.getString("attributeDescriptions.runNumber")},
-                            {name: `${Language.pluralize(Root.state.words.atomicEventName)}`,
+                            {
+                                name: `${Language.getString("attributeNames.runNumber")}`,
+                                type: 'categorical',
+                                description: Language.getString("attributeDescriptions.runNumber")
+                            },
+                            {
+                                name: Root.state.words.atomicEventNamePlural,
                                 type: 'numeric',
                                 description: Language.getString("attributeDescriptions.eventsPerExperiment",
-                                    Language.pluralize(Root.state.words.atomicEventName),
+                                    Root.state.words.atomicEventNamePlural,
                                     Root.state.words.experimentName
                                 ),
                             },
                             {
-                                name: `${Language.pluralize(Root.state.words.experimentName)}`,    //  experimentsPerRun
+                                name: Root.state.words.experimentNamePlural,    //  experimentsPerRun
                                 type: 'numeric',
-                                description: Language.getString("attributeDescriptions.experimentsPerRun",
-                                    Language.pluralize(Root.state.words.experimentName)
+                                description: Language.getString(
+                                    "attributeDescriptions.experimentsPerRun",
+                                    Root.state.words.experimentNamePlural
                                 )
                             },
-                            {name: "trueP", type : "numeric", precision : 4,
-                                description: Language.getString("attributeDescriptions.trueP", Root.state.words.eventSuccess)
+                            {
+                                name: `${Language.getString("attributeNames.trueProbability")}`,
+                                type : "numeric", precision : 4,
+                                description: Language.getString("attributeDescriptions.trueProbability", Root.state.words.eventSuccess)
                             },
                         ]
                     },
                     {
-                        name: Language.pluralize(Root.state.words.experimentName),
+                        name: Root.state.words.experimentNamePlural,
                         labels: {
                             singleCase: Root.state.words.experimentName,
-                            pluralCase: Language.pluralize(Root.state.words.experimentName),
+                            pluralCase: Root.state.words.experimentNamePlural,
                             setOfCasesWithArticle:
-                                `the ${Language.pluralize(Root.state.words.experimentName)} from one run`,
+                                `the ${Root.state.words.experimentNamePlural} from one run`,
                         },
 
                         parent: Root.constants.kRunCollectionName,
 
                         attrs: [ // note how this is an array of objects.
                             {
-                                name: Root.state.words.eventSuccess,
+                                name: Root.state.words.eventSuccessPlural,
                                 type: 'numeric',
                                 description: Language.getString("attributeDescriptions.eventSuccess",
-                                    Root.state.words.eventSuccess,
+                                    Root.state.words.eventSuccessPlural,
                                     Root.state.words.experimentName
                                 )
                             },
                             {
-                                name: Root.state.words.eventFailure,
+                                name: Root.state.words.eventFailurePlural,
                                 type: 'numeric',
                                 description: Language.getString("attributeDescriptions.eventFailure",
-                                    Root.state.words.eventFailure,
+                                    Root.state.words.eventFailurePlural,
                                     Root.state.words.experimentName
                                 )
                             },

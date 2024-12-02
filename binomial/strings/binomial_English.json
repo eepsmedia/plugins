@@ -9,8 +9,10 @@
     "oops" : "oops!",
 
     "staticStrings" : {
+      "mainHeading" : "Binomial Simulator",
       "atomicEventNameLabel" : "the basic event",
-      "changeVocabWarning" : "Note: Changing this vocabulary will delete your data on the next run."
+      "changeVocabWarning" : "Note: Changing this vocabulary will delete your data on the next run.",
+      "pluralModalTitle" : "Plural Modal default text"
     },
 
     "words": {
@@ -27,7 +29,9 @@
       "experimentNameInputLabel" : "what do you call a set of •1• •2•?",
 
       "experimentsPerRunLabelTextMain" : "•1• per run ",
-      "experimentsPerRunLabelTextFinePrint" : "Probably between 100 and 400."
+      "experimentsPerRunLabelTextFinePrint" : "Probably between 100 and 400.",
+      "numberOfEventsLabelTextMain" : "•1• per •2• ",
+      "numberOfEventsLimitFinePrint" : "Not more than 20000."
     },
 
     "description" : {
@@ -46,7 +50,7 @@
       "runNumber" : "run number",
       "eventsPerExperiment" : "number of •1• per •2•",
       "experimentsPerRun" : "number of •1• per run",
-      "trueP" : "true probability of •1•",
+      "trueProbability" : "true probability of •1•",
       "eventSuccess" : "the number of •1• in this •2•",
       "eventFailure" : "the number of •1• in this •2•"
     }
