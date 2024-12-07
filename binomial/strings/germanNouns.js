@@ -15,7 +15,7 @@ export async function initialize() {
 }
 
 export async function pluralize(iSingular) {
-    const thePlural =  await getNoun_de(iSingular, true);
+    const thePlural =  await getNoun(iSingular, true);
     return thePlural;
 }
 
@@ -23,19 +23,30 @@ export async function pluralize(iSingular) {
  *
  * @param iSingular the singular form we're looking at
  * @param pPlural   is this plural? Boolean
- * @param pArtikel  do we get an article? "kein" | "def | "indef"
- * @param pCase  what case are we in? "Nom" | "Acc" or "Akk" | "Dat" | "Gen"
+ * @param iArtikel  do we get an article? "kein" | "def | "indef"
+ * @param iCase  what case are we in? "Nom" | "Acc" or "Akk" | "Dat" | "Gen"
  * @returns {Promise<void>}
  */
-export async function getNoun_de(iSingular, pPlural = false, pArtikel = "kein", pCase = "Nom") {
+export async function getNoun(
+    iSingular,
+    pPlural = false,
+    iArtikel = "kein",
+    iCase = "Nom"
+) {
+/*
+    if (iSingular[0].toLowerCase() === iSingular[0]) {
+        return iSingular;   //  it's not a noun
+    }
+*/
+
     let theEntry = await getEntryFromDictionary(iSingular);
 
-    const out = assembleWordAndArticle(theEntry,pPlural, pArtikel, pCase);
+    const out = assembleWordAndArticle(theEntry,pPlural, iArtikel, iCase);
 
     return out;
 }
 
-async function getEntryFromDictionary(iSingular) {
+export async function getEntryFromDictionary(iSingular) {
     if (theDictionary.length === 0) {
         Swal.fire({
             icon: "warning",
@@ -99,22 +110,40 @@ function genderFromArticle(iArt) {
     else return "N";
 }
 
-function assembleWordAndArticle(iEntry, pPlural, pArtikel, pCase) {
+function assembleWordAndArticle(iEntry, pPlural, iArtikel, iCase) {
     let theWord, theDefArticle, theIndefArticle;
 
     theWord = pPlural ? iEntry.plural : iEntry.singular;
+    const lastLetterOfPlural = iEntry.plural.slice(-1);
+
+    if (pPlural && iCase === "Dat") {
+        switch (lastLetterOfPlural) {
+            case "n":
+            case "s":
+                break;
+            default:
+                theWord += "n";
+                break;
+        }
+    }
 
     switch(iEntry.gender) {
         case "M":
-            switch (pCase) {
+            switch (iCase) {
                 case "Nom":
                     theDefArticle = pPlural ? "die" : "der";
                     theIndefArticle = pPlural ? "keine" : "ein";
                     break;
                 case "Acc":
                 case "Akk":
+                    if (lastLetterOfPlural === "n") theWord = iEntry.plural;
                     theDefArticle = pPlural ? "die" : "den";
-                    theIndefArticle = pPlural ? "keine" : "einen";
+                    theIndefArticle = pPlural ? "keinen" : "einen";
+                    break;
+                case "Dat":
+                    if (lastLetterOfPlural === "n") theWord = iEntry.plural;
+                    theDefArticle = pPlural ? "den" : "dem";
+                    theIndefArticle = pPlural ? "keinem" : "einer";
                     break;
                 default:
                     theDefArticle = "de";
@@ -123,7 +152,7 @@ function assembleWordAndArticle(iEntry, pPlural, pArtikel, pCase) {
             break;
 
         case "F":
-            switch (iEntry.case) {
+            switch (iCase) {
                 case "Nom":
                     theDefArticle = pPlural ? "die" : "die";
                     theIndefArticle = pPlural ? "keine" : "eine";
@@ -140,7 +169,7 @@ function assembleWordAndArticle(iEntry, pPlural, pArtikel, pCase) {
             break;
 
         case "N":
-            switch (iEntry.case) {
+            switch (iCase) {
                 case "Nom":
                     theDefArticle = pPlural ? "die" : "das";
                     theIndefArticle = pPlural ? "keine" : "ein";
@@ -149,6 +178,11 @@ function assembleWordAndArticle(iEntry, pPlural, pArtikel, pCase) {
                 case "Akk":
                     theDefArticle = pPlural ? "die" : "das";
                     theIndefArticle = pPlural ? "keine" : "ein";
+                    break;
+                case "Dat":
+                    if (theWord === "Herz") theWord = "Herzen"
+                    theDefArticle = pPlural ? "den" : "dem";
+                    theIndefArticle = pPlural ? "keinen" : "einem";
                     break;
                 default:
                     theDefArticle = "de";
@@ -161,7 +195,7 @@ function assembleWordAndArticle(iEntry, pPlural, pArtikel, pCase) {
             theDefArticle = "de";
     }       //  end switch on gender
 
-    switch(pArtikel) {
+    switch(iArtikel) {
         case "def":
             return theDefArticle + " " + theWord;
             break;
@@ -174,3 +208,4 @@ function assembleWordAndArticle(iEntry, pPlural, pArtikel, pCase) {
     }
     return "";
 }
+

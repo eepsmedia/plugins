@@ -12,7 +12,9 @@
       "mainHeading" : "Binomial Simulator",
       "atomicEventNameLabel" : "the basic event",
       "changeVocabWarning" : "Note: Changing this vocabulary will delete your data on the next run.",
-      "pluralModalTitle" : "Plural Modal default text"
+      "pluralModalTitle" : "Plural Modal default text",
+      "settingsHeading" : "Settings",
+      "vocabularyHeading" : "Vocabulary"
     },
 
     "words": {
@@ -23,21 +25,24 @@
     },
 
     "labels" : {
-      "probabilityLabelText" : "probability of <b>•1•</b> is •2•",
-      "eventSuccessInputLabel" : "possible result of one •1•",
+      "probabilityLabelText" : "the probability of <b>•1•</b> is •2•",
+      "eventSuccessInputLabel" : "possible result of •1•",
       "eventFailureInputLabel" : "the alternative to <b>•1•</b>",
-      "experimentNameInputLabel" : "what do you call a set of •1• •2•?",
+      "experimentNameInputLabel" : "what do you call a set of •1•?",
 
       "experimentsPerRunLabelTextMain" : "•1• per run ",
       "experimentsPerRunLabelTextFinePrint" : "Probably between 100 and 400.",
       "numberOfEventsLabelTextMain" : "•1• per •2• ",
-      "numberOfEventsLimitFinePrint" : "Not more than 20000."
+      "numberOfEventsLimitFinePrint" : "Not more than 20000.",
+      "binomialDatasetTitle" : "binomial dataset",
+      "topCollectionPluralCase" : "runs",
+      "topCollectionSingularCase" : "run"
     },
 
     "description" : {
-      "line1" : "One •1• is either <b>•2•</b> or <b>•3•</b>",
+      "line1" : "•1• is either <b>•2•</b> or <b>•3•</b>",
       "line2" : "The probability of <b>•1•</b> is <b>•2•</b>",
-      "line3" : "One •1• consists of <b>•2•</b> •3•",
+      "line3" : "•1• consists of •2•",
       "line4" : "Press <button id=\"engageButton\">Engage!</button> to simulate <b>•1•</b> •2•"
     },
 

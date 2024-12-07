@@ -1,4 +1,3 @@
-
 import * as Root from '../src/binomial.js'
 import * as Deutsch from "./germanNouns.js"
 
@@ -159,27 +158,50 @@ function getLangFromURL() {
     return langParam;
 }
 
-export function getNoun(iSingular, pPlural, pDefArt=false, pIndefArt = false, pAccusative = false) {
+function getCaseFromFlags(pAcc, pDat, pGen) {
+    let out = "Nom";
+
+    if (pAcc) out = "Acc";
+    else if (pDat) out = "Dat";
+    else if (pGen) out = "Gen";
+
+    return out;
+}
+
+function getArticleFromFlags(iDef, iIndef) {
+    let out = "kein";       // no article
+    if (iDef) out = "def";
+    else if (iIndef) out = "indef";
+    return out;
+}
+
+
+export function getNoun(iSingular, pPlural, iArticle = "", iCase = "") {
     const theLang = Root.state.lang || "en";
-    let out = iSingular;
+    let out;
 
     if (theLang === "de") {
-        out = ""
-        const plural = pluralize_de(iSingular);
+        out = Deutsch.getNoun(iSingular, pPlural, iArticle, iCase);
     } else if (theLang === "en") {
+        /*
+            in English, iArticle will be "", "def", or "indef", iCase will be "".
+         */
         out = "";
-        if (pDefArt) out = "the ";
-        if (pIndefArt) {
-            out =  "aeiouh".includes(iSingular[0]) ? "an " : "a ";
-        } else {
-            if (pPlural) {
-                out += pluralize_en(iSingular);
-            } else {
-                out += iSingular;
-            }
+        //  construct the article
+        if (iArticle === "def") out = "the ";   //  note trailing space
+        if (iArticle === "indef") {
+            out = "aeiouh".includes(iSingular[0]) ? "an " : "a ";   //  note trailing spaces
         }
+
+        //  add the noun itsef
+        if (pPlural) {
+            out += pluralize(iSingular);
+        } else {
+            out += iSingular;
+        }
+
     } else {
-        out = `plural failure!`;
+        out = `failure to get a noun!`;
     }
 
     return out
@@ -202,8 +224,7 @@ export async function pluralize(iSingular = "") {
 }
 
 
-
-function pluralize_en(iSingular = "noun", iArticle = "") {
+function pluralize_en(iSingular = "noun") {
     const specialNouns = [
         "fish", "deer", "series", "offspring", "sheep", "bison", "cod", "heads", "tails"
     ]
@@ -251,4 +272,22 @@ function pluralize_en(iSingular = "noun", iArticle = "") {
     }
 
     return thePlural;
+}
+
+export async function eventTextWithNumberDative(iEventWord, iNumber) {
+    let theWord;
+
+    switch (Root.state.lang) {
+        case 'en':
+            theWord = pluralize_en(iEventWord)
+            break;
+        case 'de':
+            const theEntry = await Deutsch.getEntryFromDictionary(iEventWord);    //  entry from the singular word
+            theWord = await Deutsch.getNoun(theEntry.singular, (iNumber !== 1) , "", "Dat");
+            break;
+        default:
+            break;
+    }
+
+    return `<b>${iNumber}</b> ${theWord}`;
 }

@@ -36,7 +36,8 @@ import * as Language from "../strings/localize.js"
 
     export async function initialize() {
         try {
-            await pluginHelper.initDataSet(await getBinomialDataContextSetupObject());
+            const theSetupObject = await getBinomialDataContextSetupObject();
+            await pluginHelper.initDataSet(theSetupObject);
 
             //  restore the state if possible
             //  texty.state = codapInterface.getInteractiveState();
@@ -97,14 +98,18 @@ import * as Language from "../strings/localize.js"
     }
 
     async function getBinomialDataContextSetupObject() {
+        const dsTitle = await Language.getString("labels.binomialDatasetTitle");
+        const topCollectionName = await Language.getString("labels.topCollectionPluralCase");
+
+
         const theObject = {
             name: Root.constants.kBinomialDataSetName,
-            title: Root.constants.kBinomialDataSetTitle,
+            title: dsTitle,
             description: 'binomial experiment data',
             collections:
                 [
                     {
-                        name: Root.constants.kRunCollectionName,
+                        name: topCollectionName,
                         labels: {
                             singleCase: "run",
                             pluralCase: "runs",
@@ -149,7 +154,7 @@ import * as Language from "../strings/localize.js"
                                 `the ${Root.state.words.experimentNamePlural} from one run`,
                         },
 
-                        parent: Root.constants.kRunCollectionName,
+                        parent: topCollectionName,
 
                         attrs: [ // note how this is an array of objects.
                             {

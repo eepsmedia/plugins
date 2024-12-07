@@ -7,9 +7,11 @@
     "oops": "Hoppla!",
     "staticStrings": {
       "mainHeading" : "Binomial-Simulator",
-      "atomicEventNameLabel": "die Grundveranstaltung",
-      "changeVocabWarning": "Hinweis: Wenn Sie dieses Vokabular ändern, werden Ihre Daten beim nächsten Lauf gelöscht.",
-      "pluralModalTitle": "Deutsche Plurale"
+      "atomicEventNameLabel": "das Basisexperiment",
+      "changeVocabWarning": "Hinweis: Wenn Sie dieses Vokabular ändern, werden Ihre Daten beim nächsten Durchgang gelöscht.",
+      "pluralModalTitle": "Deutsche Plurale",
+      "settingsHeading" : "Einstellungen",
+      "vocabularyHeading" : "Wortschatz"
     },
     "words": {
       "atomicEventName": "Münzwurf",
@@ -19,28 +21,31 @@
     },
     "labels": {
       "probabilityLabelText": "Die Wahrscheinlichkeit von <b>•1•</b> ist •2•",
-      "eventSuccessInputLabel": "mögliches Ergebnis für ein/e/n •1•",
+      "eventSuccessInputLabel": "mögliches Ergebnis für •1•",
       "eventFailureInputLabel": "die Alternative zu <b>•1•</b>",
-      "experimentNameInputLabel": "Wie nennt man einen Satz von •1• •2•?",
-      "experimentsPerRunLabelTextMain": "•1• pro Lauf ",
+      "experimentNameInputLabel": "wie nennt man eine Menge von •1•?",
+      "experimentsPerRunLabelTextMain": "•1• pro Durchgang ",
       "experimentsPerRunLabelTextFinePrint": "Wahrscheinlich zwischen 100 und 400.",
       "numberOfEventsLabelTextMain" : "•1• pro •2• ",
-      "numberOfEventsLimitFinePrint" : "Nicht mehr als 20000."
+      "numberOfEventsLimitFinePrint" : "Nicht mehr als 20000.",
+      "binomialDatasetTitle" : "Binomiale Daten",
+      "topCollectionPluralCase" : "Durchgänge",
+      "topCollectionSingularCase" : "Durchgang"
     },
     "description": {
-      "line1": "Ein/e •1• ist entweder <b>•2•</b> oder <b>•3•</b>",
+      "line1": "•1• ist entweder <b>•2•</b> oder <b>•3•</b>",
       "line2": "Die Wahrscheinlichkeit von <b>•1•</b> ist <b>•2•</b>",
-      "line3": "Ein/e •1• besteht aus <b>•2•</b> •3•",
-      "line4": "Drücken Sie <button id=\"engageButton\">Engage!</button> um <b>•1•</b> •2• zu simulieren"
+      "line3": "•1• besteht aus •2•",
+      "line4": "Drücken Sie <button id=\"engageButton\">Start!</button> um <b>•1•</b> •2• zu simulieren"
     },
     "attributeNames": {
-      "runNumber": "LaufNummer",
-      "trueProbability": "wahrWarsch"
+      "runNumber": "Durchgangsnummer",
+      "trueProbability": "Wahrscheinlichkeit"
     },
     "attributeDescriptions": {
-      "runNumber": "Laufnummer",
+      "runNumber": "Durchgangsnummer",
       "eventsPerExperiment": "Anzahl von •1• pro •2•",
-      "experimentsPerRun": "Anzahl der •1• pro Lauf",
+      "experimentsPerRun": "Anzahl der •1• pro Durchgang",
       "trueProbability": "wahre Wahrscheinlichkeit von •1•",
       "eventSuccess": "die Anzahl der •1• in dieser/m •2•",
       "eventFailure": "die Anzahl der •1• in dieser/m •2•"

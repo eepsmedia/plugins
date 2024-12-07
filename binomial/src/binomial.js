@@ -222,7 +222,7 @@ const utilities = {
 }
 
 export const iFrameDescriptor = {
-    version: "001c",
+    version: "001e",
     name: 'binomial',
     title: 'Binomial Simulator',
     dimensions: {width: 444, height: 512},
@@ -232,8 +232,8 @@ export const iFrameDescriptor = {
 
 export const constants = {
     kBinomialDataSetName: "binData",
-    kBinomialDataSetTitle: "binomial data",
-    kRunCollectionName: "runs",
-    kExperimentsCollectionName: "experiments",
+    //  kBinomialDataSetTitle: "binomial data",
+    //  kRunCollectionName: "runs",
+    //  kExperimentsCollectionName: "experiments",
     kMaxExperimentsPerRun: 400,
 }

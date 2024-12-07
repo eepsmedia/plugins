@@ -46,7 +46,7 @@ import * as Language from "../strings/localize.js"
             "labels.experimentsPerRunLabelTextMain",
             Root.state.words.experimentNamePlural
         );
-        experimentsLabelText += `<span class="fine-print">${Language.getString("labels.experimentsPerRunLabelTextFinePrint")}</span>`
+        //  experimentsLabelText += `<span class="fine-print">${Language.getString("labels.experimentsPerRunLabelTextFinePrint")}</span>`
         numberOfExperimentsLabel.innerHTML = experimentsLabelText;
 
         //  construct number of events per experiment label, like "5 children per family, not more than 20000"
@@ -68,21 +68,28 @@ import * as Language from "../strings/localize.js"
 
 
         //  vocabulary
-        eventSuccessLabel.innerHTML = Language.getString("labels.eventSuccessInputLabel", Root.state.words.atomicEventName);
+        const singularEventAccusativeWithIndefiniteArticle = await Language.getNoun(Root.state.words.atomicEventName, false,"indef","Acc");
+        const pluralEventDativeWithNumber = await Language.eventTextWithNumberDative(Root.state.words.atomicEventName, Root.state.atomicEventsPerExperiment);
+
+        eventSuccessLabel.innerHTML = Language.getString("labels.eventSuccessInputLabel", singularEventAccusativeWithIndefiniteArticle);
         eventFailureLabel.innerHTML = Language.getString("labels.eventFailureInputLabel", Root.state.words.eventSuccess);
-        experimentNameLabel.innerHTML = Language.getString(
-            "labels.experimentNameInputLabel",
-            Root.state.atomicEventsPerExperiment,
-            Root.state.words.atomicEventNamePlural,
-        );
+        experimentNameLabel.innerHTML = Language.getString("labels.experimentNameInputLabel", pluralEventDativeWithNumber,);
 
     }
 
+    function capitalize(iString) {
+        const s2 = iString.charAt(0).toUpperCase() + iString.slice(1);
+        return s2;
+    }
 
     async function makeDescription() {
 
+        const singularEventNominativeWithIndefiniteArticle = await Language.getNoun(Root.state.words.atomicEventName, false,"indef","Nom");
+        const singularExperimentNominativeWithIndefiniteArticle = await Language.getNoun(Root.state.words.experimentName, false,"indef","Nom");
+        const pluralEventDativeWithNumber = await Language.eventTextWithNumberDative(Root.state.words.atomicEventName, Root.state.atomicEventsPerExperiment);
+
         const line1 = Language.getString("description.line1",
-            Root.state.words.atomicEventName,
+            singularEventNominativeWithIndefiniteArticle,
             Root.state.words.eventSuccess,
             Root.state.words.eventFailure
         );
@@ -91,16 +98,15 @@ import * as Language from "../strings/localize.js"
             Root.state.parsedProbability.theString
         );
         const line3 = Language.getString("description.line3",
-            Root.state.words.experimentName,
-            Root.state.atomicEventsPerExperiment,
-            Root.state.words.atomicEventNamePlural,
+            singularExperimentNominativeWithIndefiniteArticle,
+            pluralEventDativeWithNumber
         );
         const line4 = Language.getString("description.line4",
             Root.state.experimentsPerRun,
             Root.state.words.experimentNamePlural,
         );
 
-        return  `    ${line1}<br/>${line2}<br/>${line3}<br/>${line4}`;
+        return  `    ${capitalize(line1)}<br/>${capitalize(line2)}<br/>${capitalize(line3)}<br/>${capitalize(line4)}`;
     }
 
     export function setInputToState() {
