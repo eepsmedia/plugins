@@ -17,6 +17,8 @@ You can also make the whole group visible or invisible in CODAP using visibiity 
 
 You can move an attribute to a different batch: 
 drag its name to the **gray title bar** of the batch you want.
+Note: drop it over on the right where there is no text.
+The gray bar will turn yellow.
 
 To make a new batch (suppose it's going to be called `work`), 
 type "work" into the **New batch name** text box in the **attributes** tab. 
