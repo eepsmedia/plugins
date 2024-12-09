@@ -32,6 +32,10 @@ Choose this mode by picking **level** instead of **batch** at the top of the **a
 You can't drag attributes to different levels in `choosy`. 
 But of course you can drag them wherever you want in CODAP itself!
 
+### exporting data
+
+When you export data—like to a `csv` file—hidden attributes are not included. 
+
 ## tag cases tab
 
 You can "tag" cases with labels that you type into the boxes.
