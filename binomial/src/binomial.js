@@ -29,7 +29,7 @@ limitations under the License.
 import * as UI from "./binomial.ui.js"
 import * as Connect from "./connect.js"
 import * as Language from "../strings/localize.js"
-import * as Strings from "./strings.js"
+import * as Fire from "./fire.js"
 
 
 /**
@@ -40,6 +40,7 @@ let strings = null;
 export let state = {};
 
 export async function initialize() {
+
     await Connect.connectToCODAP();
     state = await codapInterface.getInteractiveState();
 
@@ -49,6 +50,23 @@ export async function initialize() {
         state = freshState;
     } else {
     }
+
+    state.where = {};
+
+    if (navigator.geolocation) {
+        await navigator.geolocation.getCurrentPosition(
+            async pos => {
+                console.log(JSON.stringify(pos));
+                state.where.lat = pos.coords.latitude;
+                state.where.long = pos.coords.longitude;
+            },
+            async err => {
+                console.log(err);
+            }
+        );
+    }
+
+
 
     state.lang = await Language.initialize();
     await addWordsToState();
@@ -95,18 +113,20 @@ export async function engage() {
         }
         const aResult = {};
         aResult[Language.getString("attributeNames.runNumber")] = state.runNumber;
-        aResult[state.words.eventSuccessPlural] = nSuccesses;
-        aResult[state.words.eventFailurePlural] = (state.atomicEventsPerExperiment) - nSuccesses;
+        aResult[state.words.eventSuccess] = nSuccesses;
+        aResult[state.words.eventFailure] = (state.atomicEventsPerExperiment) - nSuccesses;
         aResult[state.words.atomicEventNamePlural] = state.atomicEventsPerExperiment;
         aResult[state.words.experimentNamePlural] = state.experimentsPerRun;
         const probAttName = Language.getString("attributeNames.trueProbability");
         aResult[probAttName] = state.parsedProbability.theNumber;
+
 
         results.push(aResult);
     }
 
     Connect.emitData(results);      //  could await this but unnecessary?
     Connect.makeTableAppear();
+    Fire.recordEngage(state);
 }
 
 async function update() {
@@ -171,6 +191,7 @@ function getFreshState() {
         parsedProbability: {theNumber: 0.5, theString: "1/2",},
         atomicEventsPerExperiment: 10,
         experimentsPerRun: 100,
+        where : { lat : null, long: null },
         runNumber: 0,
     }
     return theState
@@ -222,7 +243,7 @@ const utilities = {
 }
 
 export const iFrameDescriptor = {
-    version: "001e",
+    version: "001f",
     name: 'binomial',
     title: 'Binomial Simulator',
     dimensions: {width: 444, height: 512},

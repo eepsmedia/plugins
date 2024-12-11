@@ -10,13 +10,26 @@ const singularArticleMenu = document.getElementById("singularArticleMenu");
 
 
 export async function initialize() {
-    theDictionary = await Fire.initialize();
-    console.log(`done loading German plurals from database`);
+    /* theDictionary = */ await Fire.initialize();
+    //  console.log(`done loading German plurals from database`);
 }
 
 export async function pluralize(iSingular) {
     const thePlural =  await getNoun(iSingular, true);
     return thePlural;
+}
+
+export async function loadWortschatz() {
+    const response = await fetch("strings/wortschatz.json");
+    const theText = await response.text();
+
+    const dictionaryObject = JSON.parse(theText);
+
+    theDictionary = [];
+    for (const e in dictionaryObject) {
+        const theEntry = dictionaryObject[e];
+        theDictionary.push(theEntry);
+    }
 }
 
 /**
@@ -39,34 +52,46 @@ export async function getNoun(
     }
 */
 
-    let theEntry = await getEntryFromDictionary(iSingular);
+    let theEntry =
+        await getEntryFromLocalDictionary(iSingular) ||
+        await getEntryFromFirebase(iSingular) ||
+        await getEntryFromUser(iSingular);
 
-    const out = assembleWordAndArticle(theEntry,pPlural, iArtikel, iCase);
-
-    return out;
-}
-
-export async function getEntryFromDictionary(iSingular) {
-    if (theDictionary.length === 0) {
+    if (!theEntry) {
         Swal.fire({
             icon: "warning",
             title: Language.getString("oops"),
             text: `Ich konnte das deutsche Pluralwörterbuch nicht finden. Die Plurale und Artikel werden falsch sein!`
         })
-        return {
+        theEntry =  {
             singular : iSingular,
             plural : iSingular + "en",
             article : "der",
             gender : "M"
-        };
+        }
     }
 
+    const out = assembleWordAndArticle(theEntry,pPlural, iArtikel, iCase);
+    return out;
+}
+
+export async function getEntryFromLocalDictionary(iSingular) {
     let entry = theDictionary.find( e => (e.singular === iSingular));
     if (!entry) {
-        return await getEntryFromUser(iSingular);
-    } else {
-        return entry;
+        console.log(`    ${iSingular} is NOT in the local dictionary, must look in Firebase!`);
     }
+    return entry;
+}
+
+async function getEntryFromFirebase(iSingular) {
+    const theEntry = await Fire.getOneEntry(iSingular);
+    theDictionary.push(theEntry);       //  it wasn't in tghe local dictionary; we better put it there!
+    if (theEntry) {
+        console.log(`    found ${theEntry.singular} in Firebase, added to local dictionary`);
+    } else {
+        console.log(`    ${iSingular} is NOT in Firebase, must ask the user!`);
+    }
+    return theEntry;
 }
 
 function getEntryFromUser(iSingular) {

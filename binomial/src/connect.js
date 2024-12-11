@@ -158,7 +158,7 @@ import * as Language from "../strings/localize.js"
 
                         attrs: [ // note how this is an array of objects.
                             {
-                                name: Root.state.words.eventSuccessPlural,
+                                name: Root.state.words.eventSuccess,
                                 type: 'numeric',
                                 description: Language.getString("attributeDescriptions.eventSuccess",
                                     Root.state.words.eventSuccessPlural,
@@ -166,7 +166,7 @@ import * as Language from "../strings/localize.js"
                                 )
                             },
                             {
-                                name: Root.state.words.eventFailurePlural,
+                                name: Root.state.words.eventFailure,
                                 type: 'numeric',
                                 description: Language.getString("attributeDescriptions.eventFailure",
                                     Root.state.words.eventFailurePlural,

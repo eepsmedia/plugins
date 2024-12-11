@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import * as FB from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+import {getAnalytics} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -12,6 +12,7 @@ let app = null;
 let analytics = null;
 
 let nounsCR = null;     //      "nouns" collection reference
+let simsCR = null;     //      "sims" collection reference
 
 // Initialize Firebase
 
@@ -27,6 +28,9 @@ export async function initialize() {
     analytics = await getAnalytics(app);
 
     nounsCR = FB.collection(db, "nouns");
+    simsCR = FB.collection(db, "sims");
+
+    /*
     const querySnapshot = await FB.getDocs(nounsCR);
 
     querySnapshot.forEach(doc => {
@@ -37,7 +41,20 @@ export async function initialize() {
     out.sort( (a, b) => { return (a.singular > b.singular) ? 1 : -1} );
 
     return out;
+
+     */
 }
+
+export async function getOneEntry(iSingular) {
+
+    const docRef = FB.doc(db, "nouns", iSingular);
+    const docSnap = await FB.getDoc(docRef);
+
+    const theData = docSnap.data();
+
+    return theData;
+}
+
 
 /**
  * Add the given record, with default values for the timestamp and for the certification,
@@ -67,7 +84,23 @@ export async function setCertification(iSingular, iCert) {
 
     const theRef = FB.doc(db, "nouns", iSingular);
     FB.updateDoc(theRef, {
-        certified : iCert,
-        modified : FB.serverTimestamp()
+        certified: iCert,
+        modified: FB.serverTimestamp()
     });
+}
+
+
+export async function recordEngage(iState) {
+
+    let theValues = {
+        "eventsPerExperiment": iState.atomicEventsPerExperiment,
+        "experimentsPerRun": iState.experimentsPerRun,
+        "successProbability": iState.parsedProbability.theNumber,
+        "words": iState.words,
+        "when": FB.serverTimestamp(),
+        "where" : iState.where
+    }
+
+    await FB.addDoc(simsCR, theValues);
+
 }

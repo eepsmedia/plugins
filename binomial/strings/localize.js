@@ -71,6 +71,9 @@ async function loadLanguage(iLang) {
     let theFileName = fileNameMap[iLang];
     const response = await fetch(theFileName);
     const theText = await response.text();
+
+    if (iLang === "de") {   await Deutsch.loadWortschatz();   }
+
     return JSON.parse(theText)
 }
 
@@ -282,7 +285,7 @@ export async function eventTextWithNumberDative(iEventWord, iNumber) {
             theWord = pluralize_en(iEventWord)
             break;
         case 'de':
-            const theEntry = await Deutsch.getEntryFromDictionary(iEventWord);    //  entry from the singular word
+            const theEntry = await Deutsch.getEntryFromLocalDictionary(iEventWord);    //  entry from the singular word
             theWord = await Deutsch.getNoun(theEntry.singular, (iNumber !== 1) , "", "Dat");
             break;
         default:
