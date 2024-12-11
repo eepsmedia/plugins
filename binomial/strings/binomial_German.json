@@ -33,7 +33,7 @@
       "topCollectionSingularCase" : "Durchgang"
     },
     "description": {
-      "line1": "•1• ist entweder <b>•2•</b> oder <b>•3•</b>",
+      "line1": "•1• zeigt entweder <b>•2•</b> oder <b>•3•</b>",
       "line2": "Die Wahrscheinlichkeit von <b>•1•</b> ist <b>•2•</b>",
       "line3": "•1• besteht aus •2•",
       "line4": "Drücken Sie <button id=\"engageButton\">Start!</button> um <b>•1•</b> •2• zu simulieren"
