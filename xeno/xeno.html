@@ -33,8 +33,10 @@ limitations under the License.
     XENO IMPORTS:
     GLOBAL: http://www.eeps.com/dsg/xeno/xeno.html               (Tree:      http://www.eeps.com/dsg/plugins/baum/baum.html                 )
                                                             (Workshop:  http://www.eeps.com/dsg/arbor/arborWorkshop.html       )
-    LOCAL:  http://localhost/plugins/xeno/xeno.html      (Tree:      http://localhost/~tim/plugins/baum/baum.html    )
-    LOCAL, MAMP, embedded: http://localhost/codap/index.html?di=http://localhost/plugins/xeno/xeno.html
+    LOCAL:  http://localhost/plugins/xeno/xeno.html      (Tree:      http://localhost/~tim/plugins/arbor/    )
+    LOCAL, embedded: http://localhost/codap/index.html?di=http://localhost/plugins/xeno/xeno.html
+
+    Local, embedded
     -->
 
 <head>
@@ -119,6 +121,9 @@ limitations under the License.
             <input type="button" onclick="xeno.autoDiagnose()" value="run tree" id="runTreeButton">
         </div>
         <div class="gameControl autoControl" id="autoResultDisplay"></div>
+        <div class="gameControl autoControl" id="newTreeButton">
+            <input type="button" onclick="xenoConnect.createTree()" id="makeTreeButton2">
+        </div>
     </div>
 </div>
 

@@ -40,6 +40,7 @@ XS = {
 
         document.getElementById("makeNewCasesButton").value = (xeno.strings.makeNewCasesButtonText);
         document.getElementById("makeTreeButton").value = (xeno.strings.makeTreeButtonText);
+        document.getElementById("makeTreeButton2").value = (xeno.strings.makeTreeButtonText);
         document.getElementById("runTreeButton").value = (xeno.strings.runTreeButtonText);
         document.getElementById("diagnoseSickButton").value = xeno.strings.sick;
         document.getElementById("diagnoseWellButton").value = xeno.strings.well;

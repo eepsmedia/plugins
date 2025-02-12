@@ -308,7 +308,7 @@ var xeno = {
     },
 
     constants: {
-        version: '2022a',
+        version: '2025a',
         healthAttributeName : `Xhealth`,
         sourceAttributeName : `Xsource`,
         diagnosisAttributeName : `Xdiagnosis`,
