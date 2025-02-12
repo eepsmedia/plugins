@@ -20,10 +20,10 @@ export async function initialize() {
 
     if (theLang === "de") {
         try {
-            await Deutsch.initialize();
-            console.log(`success opening the German plurals database!`);
+            await Deutsch.initialize();     //  currently does nothing!
+            //      console.log(`success opening the German plurals database!`);
         } catch (err) {
-            console.error(`error opening the German plurals database: ${err}`);
+            //      console.error(`error opening the German plurals database: ${err}`);
         }
     }
 

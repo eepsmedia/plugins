@@ -10,7 +10,7 @@ const singularArticleMenu = document.getElementById("singularArticleMenu");
 
 
 export async function initialize() {
-    /* theDictionary = */ await Fire.initialize();
+    //  theDictionary = await Fire.initialize();
     //  console.log(`done loading German plurals from database`);
 }
 
@@ -85,9 +85,9 @@ export async function getEntryFromLocalDictionary(iSingular) {
 
 async function getEntryFromFirebase(iSingular) {
     const theEntry = await Fire.getOneEntry(iSingular);
-    theDictionary.push(theEntry);       //  it wasn't in tghe local dictionary; we better put it there!
     if (theEntry) {
         console.log(`    found ${theEntry.singular} in Firebase, added to local dictionary`);
+        theDictionary.push(theEntry);       //  it wasn't in tghe local dictionary; we better put it there!
     } else {
         console.log(`    ${iSingular} is NOT in Firebase, must ask the user!`);
     }
@@ -96,7 +96,7 @@ async function getEntryFromFirebase(iSingular) {
 
 function getEntryFromUser(iSingular) {
     return new Promise(resolve => {
-        germanNounsModal.showModal();
+        germanNounsModal.showModal();       //      open the <dialog> tag
         const theSingular = iSingular.trim();       //      just in case
         singularInput.value = theSingular;      //  display in the box
         pluralInput.value = ""; // Clear previous input
@@ -130,8 +130,8 @@ function getEntryFromUser(iSingular) {
 }
 
 function genderFromArticle(iArt) {
-    if (iArt == "der") return "M"
-    else if (iArt == "die") return "F"
+    if (iArt === "der") return "M"
+    else if (iArt === "die") return "F"
     else return "N";
 }
 

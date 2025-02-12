@@ -41,6 +41,7 @@ export let state = {};
 
 export async function initialize() {
 
+    await Fire.initialize();
     await Connect.connectToCODAP();
     state = await codapInterface.getInteractiveState();
 

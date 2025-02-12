@@ -92,15 +92,25 @@ export async function setCertification(iSingular, iCert) {
 
 export async function recordEngage(iState) {
 
+    const now = await FB.serverTimestamp();
+
     let theValues = {
         "eventsPerExperiment": iState.atomicEventsPerExperiment,
         "experimentsPerRun": iState.experimentsPerRun,
         "successProbability": iState.parsedProbability.theNumber,
         "words": iState.words,
-        "when": FB.serverTimestamp(),
-        "where" : iState.where
+        "when": now,
+        "where" : iState.where,
+        "lang" : iState.lang
     }
 
-    await FB.addDoc(simsCR, theValues);
+    try {
+        await FB.addDoc(simsCR, theValues);
+        console.log(`recorded this simulation run with ${JSON.stringify(theValues)}`);
+    } catch (err) {
+        console.log(`error : ${err}`);
+        console.log(`error recording this simulation run with ${JSON.stringify(theValues)}`);
+
+    }
 
 }

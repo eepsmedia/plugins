@@ -130,39 +130,41 @@ LOCAL, TESTING:     http://localhost/plugins/binomial/
 </div>
 
 <dialog id="germanNounsModal">
-    <h3 id="pluralModalTitle">Wir brauchen den Plural!</h3>
-    <p>Dieses Wort ist nicht im Wörterbuch enthalten. Bitte geben Sie den Artikel und die Pluralform an.</p>
-    <table>
-        <tr>
-            <td>
-                <label for="singularInput">singular:</label>
-            </td>
-            <td>
-                <select id="singularArticleMenu">
-                    <option value="der">der</option>
-                    <option value="die">die</option>
-                    <option value="das">das</option>
-                </select>
-                <input type="text" id="singularInput">
+    <div>
+        <h3 id="pluralModalTitle">Wir brauchen den Plural!</h3>
+        <p>Dieses Wort ist nicht im Wörterbuch enthalten. Bitte geben Sie den Artikel und die Pluralform an.</p>
+        <table>
+            <tr>
+                <td>
+                    <label for="singularInput">singular:</label>
+                </td>
+                <td>
+                    <select id="singularArticleMenu">
+                        <option value="der">der</option>
+                        <option value="die">die</option>
+                        <option value="das">das</option>
+                    </select>
+                    <input type="text" id="singularInput">
 
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="pluralInput">plural:</label>
-            </td>
-            <td>
-                die <input type="text" id="pluralInput">
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <input type="button" id="doneButton" value="fertig">
-            </td>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="pluralInput">plural:</label>
+                </td>
+                <td>
+                    die <input type="text" id="pluralInput">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" id="doneButton" value="fertig">
+                </td>
 
-        </tr>
-    </table>
+            </tr>
+        </table>
+    </div>
 </dialog>
 
 </body>
