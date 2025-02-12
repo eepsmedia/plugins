@@ -998,7 +998,7 @@ arbor.constants = {
 
     nodeValueLabelColor: "white",
     nodeAttributeLabelColor: "#88f",
-    kNodeHighlightColor : "#fd7",
+    kNodeHighlightColor : "#c80", //    "#fd7",
     kHighlightDropZoneOpacity : 0.5,
     kNearbyHighlightDropZoneStrokeOpacity : 0.6,
     kDropReadyHighlightDropZoneStrokeOpacity : 1.0,
