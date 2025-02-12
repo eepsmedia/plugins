@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2023b',
+        version: '2025a',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -998,9 +998,10 @@ arbor.constants = {
 
     nodeValueLabelColor: "white",
     nodeAttributeLabelColor: "#88f",
-    kNodeHighlightColor : "#fd0",
-    kHighlightDropZoneOpacity : 0.3,
-    kHighlightDropZoneStrokeOpacity : 0.6,
+    kNodeHighlightColor : "#fd7",
+    kHighlightDropZoneOpacity : 0.5,
+    kNearbyHighlightDropZoneStrokeOpacity : 0.6,
+    kDropReadyHighlightDropZoneStrokeOpacity : 1.0,
     kHighlightStrokeWidth : 12,
 
     //  corralBackgroundColor: "#abc",

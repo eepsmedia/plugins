@@ -143,18 +143,23 @@ NodeBoxView.prototype.adjustPaperSize = function () {
 };
 
 NodeBoxView.prototype.highlight = function(iMode) {
+    console.log(`Highlight is ${iMode}`);
+
     switch(iMode) {
         case "on" :
             this.highlightSVG.attr({
                 fillOpacity : arbor.constants.kHighlightDropZoneOpacity,
                 strokeWidth : arbor.constants.kHighlightStrokeWidth,
+                strokeOpacity: arbor.constants.kDropReadyHighlightDropZoneStrokeOpacity,
                 display : "",
             });
             break;
 
         case "nearby":
             this.highlightSVG.attr({
-                fillOpacity : 0.0, strokeWidth : arbor.constants.kHighlightStrokeWidth,
+                fillOpacity : 0.0,
+                strokeWidth : arbor.constants.kHighlightStrokeWidth,
+                strokeOpacity: arbor.constants.kNearbyHighlightDropZoneStrokeOpacity,
                 display : ""
             });
             break;
@@ -243,9 +248,11 @@ NodeBoxView.prototype.drawNodeBoxView = function () {
 
     this.highlightSVG = this.paper.rect(0, 0, this.paper.attr("width"), this.paper.attr("height"));
     this.highlightSVG.attr({
-        fill : arbor.constants.kNodeHighlightColor, fillOpacity : 0,
-        stroke : arbor.constants.kNodeHighlightColor, strokeWidth : 0,
-        strokeOpacity: arbor.constants.kHighlightDropZoneStrokeOpacity,
+        fill : arbor.constants.kNodeHighlightColor,
+        fillOpacity : 0,
+        stroke : arbor.constants.kNodeHighlightColor,
+        strokeWidth : 0,
+        strokeOpacity: arbor.constants.kNearbyHighlightDropZoneStrokeOpacity,
         display : "none",
     });
     //  return this.paper;
