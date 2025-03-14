@@ -16,6 +16,13 @@ body {
     font-weight: bold;
 }
 
+/* help panel must be dark! */
+
+#help {
+    color: #ccc;
+    background-color: #357;
+}
+
 /*  prevent text selection in svg       */
 
 svg text {
@@ -95,6 +102,9 @@ pre {
 /* Attribute Configuration  */
 
 .attributeConfigurationHead {
+    display: flex;
+    align-items: center;
+
     font-family: 'Roboto Condensed', sans-serif;    font-size: 14px;
     font-style: normal;
     font-variant: normal;
@@ -105,10 +115,14 @@ pre {
 }
 
 .attributeConfigurationFooter {
+    display: flex;
+    align-items: center;
+
     font-family: 'Roboto Condensed', sans-serif;    font-size: 12px;
     font-style: normal;
     font-variant: normal;
     font-weight: normal;
+
     line-height: 15.4px;
     padding: 8px;
     background-color: #abc;
@@ -215,6 +229,11 @@ This is the <div> that appears at the beginning, when there is no tree.
 
 /*  Special stuff   */
 
+#swapImage {
+    padding-left: 8px;
+    cursor: pointer;
+}
+
 .noselect {
     cursor: default;
     -webkit-touch-callout: none;
@@ -233,6 +252,10 @@ This is the <div> that appears at the beginning, when there is no tree.
 .rightSide {
     background-color: #c99;
     color : #444;
+}
+
+.filler {
+    flex-grow: 1;
 }
 
 /* passes pointer effect through to things beneath  */
@@ -300,5 +323,4 @@ th, td {
 
 th {
     text-align: center;
-
 }

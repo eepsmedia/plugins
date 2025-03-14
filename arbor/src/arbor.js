@@ -66,7 +66,7 @@ const arbor = {
     dependentVariableSplit: null,       //  not the same as the focus split (focusSplitMgr.theSplit)
 
     iFrameDescription: {
-        version: '2025a',
+        version: '2025b',
         name: 'arbor',
         title: 'decision tree',
         dimensions: {width: 500, height: 444},
@@ -1031,7 +1031,7 @@ arbor.constants = {
 
     buttonImageFilenames: {
         "plusMinus": "art/plus-minus.png",
-        "leftRight": "art/left-right.png",
+        "leftRight": "art/swap.png",
         "configure": "art/configure.png",
         "trash": "art/trash.png"
     },
