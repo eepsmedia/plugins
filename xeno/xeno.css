@@ -31,35 +31,47 @@ body {
     margin : 0;
 }
 
+#headerStripe {
+    padding-left : 8px;
+    margin : 4px;
+    display: flex;
+    align-items: center;
+}
+
 #xenoMain {
     background-color : white;
     display : grid;
-    grid-template-columns : 120px 80px 1fr;
-    grid-template-rows: 144px;      //  height
+    grid-template-columns : 133px 1fr;
+    grid-template-rows: 100px;      //  height
     align-items: stretch;
 }
 
 #xenoScore {
     background-color: cornflowerblue;
+    border-radius: 4px;
     align-items: center;
-    font-size: 24pt;
+    font-size: 14pt;
     color : white;
+    margin : 4px;
+    padding: 2px;
+    padding-left: 8px;
+    padding-right: 8px;
+
     font-family: "Helvetica Neue",Verdana,sans-serif;
 }
 
-/*
-#trainingControlPanel, realityControlPanel, autoControlPanel {
-    background-color : white;
-}
-*/
-
-#howManyCases {
-    width : 4em
+.shortNumberInput {
+    width : 3em
 }
 
-#howManyAutoCases {
-    width : 4em
+.roundButton {
+    width : 32px;
+    height : 32px;
+    vertical-align: center;
+    cursor: pointer;
+    padding-left : 4px;
 }
+
 
 .modePanel {
     white-space: nowrap;
@@ -98,4 +110,8 @@ body {
     color: white;
     width : 100%;
     padding : 8px;
+}
+
+.filler {
+    flex-grow: 1;
 }

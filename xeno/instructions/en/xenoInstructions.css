@@ -28,12 +28,13 @@ limitations under the License.
 
 body {
     background-color: #fed;
+    font-family: "Helvetica Neue", Verdana,sans-serif;
+    font-weight: normal;
+    font-size: 14px;
 }
 
 b {
-    font-family: "Helvetica Neue", Verdana,sans-serif;
     font-weight: bold;
-    font-size: 13px;
     font-stretch : condensed;
     color: #048;
 }

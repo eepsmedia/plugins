@@ -1,0 +1,65 @@
+{
+  "xeno": {
+    "flags": "🇬🇧,🇺🇸",
+    "language": "English",
+    "staticStrings": {
+      "trainingRadioButtonLabel": "training",
+      "one_by_oneRadioButtonLabel": "one by one",
+      "autoRadioButtonLabel": "auto",
+      "maladyMenuLabel": "malady: ",
+      "howManyCasesLabel": "how many cases",
+      "yourDiagnosisText": "your diagnosis:",
+      "diagnoseSickButton": "sick",
+      "diagnoseWellButton": "well",
+      "howManyCasesAutoLabel": "how many cases?",
+      "runTreeButton": "run tree",
+      "makeNewCasesButton": "make new cases",
+      "makeTreeButton": "add tree"
+    },
+    "attributeNames": {
+      "health": "health",
+      "eyes": "eyes",
+      "hair": "hair",
+      "tentacles": "tentacles",
+      "antennae": "antennae",
+      "height": "height",
+      "weight": "weight",
+      "diagnosis": "diagnosis",
+      "analysis": "analysis",
+      "source": "source"
+    },
+    "attributeDescriptions" : {
+      "health": "actual health",
+      "eyes": "eye color",
+      "hair": "hair color",
+      "tentacles": "number of tentacles",
+      "antennae": "number of antennae",
+      "height": "height in fribbets",
+      "weight": "weight in lunk",
+      "diagnosis": "what you thought the health would be, based on the other data",
+      "analysis": "How accurate was the diagnosis? TP = True Positive, FN = False Negative, etc.",
+      "source": "where did this case come from?"
+    },
+    "frameTitle": "Arbor Xenobiological Services",
+    "outputDatasetTitle": "creatures",
+    "dataCollectionTitle": "creatures",
+    "true": "true",
+    "false": "false",
+    "positive": "positive",
+    "negative": "negative",
+    "sick": "sick",
+    "well": "well",
+    "blue": "blue",
+    "purple": "purple",
+    "pink": "pink",
+    "orange": "orange",
+
+    "correctDiagnosisReport" : "Correct! The previous case was •1•.<hr>",
+    "incorrectDiagnosisReport" : "Wrong! The previous case was •1•.<hr>",
+    "creatureString": "•1•&nbsp;hair, •2•&nbsp;eyes, •3•&nbsp;antennae, •4•&nbsp;tentacles, height:&nbsp;•5•, weight:&nbsp;•6•",
+
+    "instructionsTitle" : "xeno instructions",
+    "makeTreeButtonTooltip" : "create a diagnostic tree",
+    "openInstructionsButtonTooltip" : "open a page of instructions"
+  }
+}

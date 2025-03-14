@@ -33,8 +33,8 @@ limitations under the License.
     XENO IMPORTS:
     GLOBAL: http://www.eeps.com/dsg/xeno/xeno.html               (Tree:      http://www.eeps.com/dsg/plugins/baum/baum.html                 )
                                                             (Workshop:  http://www.eeps.com/dsg/arbor/arborWorkshop.html       )
-    LOCAL:  http://localhost/plugins/xeno/xeno.html      (Tree:      http://localhost/~tim/plugins/arbor/    )
-    LOCAL, embedded: http://localhost/codap/index.html?di=http://localhost/plugins/xeno/xeno.html
+    LOCAL:  http://localhost/plugins/xeno/      (Tree:      http://localhost/~tim/plugins/arbor/    )
+    LOCAL, embedded: http://localhost/codap/index.html?di=http://localhost/plugins/xeno/
 
     Local, embedded
     -->
@@ -47,55 +47,57 @@ limitations under the License.
     <link rel='stylesheet' type='text/css' href='xeno.css'/>
     <link rel="stylesheet" type="text/css" href="../common/jqueryFolder/jquery-ui.min.css">
 
+    <script src="strings/localize.js"></script>
 
     <!--From library-->
+<!--
     <script src="../common/jqueryFolder/jquery.min.js"></script>
     <script src="../common/jqueryFolder/jquery-ui.min.js"></script>
+-->
     <script src="../common/iframe-phone.js"></script>
-    <script src="../common/codapInterface.js" ></script>
-    <script src="../common/pluginHelper.js" ></script>
-    <script src="../common/TEEUtils.js" ></script>
-
-    <!--Javascript code-->
-    <script src="xeno.js"></script>
-    <script src="xenoConnect.js"></script>
-    <script src="xeno.model.js" ></script>
-    <script src="xeno.strings.js"></script>
+    <script src="../common/codapInterface.js"></script>
+    <script src="../common/pluginHelper.js"></script>
+    <script src="../common/TEEUtils.js"></script>
 
 </head>
 <body>
 
+<div id="headerStripe">
+    <label for="maladyMenu" id="maladyMenuLabel">scenario</label>
+    <select id="maladyMenu"></select>
+    <span id="xenoScore"></span>
+
+    <div class="filler"></div>
+
+    <img src="./art/infoBlue72.png" class="roundButton" id="openInstructionsButton">
+    <img src="./art/treeBlue72.png" class="roundButton" id="makeTreeButton">
+    <!--
+    <input type="button" onclick="xenoConnect.createTree()" id="makeTreeButton">
+    -->
+</div>
+
 <div id="xenoMain">
     <div class="modePanel gameControl">
-        <input class="modeControl" type="radio" name="xenoMode" value="training" id="trainingRadioButton"
-               onchange="xeno.controlChange()" checked>
+        <input class="modeControl" type="radio" name="xenoMode" value="training" id="trainingRadioButton" checked>
         <label for="trainingRadioButton" id="trainingRadioButtonLabel">training</label>
         <br>
-        <input class="modeControl" type="radio" name="xenoMode" value="one-by-one" id="one-by-oneRadioButton" onchange="xeno.controlChange()">
-        <label for="one-by-oneRadioButton" id="one-by-oneRadioButtonLabel">one by one</label>
+        <input class="modeControl" type="radio" name="xenoMode" value="one-by-one" id="one_by_oneRadioButton">
+        <label for="one_by_oneRadioButton" id="one_by_oneRadioButtonLabel">one by one</label>
         <br>
-        <input class="modeControl" type="radio" name="xenoMode" value="auto" id="autoRadioButton" onchange="xeno.controlChange()">
+        <input class="modeControl" type="radio" name="xenoMode" value="auto" id="autoRadioButton">
         <label for="autoRadioButton" id="autoRadioButtonLabel">auto</label>
-<hr>
-        <label for="maladyMenu" id="maladyMenuLabel">scenario</label>
-        <br>
-        <select id="maladyMenu" onchange="xeno.maladyChange()"></select>
     </div>
 
-    <div id="xenoScore" class="gameControl">
-
-    </div>
 
     <!--        TRAINING SET        -->
 
     <div id="trainingControlPanel" class="controlCluster">
         <div class="gameControl trainingControl">
             <label for="howManyCases" id="howManyCasesLabel">How many cases?</label>
-            <input type="number" id="howManyCases" value=10 onchange="xeno.controlChange()">
+            <input type="number" id="howManyCases" value=10 class="shortNumberInput" min="1" max="200">
         </div>
         <div class="gameControl trainingControl">
-            <input type="button" onclick="xeno.makeNewCases()" id="makeNewCasesButton">
-            <input type="button" onclick="xenoConnect.createTree()" id="makeTreeButton">
+            <input type="button" id="makeNewCasesButton">
         </div>
     </div>
 
@@ -107,8 +109,8 @@ limitations under the License.
         </div>
         <div class="gameControl oneByOneControl">
             <span id="yourDiagnosisText">Your diagnosis:</span>
-            <input type="button" onclick="xeno.manualDiagnose(xeno.strings.sick)" value="sick" id="diagnoseSickButton">
-            <input type="button" onclick="xeno.manualDiagnose(xeno.strings.well)" value="well" id="diagnoseWellButton">
+            <input type="button" value="sick" id="diagnoseSickButton">
+            <input type="button" value="well" id="diagnoseWellButton">
         </div>
     </div>
 
@@ -117,22 +119,22 @@ limitations under the License.
     <div id="autoControlPanel" class="controlCluster">
         <div class="gameControl autoControl">
             <label for="howManyAutoCases" id="howManyCasesAutoLabel">How many cases?</label>
-            <input type="number" id="howManyAutoCases" value=10 onchange="xeno.controlChange()">
-            <input type="button" onclick="xeno.autoDiagnose()" value="run tree" id="runTreeButton">
+            <input type="number" id="howManyAutoCases" value=10 class="shortNumberInput" max="20" min="1">
+            <input type="button" value="run tree" id="runTreeButton">
         </div>
         <div class="gameControl autoControl" id="autoResultDisplay"></div>
-        <div class="gameControl autoControl" id="newTreeButton">
-            <input type="button" onclick="xenoConnect.createTree()" id="makeTreeButton2">
-        </div>
     </div>
 </div>
 
 </body>
 
-<script>
-    window.onload = function () {
-        xeno.initialize();
-    }
+
+</html>
+
+<script type="module">
+    import {initialize} from "./src/xeno.js"
+
+    initialize();
 </script>
 
 </html>

@@ -52,29 +52,29 @@ XS = {
         trainingRadioButtonLabel: "training",
         oneByOneRadioButtonLabel: "one by one",
         autoRadioButtonLabel: "auto",
-        howManyCasesLabel : "how many cases?",
-        maladyMenuLabel : "malady",
-        yourDiagnosisText : "your diagnosis:",
-        howManyCasesAutoLabel : "how many cases?",
-        autoResultDisplay : "Auto-diagnosis results",
+        howManyCasesLabel: "how many cases?",
+        maladyMenuLabel: "malady",
+        yourDiagnosisText: "your diagnosis:",
+        howManyCasesAutoLabel: "how many cases?",
+        autoResultDisplay: "Auto-diagnosis results",
 
-        makeNewCasesButtonText : "make new cases",
-        makeTreeButtonText : "make the tree",
-        runTreeButtonText : "run tree",
+        makeNewCasesButtonText: "make new cases",
+        makeTreeButtonText: "make the tree",
+        runTreeButtonText: "run tree",
 
-        blue : "blue",
-        pink : "pink",
-        purple : "purple",
-        orange : "orange",
-        well : "well",
-        sick : "sick",
-        true : "T",
-        false : "F",
-        positive : "P",
-        negative : "N",
-        clinic : "clinic",
+        blue: "blue",
+        pink: "pink",
+        purple: "purple",
+        orange: "orange",
+        well: "well",
+        sick: "sick",
+        true: "T",
+        false: "F",
+        positive: "P",
+        negative: "N",
+        clinic: "clinic",
 
-        getSingleDiagnosisReport : function(iDiag, iTF, iPN) {
+        getSingleDiagnosisReport: function (iDiag, iTF, iPN) {
             let out = "";
             if (iTF === xeno.strings.true) {
                 out = "Correct! The previous case was "
@@ -86,7 +86,7 @@ XS = {
             return out + "<b>Next case:</b>  ";
         },
 
-creatureString : function (iValues) {
+        creatureString: function (iValues) {
             return iValues.hair + "&nbsp;hair, " +
                 iValues.eyes + "&nbsp;eyes, " +
                 iValues.antennae + "&nbsp;antennae, " +
@@ -95,105 +95,37 @@ creatureString : function (iValues) {
                 "weight:&nbsp;" + iValues.weight;
         },
 
-        dataContextSetupObject : {
-            name: xeno.constants.xenoDataSetName,
-            title: xeno.constants.xenoDataSetTitle,
-            description: 'our creatures',
-            collections: [
-                {
-                    name: xeno.constants.xenoCollectionName,
-                    labels: {
-                        singleCase: "creature",
-                        pluralCase: "creatures",
-                        setOfCasesWithArticle: "list of creatures"
-                    },
 
-                    attrs: [ // note how this is an array of objects.
-                        {
-                            name : xeno.constants.healthAttributeName, title: "health", type: 'categorical', description: "actual health",
-                            colormap: {
-                                "sick": xeno.constants.sickColor,      //  maps to positive
-                                "well": xeno.constants.wellColor       //  maps to negative
-                            },
-                            isDependent: true
-                        },
-
-                        /*  Actual creature attributes. The predictors. */
-                        {
-                            name: "hair", type: 'categorical', description: "hair color",
-                            colormap: {
-                                "blue": "cornflowerblue",
-                                "pink": "hotpink"
-                            }
-                        },
-                        {
-                            name: "eyes", type: 'categorical', description: "eye color",
-                            colormap: {
-                                "purple": "#60a",
-                                "orange": "orange"
-                            }
-                        },
-                        {name: "antennae", type: 'categorical', precision: 0, description: "number of antennae"},
-                        {name: "tentacles", type: 'categorical', precision: 0, description: "number of tentacles"},
-                        {
-                            name: "height",
-                            type: 'numeric',
-                            precision: 2,
-                            units: "fribbets",
-                            description: "height in fribbets"
-                        },
-                        {name: "weight", type: 'numeric', precision: 2, units: "lunk", description: "weight in lunk"},
-
-                        /*
-                            Various attributes that are NOT predictors
-                         */
-
-                        {
-                            name: xeno.constants.diagnosisAttributeName, title: "diagnosis", type: 'categorical',
-                            description: "what you thought the health would be, based on the other data"
-                        },
-                        {
-                            name: xeno.constants.analysisAttributeName, title: "analysis", type: 'categorical',
-                            description: "How accurate was the diagnosis? TP = True Positive, FN = False Negative, etc."
-                        },
-                        {name : xeno.constants.sourceAttributeName, title: "source", type: 'categorical', description: "where did this case come from?"}
-
-
-                    ]
-                }
-            ]
-        }
-
-    },
+    },      //      end of English
 
 
     'de': {
         trainingRadioButtonLabel: "Ausbildung",
         oneByOneRadioButtonLabel: "Stück für Stück",
         autoRadioButtonLabel: "automatisch",
-        howManyCasesLabel : "Wieviele Fälle?",
-        maladyMenuLabel : "Krankheit",
-        yourDiagnosisText : "Ihre Diagnose:",
-        howManyCasesAutoLabel : "Wieviele Fälle?",
-        autoResultDisplay : "Ergebnisanzeige",
+        howManyCasesLabel: "Wieviele Fälle?",
+        maladyMenuLabel: "Krankheit",
+        yourDiagnosisText: "Ihre Diagnose:",
+        howManyCasesAutoLabel: "Wieviele Fälle?",
+        autoResultDisplay: "Ergebnisanzeige",
 
-        makeNewCasesButtonText : "machen neue Fälle",
-        makeTreeButtonText : "machen neue Baum",
-        runTreeButtonText : "benutze Baum",
+        makeNewCasesButtonText: "machen neue Fälle",
+        makeTreeButtonText: "machen neue Baum",
+        runTreeButtonText: "benutze Baum",
 
-        blue : "blaue",
-        pink : "rosa",
-        purple : "lila",
-        orange : "orange",
-        well : "gesund",
-        sick : "krank",
-        true : "T",
-        false : "F",
-        positive : "P",
-        negative : "N",
-        clinic : "Klinik",
+        blue: "blaue",
+        pink: "rosa",
+        purple: "lila",
+        orange: "orange",
+        well: "gesund",
+        sick: "krank",
+        true: "T",
+        false: "F",
+        positive: "P",
+        negative: "N",
+        clinic: "Klinik",
 
-        getSingleDiagnosisReport : function(iDiag, iTF, iPN) {
+        getSingleDiagnosisReport: function (iDiag, iTF, iPN) {
             let out = "";
             if (iTF === xeno.strings.true) {
                 out = "Richtig! Der vorherige Fall war "
@@ -205,7 +137,7 @@ creatureString : function (iValues) {
             return out + "<b>Nächste Fall:</b>  ";
         },
 
-        creatureString : function (iValues) {
+        creatureString: function (iValues) {
             return iValues.hair + "&nbsp;Haar, " +
                 iValues.eyes + "&nbsp;Augen, " +
                 iValues.antennae + "&nbsp;Antennen, " +
@@ -214,7 +146,7 @@ creatureString : function (iValues) {
                 "Gewicht:&nbsp;" + iValues.weight;
         },
 
-        dataContextSetupObject : {
+        dataContextSetupObject: {
             name: xeno.constants.xenoDataSetName,
             title: "Kreaturen",
             description: 'unsere Kreaturen',
@@ -229,8 +161,10 @@ creatureString : function (iValues) {
 
                     attrs: [ // note how this is an array of objects.
                         {
-                            name: xeno.constants.healthAttributeName, type: 'categorical', description: "tatsächliche Gesundheit",
-                            title : "Gesundheit",
+                            name: xeno.constants.healthAttributeName,
+                            type: 'categorical',
+                            description: "tatsächliche Gesundheit",
+                            title: "Gesundheit",
                             colormap: {
                                 "sick": xeno.constants.sickColor,      //  maps to positive
                                 "well": xeno.constants.wellColor       //  maps to negative
@@ -241,7 +175,7 @@ creatureString : function (iValues) {
                         /*  Actual creature attributes. The predictors. */
                         {
                             name: "hair", type: 'categorical', description: "Haarfarbe",
-                            title : "Haare",
+                            title: "Haare",
                             colormap: {
                                 "blue": "cornflowerblue",
                                 "pink": "hotpink"
@@ -249,25 +183,36 @@ creatureString : function (iValues) {
                         },
                         {
                             name: "eyes", type: 'categorical', description: "Augenfarbe",
-                            title : "Augen",
+                            title: "Augen",
                             colormap: {
                                 "purple": "#60a",
                                 "orange": "orange"
                             }
                         },
-                        {name: "antennae", title : "Antennen",
-                            type: 'categorical', precision: 0, description: "Antennenanzahl"},
-                        {name: "tentacles", title : "Tentakeln", type: 'categorical',
-                            precision: 0, description: "Tentakelnanzahl"},
+                        {
+                            name: "antennae", title: "Antennen",
+                            type: 'categorical', precision: 0, description: "Antennenanzahl"
+                        },
+                        {
+                            name: "tentacles", title: "Tentakeln", type: 'categorical',
+                            precision: 0, description: "Tentakelnanzahl"
+                        },
                         {
                             name: "height",
-                            title : "Größe",
+                            title: "Größe",
                             type: 'numeric',
                             precision: 2,
                             units: "fribbets",
                             description: "Größe in Fribbeln"
                         },
-                        {name: "weight", title : "Gewicht", type: 'numeric', precision: 2, units: "lunk", description: "Gewicht in Lunken"},
+                        {
+                            name: "weight",
+                            title: "Gewicht",
+                            type: 'numeric',
+                            precision: 2,
+                            units: "lunk",
+                            description: "Gewicht in Lunken"
+                        },
 
                         /*
                             Various attributes that are NOT predictors
@@ -281,7 +226,12 @@ creatureString : function (iValues) {
                             name: xeno.constants.analysisAttributeName, title: "Analyse", type: 'categorical',
                             description: "Wie genau war die Diagnose? TP = Wahr Positiv, FN = Falsch Negativ, usw."
                         },
-                        {name: xeno.constants.sourceAttributeName, title : "Quelle", type: 'categorical', description: "Woher kam dieser Fall?"}
+                        {
+                            name: xeno.constants.sourceAttributeName,
+                            title: "Quelle",
+                            type: 'categorical',
+                            description: "Woher kam dieser Fall?"
+                        }
 
 
                     ]
