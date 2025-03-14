@@ -40,7 +40,7 @@ Stripe = function (iParent, iTextParams, iRole) {
 
     switch (this.role) {
         case "terminal":
-            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.plusMinus, 0, 0, 32, 32)
+            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.plusMinus, 0, 0, 30, 30)
                 .append(Snap.parse("<title>" + toolTipTexts.plusMinus + "</title>"))
                 .mousedown(
                     function (iEvent) {
@@ -59,7 +59,7 @@ Stripe = function (iParent, iTextParams, iRole) {
 
         case "branching":
 
-            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.configure, 0, 0, 32, 32)
+            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.configure, 0, 0, 30, 30)
                 .append(Snap.parse("<title>" + toolTipTexts.configure + "</title>"))
                 .mousedown(
                     function (iEvent) {
@@ -68,7 +68,7 @@ Stripe = function (iParent, iTextParams, iRole) {
                     }.bind(this)
                 );
 
-            this.rightButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.trash, 0, 0, 32, 32)
+            this.rightButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.trash, 0, 0, 30, 26)
                 .append(Snap.parse("<title>" + toolTipTexts.trash + "</title>"))
                 .mousedown(
                     function (iEvent) {
@@ -81,7 +81,7 @@ Stripe = function (iParent, iTextParams, iRole) {
         case "dependent-variable-head":     //  has a configuration gear
             this.rightButtonImage = null;
 
-            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.configure, 0, 0, 32, 32)
+            this.leftButtonImage = this.paper.image(arbor.constants.buttonImageFilenames.configure, 0, 0, 30, 30)
                 .append(Snap.parse("<title>" + toolTipTexts.configure + "</title>"))
                 .mousedown(
                     function (iEvent) {
@@ -153,7 +153,8 @@ Stripe.prototype.resizeStripe = function (iSize) {
 
     if (this.rightButtonImage) {
 
-        var textStart = iSize.width / 2 + this.sLabel.getBBox().width / 2 + arbor.constants.treeObjectPadding;
+        //  const textStart = iSize.width / 2 + this.sLabel.getBBox().width / 2 + arbor.constants.treeObjectPadding;
+        const textStart = iSize.width - iSize.height;   //   arbor.constants.treeObjectPadding;
         this.rightButtonImage.attr({
             x: textStart, //  because the height is the width of the icon
             y: 0,
