@@ -10,7 +10,9 @@ function replaceSubstrings(originalString, ...substitutions) {
     // Replace each match with the corresponding substitution
     const resultString = originalString.replace(regex, (match, index) => {
         const substitutionIndex = parseInt(index, 10) - 1; // Adjust index to zero-based
-        return substitutions[substitutionIndex] || match; // Use substitution or original match if not available
+        let theSub = substitutions[substitutionIndex];
+        if (theSub === 0) theSub = "0";
+        return theSub || match; // Use substitution or original match if not available
     });
 
     return resultString;
@@ -45,6 +47,11 @@ const localize = {
 
         try {
             response = await fetch(theFileName);
+            if (!response.ok) {
+                alert (`language "${iLang}" is not available. Reverting to English.`);
+                theFileName = `strings/xeno_en.json`;
+                response = await fetch(theFileName);
+            }
         } catch (msg) {
             console.error(msg);
         }
@@ -73,9 +80,10 @@ const localize = {
         for (const theID in theStaticStrings) {
             if (theStaticStrings.hasOwnProperty(theID)) {
                 const theValue = this.getString(`staticStrings.${theID}`); // theStaticStrings[theID];
+                const element = document.getElementById(theID);
                 if (theID.includes("Button") || theID.includes("button")) {
                     try {
-                        document.getElementById(theID).value = theValue;
+                        element.value = theValue;
                         //  console.log(`Set string for ${theID} in ${iLang}`);
                     } catch (msg) {
                         console.log(msg + ` on ID = ${theID}`);
@@ -83,7 +91,7 @@ const localize = {
 
                 } else {
                     try {
-                        document.getElementById(theID).innerHTML = theValue;
+                        element.innerHTML = theValue;
                         //  console.log(`Set string for ${theID} in ${iLang}`);
                     } catch (msg) {
                         console.log(msg + ` on ID = ${theID}`);

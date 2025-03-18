@@ -31,15 +31,18 @@ import {state} from './xeno.js'
 
 
 export function generateCase(iMalady) {
-    const tMalady = wellCreature;      //  object filled with functions!
+    const tCreature = makeNewCreature();     
     const tHealth = maladies[iMalady];   //  { health : function... }
 
-    Object.assign(tMalady, tHealth);        //  merge 'em
+    Object.assign(tCreature, tHealth);        //  merge 'em
     const tOut = {malady: iMalady};
 
-    for (const key in tMalady) {
-        if (tMalady.hasOwnProperty(key)) {
-            const theFunction = tMalady[key].bind(tOut);
+    tCreature[constants.healthAttributeName] = tHealth.health(tCreature);
+
+    /*
+    for (const key in tCreature) {
+        if (tCreature.hasOwnProperty(key)) {
+            const theFunction = tCreature[key].bind(tOut);
 
             if (key === `health`) {
                 tOut[constants.healthAttributeName] = theFunction();      //  are these guaranteed to be in order??
@@ -49,6 +52,10 @@ export function generateCase(iMalady) {
         }
     }
     return tOut;
+
+     */
+
+    return tCreature;
 }
 
 /**
@@ -93,27 +100,32 @@ export function makeMaladyMenuGuts(iCurrentMalady) {
  * Make an object that's a randomly-generated creature.
  * These values are mostly independent, although weight depends on height and tentacles.
  */
-const wellCreature = {
-    hair: function () {
-        return TEEUtils.pickRandomItemFrom([localize.getString("pink"), localize.getString("blue")]);
-    },
-    eyes: function () {
-        return TEEUtils.pickRandomItemFrom([localize.getString("purple"), localize.getString("orange")]);
-    },
-    antennae: function () {
-        return TEEUtils.pickRandomItemFrom([6, 6, 6, 7, 8]);
-    },
-    tentacles: function () {
-        return TEEUtils.pickRandomItemFrom([6, 6, 8, 10]);
-    },
-    height: function () {
-        let tVal = 100 + Math.random() * 44.0;
-        return tVal.toFixed(1);
-    },
-    weight: function () {
-        let tVal = this.height * this.height / 100.0 * (1 + Math.random() / 2.0) + 4.0 * this.tentacles;
-        return tVal.toFixed(1);
-    }
+function makeNewCreature() {
+    const blueString = localize.getString("blue");
+    const purpleString = localize.getString("purple");
+    const orangeString = localize.getString("orange");
+
+    const hairPick = TEEUtils.pickRandomItemFrom([localize.getString("pink"), blueString]);
+    const eyePick = (hairPick === blueString) ?
+        TEEUtils.pickRandomItemFrom([purpleString, purpleString, purpleString, orangeString]) :
+        TEEUtils.pickRandomItemFrom([purpleString, orangeString, orangeString, orangeString, orangeString]);
+
+    const nTentacles = (eyePick === purpleString) ?
+        TEEUtils.pickRandomItemFrom([6, 6, 6, 8, 10]) : TEEUtils.pickRandomItemFrom([6, 8, 8, 10, 10]);
+
+    const nAntennae = TEEUtils.pickRandomItemFrom([6, 6, 6, 7, 8]);
+    const hVal = 100 + Math.random() * 44.0;
+    const wVal = hVal * hVal / 100.0 * (1 + Math.random() / 2.0) + 4.0 * nTentacles;
+
+    let out = {};
+    out[localize.getString("attributeNames.eyes")] = eyePick;
+    out[localize.getString("attributeNames.hair")] = hairPick;
+    out[localize.getString("attributeNames.antennae")] = nAntennae;
+    out[localize.getString("attributeNames.tentacles")] = nTentacles;
+    out[localize.getString("attributeNames.height")] = hVal.toFixed(1);
+    out[localize.getString("attributeNames.weight")] =   wVal.toFixed(1);
+
+    return out;
 }
 
 /**
@@ -124,17 +136,21 @@ const maladies = {
     //  simple, single binary
 
     ague: {
-        health: function () {
-            return (this.hair === localize.getString("blue") ? localize.getString("well") : localize.getString("sick"));
+        health: function (patient) {
+            const theHair = patient[localize.getString("attributeNames.hair")]
+            return (theHair === localize.getString("blue") ? localize.getString("well") : localize.getString("sick"));
         }
     },
 
     //  needs another branch, both binary categorical
 
     botulosis: {
-        health: function () {
+        health: function (patient) {
+            const theHair = patient[localize.getString("attributeNames.hair")]
+            const theEyes = patient[localize.getString("attributeNames.eyes")]
+
             let out = localize.getString("well");
-            if (this.eyes === localize.getString("purple") && this.hair === localize.getString("pink")) {
+            if (theEyes === localize.getString("purple") && theHair === localize.getString("pink")) {
                 out = localize.getString("sick");
             }
             return out;
@@ -144,16 +160,18 @@ const maladies = {
     //  needs categorical split configuration
 
     cartis: {
-        health: function () {
-            return (this.tentacles === 6 ? localize.getString("well") : localize.getString("sick"));
+        health: function (patient) {
+            const theTentacles = patient[localize.getString("attributeNames.tentacles")]
+            return (theTentacles === 6 ? localize.getString("well") : localize.getString("sick"));
         }
     },
 
     //  single continuous split
 
     dengueso: {
-        health: function () {
-            return (this.weight < 202.5 ? localize.getString("sick") : localize.getString("well"));
+        health: function(patient) {
+            const theWeight = patient[localize.getString("attributeNames.weight")]
+            return (theWeight < 202.5 ? localize.getString("sick") : localize.getString("well"));
         }
     },
 

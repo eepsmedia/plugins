@@ -99,7 +99,6 @@ export async function processUpdateCaseNotification(iCommand) {
     //  now we assemble the summary text
 
     const nCases = casesProcessed.length;
-    let tAutoResultText = nCases + ((nCases === 1) ? "&nbsp;case processed. " : "&nbsp;cases processed. ");
     let tNumberCorrect = 0;
     let tNumberUndiagnosed = 0;
 
@@ -118,16 +117,17 @@ export async function processUpdateCaseNotification(iCommand) {
         tNumberUndiagnosed += (theAnalysis.charAt(0) === "?") ? 1 : 0;
     });
 
-    tAutoResultText += tNumberCorrect + "&nbsp;correct. ";
+    const tAutoProcessedText = nCases === 1 ?
+        localize.getString("autoProcessedTextSingular", tNumberCorrect) :
+        localize.getString("autoProcessedTextPlural", nCases, tNumberCorrect);
 
-    if (tNumberCorrect === casesProcessed.length) {
-        tAutoResultText += "Great job! ";
-    }
+    const greatJobText = (tNumberCorrect === casesProcessed.length) ? localize.getString("autoGreatJob") : "";
 
-    if (tNumberUndiagnosed > 0) {
-        tAutoResultText += "<br>Your tree left " + tNumberUndiagnosed
-            + ((tNumberUndiagnosed === 1) ? " case undiagnosed." : " cases undiagnosed.");
-    }
+    const undiagnosedText = (tNumberUndiagnosed > 0) ?
+        tNumberUndiagnosed === 1 ?
+            localize.getString("autoUndiagnosedSingular") :
+            localize.getString("autoUndiagnosedPlural", tNumberUndiagnosed) :
+        "";
 
-    tAutoResultDisplay.innerHTML = tAutoResultText;
+    tAutoResultDisplay.innerHTML = tAutoProcessedText + greatJobText + undiagnosedText;
 }

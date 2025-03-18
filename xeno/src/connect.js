@@ -46,6 +46,62 @@ export async function initialize() {
 
     theDSD = getDatasetDescriptor();
     await pluginHelper.initDataSet(theDSD);     //  open the output dataset
+    //  await setColorMaps();
+}
+
+/**
+ * Set the color maps for some attributes.
+ *
+ * This controls the list of possible values!
+ * Because of the name/title bug for attributes (grrrr)
+ * we have to do this with localization in mind.
+ *
+ *
+ * @returns {Promise<void>}
+ */
+async function setColorMaps() {
+    let theMap = {};
+    let theMessage = {};
+
+    //  Xhealth: sick/well
+    theMap[localize.getString("sick")] = XENO.constants.sickColor;
+    theMap[localize.getString("well")] = XENO.constants.wellColor;
+    theMessage = {
+        action : "update",
+        resource : `dataContext[${XENO.constants.xenoDataSetName}].collection[${XENO.constants.xenoCollectionName}].attribute[${XENO.constants.healthAttributeName}]`,
+        values : {
+            colorMap: theMap
+        }
+    }
+    await codapInterface.sendRequest(theMessage);
+
+    //  hair
+    theMap = {}
+    theMap[localize.getString("blue")] = XENO.constants.blueColor;
+    theMap[localize.getString("pink")] = XENO.constants.pinkColor;
+    theMessage = {
+        action : "update",
+        resource : `dataContext[${XENO.constants.xenoDataSetName}].collection[${XENO.constants.xenoCollectionName}].attribute[${XENO.constants.hairAttributeName}]`,
+        values : {
+            colorMap: theMap
+        }
+    }
+    await codapInterface.sendRequest(theMessage);
+
+    //  eyes
+
+    theMap = {}
+    theMap[localize.getString("purple")] = XENO.constants.purpleColor;
+    theMap[localize.getString("orange")] = XENO.constants.orangeColor;
+    theMessage = {
+        action : "update",
+        resource : `dataContext[${XENO.constants.xenoDataSetName}].collection[${XENO.constants.xenoCollectionName}].attribute[${XENO.constants.eyesAttributeName}]`,
+        values : {
+            colorMap: theMap
+        }
+    }
+    await codapInterface.sendRequest(theMessage);
+
 }
 
 
@@ -91,40 +147,45 @@ export function createTree() {
             "type": "game",
             "name": "name-webview",
             "title": "diagnostic tree",
-            "URL": XENO.constants.arborURL,
+            "URL": XENO.constants.arborURL, //  +`/?lang=${state.lang}`
             "dimensions": {
                 "width": 500,
                 "height": 555
-            }
+            },
+            position: "top"
         }
     };
-
     codapInterface.sendRequest(theArborRequest);
 }
 
-export function openInstructions() {
+export async function openInstructions() {
 
     const theURL = `${XENO.constants.kInstructionsFolderURL}/${state.lang}/`;
-    const theWebViewValues = {
-        type: 'webView',
-        name: "XenoInstructions",
-        title: localize.getString("instructionsTitle"),
-        dimensions: {
-            width: 444,
-            height: 555
-        },
-        position: "top",
-        cannotClose: false,
-        URL: theURL
-    }
+    const exists = await doesFileExist(theURL);
+    if (exists) {
+        const theWebViewValues = {
+            type: 'webView',
+            name: "XenoInstructions",
+            title: localize.getString("instructionsTitle"),
+            dimensions: {
+                width: 444,
+                height: 555
+            },
+            position: "top",
+            cannotClose: false,
+            URL: theURL
+        }
 
-    const theMessage = {
-        action : "create",
-        resource : "component",
-        values : theWebViewValues
-    }
+        const theMessage = {
+            action: "create",
+            resource: "component",
+            values: theWebViewValues
+        }
 
-    codapInterface.sendRequest(theMessage); //  no need to await, let it do it whenever.
+        codapInterface.sendRequest(theMessage); //  no need to await, let it do it whenever.
+    } else {
+        alert(` *** could not find file ${theURL}! ***`);
+    }
 }
 
 async function renameIFrame(iName) {
@@ -163,12 +224,40 @@ function getIFrameDescriptor() {
         version: XENO.constants.version,
         name: 'xeno',
         title: 'Arbor Xenobiological Services',
-        dimensions: {width: 400, height: 177},
+        dimensions: {width: 444, height: 236},
         preventDataContextReorg: false
     }
 }
 
+async function doesFileExist(iURL) {
+    try {
+        const response = await (fetch(iURL));
+        if (response.ok) {
+            console.log('File exists');
+            return true;
+        } else {
+            console.log('File does not exist');
+            return false;
+        }
+    } catch (error) {
+        alert(`File exist fetch error: ${error}`);
+    }
+}
+
 function getDatasetDescriptor() {
+
+    const sickValue = localize.getString("sick");
+    const wellValue = localize.getString("well");
+
+    const healthMap = {};
+    healthMap[sickValue] = XENO.constants.sickColor;
+    healthMap[wellValue] = XENO.constants.wellColor;
+    const hairMap = {};
+    hairMap[localize.getString("blue")] = XENO.constants.blueColor;
+    hairMap[localize.getString("pink")] = XENO.constants.pinkColor;
+    const eyesMap = {};
+    eyesMap[localize.getString("purple")] = XENO.constants.purpleColor;
+    eyesMap[localize.getString("orange")] = XENO.constants.orangeColor;
 
     const theObject = {
         name: XENO.constants.xenoDataSetName,
@@ -189,10 +278,7 @@ function getDatasetDescriptor() {
                         title: "health",
                         type: 'categorical',
                         description: localize.getString("attributeDescriptions.health"),
-                        colormap: {
-                            "sick": XENO.constants.sickColor,      //  maps to positive
-                            "well": XENO.constants.wellColor       //  maps to negative
-                        },
+                        colormap: healthMap,
                         isDependent: true
                     },
 
@@ -201,23 +287,21 @@ function getDatasetDescriptor() {
                         name: localize.getString("attributeNames.hair"),
                         type: 'categorical',
                         description: localize.getString("attributeDescriptions.hair"),
-                        colormap: {
-                            "blue": "cornflowerblue",
-                            "pink": "hotpink"
-                        }
+                        colormap: hairMap,
                     },
                     {
                         name: localize.getString("attributeNames.eyes"),
                         type: 'categorical', description: localize.getString("attributeDescriptions.eyes"),
-                        colormap: {
-                            "purple": "#60a",
-                            "orange": "orange"
-                        }
+                        colormap: eyesMap,
                     },
-                    {name: localize.getString("attributeNames.antennae"), type: 'categorical', precision: 0,
-                        description: localize.getString("attributeDescriptions.antennae")},
-                    {name: localize.getString("attributeNames.tentacles"), type: 'categorical', precision: 0,
-                        description: localize.getString("attributeDescriptions.tentacles")},
+                    {
+                        name: localize.getString("attributeNames.antennae"), type: 'categorical', precision: 0,
+                        description: localize.getString("attributeDescriptions.antennae")
+                    },
+                    {
+                        name: localize.getString("attributeNames.tentacles"), type: 'categorical', precision: 0,
+                        description: localize.getString("attributeDescriptions.tentacles")
+                    },
                     {
                         name: localize.getString("attributeNames.height"),
                         type: 'numeric',
@@ -225,9 +309,11 @@ function getDatasetDescriptor() {
                         unit: "fb",
                         description: localize.getString("attributeDescriptions.height")
                     },
-                    {name: localize.getString("attributeNames.weight"),
+                    {
+                        name: localize.getString("attributeNames.weight"),
                         type: 'numeric', precision: 2, unit: "lk",
-                        description: localize.getString("attributeDescriptions.weight")},
+                        description: localize.getString("attributeDescriptions.weight")
+                    },
 
                     /*
                         Various attributes that are NOT predictors

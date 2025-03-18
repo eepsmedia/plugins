@@ -101,10 +101,7 @@ export function controlChange() {
         alert("Sorry -- for now you're limited to 100 'training cases' at a time.");
     }
 
-    console.log(
-        'xeno ... current mode: ' + state.mode + ", cases: ("
-        + state.howManyCases + ", 1, " + state.howManyAutoCases + ")"
-    );
+    console.log(`xeno ... (controlChange) mode: ${state.mode}`);
     cycle();
 }
 
@@ -132,30 +129,31 @@ export function makeNewCases() {
 export function manualDiagnose()
 {
     const iDiag = this.value;
-    state.currentCase[constants.sourceAttributeName] = "clinic";
-    state.currentCase[constants.diagnosisAttributeName] = iDiag;
 
     const tTrueOrFalse = (iDiag === state.currentCase[constants.healthAttributeName]) ?
-        "T" : "F";
-        //  localize.getString("true") : localize.getString("false");
+        //  "T" : "F";
+        localize.getString("true") : localize.getString("false");
 
-    const tPositiveOrNegative = (iDiag === localize.getString("sick")) ?
-        "P" : "N";
-        //  localize.getString("positive") : localize.getString("negative");
+    const tPositiveOrNegative = (iDiag === localize.getString("sick")) ? // "P" : "N";
+        localize.getString("positive") : localize.getString("negative");
 
+    //  construct the string for the report on this case. This is the, "your diagnosis was correct/incorrect" thing.
     state.previousSingleDiagnosisReport =  UI.getSingleDiagnosisReport(iDiag, tTrueOrFalse, tPositiveOrNegative);
 
-    const theAnalysis = tTrueOrFalse[0] + tPositiveOrNegative[0];
+    //  finish constructing the case to be displayed and sent to CODAP
+    const theAnalysis = tTrueOrFalse + tPositiveOrNegative;
     state.currentCase[constants.analysisAttributeName] = theAnalysis;
+    state.currentCase[constants.sourceAttributeName] = "clinic";
+    state.currentCase[constants.diagnosisAttributeName] = iDiag;
 
     scoreFromPerformance(theAnalysis);
 
     CONNECT.createXenoItems(state.currentCase);   //  send CODAP the clinic data
 
-    //  next case
+    //  next case. But we'll display the result for the one we just sent out
 
     state.currentCase = MODEL.generateCase(state.malady);
-    UI.displayCurrentCase(state.previousSingleDiagnosisReport);
+    UI.displayCurrentCase(state.previousSingleDiagnosisReport, localize.getString("next_case"));
 }
 
 
@@ -198,7 +196,7 @@ export function openInstructions() {
 
 
 export const constants = {
-    version: '2025b',
+    version: '2025c',
     healthAttributeName: `Xhealth`,
     sourceAttributeName: `Xsource`,
     diagnosisAttributeName: `Xdiagnosis`,
@@ -207,14 +205,19 @@ export const constants = {
     kInitialLanguage: 'en',
     wellColor: '#752',
     sickColor: '#484',
+    blueColor : "cornflowerblue",
+    pinkColor : "hotpink",
+    purpleColor : "#60A",
+    orangeColor : "orange",
     xenoDataSetName: "creatures",
     xenoDataSetTitle: "creatures",
     xenoCollectionName: "creatures",
     autoResultInitialText: "Auto-diagnosis results display",
     initialScore: 200,
-    arborURL: "https://localhost/plugins/arbor/",
-    kInstructionsFolderURL : "http://localhost/plugins/xeno/instructions",
-    //  arborURL : "https://www.codap.xyz/plugins/arbor/",
+    //  kInstructionsFolderURL : "http://localhost/plugins/xeno/instructions",
+    kInstructionsFolderURL : "https://www.codap.xyz/plugins/xeno/instructions",
+    //  arborURL: "https://localhost/plugins/arbor/",
+    arborURL : "https://www.codap.xyz/plugins/arbor/",
 
     defaultState : {
         previousSingleDiagnosisReport: "",

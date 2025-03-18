@@ -55,7 +55,7 @@ function visibility() {
         case 'one-by-one':
             if (!state.currentCase) {
                 state.currentCase = MODEL.generateCase(state.malady);
-                displayCurrentCase("<b>Your first case:</b> ")
+                displayCurrentCase("", localize.getString("your_first_case"));
             }
             document.getElementById("trainingControlPanel").style.display = "none";
             document.getElementById("oneByOneControlPanel").style.display = "block";
@@ -74,21 +74,28 @@ function visibility() {
 
 }
 
-export function displayCurrentCase(iPrefix) {
-    const tCaseDescription = creatureString(state.currentCase);
-    document.getElementById("caseDisplay").innerHTML = iPrefix + tCaseDescription;
+export function displayCurrentCase(iReport, iPrefix) {
+    const tCaseDescriptionGuts = iReport + iPrefix + creatureString(state.currentCase);
+    document.getElementById("caseDisplay").innerHTML = tCaseDescriptionGuts;
 }
 
 export function getSingleDiagnosisReport(iDiag, iTF, iPN) {
-    const out = ((iTF === localize.getString("true")) ?
+    let out = ((iTF === localize.getString("true")) ?
             localize.getString("correctDiagnosisReport", iDiag) :
             localize.getString("incorrectDiagnosisReport", iDiag))
-        + "<b>Next case:</b>  ";
+    //  out += displayCurrentCase(localize.getString("next_case"));
 
     return out;
 }
 
 export function creatureString(iValues) {
-    return localize.getString("creatureString", iValues.hair, iValues.eyes, iValues.antennae, iValues.tentacles, iValues.height, iValues.weight);
+    return localize.getString("creatureString",
+        iValues[localize.getString("attributeNames.hair")],
+        iValues[localize.getString("attributeNames.eyes")],
+        iValues[localize.getString("attributeNames.antennae")],
+        iValues[localize.getString("attributeNames.tentacles")],
+        iValues[localize.getString("attributeNames.height")],
+        iValues[localize.getString("attributeNames.weight")]
+    )
 }
 

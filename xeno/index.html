@@ -39,6 +39,15 @@ limitations under the License.
     Local, embedded
     -->
 
+<!--
+    DEPLOYMENT NOTE:
+
+    Before uploading to a server, make sure that the URL for arbor is correct.
+    It's in xeno.js, in the "constants" near the bottom
+    same with kInstructionsFolderURL
+
+-->
+
 <head>
     <meta charset="UTF-8">
     <title>Xeno</title>
@@ -79,13 +88,13 @@ limitations under the License.
 <div id="xenoMain">
     <div class="modePanel gameControl">
         <input class="modeControl" type="radio" name="xenoMode" value="training" id="trainingRadioButton" checked>
-        <label for="trainingRadioButton" id="trainingRadioButtonLabel">training</label>
+        <label for="trainingRadioButton" id="trainingRadioLabel">training</label>
         <br>
         <input class="modeControl" type="radio" name="xenoMode" value="one-by-one" id="one_by_oneRadioButton">
-        <label for="one_by_oneRadioButton" id="one_by_oneRadioButtonLabel">one by one</label>
+        <label for="one_by_oneRadioButton" id="one_by_oneRadioLabel">one by one</label>
         <br>
         <input class="modeControl" type="radio" name="xenoMode" value="auto" id="autoRadioButton">
-        <label for="autoRadioButton" id="autoRadioButtonLabel">auto</label>
+        <label for="autoRadioButton" id="autoRadioLabel">auto</label>
     </div>
 
 

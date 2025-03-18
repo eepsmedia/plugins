@@ -26,9 +26,22 @@ limitations under the License.
 
 */
 
+/*
+    define variables for css!
+ */
+:root {
+    --codap-color : #72bfca;
+    --bg-body-color : #ddd;
+    --bg-control-color : #eee;
+    --round-button-size : 32px;
+}
+
+
 body {
     border : 0;
     margin : 0;
+    font-size: 14px;
+    background-color: var(--bg-body-color);
 }
 
 #headerStripe {
@@ -39,7 +52,7 @@ body {
 }
 
 #xenoMain {
-    background-color : white;
+    background-color : var(--bg-body-color);
     display : grid;
     grid-template-columns : 133px 1fr;
     grid-template-rows: 100px;      //  height
@@ -60,13 +73,16 @@ body {
     font-family: "Helvetica Neue",Verdana,sans-serif;
 }
 
+#autoControlPanel {
+    background-color: var(--bg-control-color);
+}
 .shortNumberInput {
     width : 3em
 }
 
 .roundButton {
-    width : 32px;
-    height : 32px;
+    width : var(--round-button-size);
+    height : var(--round-button-size);
     vertical-align: center;
     cursor: pointer;
     padding-left : 4px;
@@ -78,14 +94,19 @@ body {
 }
 
 .controlCluster {
+    padding : 2px;
+    margin : 4px;
+    border-radius: 4px;
     justify-items: stretch;
+    background-color: var(--bg-control-color);
+    height : 100%;
 }
 
 .gameControl {
     padding : 8px;
     margin : 4px;
     border-radius: 4px;
-    background-color: #ccc;
+    background-color: var(--bg-control-color);
 }
 
 .modeControl {
